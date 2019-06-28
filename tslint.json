@@ -1,0 +1,36 @@
+{
+  "doc": "https://palantir.github.io/tslint/rules/",
+  "defaultSeverity": "warning",
+  "extends": ["tslint:recommended"],
+  "linterOptions": {
+    "exclude": ["node_modules/**"]
+  },
+  "rules": {
+    "quotemark": [true, "single"],
+    "indent": [true, "spaces", 2],
+    "semicolon": [true, "never"],
+    "trailing-comma": [
+      true,
+      {
+        "singleline": "never",
+        "multiline": {
+          "objects": "always",
+          "arrays": "always",
+          "functions": "never",
+          "typeLiterals": "ignore"
+        },
+        "esSpecCompliant": true
+      }
+    ],
+    "space-before-function-paren": [true, "never"],
+    "interface-name": true,
+    "class-name": true,
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    "no-consecutive-blank-lines": false,
+    "no-unused-expression": false,
+    "radix": false,
+    "forin": false,
+    "no-console": [true, "log"]
+  }
+}

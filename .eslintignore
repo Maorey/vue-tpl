@@ -1,0 +1,4 @@
+# 不执行代码检查文件列表
+*.min.js
+dist/
+public/js/

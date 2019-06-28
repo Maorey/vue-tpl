@@ -1,0 +1,21 @@
+# 跨IDE设置 支持列表:http://editorconfig.org
+
+root = true # 是否全局设置
+
+# 所有文件通用设置
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# 指定文件设置
+# [*.{js,jsx,ts,tsx,d.ts,vue}]
+# [*.{css,styl,scss,less,sass}]
+# [*.{html,htm}]
+# [*.{json,yml}]
+
+[*.md]
+trim_trailing_whitespace = false

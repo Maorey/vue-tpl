@@ -1,0 +1,13 @@
+/*
+ * @Description: 全局scss变量【请不要在此文件写和引入具体样式，否则会打包到所有css chunk中】
+ * @Author: 毛瑞
+ * @Date: 2019-06-19 11:34:44
+ * @LastEditors: 毛瑞
+ * @LastEditTime: 2019-06-26 16:19:38
+ */
+
+// 共享给js的变量(import variable from '@/scss/variables.scss')
+:export {
+  key: $exportedValue;
+  // ...
+}

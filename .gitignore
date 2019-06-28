@@ -1,0 +1,29 @@
+# git忽略文件
+.DS_Store
+.git
+node_modules
+/dist
+
+# 测试
+/tests/e2e/reports/
+/tests/e2e/videos/
+/tests/e2e/screenshots/
+/tests/**/coverage/
+selenium-debug.log
+
+# 本地环境变量
+.env.local
+.env.*.local
+
+# 日志文件
+*.log
+*.lock
+
+# IDE
+.idea
+# .vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

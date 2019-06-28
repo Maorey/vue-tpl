@@ -1,0 +1,26 @@
+{
+  "editor.tabSize": 2, // 一个tab等于2空格
+  "editor.wordWrap": "on", // 自动换行
+  "editor.wrappingIndent": "indent", // 换行缩进
+  "editor.renderIndentGuides": true, // 显示缩进线
+
+  "files.trimTrailingWhitespace": true, // 保存时去掉行尾空格
+
+  "git.autofetch": true, // git自动拉取
+  "git.enableSmartCommit": true,
+
+  /// 代码风格(prettier插件) ///
+  "prettier.semi": false, // 不要句尾分号
+  "prettier.singleQuote": true, // 使用单引号
+  "prettier.jsxSingleQuote": true, // jsx(.vue .jsx)里使用单引号
+  "prettier.trailingComma": "es5", // 多行末尾保留逗号
+
+  /// 代码风格(vetur插件) ///
+  "vetur.format.defaultFormatterOptions": {
+    "prettier": {
+      "semi": false, // 不要句尾分号
+      "singleQuote": true, // 使用单引号
+      "trailingComma": "es5" // 多行末尾保留逗号
+    }
+  }
+}
