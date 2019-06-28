@@ -3,89 +3,86 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 15:16:19
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-27 11:23:39
+ * @LastEditTime: 2019-06-28 17:32:23
  */
-import {
-  VuexModule,
-  Module,
-  MutationAction,
-  Action,
-  Mutation,
-  getModule,
-} from 'vuex-module-decorators'
-import { IUser } from '@/types/user'
+import { VuexModule, Action, Mutation } from 'vuex-module-decorators'
 
-import { get, post } from '@/utils/ajax'
-import { cookie } from '@/utils/cookie'
+import { get as getCookie, set as setCookie } from '@/utils/cookie'
+import { ILogin, login, logout } from '@/api/user'
 import { local } from '@/utils/storage'
 
-import { API } from '@/api/user'
+const LOCAL_KEY: string = 'vuetpl_user' // 本地存储的KEY
+const USER_INFO: IUser = local.get(LOCAL_KEY) as IUser
+const TOKEN: string = getCookie(LOCAL_KEY)
 
-// 加密算法(token + RSA 加密)
-import Jsencrypt from 'jsencrypt'
-import md5 from 'crypto-js/md5'
-
-const LOCAL_KEY: string = 'screen_user' // 本地存储的KEY
-let publicKey: string // rsa加密公匙
-
-/// 【数据仓库】 ///
-interface IState {
-  user: IUser | null // 用户信息
-  verify: string // 验证码
-  message: string // 显示错误信息
+/** 偏好
+ */
+interface IPerfer {
+  skin: string
+  lang: string
 }
-const state: State = {
-  user: (cookie.get() && local.get(LOCAL_KEY)) || null,
-  verify: '',
-  message: '',
-}
-
-/// 【读取数据接口】 ///
-interface IGetters {
-  user(store: IState): IUser // 获取用户信息
-  verify(store: IState): string // 获取验证码
-  message(store: IState): string // 获取错误信息
-}
-const getters: IGetters = {
-  user(store: IState) {
-    return store.user
-  },
-  verify(store: IState) {
-    return store.verify
-  },
-  message(store: IState) {
-    return store.message
-  },
+/** 用户状态
+ */
+interface IUser {
+  token: string
+  name: string
+  avatar: string
+  introduction: string
+  roles: string[]
+  prefer?: IPerfer
 }
 
-/// 【提交数据接口】 ///
-interface
-const mutations = {
-  /** 提交用户信息
-   * @param {Object} info 用户信息
+class User extends VuexModule implements IUser {
+  public token = TOKEN || ''
+  public name = (TOKEN && USER_INFO.name) || ''
+  public avatar = (TOKEN && USER_INFO.avatar) || ''
+  public introduction = (TOKEN && USER_INFO.introduction) || ''
+  public roles: string[] = (TOKEN && USER_INFO.roles) || []
+
+  /** 登陆
+   * @param {ILogin} formData 登陆表单
    */
-  USER(state, info) {
-    state.user = info
-    local.set(LOCAL_KEY, info)
-  },
-  /** 提交验证码
-   * @param {String} str 验证码
+  @Action
+  public async login(formData: ILogin) {
+    const { data } = await login(formData)
+    this.SET_TOKEN(data.token)
+  }
+
+  /** 注销
    */
-  VERIFY(state, str) {
-    state.verify = str
-  },
-  /** 提交错误消息
-   * @param {String} message 消息
-   */
-  MESSAGE(state, message) {
-    state.message = message
-  },
+  @Action
+  public async logout() {
+    await logout()
+    this.SET_TOKEN('')
+    this.SET_ROLES([])
+  }
+
+  @Mutation
+  private SET_TOKEN(token: string) {
+    this.token = token
+    setCookie(LOCAL_KEY, token, 168) // 7天免登陆
+  }
+
+  @Mutation
+  private SET_NAME(name: string) {
+    this.name = name
+  }
+
+  @Mutation
+  private SET_AVATAR(avatar: string) {
+    this.avatar = avatar
+  }
+
+  @Mutation
+  private SET_INTRODUCTION(introduction: string) {
+    this.introduction = introduction
+  }
+
+  @Mutation
+  private SET_ROLES(roles: string[]) {
+    this.roles = roles
+  }
 }
 
-export const user: Store = {
-  namespaced: true,
-  state,
-  getters,
-  mutations,
-  actions,
-}
+export default User
+export { IUser }

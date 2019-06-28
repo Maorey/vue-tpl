@@ -382,7 +382,7 @@ server {
 
 ### 备忘
 
-- 在 js 中使用 `assets` 目录下的图片可以用过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串
+- 在 js 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串
 
 #### 问题及思考
 
