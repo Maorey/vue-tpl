@@ -1,4 +1,7 @@
+import Vue from 'vue'
 import Router from 'vue-router'
+
+Vue.use(Router) // 全局注册
 
 export default new Router({
   routes: [

@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 10:09:08
+ * @LastEditTime: 2019-07-01 10:48:24
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -11,7 +11,7 @@ import { IUser } from './modules/user'
 
 Vue.use(Vuex) // 只能全局注册
 
-/** 全局状态
+/** 全局状态【属性名必须和 name 一致】
  */
 export interface IRootState {
   user: IUser

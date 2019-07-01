@@ -4,7 +4,7 @@
   "private": false,
   "license": "MIT",
   "author": "毛瑞 <Maorey@Foxmail.com>",
-  "description": "vue + vuex + vue router + TypeScript(或 JavaScript) 架手架",
+  "description": "vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架",
   "keywords": [
     "vue2",
     "vuex3",
@@ -24,7 +24,7 @@
     "build": "vue-cli-service build --report",
     "lint": "vue-cli-service lint --fix",
     "test:e2e": "vue-cli-service test:e2e --watch",
-    "test:unit": "vue-cli-service test:unit --watch"
+    "test:unit": "vue-cli-service test:unit --watchAll"
   },
   "dependencies": {
     "axios": "^0.19.0",
@@ -56,7 +56,9 @@
     "@vue/eslint-config-standard": "^4.0.0",
     "@vue/eslint-config-typescript": "^4.0.0",
     "@vue/test-utils": "1.0.0-beta.29",
+    "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.2",
+    "babel-plugin-transform-decorators": "^6.24.1",
     "braces": "^3.0.2",
     "debug": "^4.1.1",
     "eslint": "^6.0.1",
