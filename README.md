@@ -1,6 +1,6 @@
 # vue-tpl
 
-vue + vuex + vue router + TypeScript(或 JavaScript) 脚手架
+vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架
 
 ## 命令参考
 
@@ -48,10 +48,9 @@ yarn run build
 
 ### 代码风格检查和修正（提交 Git 时会自动执行）
 
-````
+```
 yarn run lint
-``` run lint
-````
+```
 
 ### 测试
 
@@ -108,11 +107,11 @@ yarn run test:unit
 
 > 目录结构说明:
 
-1. 输出目录为 dist, 包含 js/css/img/font/media 文件夹
-2. public 目录下的文件不得在 src 使用(js/css/img/font/media 直接在 html 中引入), 建议只存放 html 模板及图标相关
-3. 所有 config 目录下的内容都会被打包到同一个文件，用于支持在部署时或临时对一些配置进行修改而不必重新打包代码
-4. store 分为全局和模块，全局一般存放用户信息，包括偏好/个性化设置等，可以在本地做持久化(storage.local)，模块的必须使用 [namespaced](https://vuex.vuejs.org/zh/guide/modules.html#命名空间) 以防止与全局冲突
-5. 关于入口, 目前只支持对 public 目录下的 html 模板(不包括子文件夹下的)自动设置入口，规则为:
+1. 输出目录为 `dist`, 包含 js/css/img/font/media 等文件夹
+2. `public` 目录下的文件不的在 src 中使用(js/css/img/font/media 直接在 html 中引入), 建议只存放 html 模板及图标相关
+3. 所有 `config` 目录下的内容都会被打包到同一个文件，用于支持在部署时或临时对一些配置进行修改而不必重新打包代码
+4. `store` 分为全局和模块，全局一般存放用户信息，包括偏好/个性化设置等，可以在本地做持久化(`storage.local`)，模块的必须使用 [namespaced](https://vuex.vuejs.org/zh/guide/modules.html#命名空间) 以防止与全局冲突
+5. 目前只支持对 `public` 目录下的 html 模板(不包括子文件夹下的)自动设置入口，规则为:
 
    1. 遍历 public 下的 html 模板文件，得到一个 html 模板
    2. 依次对 src 目录及 src/pages 进行如下查找:
@@ -120,7 +119,7 @@ yarn run test:unit
       2. 依次检查下列文件名: main/index/entry/app/page 设置为入口，未找到或已占用则 3
       3. 在该目录下与 html 模板同名的目录下按照 1、2 的规则继续查找，最终仍未找到或已占用则不设置入口
 
-   建议：单页入口直接放 src 目录下，多页时入口分别放在 pages 目录下与 html 模板同名的文件夹下
+   建议：**单页入口直接放 src 目录下，多页时入口分别放在 pages 目录下与 html 模板同名的文件夹下**
 
 6. 已有目录别名如下:
 
@@ -143,30 +142,32 @@ yarn run test:unit
 
 - 新建目录时尽量复用上述列出的目录名，保证结构清晰的情况下减少目录层级
 - 目录及文件命名：<br>
-  文件夹及其它文件(js/scss/图片等)使用 `camelCase` (即：首字母小写驼峰 = lowerCamelCase)；<br>
-  vue 单文件组件或其文件夹容器使用 `PascalCase` ( 即：首字母大写驼峰 = CamelCase = UpperCamelCase)<br>
-- 组件包含不可复用的子组件时，应视为一个组件创建文件夹容器，比如:
+  **文件夹及其它文件**(js/scss/图片等)使用 `camelCase` (即：首字母小写驼峰 = lowerCamelCase)；<br>
+  **vue 单文件组件**使用 `PascalCase` ( 即：首字母大写驼峰 = CamelCase = UpperCamelCase)<br><br>
+  例外情况:
 
-  ```JavaScript
-  // dic
-  BillList/
-    index.vue # 唯一例外
-    Item.vue
-    ...
+  - 组件包含不可复用的子组件时，应视为一个组件, 创建**文件夹容器**，比如:
 
-  // js
-  import BillList from '***/BillList'
-  ```
+    ```JavaScript
+    // dic
+    BillList/
+      index.vue # 唯一例外
+      Item.vue
+      ...
 
-- 视图只负责布局及相关，在对应层级的 components 目录下创建视图对应的文件夹
-- 公共组件/逻辑/函数/样式等模块请按照: `模块 => 视图 => 页面 => 项目` 的层级提升, 配合**提前规划**确定初始层级
+    // js
+    import BillList from '***/BillList'
+    ```
+
+- 视图只负责布局及相关，包含子组件的可使用**文件夹容器**方式或将子组件存放在对应层级的 `components` 目录下的同名目录(`camelCase`)
+- 公共组件/逻辑/函数/样式等模块请按照: `模块 -> 视图 -> 页面 -> 项目` 的层级提升, 配合**提前规划**确定初始层级
 - 尽量**不要使用全局注册**(插件/组件/指令/混入等)以使代码更清晰、优化打包和维护
 - 组件尽量**按逻辑和呈现拆分**以更好的复用和维护
-- 不要从依赖库的源码引入 js/css 等，这将不会被转译，可以从其构建后 lib/dist 等目录引入需要的模块，尽量**按照其文档的描述**使用
+- 不要从依赖库的源码引入 js/css 等，这将**不会被转译**且容易随版本更新改变，可以从其构建后的 lib/dist 等目录引入需要的模块，尽量**按照其文档的描述**使用
 
 ### 风格建议
 
-架手架支持 TypeScript【推荐】 和 JavaScript
+推荐使用 [TypeScript](https://www.tslang.cn)
 
 > CSS Modules class 名使用 `camelCase` (global Scope 可以 `kebab-case` ), 选择器嵌套不应超过三层
 > JavaScript 代码风格为 [**JavaScript standard**](https://standardjs.com/rules-zhcn.html)，除了以下区别:
@@ -251,7 +252,7 @@ yarn run test:unit
   }
   ```
 
-- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(避免重名合并)，层级使用小写字母, chunk 名首字母大写，比如: index 页面下的 home 视图命名为 index_Home, 其下的用户视图命名为 index_home_My, 用户基础信息命名为 index_home_my_Baseinfo 。为避免文件名太长，每个层级可以用一到两个字母进行缩写: iHome, ihMy, ihmBaseInfo, 对异步 chunk 进行命名可以方便排查问题。
+- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(避免重名合并)，层级使用小写字母, chunk 名首字母大写，比如: index 页面下的 home 视图命名为 `index_Home`, 其下的用户视图命名为 `index_home_My`, 用户基础信息命名为 `index_home_my_Baseinfo` 。为避免文件名太长，每个层级可以用一到两个字母进行缩写: `iHome`, `ihMy`, `ihmBaseInfo`, 对异步 chunk 进行命名可以方便排查问题。
 - libs 下库文件需要按需加载的，应提供引入方法（只会成功加载一次），比如:
 
   ```TypeScript
@@ -262,17 +263,17 @@ yarn run test:unit
   * @returns {Promise<Array<Module>>}
   */
   function get(plugins: string[] = []): Promise<any> {
-    return import(/* webpackChunkName: "*lSomelib" */ './somelib.min').then(() =>
+    return import(/* webpackChunkName: "lSomelib" */ './somelib.min').then(() =>
       Promise.all(
         plugins.map((plugin: string) => {
           switch (plugin) {
             case 'plugin1':
               return import(
-                /* webpackChunkName: "*lsPlugin1" */ './plugins/plugin1.min'
+                /* webpackChunkName: "lsPlugin1" */ './plugins/plugin1.min'
               )
             case 'plugin2':
               return import(
-                /* webpackChunkName: "*lsPlugin2" */ './plugins/plugin2.min'
+                /* webpackChunkName: "lsPlugin2" */ './plugins/plugin2.min'
               )
           }
         })

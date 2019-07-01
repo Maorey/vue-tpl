@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 10:05:40
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-28 10:48:51
+ * @LastEditTime: 2019-07-01 10:02:55
  */
 const fs = require('fs')
 const path = require('path')
@@ -77,21 +77,18 @@ module.exports = isProd => {
       entryName = getEntry(srcDir, entryNames) // src下页面入口
       if (uesd[entryName]) {
         // src下页面文件夹
-        entryName = `${templateName}/${getEntry(
-          path.join(srcDir, templateName),
-          entryNames
-        )}`
+        entryName = getEntry(path.join(srcDir, templateName), entryNames)
+        entryName = entryName && `${templateName}/${entryName}`
 
         if (uesd[entryName]) {
           // pages下页面入口
-          entryName = `${pagesName}/${getEntry(pagesDir, entryNames)}`
+          entryName = getEntry(pagesDir, entryNames)
+          entryName = entryName && `${pagesName}/${entryName}`
 
           if (uesd[entryName]) {
             // pages下页面文件夹
-            entryName = `${pagesName}/${templateName}/${getEntry(
-              path.join(pagesDir, templateName),
-              entryNames
-            )}`
+            entryName = getEntry(path.join(pagesDir, templateName), entryNames)
+            entryName = entryName && `${pagesName}/${templateName}/${entryName}`
 
             if (uesd[entryName]) {
               continue

@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 15:55:50
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-28 17:13:44
+ * @LastEditTime: 2019-07-01 09:25:05
  */
 import { get, post } from '@/utils/ajax'
 import API from './config/user'
@@ -31,6 +31,7 @@ interface ILogin {
   verify: string
   account: string
   password: string
+  remember: boolean
 }
 /** 登陆
  * @param {ILogin} formData 登陆表单
