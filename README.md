@@ -395,6 +395,15 @@ server {
 - [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator)
 - [vue-i18n](http://kazupon.github.io/vue-i18n)
 - 在 js 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串
+- TypeScript 中 `for in` 一个对象 obj 可以:
+
+  ```TypeScript
+  const temp: any = obj
+  let key: string
+  for(key of temp) {
+    temp[key]
+  }
+  ```
 
 #### 问题及思考
 

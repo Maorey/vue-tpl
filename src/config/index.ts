@@ -3,8 +3,9 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 12:52:09
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-27 19:41:52
+ * @LastEditTime: 2019-07-01 16:27:19
  */
+
 /*! 【全局配置 开始】 */
 export default {
   /*! 请求接口基础路径 */ baseUrl: process.env.BASE_URL,

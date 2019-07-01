@@ -4,7 +4,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-28 09:28:24
+ * @LastEditTime: 2019-07-01 17:32:13
  */
 module.exports = {
   presets: ['@vue/app'], // https://cli.vuejs.org/zh/config/#babel
@@ -13,7 +13,7 @@ module.exports = {
     [
       '@babel/plugin-transform-runtime',
       {
-        corejs: 3,
+        corejs: 2, // 用3.x vue 部分不兼容...
         helpers: false,
       },
     ],
