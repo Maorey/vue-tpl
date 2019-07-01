@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 10:05:40
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 10:02:55
+ * @LastEditTime: 2019-07-01 15:26:56
  */
 const fs = require('fs')
 const path = require('path')
@@ -110,7 +110,7 @@ module.exports = isProd => {
         // 自定义目录别名
         alias:
           entryName.match(REG_DIR_FILE) &&
-          path.resolve(srcDir, entryName, './'),
+          path.resolve(srcDir, entryName, '../'),
       }
     }
   }

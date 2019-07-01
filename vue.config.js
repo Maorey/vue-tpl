@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 12:19:33
+ * @LastEditTime: 2019-07-01 16:25:19
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -104,7 +104,7 @@ module.exports = {
       maxAsyncRequests: 6, // 最大异步代码请求数【浏览器并发请求数】
       maxInitialRequests: 3, // 最大初始化时异步代码请求数
 
-      // automaticNameDelimiter: '.', // 超过大小,分包时文件名分隔符
+      automaticNameDelimiter: '.', // 超过大小,分包时文件名分隔符
       name:
         !isProd ||
         // 生产环境缩写 vendors.main.show.user.77d.js => v.HTY.05b.js
@@ -128,37 +128,40 @@ module.exports = {
       cacheGroups: {
         /// css ///
         // 提取各入口的 css 到单独文件(还抽了一个空数组的 [entryName].*.*.js 出来???)
-        ...(() => {
-          /** 获取入口模块名
-           * @param {Object} module webpack module 对象
-           *
-           * @returns {String} 模块名
-           */
-          const recursiveIssuer = module => {
-            if (module.issuer) {
-              return recursiveIssuer(module.issuer)
-            } else if (module.name) {
-              return module.name
-            } else {
-              return ''
-            }
-          }
+        // ...(() => {
+        //   /** 获取模块是否是指定入口的
+        //    * @param {Object} module webpack module 对象
+        //    * @param {String} name 入口名
+        //    *
+        //    * @returns {Boolean}
+        //    */
+        //   const isBelong = (module, name) =>
+        //     module.name === name ||
+        //     (!!module.issuer && isBelong(module.issuer, name))
 
-          let css = {}
-          for (let entryName in pages) {
-            css[entryName] = {
-              name: entryName,
-              chunks: 'all',
-              enforce: true,
-              priority: 666666,
-              test: module =>
-                module.constructor.name === 'CssModule' &&
-                recursiveIssuer(module) === entryName,
-            }
-          }
+        //   const TYPE = 'css/mini-extract'
 
-          return css
-        })(),
+        //   let css = {}
+        //   let chunkName
+        //   for (let entryName in pages) {
+        //     chunkName = entryName + '.c' // 多页时与入口名重了要报错
+
+        //     css[chunkName] = {
+        //       name: chunkName,
+        //       chunks: 'all',
+        //       enforce: true,
+        //       priority: 666666,
+        //       // https://github.com/webpack-contrib/mini-css-extract-plugin
+        //       // test: module =>
+        //       //   module.constructor.name === 'CssModule' &&
+        //       //   isBelong(module, entryName),
+        //       test: module =>
+        //         module.type === TYPE && isBelong(module, entryName),
+        //     }
+        //   }
+
+        //   return css
+        // })(),
         /// js ///
         // configs
         conf: {
