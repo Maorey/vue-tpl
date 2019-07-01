@@ -1,0 +1,98 @@
+/*
+ * @Description: 统一滚动条样式(就不用滚动条插件了)
+ * @Author: 毛瑞
+ * @Date: 2019-07-01 14:04:31
+ * @LastEditors: 毛瑞
+ * @LastEditTime: 2019-07-01 14:53:11
+ */
+$barRadius: 5px; // 滚动条圆角
+$barWidth: 5px; // 滚动条宽度
+$barMinHeight: 5px; // 滚动条最小高度
+
+/// chrome ///
+// 背景条
+::-webkit-scrollbar {
+  width: $barWidth;
+  transition: 0.3s;
+  background: none;
+  border-radius: $barRadius;
+
+  &:hover {
+    background: $colorLightGrey;
+  }
+}
+// 上下按钮
+::-webkit-scrollbar-button {
+  display: none;
+}
+// 拖拽按钮
+::-webkit-scrollbar-thumb {
+  transition: 0.3s;
+  min-width: $barWidth;
+  min-height: $barMinHeight;
+  border-radius: $barRadius;
+  background: $colorGrey;
+
+  &:hover {
+    background: $colorDeepGrey;
+  }
+}
+/// FireFox ///
+// 只有某些版本有效好像
+// $-moz-document url-prefix(http) {
+//   // 滚动条颜色
+//   scrollbar {
+//     -moz-appearance: none !important;
+//     background: transparent !important;
+
+//     &:hover {
+//       background: $colorLightGrey;
+//     }
+//   }
+
+//   // 滚动条按钮颜色
+//   thumb,
+//   scrollbarbutton {
+//     -moz-appearance: none !important;
+//     background-color: $colorLightGrey !important;
+//   }
+
+//   // 鼠标悬停时按钮颜色
+//   thumb:hover,
+//   scrollbarbutton:hover {
+//     -moz-appearance: none !important;
+//     background-color: $colorDeepGrey !important;
+//   }
+
+//   // 隐藏上下箭头
+//   scrollbarbutton {
+//     display: none !important;
+//   }
+
+//   // 纵向滚动条宽度
+//   scrollbar[orient='vertical'] {
+//     width: $barWidth !important;
+//   }
+
+//   // 横向滚动条高度
+//   scrollbar[orient='horizontal'] {
+//     height: $barWidth !important;
+//   }
+// }
+
+/// all ///
+* {
+  scroll-behavior: smooth;
+  // FireFox
+  scrollbar-width: thin;
+  scrollbar-color: $colorGrey $colorLightGrey;
+  // IE 不支持透明度
+  scrollbar-base-color: $colorGrey; // 滚动条的基本颜色
+  scrollbar-face-color: $colorGrey; // 立体滚动条的颜色
+  scrollbar-track-color: $colorDeepGrey; // 立体滚动条背景颜色
+  scrollbar-arrow-color: $colorGrey; // 三角箭头的颜色
+  scrollbar-shadow-color: $colorDeepGrey; // 立体滚动条阴影的颜色
+  scrollbar-3dlight-color: $colorGrey; // 立体滚动条亮边的颜色
+  scrollbar-highlight-color: $colorGrey; // 滚动条空白部分的颜色
+  scrollbar-darkshadow-color: $colorDeepGrey; // 立体滚动条强阴影的颜色
+}

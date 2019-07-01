@@ -3,11 +3,109 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 11:34:44
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 10:05:54
+ * @LastEditTime: 2019-07-01 14:56:40
  */
 
-// 共享给js的变量(import variable from '@/scss/variables.scss')
-// :export {
-//   key: $exportedValue;
-//   // ...
-// }
+/// 颜色 ///
+$colorDeepGrey: #666;
+$colorGrey: #777;
+$colorLightGrey: #999;
+$colorBackGround: #0d1a25; // 页面背景色
+// ...
+
+///  字体大小  ///
+$smaller: 1rem; // 12px
+$small: 1.25rem; // 14px
+$medium: 1.5rem; // 16px
+$larger: 1.75rem; // 18px
+$large: 2rem; // 20px
+$x-large: 2.25rem; // 22px
+$xx-large: 2.5rem; // 24px
+
+/// z-index 层级 ///
+$zPanel: 1; // 浮动面板
+$zComp: 2; // 浮动组件
+$zMenu: 3; // 浮动菜单
+$zFixed: 4; // 固定部件（页头页尾等）
+$zInfo: 5; // 信息窗口，如预览
+$zDialog: 6; // 对话框，如提示确认等
+$zMessage: 7; // 消息提示
+
+/// 布局 ///
+$heightHeader: 60px; // header高度
+$heightFooter: 60px; // footer高度
+$widthLfetColumn: 280px; // 左边栏宽度
+$widthRightColumn: 280px; // 右边栏宽度
+// ...
+
+/* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
+
+/// 扩展（@extend %substr;） ///
+// 单行文本溢出省略号
+%substr {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+// 页面居中【需要指定高宽】
+%centerPage {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  position: absolute;
+}
+
+/* ---------------------- 我也是一条分割线 (*❦ω❦) ---------------------- */
+
+/// 混入（@include name(args);） ///
+
+// 多行溢出省略号(-webkit-有效，其它截断) 参数为行数
+@mixin ellipsis($clamp) {
+  // 多行溢出省略号
+  overflow: hidden;
+  word-break: break-word;
+
+  display: -webkit-box;
+  -webkit-line-clamp: $clamp;
+  -webkit-box-orient: vertical;
+}
+
+/* ---------------------- 我还是一条分割线 ㄟ( ▔, ▔ )ㄏ ---------------------- */
+
+// 共享给js的变量(import variables from '@/scss/variables.scss')
+:export {
+  color: {
+    grey: $colorGrey;
+    deepgrey: $colorDeepGrey;
+    lightgrey: $colorLightGrey;
+    background: $colorBackGround;
+    // ...
+  }
+  font: {
+    smaller: $smaller;
+    small: $small;
+    medium: $medium;
+    larger: $larger;
+    large: $large;
+    xlarge: $x-large;
+    xxlarge: $xx-large;
+  }
+  z: {
+    panel: $zPanel;
+    comp: $zComp;
+    menu: $zMenu;
+    fixed: $zFixed;
+    dialog: $zDialog;
+    message: $zMessage;
+  }
+  layout: {
+    top: $heightHeader;
+    left: $widthLfetColumn;
+    right: $widthRightColumn;
+    bottom: $heightFooter;
+    // ...
+  }
+  // ...
+}

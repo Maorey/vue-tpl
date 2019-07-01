@@ -3,7 +3,7 @@
  * @Author: Maorey
  * @LastEditors: 毛瑞
  * @Date: 2019-04-01 13:28:06
- * @LastEditTime: 2019-06-28 10:06:07
+ * @LastEditTime: 2019-07-01 14:44:25
  */
 const FIGURE = require('./figure') // 输出图形
 
@@ -66,21 +66,21 @@ module.exports = function(config) {
     .tap(() => [{ filename: cssFileName, chunkFilename: cssFileName }])
 
   const FileName = '[name].[hash:3].[ext]'
-  // 图片
-  config.module
-    .rule('images')
-    .use('url-loader')
-    .options(getLoaderOption('img/' + FileName))
-  // svg
-  config.module
-    .rule('svg')
-    .use('file-loader')
-    .options({ name: 'img/' + FileName })
   // 字体
   config.module
     .rule('fonts')
     .use('url-loader')
     .options(getLoaderOption('font/' + FileName))
+  // svg
+  config.module
+    .rule('svg')
+    .use('file-loader')
+    .options({ name: 'img/' + FileName })
+  // 图片
+  config.module
+    .rule('images')
+    .use('url-loader')
+    .options(getLoaderOption('img/' + FileName))
   // 媒体
   config.module
     .rule('media')
