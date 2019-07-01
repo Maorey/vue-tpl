@@ -3,9 +3,9 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-28 15:52:20
+ * @LastEditTime: 2019-07-01 12:24:36
  */
-import Vue from 'vue'
+import Vue, { CreateElement, VNode } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -13,5 +13,5 @@ import store from './store'
 new Vue({
   store,
   router,
-  ...App,
+  render: (h: CreateElement): VNode => h(App),
 }).$mount('#app')

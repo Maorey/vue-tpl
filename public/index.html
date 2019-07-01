@@ -19,18 +19,51 @@
   <!-- 移动端网页可视区域 -->
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 
-  <!-- 网页描述元数据 -->
+  <!-- 忽略数字被识别为电话号码 -->
+  <!-- <meta name="format-detection" content="telephone=no"> -->
+
+  <!-- 禁用字体放大（好像只有UC会） -->
+  <!-- <meta name="wap-font-scale" content="no"> -->
+  <!-- 苹果离线应用（开启缓存） -->
+  <!-- <meta name="apple-mobile-web-app-capable" content="yes"> -->
+  <!-- 苹果隐藏状态栏/设置状态栏颜色 -->
+  <!-- <meta name="apple-mobile-web-app-status-bar-style" content="black"> -->
+  <!-- 强制UC浏览器竖屏显示 -->
+  <!-- <meta name="screen-orientation" content="portrait"> -->
+  <!-- UC应用模式 -->
+  <!-- <meta name="browsermode" content="application"> -->
+  <!-- 强制QQ浏览器竖屏显示 -->
+  <!-- <meta name="x5-orientation" content="portrait"> -->
+  <!-- QQ应用模式 -->
+  <!-- <meta name="x5-page-mode" content="app"> -->
+
+  <!-- 网页描述元数据(搜索引擎) -->
   <!-- 关键字 -->
-  <!-- <meta name="keywords" content="" /> -->
+  <!-- <meta name="keywords" content=""> -->
   <!-- 作者 -->
-  <!-- <meta name="author" content="" /> -->
-  <!-- 描述（itemprop(不写也ok)兼容QQ） -->
-  <!-- <meta name="description" itemprop="description" content="" /> -->
+  <!-- <meta name="author" content=""> -->
+  <!-- 描述 -->
+  <!-- <meta name="description" content=""> -->
+
+  <!-- 社交媒体 （UC没找到） -->
+  <!-- http://open.mobile.qq.com/api/mqq/index -->
+  <!-- QQ分享标题 -->
+  <!-- <meta itemprop="name" content=""> -->
+  <!-- QQ分享缩略图 -->
+  <!-- <meta itemprop="image" content=""> -->
+  <!-- og:facebook提出的The Open Graph protocol 微博等好像也识别
+      （搜索引擎会抓取，但在单页应用意义不大）
+      别的还有Twitter等的meta不要了 -->
+  <!-- <meta property="og:type" content="website"> -->
+  <!-- <meta property="og:description" content=""> -->
+  <!-- <meta property="og:title" content=""> -->
+  <!-- <meta property="og:image" content=""> -->
+  <!-- <meta property="og:url" content=""> -->
 
   <!-- 网页图标 -->
   <link rel="shortcut icon" href="<%= BASE_URL %>favicon.ico" />
 
-  <!-- 全局样式（方便骨架） -->
+  <!-- 全局样式（方便手写骨架） -->
   <style>
     body {
       background: #0d1a25;

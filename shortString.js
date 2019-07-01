@@ -1,9 +1,9 @@
 /*
  * @description: 得到字符串唯一缩写
  * @Author: Maorey
- * @LastEditors: Maorey
+ * @LastEditors: 毛瑞
  * @Date: 2019-03-04 09:42:36
- * @LastEditTime: 2019-04-01 19:24:55
+ * @LastEditTime: 2019-07-01 12:18:31
  */
 
 /** 缩写字符串为一个字母（52个）
@@ -93,7 +93,6 @@ module.exports = function(DIC = {}) {
   return name => {
     name = String(name)
 
-    // 加偏 -65
-    return DIC[name] || (DIC[name] = getUnique(DIC, getChar(name, -65)))
+    return DIC[name] || (DIC[name] = getUnique(DIC, getChar(name)))
   }
 }

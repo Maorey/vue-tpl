@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 10:36:26
+ * @LastEditTime: 2019-07-01 12:19:33
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -11,20 +11,15 @@ const path = require('path')
 const environment = process.env // 环境变量
 const isProd = environment.NODE_ENV === 'production' // 是否生产环境
 
+const pages = require('./getPages')(isProd) // 自动检测并返回页面入口设置
 const chainWebpack = require(isProd
   ? './production.config' // 生产环境配置
   : './development.config') // 开发环境配置
 
-const pages = require('./getPages')(isProd) // 自动检测并返回页面入口设置
-/** 得到字符串唯一缩写
- * main => A, dm => W
- * user => T, du => b
- * show => V, ds => Z, pc => Y
- */
-const short = require('./shortString')() // 闭包
+const short = require('./shortString')() // 闭包 得到字符串唯一缩写
 
 /// 【配置项】 ///
-// https://cli.vuejs.org/config/#vue-config-js
+// https://cli.vuejs.org/zh/config
 module.exports = {
   /// 普通 ///
   publicPath: './', // 基础路径（当前脚本所在目录）（用于找图片等）
@@ -173,15 +168,7 @@ module.exports = {
           priority: 666666,
           test: /[\\/]config[\\/]/,
         },
-        // // jquery
-        // jq: {
-        //   name: 'jq',
-        //   chunks: 'all',
-        //   enforce: true,
-        //   priority: 666666,
-        //   test: /[\\/]node_modules[\\/]jquery[\\/]/,
-        // },
-        // // elementUI (建议按需加载)
+        // // elementUI (建议按需引入)
         // eui: {
         //   name: 'eui',
         //   chunks: 'all',
@@ -224,7 +211,7 @@ module.exports = {
         // // 所有其他依赖的模块
         // dll: {
         //   name: 'dll',
-        //   chunks: 'all',
+        //   chunks: 'initial',
         //   priority: 66,
         //   minChunks: 3,
         //   reuseExistingChunk: true,

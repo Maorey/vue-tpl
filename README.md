@@ -8,7 +8,7 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架
 
 ### 安装项目
 
-```
+```bash
 yarn install # 安装依赖
 git config core.ignorecase false # 使git对文件名大小写敏感
 ```
@@ -19,7 +19,7 @@ git config core.ignorecase false # 使git对文件名大小写敏感
 
 - 可以如下设置增加项目开发/构建时使用 node ([V8](https://segmentfault.com/a/1190000000440270)) 的内存上限
 
-  ```
+  ```bash
   # /node_modules/.bin 目录下 找到文件 webpack.cmd 文件，如下设置
   # 增加启动参数 --max_old_space_size=4096 (单位M，老生代内存)
   # 可用 node --v8-options 命令查看当前 nodeJS的 V8配置
@@ -36,37 +36,37 @@ git config core.ignorecase false # 使git对文件名大小写敏感
 
 ### 开发环境（开发调试时使用）
 
-```
+```bash
 yarn run dev
 ```
 
 ### 构建项目（生成部署文件）
 
-```
+```bash
 yarn run build
 ```
 
 ### 代码风格检查和修正（提交 Git 时会自动执行）
 
-```
+```bash
 yarn run lint
 ```
 
 ### 测试
 
-```
+```bash
 yarn run test
 ```
 
 ### e2e(end-to-end) 测试
 
-```
+```bash
 yarn run test:e2e
 ```
 
 ### 单元测试
 
-```
+```bash
 yarn run test:unit
 ```
 
@@ -74,44 +74,41 @@ yarn run test:unit
 
 ### 目录结构
 
-- public/ # 静态文件目录，除特殊文件（比如 html 模板）外**直接复制到输出目录下**
-- src/ # 源码目录
-  - api/ # 分模块存放与各个 api 进行交互的函数
-    - config/ # api 相关配置，比如接口字典等(会被打包到同一个文件)
-  - assets/ # 资源文件目录，一般存放静态资源文件，使用到的会被解析处理（比如图片可能被解析成 base64 写入 css/js 等文件，或者放到输出图片目录下）
-  - components/ # 项目组件(建议表现和逻辑尽量分离，以方便复用和维护)
-  - config/ # 项目配置项（包含资源字典等） 所有 config 目录下的文件会被一起打包到 conf，需要保留的注释请使用: /\*! 注释内容 \*/
-  - lang/ # 多语言目录
-  - libs/ # 存储不(能)通过 npm 管理的第三方或项目 js/css 库
-  - scss/ # scss/scss、CSSModule 文件
-  - store/ # 模块化状态管理
-  - types/ # ts 类型定义
-  - utils/ # 工具集(一般为纯函数)
-  - views/ # 视图（建议只布局）
-  - pages/ # 多页时页面存储目录。页面目录名应与 public 目录下 html 模板名一致，结构应如 src 目录，也可将页面入口文件（如下）直接放在该目录下
-  - 页面模板名/ # 存放页面代码，入口文件（如下）
-  - 页面模板名/main/index/entry/app/page.(ts|tsx|js|jsx) # 默认入口文件。多页面时应使用页面模板名，建议目录结构如下:
-    - pages
-      - index/
-        - 页面模板名/main/index/entry/app/page.(ts|tsx|js|jsx) # 页面入口
-      - 其它页面
-- tests/ # 自动测试用例目录
-  - e2e/ # [e2e](https://nightwatchjs.org)测试
-  - unit/ # [unit](https://jestjs.io/docs/zh-Hans/getting-started.html) 测试
-- .env, .env.\* # 环境变量[设置](https://cli.vuejs.org/zh/guide/mode-and-env.html)
-- production.config.js # 生产环境配置
-- releaseLog.md # 版本迭代日志
-- tsconfig.json # typeScript [配置](https://www.tslang.cn/docs/handbook/tsconfig-json.html)
-- tslint.json # tslint [配置](https://palantir.github.io/tslint/rules/)
-- vue.config.js # 项目[配置](https://cli.vuejs.org/zh/config/)入口
+```bash
+├── public # 静态文件目录，除特殊文件（比如 html 模板）外**直接复制到输出目录下**
+├── src # 源码目录
+│   │── api # 分模块存放与各个 api 进行交互的函数
+│   │   └── config # api 相关配置，比如接口字典等
+│   │── assets # 静态资源文件目录，使用到的会被解析处理(比如图片可能转成base64写入css/js或复制到输出目录)
+│   │── components # 项目组件(建议表现和逻辑尽量分离，以方便复用和维护)
+│   │── config # 配置目录
+│   │── lang # 多语言目录
+│   │── libs # 存储不(能)通过 npm 管理的第三方或项目 js/css 库
+│   │── scss # scss/scss、CSSModule 文件
+│   │── router # 路由设置
+│   │── store # 状态管理
+│   │   └── modules # 各模块状态管理
+│   │── types # ts 类型定义
+│   │── utils # 工具集(一般为幂等函数/单例对象)
+│   │── views # 视图
+│   │── pages # 【可选】多页时页面的存储目录。
+│   │── html模板名 # 【可选】存放页面代码目录
+│   └── (html模板名/main/index/entry/app/page).(ts|tsx|js|jsx) # 默认入口文件。
+├── tests # 自动测试用例目录
+│   │── e2e # e2e 测试: https://nightwatchjs.org
+│   └── unit # unit 测试: https://jestjs.io/docs/zh-Hans/getting-started.html
+├── .env, .env.\* # 环境变量设置
+├── development.config.js # 开发环境配置
+├── production.config.js # 生产环境配置
+├── releaseLog.md # 版本迭代日志
+├── tsconfig.json # typeScript 配置: https://www.tslang.cn/docs/handbook/tsconfig-json.html
+├── tslint.json # tslint 配置: https://palantir.github.io/tslint/rules/
+└── vue.config.js # 项目配置入口
+```
 
 > 目录结构说明:
 
-1. 输出目录为 `dist`, 包含 js/css/img/font/media 等文件夹
-2. `public` 目录下的文件不的在 src 中使用(js/css/img/font/media 直接在 html 中引入), 建议只存放 html 模板及图标相关
-3. 所有 `config` 目录下的内容都会被打包到同一个文件，用于支持在部署时或临时对一些配置进行修改而不必重新打包代码
-4. `store` 分为全局和模块，全局一般存放用户信息，包括偏好/个性化设置等，可以在本地做持久化(`storage.local`)，模块的必须使用 [namespaced](https://vuex.vuejs.org/zh/guide/modules.html#命名空间) 以防止与全局冲突
-5. 目前只支持对 `public` 目录下的 html 模板(不包括子文件夹下的)自动设置入口，规则为:
+1. 只支持对 `public` 目录下的 html 模板(不包括子文件夹下的)自动设置入口，规则为:
 
    1. 遍历 public 下的 html 模板文件，得到一个 html 模板
    2. 依次对 src 目录及 src/pages 进行如下查找:
@@ -121,14 +118,17 @@ yarn run test:unit
 
    建议：**单页入口直接放 src 目录下，多页时入口分别放在 pages 目录下与 html 模板同名的文件夹下**
 
-6. 已有目录别名如下:
+2. 已有目录别名如下:
 
    - @ -> src/
    - @com -> src/components/
    - @{entry} -> 页面入口文件所在目录，如: @index
    - @{entry}Com -> 页面入口文件所在目录下的 components 目录，如: @indexCom
 
-7. 除了以下样式:
+3. 输出目录为 `dist`, 包含 js/css/img/font/media 等文件夹
+4. `public` 目录下的文件不得在 src 中使用(js/css/img/font/media 直接在 html 中引入), 建议只存放 html 模板及图标相关
+5. 所有 `config` 目录下的内容都会被打包到同一个文件(需要保留的注释请使用: `/*! 注释内容 */`)，用于支持在部署时或临时对一些配置进行修改而不必重新打包代码
+6. 除了以下样式:
 
    - 浏览器默认样式重置
    - Transition 动画样式
