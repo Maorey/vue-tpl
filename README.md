@@ -383,6 +383,17 @@ server {
 
 ### 备忘
 
+- [axios](https://github.com/axios/axios)
+- [crypto-js](http://cryptojs.altervista.org)
+- [jsencrypt](http://travistidwell.com/jsencrypt)
+- [vue](https://cn.vuejs.org)
+- [vuex](https://vuex.vuejs.org)
+- [vue-router](https://router.vuejs.org)
+- [vuex-class](https://github.com/ktsn/vuex-class)
+- [vue-class-component](https://github.com/vuejs/vue-class-component)
+- [vuex-module-decorators](https://championswimmer.in/vuex-module-decorators/)
+- [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator)
+- [vue-i18n](http://kazupon.github.io/vue-i18n)
 - 在 js 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串
 
 #### 问题及思考
