@@ -6,7 +6,7 @@
  * @LastEditTime: 2019-06-27 18:25:11
  */
 
-import formatNumber from '@/utils/functions/formatNumber'
+import formatNumber from '@/utils/utils/formatNumber'
 
 test('formatNumber', () => {
   expect(formatNumber(1234567890.9876)).toBe('1,234,567,890.9876')

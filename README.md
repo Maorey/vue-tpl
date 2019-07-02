@@ -183,6 +183,7 @@ yarn run test:unit
 > 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) 强烈推荐(B)及以上和 TypeScript [tslint.json](https://palantir.github.io/tslint/rules/)
 
 > 提交代码请使用标识: Add/Del/Fix/Mod 等
+> 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后(方便查看代码)
 
 ### 其他建议
 

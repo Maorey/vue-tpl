@@ -5,7 +5,7 @@
  * @LastEditors: 毛瑞
  * @LastEditTime: 2019-07-01 10:59:42
  */
-import quickSort from '@/utils/functions/quickSort'
+import quickSort from '@/utils/utils/quickSort'
 
 test('quickSort', () => {
   const testArray: number[] = []

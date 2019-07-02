@@ -32,4 +32,5 @@
 }
 
 @import '@/scss/reset.scss';
+@import '@/scss/icons.scss';
 </style>

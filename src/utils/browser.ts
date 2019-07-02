@@ -1,47 +1,48 @@
 /*
- * @description: 获取当前浏览器类型（t）及版本（v）
+ * @description: 获取当前浏览器类型（type）及版本（version）
  * @Author: 毛瑞
  * @Date: 2018-12-29 11:32:52
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-27 18:29:01
+ * @LastEditTime: 2019-07-02 14:09:13
  */
-const brows = [
+const browsers = [
   {
     n: 'msie',
-    N: 'IE', // t
+    N: 'IE',
   },
   {
     n: 'firefox',
-    N: 'Firefox', // t
+    N: 'Firefox',
   },
   {
     n: 'chrome',
-    N: 'Chrome', // t
+    N: 'Chrome',
   },
   {
     n: 'opera',
-    N: 'Opera', // t
+    N: 'Opera',
   },
   {
-    n: 'Safari', // t
+    n: 'Safari',
     r: 'version',
   },
 ]
-const ag = window.navigator.userAgent.toLowerCase()
 
-let t
-let v
+let type
+let version
 
+const userAgent = window.navigator.userAgent.toLowerCase()
 let tmp
-for (const obj of brows) {
-  tmp = new RegExp((obj.r || obj.n) + '.([\\d.]+)').exec(ag)
+let item
+for (item of browsers) {
+  tmp = new RegExp((item.r || item.n) + '.([\\d.]+)').exec(userAgent)
   if (tmp) {
-    t = obj.N || obj.n
-    v = tmp[1]
+    type = item.N || item.n
+    version = tmp[1]
     break
   }
 }
-t === 'IE' && document.execCommand('BackgroundImageCache', false, 'true') // 修正IE不缓存背景图片
+// Fix: IE不缓存背景图片
+type === 'IE' && document.execCommand('BackgroundImageCache', false, 'true')
 
-export const type = t
-export const version = v
+export { type, version }

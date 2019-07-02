@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-01 14:04:31
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 11:32:46
+ * @LastEditTime: 2019-07-02 14:01:33
  */
 $barRadius: 5px; // 滚动条圆角
 $barWidth: 5px; // 滚动条宽度
@@ -61,7 +61,7 @@ $barMinHeight: 5px; // 滚动条最小高度
 //   thumb:hover,
 //   scrollbarbutton:hover {
 //     -moz-appearance: none !important;
-//     background-color: $colorDeepGrey !important;
+//     background-color: $colorGrey !important;
 //   }
 
 //   // 隐藏上下箭头
@@ -85,14 +85,14 @@ $barMinHeight: 5px; // 滚动条最小高度
   scroll-behavior: smooth; // 平滑滚动
   // FireFox
   scrollbar-width: thin;
-  scrollbar-color: $colorGrey $colorLightGrey;
-  // IE 9（不支持透明度）
-  scrollbar-base-color: $colorGrey; // 滚动条的基本颜色
+  scrollbar-color: $colorGrey transparent;
+  // IE 9（不支持透明度/transparent）
+  scrollbar-base-color: $colorLightGrey; // 滚动条的基本颜色
   scrollbar-face-color: $colorGrey; // 立体滚动条的颜色
-  scrollbar-track-color: $colorDeepGrey; // 立体滚动条背景颜色
-  scrollbar-arrow-color: $colorGrey; // 三角箭头的颜色
-  scrollbar-shadow-color: $colorDeepGrey; // 立体滚动条阴影的颜色
+  scrollbar-track-color: $colorLightGrey; // 立体滚动条背景颜色
+  scrollbar-arrow-color: $colorDeepGrey; // 三角箭头的颜色
+  scrollbar-shadow-color: $colorGrey; // 立体滚动条阴影的颜色
   scrollbar-3dlight-color: $colorGrey; // 立体滚动条亮边的颜色
-  scrollbar-highlight-color: $colorGrey; // 滚动条空白部分的颜色
+  scrollbar-highlight-color: $colorLightGrey; // 滚动条空白部分的颜色
   scrollbar-darkshadow-color: $colorDeepGrey; // 立体滚动条强阴影的颜色
 }

@@ -6,8 +6,8 @@
  * @LastEditTime: 2019-06-28 14:41:05
  */
 
-import clone from './functions/clone'
-import quickSort from './functions/quickSort'
-import formatNumber from './functions/formatNumber'
+import clone from './utils/clone'
+import quickSort from './utils/quickSort'
+import formatNumber from './utils/formatNumber'
 
 export { clone, quickSort, formatNumber }

@@ -3,9 +3,9 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:17:12
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-27 17:39:54
+ * @LastEditTime: 2019-07-02 14:23:25
  */
-import clone from '@/utils/functions/clone'
+import clone from '@/utils/utils/clone'
 
 test('clone', () => {
   const testObject = {

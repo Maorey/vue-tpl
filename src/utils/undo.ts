@@ -1,9 +1,9 @@
 /*
  * @description: 撤销重做【单例】
- * @Author: Maorey
+ * @Author: 毛瑞
  * @Date: 2019-01-28 13:57:42
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-27 18:51:29
+ * @LastEditTime: 2019-07-02 14:03:10
  */
 let pool: any[] = [] // 存储池
 let index = 0 // 下一个位置索引

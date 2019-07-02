@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-03 12:12:12
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-27 18:47:34
+ * @LastEditTime: 2019-07-02 14:28:59
  */
 import Vue from 'vue'
 
@@ -78,7 +78,7 @@ export const eventBus = {
    * @param {String} nameSpace 命名空间
    * @param {...Any} rest 事件参数
    */
-  emit(eventName = '', nameSpace: string, ...rest: any[]) {
+  emit(eventName: string = '', nameSpace: string, ...rest: any[]) {
     // 参数处理
     nameSpace && (eventName = nameSpace + '.' + eventName)
 
