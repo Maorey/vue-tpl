@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 11:34:44
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 15:22:30
+ * @LastEditTime: 2019-07-02 12:29:39
  */
 
 /// 颜色 ///
@@ -13,7 +13,7 @@ $colorLightGrey: #999;
 $colorBackGround: #0d1a25; // 页面背景色
 // ...
 
-///  字体大小  ///
+///  字号  ///
 $smaller: 1rem; // 12px
 $small: 1.25rem; // 14px
 $medium: 1.5rem; // 16px
@@ -75,37 +75,36 @@ $widthRightColumn: 280px; // 右边栏宽度
 /* ---------------------- 我还是一条分割线 ㄟ( ▔, ▔ )ㄏ ---------------------- */
 
 // 共享给js的变量(import variables from '@/scss/variables.scss')
+// https://github.com/css-modules/icss#export 不支持嵌套
 :export {
-  color: {
-    grey: $colorGrey;
-    deepgrey: $colorDeepGrey;
-    lightgrey: $colorLightGrey;
-    background: $colorBackGround;
-    // ...
-  }
-  font: {
-    smaller: $smaller;
-    small: $small;
-    medium: $medium;
-    larger: $larger;
-    large: $large;
-    xlarge: $x-large;
-    xxlarge: $xx-large;
-  }
-  z: {
-    panel: $zPanel;
-    comp: $zComp;
-    menu: $zMenu;
-    fixed: $zFixed;
-    dialog: $zDialog;
-    message: $zMessage;
-  }
-  layout: {
-    top: $heightHeader;
-    left: $widthLfetColumn;
-    right: $widthRightColumn;
-    bottom: $heightFooter;
-    // ...
-  }
+  /// 颜色 ///
+  grey: $colorGrey;
+  deepgrey: $colorDeepGrey;
+  lightgrey: $colorLightGrey;
+  background: $colorBackGround;
+  // ...
+
+  /// 字号 ///
+  smaller: $smaller;
+  small: $small;
+  medium: $medium;
+  larger: $larger;
+  large: $large;
+  xlarge: $x-large;
+  xxlarge: $xx-large;
+
+  /// z-index 层级 ///
+  panel: $zPanel;
+  comp: $zComp;
+  menu: $zMenu;
+  fixed: $zFixed;
+  dialog: $zDialog;
+  message: $zMessage;
+
+  /// 布局 ///
+  top: $heightHeader;
+  left: $widthLfetColumn;
+  right: $widthRightColumn;
+  bottom: $heightFooter;
   // ...
 }

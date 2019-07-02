@@ -3,114 +3,8 @@
  * @Author: 毛瑞
  * @Date: 2019-07-01 14:01:23
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 14:54:55
+ * @LastEditTime: 2019-07-02 11:30:24
  */
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-th,
-td,
-hr,
-dl,
-dt,
-dd,
-ul,
-ol,
-li,
-pre,
-body,
-form,
-input,
-legend,
-button,
-fieldset,
-textarea,
-blockquote {
-  margin: 0;
-  padding: 0;
-}
-
-body,
-input,
-button,
-select,
-textarea {
-  font: 12px/1.5tahoma, arial, \5b8b\4f53;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-size: 100%;
-}
-
-em,
-var,
-dfn,
-cite,
-address {
-  font-style: normal;
-}
-
-kbd,
-pre,
-code,
-samp {
-  font-family: couriernew, courier, monospace;
-}
-
-small {
-  font-size: 12px;
-}
-
-ul,
-ol {
-  list-style: none;
-}
-
-a {
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-sup {
-  vertical-align: text-top;
-}
-
-sub {
-  vertical-align: text-bottom;
-}
-
-legend {
-  color: #000;
-}
-
-img,
-fieldset {
-  border: 0;
-}
-
-input,
-button,
-select,
-textarea {
-  font-size: 100%;
-}
-
-table {
-  border-spacing: 0;
-  border-collapse: collapse;
-}
 
 // placeholder 样式
 // input,
@@ -142,3 +36,6 @@ table {
 //     color: $fontColor;
 //   }
 // }
+
+@import '~normalize.css/normalize'; // 浏览器样式重置
+@import 'scroll.scss'; // 滚动条样式

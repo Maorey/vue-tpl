@@ -17,11 +17,36 @@
   "prettier.trailingComma": "es5", // 多行末尾保留逗号
 
   /// 代码风格(vetur插件) ///
+  "vetur.completion.tagCasing": "initial",
   "vetur.format.defaultFormatterOptions": {
     "prettier": {
       "semi": false, // 不要句尾分号
       "singleQuote": true, // 使用单引号
-      "trailingComma": "es5" // 多行末尾保留逗号
+      "jsxSingleQuote": true, // 使用单引号
+      "trailingComma": "es5"
     }
-  }
+  },
+  "eslint.autoFixOnSave": true,
+  "eslint.validate": [
+    {
+      "language": "vue",
+      "autoFix": true
+    },
+    {
+      "language": "html",
+      "autoFix": true
+    },
+    {
+      "language": "javascript",
+      "autoFix": true
+    },
+    {
+      "language": "javascriptreact",
+      "autoFix": true
+    },
+    {
+      "language": "typescript",
+      "autoFix": true
+    }
+  ]
 }

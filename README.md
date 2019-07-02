@@ -120,13 +120,14 @@ yarn run test:unit
 
 2. 已有目录别名如下:
 
-   - @ -> src/
-   - @com -> src/components/
-   - @{entry} -> 页面入口文件所在目录，如: @index
-   - @{entry}Com -> 页面入口文件所在目录下的 components 目录，如: @indexCom
+   - `~` -> `node_modules/` 示例: `~axios/dist/axios.min.js`
+   - `@` -> `src`
+   - `@com` -> `src/components`
+   - `@{entry}` -> 页面入口文件所在目录，如: `@index`
+   - `@{entry}Com` -> 页面入口文件所在目录下的 `components` 目录，如: `@indexCom`
 
 3. 输出目录为 `dist`, 包含 js/css/img/font/media 等文件夹
-4. `public` 目录下的文件不得在 src 中使用(js/css/img/font/media 直接在 html 中引入), 建议只存放 html 模板及图标相关
+4. `public` 目录下的文件不得在 `src` 中使用(js/css/img/font/media 直接在 html 中引入), 建议只存放 html 模板及图标相关
 5. 所有 `config` 目录下的内容都会被打包到同一个文件(需要保留的注释请使用: `/*! 注释内容 */`)，用于支持在部署时或临时对一些配置进行修改而不必重新打包代码
 6. 除了以下样式:
 
@@ -383,6 +384,7 @@ server {
 
 ### 备忘
 
+- [scss](https://www.sass.hk/docs)
 - [axios](https://github.com/axios/axios)
 - [crypto-js](http://cryptojs.altervista.org)
 - [jsencrypt](http://travistidwell.com/jsencrypt)
@@ -394,8 +396,11 @@ server {
 - [vuex-module-decorators](https://championswimmer.in/vuex-module-decorators/)
 - [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator)
 - [vue-i18n](http://kazupon.github.io/vue-i18n)
-- 在 js 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串
-- TypeScript 中 `for in` 一个对象 obj 可以:
+- 在 `js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串
+- 在 `scss`中引入 `css` 有两种方式
+  1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件。比如: `@import '~normalize.css/normalize';`
+  1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import)。比如: `@import '~normalize.css/normalize.css';`
+- `TypeScript` 中 `for in` 一个对象 obj 可以:
 
   ```TypeScript
   const temp: any = obj

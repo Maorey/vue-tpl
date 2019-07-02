@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 16:25:19
+ * @LastEditTime: 2019-07-02 09:56:40
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -25,9 +25,7 @@ module.exports = {
   publicPath: './', // 基础路径（当前脚本所在目录）（用于找图片等）
   lintOnSave: !isProd, // 保存时检查代码
   productionSourceMap: false, // 生产环境不要sourceMap
-
-  // 转码
-  transpileDependencies: ['vuex-module-decorators'],
+  transpileDependencies: ['vuex-module-decorators'], // 转码
 
   /// 【配置样式选项】 ///
   css: {
@@ -50,6 +48,38 @@ module.exports = {
 
   /// 【配置页面入口】https://cli.vuejs.org/zh/config/#pages ///
   pages,
+
+  /// 【开发服务器配置】 ///
+  devServer: {
+    // lint
+    overlay: {
+      warnings: true,
+      errors: true,
+    },
+    port: environment.DEV_SERVER_PORT,
+    host: environment.DEV_SERVER_HOST,
+    proxy: (() => {
+      const REG_PROXY = /^BASE_URL(\d*)$/
+      const TARGET = 'PROXY_TARGET'
+
+      let proxyList = {}
+
+      let tmp
+      for (let key in environment) {
+        tmp = REG_PROXY.exec(key)
+        if (tmp) {
+          key = environment[key]
+          proxyList[key] = {
+            target: environment[TARGET + tmp[1]],
+            changeOrigin: true,
+            pathRewrite: path => path.replace(new RegExp(`^/${key}/`), '/'),
+          }
+        }
+      }
+
+      return proxyList
+    })(),
+  },
 
   /// 【webpack配置】 ///
   // https://github.com/neutrinojs/webpack-chain#getting-started
@@ -240,32 +270,5 @@ module.exports = {
 
     /// 【不同环境配置】 ///
     chainWebpack(config)
-  },
-
-  /// 【开发服务器配置】 ///
-  devServer: {
-    host: environment.DEV_SERVER_HOST,
-    port: environment.DEV_SERVER_PORT,
-    proxy: (() => {
-      const REG_PROXY = /^BASE_URL(\d*)$/
-      const TARGET = 'PROXY_TARGET'
-
-      let proxyList = {}
-
-      let tmp
-      for (let key in environment) {
-        tmp = REG_PROXY.exec(key)
-        if (tmp) {
-          key = environment[key]
-          proxyList[key] = {
-            target: environment[TARGET + tmp[1]],
-            changeOrigin: true,
-            pathRewrite: path => path.replace(new RegExp(`^/${key}/`), '/'),
-          }
-        }
-      }
-
-      return proxyList
-    })(),
   },
 }

@@ -14,4 +14,4 @@ export default {
   /*! 全局接口响应缓存最大存活时间 */ apiCacheAlive:
     process.env.REQUEST_CACHE_ALIVE,
 }
-/*! 【全局配置 结束】*/
+/*! 【全局配置 结束】 */
