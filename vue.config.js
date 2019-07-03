@@ -1,9 +1,9 @@
 /*
- * @Description: 项目(vue cli)配置入口
+ * @Description: 脚手架(vue cli)配置入口
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 15:24:15
+ * @LastEditTime: 2019-07-04 00:23:40
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')

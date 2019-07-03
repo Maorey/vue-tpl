@@ -17,9 +17,9 @@ git config core.ignorecase false # 使git对文件名大小写敏感
 
 #### 可选项
 
-- [点击链接](http://editorconfig.org)确定所用 IDE 是否需要安装插件(用于跨 IDE 设置，VS Code 需要安装插件，但因为提交了.vscode 文件夹，所以不装也行)
+- [点击链接](http://editorconfig.org)确定所用 IDE 是否需要安装插件 _(用于跨 IDE 设置，VS Code 需要安装插件，但因为提交了.vscode 文件夹，所以不装也行)_
 
-- 可以如下设置增加项目开发/构建时使用 node ([V8](https://segmentfault.com/a/1190000000440270)) 的内存上限
+- 可以如下设置增加使用 node ([V8](https://segmentfault.com/a/1190000000440270)) 的内存上限
 
   ```bash
   # /node_modules/.bin 目录下 找到文件 webpack.cmd 文件，如下设置
@@ -54,12 +54,6 @@ yarn run build
 yarn run lint
 ```
 
-### 测试
-
-```bash
-yarn run test
-```
-
 ### e2e(end-to-end) 测试
 
 ```bash
@@ -80,9 +74,9 @@ yarn run test:unit
 ├── public # 静态文件目录，除特殊文件（比如 html 模板）外**直接复制到输出目录下**
 ├── src # 源码目录
 │   │── api # 分模块存放与各个 api 进行交互的函数
-│   │   └── config # api 相关配置，比如接口字典等
+│   │   └── config # api 相关配置，比如接口字典、响应数据字典等
 │   │── assets # 静态资源文件目录，使用到的会被解析处理(比如图片可能转成base64写入css/js或复制到输出目录)
-│   │── components # 项目组件(建议表现和逻辑尽量分离，以方便复用和维护)
+│   │── components # 项目组件
 │   │── config # 配置目录
 │   │── lang # 多语言目录
 │   │── libs # 存储不(能)通过 npm 管理的第三方或项目 js/css 库
@@ -90,22 +84,19 @@ yarn run test:unit
 │   │── router # 路由设置
 │   │── store # 状态管理
 │   │   └── modules # 各模块状态管理
-│   │── types # ts 类型定义
-│   │── utils # 工具集(一般为幂等函数/单例对象)
+│   │── types # ts 接口/申明文件
+│   │── utils # 工具集(一般为幂等函数/单例对象/Class)
 │   │── views # 视图
-│   │── pages # 【可选】多页时页面的存储目录。
+│   │── pages # 【可选】多页时页面的存储目录
 │   │── html模板名 # 【可选】存放页面代码目录
-│   └── (html模板名/main/index/entry/app/page).(ts|tsx|js|jsx) # 默认入口文件。
-├── tests # 自动测试用例目录
+│   └── (html模板名/main/index/entry/app/page).(ts|tsx|js|jsx) # 默认入口文件
+├── tests # 测试用例目录
 │   │── e2e # e2e 测试: https://nightwatchjs.org
 │   └── unit # unit 测试: https://jestjs.io/docs/zh-Hans/getting-started.html
-├── .env, .env.\* # 环境变量设置
-├── development.config.js # 开发环境配置
-├── production.config.js # 生产环境配置
-├── releaseLog.md # 版本迭代日志
+├── .env、.env.* # 环境变量设置
 ├── tsconfig.json # typeScript 配置: https://www.tslang.cn/docs/handbook/tsconfig-json.html
 ├── tslint.json # tslint 配置: https://palantir.github.io/tslint/rules/
-└── vue.config.js # 项目配置入口
+└── vue.config.js # 脚手架(vue cli)配置入口
 ```
 
 > 目录结构说明:
@@ -122,16 +113,15 @@ yarn run test:unit
 
 2. 已有目录别名如下:
 
-   - `~` -> `node_modules/` 示例: `~axios/dist/axios.min.js`
+   - `~` -> `node_modules/`(html/scss 中使用) 示例: `@import '~normalize.css/normalize'`
    - `@` -> `src`
    - `@com` -> `src/components`
    - `@{entry}` -> 页面入口文件所在目录，如: `@index`
    - `@{entry}Com` -> 页面入口文件所在目录下的 `components` 目录，如: `@indexCom`
 
 3. 输出目录为 `dist`, 包含 js/css/img/font/media 等文件夹
-4. `public` 目录下的文件不得在 `src` 中使用(js/css/img/font/media 直接在 html 中引入), 建议只存放 html 模板及图标相关
-5. 所有 `config` 目录下的内容都会被打包到同一个文件(需要保留的注释请使用: `/*! 注释内容 */`)，用于支持在部署时或临时对一些配置进行修改而不必重新打包代码
-6. 除了以下样式:
+4. 所有 `config` 目录下的内容都会被打包到同一个文件`conf.*.js`(需要保留的注释请使用: `/*! 注释内容 */`)，用于支持直接修改配置文件不必重新打包代码
+5. 除了以下样式:
 
    - 浏览器默认样式重置
    - Transition 动画样式
@@ -151,41 +141,41 @@ yarn run test:unit
 
   - 组件包含不可复用的子组件时，应视为一个组件, 创建**文件夹容器**，比如:
 
-    ```JavaScript
-    // dic
-    BillList/
-      index.vue # 唯一例外
-      Item.vue
+    ```TypeScript
+    // 组件
+    BillList
+    │── index.vue # 唯一例外
+    └── Item.vue
       ...
 
-    // js
-    import BillList from '***/BillList'
+    // .vue
+    import BillList from '{path}/BillList'
     ```
 
-- 视图只负责布局及相关，包含子组件的可使用**文件夹容器**方式或将子组件存放在对应层级的 `components` 目录下的同名目录(`camelCase`)
+- 视图只负责布局及相关，包含子组件的可使用**文件夹容器**方式或将子组件存放在对应层级的 `components` 目录下的同名目录(`camelCase`)下
 - 公共组件/逻辑/函数/样式等模块请按照: `模块 -> 视图 -> 页面 -> 项目` 的层级提升, 配合**提前规划**确定初始层级
-- 尽量**不要使用全局注册**(插件/组件/指令/混入等)以使代码更清晰、优化打包和维护
+- 尽量**不要使用全局注册**(插件/组件/指令/混入等)以优化打包和使代码更清晰、易维护
 - 组件尽量**按逻辑和呈现拆分**以更好的复用和维护
-- 不要从依赖库的源码引入 js/css 等，这将**不会被转译**且容易随版本更新改变，可以从其构建后的 lib/dist 等目录引入需要的模块，尽量**按照其文档的描述**使用
+- 尽量**按照依赖库的文档描述**使用，不要从其源码(src)引入模块，这将**不会被转译**且容易随版本更新改变，可以从其构建后的 lib/dist 等目录引入模块
 
 ### 风格建议
 
 推荐使用 [TypeScript](https://www.tslang.cn)
 
-> CSS Modules class 名使用 `camelCase` (global Scope 可以 `kebab-case` ), 选择器嵌套不应超过三层
-> JavaScript 代码风格为 [**JavaScript standard**](https://standardjs.com/rules-zhcn.html)，除了以下区别:
+- CSS Modules class 名使用 `camelCase` (global Scope 可以 `kebab-case` ), 选择器嵌套**不应超过三层**
+- JavaScript 代码风格为 [**JavaScript standard**](https://standardjs.com/rules-zhcn.html)，除了以下区别:
 
-- 使用单引号
-- 不要句尾分号
-- 多行末尾保留逗号
-- 方法名后不要空格
+  - 使用单引号
+  - 不要句尾分号
+  - 多行末尾保留逗号
+  - 方法名后不要空格
 
-（.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含 Prettier 插件相关风格设置）
+  （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含 Prettier 插件相关风格设置）
 
-> 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) 强烈推荐(B)及以上和 TypeScript [tslint.json](https://palantir.github.io/tslint/rules/)
+- 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) 强烈推荐(B)及以上和 TypeScript [tslint.json](https://palantir.github.io/tslint/rules/)
 
-> 提交代码请使用标识: Add/Del/Fix/Mod 等
-> 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后(方便查看代码)
+- 提交代码请使用标识: Add/Del/Fix/Mod 等
+- 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后(方便查看代码)
 
 ### 其他建议
 
@@ -293,7 +283,7 @@ yarn run test:unit
 
 ### 优化
 
-请参照 `vue.config.js`文件中*chainWebpack*的注释进行配置
+请参照 `vue.config.js` 文件中 _chainWebpack_ 的注释进行配置
 
 - 减小图片大小(比如背景图片等)
 - 对多个 js chunk 共同依赖的模块进行单独提取
@@ -326,7 +316,7 @@ yarn run test:unit
 
 配置示例:
 
-```
+```bash
 server {
   listen       {port};
   server_name  {domain};
@@ -415,4 +405,4 @@ server {
 
 - 关于异步组件
   > **css Module**: 要考虑样式的提取和加载顺序（异步组件按需加载，样式就可能覆盖现有的），后期无力排查处理时才修改 class 命名规避（比如加个随机 emoji 或其它命名方式使 class 名唯一，但是共同样式就不能抽取了）<br><br> **异步组件加载失败重试**: 暂时无解，因为各层级（RouterView functional 等）的组件分发，很难统一实现点击加载失败重试，最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)，比如可以通过增加指令、钩子、监听事件等选项并提供上下文去更改异步组件加载状态和重新加载等）。当然，异步 chunk ( import() )可以自己实现失败后重新加载（resolved 则记录 promise，下次 import 直接返回；rejected 则不记录，下次 import 重新请求）
-- 现代模式: (只针对 js 文件)该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，&lt;script type="module"&gt; & &lt;link rel="modulepreload"&gt;)；不支持则加载 Babel 转码后的代码(&lt;script nomodule&gt; & &lt;link rel="preload"&gt;)。但是不知何故未能生效，github 上有一些相关 issue。
+- 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，&lt;script type="module"&gt; & &lt;link rel="modulepreload"&gt;)；不支持则加载 Babel 转码后的代码(&lt;script nomodule&gt; & &lt;link rel="preload"&gt;)。但是不知何故未能生效，github 上有一些相关 issue。
