@@ -2,7 +2,7 @@
 
 vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架
 
-## 日志 [releaseLog](releaseLog.md)
+[更新日志](releaseLog.md)
 
 ## 命令参考
 
