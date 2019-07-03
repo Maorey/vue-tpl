@@ -3,13 +3,13 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:32:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 16:31:46
+ * @LastEditTime: 2019-07-03 15:28:00
  */
 import { CreateElement, Component, RenderContext } from 'vue'
 import CONFIG from '@/config'
 
-import loading from '@com/Loading' // 加载中
-import error from '@com/Error' // 加载失败
+import loading from '@com/Loading.vue' // 加载中
+import error from '@com/Error.vue' // 加载失败
 
 /** 组件字典
  */

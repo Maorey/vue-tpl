@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 09:56:40
+ * @LastEditTime: 2019-07-03 15:24:15
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -17,6 +17,16 @@ const chainWebpack = require(isProd
   : './development.config') // 开发环境配置
 
 const short = require('./shortString')() // 闭包 得到字符串唯一缩写
+
+const updateJSON = require('./updateJSON')
+// TypeScript目录别名
+const TS_CONFIG_FILE = 'tsconfig.json'
+const TS_PATHS_KEY = 'compilerOptions.paths'
+const TS_PATHS = {
+  '@/*': ['src/*'],
+}
+const REG_BACKSLASH = /\\/g
+const CURRENT_DIR = path.join(process.cwd(), '/')
 
 /// 【配置项】 ///
 // https://cli.vuejs.org/zh/config
@@ -91,18 +101,37 @@ module.exports = {
     //   .end()
 
     /// 【设置页面入口目录别名 已有: @ => src 】 ///
-    config.resolve.alias.set('@com', path.resolve('src/components'))
+    // 同时设置TypeScript
+    let alias = '@com'
+    let folderName = path.resolve('src/components')
+    config.resolve.alias.set(alias, folderName)
+
+    const SUFFIX = '/*'
+    TS_PATHS[alias + SUFFIX] = [
+      folderName.replace(CURRENT_DIR, '').replace(REG_BACKSLASH, '/') + SUFFIX,
+    ]
+
     let tmp
     for (let entryName in pages) {
       tmp = pages[entryName]
       if (tmp.alias) {
+        alias = '@' + entryName
         config.resolve.alias.set('@' + entryName, tmp.alias)
-        config.resolve.alias.set(
-          '@' + entryName + 'Com',
-          path.join(tmp.alias, 'components')
-        )
+        TS_PATHS[alias + SUFFIX] = [
+          tmp.alias.replace(CURRENT_DIR, '').replace(REG_BACKSLASH, '/') +
+            SUFFIX,
+        ]
+
+        alias = '@' + entryName + 'Com'
+        folderName = path.join(tmp.alias, 'components')
+        config.resolve.alias.set(alias, folderName)
+        TS_PATHS[alias + SUFFIX] = [
+          folderName.replace(CURRENT_DIR, '').replace(REG_BACKSLASH, '/') +
+            SUFFIX,
+        ]
       }
     }
+    updateJSON(TS_CONFIG_FILE, TS_PATHS_KEY, TS_PATHS)
 
     // config.output.hashDigest('base64')
     // config.output.hashFunction('md5')
