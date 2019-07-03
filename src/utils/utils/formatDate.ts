@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 17:12:07
+ * @LastEditTime: 2019-07-03 17:25:12
  */
 import { Memory } from '@/utils/storage'
 import { IObject } from '@/types'
@@ -254,72 +254,6 @@ function getFormat(format: string): IResult {
 }
 
 const ISO_DATE_FORMAT: string = 'yyyy-MM-ddTHH:mm:ss.nnnZ'
-const REG_WEEK = /(周|星期)[一二三四五六日]/g
-const REG_NOON = /(上|下)午?/g
-const REPLACE_WEEK = (match: string) => (match.length > 2 ? '00' : '0')
-const REPLACE_NOON = (match: string, slot: string) =>
-  (match.length > 1 ? '0' : '') + (slot === '上' ? '0' : '1')
-/** 根据日期字符串得到Date对象
- * @param {String} dateString 日期字符串
- * @param {String} format 格式，保留字如下
- * y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
- * M: 一到二位，表示月 MM: 始终两位数字 比如7月 => 07 (MM) 7 (M)
- * d: 一到二位，表示日
- * w：一到二位，表示周，比如 w=周四 ww=星期四
- *
- * h：一到二位，表示12小时制的小时
- * H：一到二位，表示24小时制的小时
- * t：一到二位，表示上午或下午 t=下 tt=下午
- * m：一到二位，表示分钟
- * s：一到二位，表示秒钟
- * n: 一到三位，表示毫秒数
- *
- * @returns {Date} Date对象
- */
-function getDateByString(
-  dateString: string,
-  format: string = ISO_DATE_FORMAT
-): Date {
-  const { reg, group } = getFormat(format)
-  const info: IObject<number> = {}
-
-  dateString
-    // 先把星期几、上午、下午换成数字
-    .replace(REG_WEEK, REPLACE_WEEK)
-    .replace(REG_NOON, REPLACE_NOON)
-    // 处理结果
-    .replace(reg, (...args) => {
-      const length: number = group.length
-
-      let key: string
-      let i: number = 0
-      while (i < length) {
-        key = group[i].key
-        info[key] = Math.max(info[key] || 0, parseInt(args[i + 1]))
-
-        i++
-      }
-
-      return args[0]
-    })
-
-  // Date构造方法参数列表：年月日时分秒毫秒
-  // 智障啊，传undefined报Invalid Date，就不会忽略一下？
-  const date = new Date()
-
-  info[Reserve.year] && date.setFullYear(info[Reserve.year])
-  info[Reserve.month] && date.setMonth(info[Reserve.month] - 1) // 0~11 ？？？
-  info[Reserve.day] && date.setDate(info[Reserve.day])
-  info[Reserve.Hour]
-    ? date.setHours(info[Reserve.Hour])
-    : info[Reserve.hour] &&
-      date.setHours((info[Reserve.slot] ? 12 : 0) + info[Reserve.hour])
-  info[Reserve.minute] && date.setMinutes(info[Reserve.minute])
-  info[Reserve.second] && date.setSeconds(info[Reserve.second])
-  info[Reserve.milliSecond] && date.setMilliseconds(info[Reserve.milliSecond])
-
-  return date
-}
 
 const REG_NUM = /\(\\d\{\d(,\d)?\}\)/g
 const REG_DE_WORD = new RegExp(`\\\\(${REG_WORD.source})`, 'g')
@@ -450,6 +384,73 @@ function formatDate(date: Date, format: string = ISO_DATE_FORMAT): string {
       return String(value)
     })
     .replace(REG_DE_WORD, '$1')
+}
+
+const REG_WEEK = /(周|星期)[一二三四五六日]/g
+const REG_NOON = /(上|下)午?/g
+const REPLACE_WEEK = (match: string) => (match.length > 2 ? '00' : '0')
+const REPLACE_NOON = (match: string, slot: string) =>
+  (match.length > 1 ? '0' : '') + (slot === '上' ? '0' : '1')
+/** 根据日期字符串得到Date对象
+ * @param {String} dateString 日期字符串
+ * @param {String} format 格式，保留字如下
+ * y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
+ * M: 一到二位，表示月 MM: 始终两位数字 比如7月 => 07 (MM) 7 (M)
+ * d: 一到二位，表示日
+ * w：一到二位，表示周，比如 w=周四 ww=星期四
+ *
+ * h：一到二位，表示12小时制的小时
+ * H：一到二位，表示24小时制的小时
+ * t：一到二位，表示上午或下午 t=下 tt=下午
+ * m：一到二位，表示分钟
+ * s：一到二位，表示秒钟
+ * n: 一到三位，表示毫秒数
+ *
+ * @returns {Date} Date对象
+ */
+function getDateByString(
+  dateString: string,
+  format: string = ISO_DATE_FORMAT
+): Date {
+  const { reg, group } = getFormat(format)
+  const info: IObject<number> = {}
+
+  dateString
+    // 先把星期几、上午/下午换成数字
+    .replace(REG_WEEK, REPLACE_WEEK)
+    .replace(REG_NOON, REPLACE_NOON)
+    // 处理结果
+    .replace(reg, (...args) => {
+      const length: number = group.length
+
+      let key: string
+      let i: number = 0
+      while (i < length) {
+        key = group[i].key
+        info[key] = Math.max(info[key] || 0, parseInt(args[i + 1]))
+
+        i++
+      }
+
+      return args[0]
+    })
+
+  // Date构造方法参数列表：年月日时分秒毫秒
+  // 智障啊，传undefined报Invalid Date，就不会忽略一下？
+  const date = new Date()
+
+  info[Reserve.year] && date.setFullYear(info[Reserve.year])
+  info[Reserve.month] && date.setMonth(info[Reserve.month] - 1) // 0~11 ？？？
+  info[Reserve.day] && date.setDate(info[Reserve.day])
+  info[Reserve.Hour]
+    ? date.setHours(info[Reserve.Hour])
+    : info[Reserve.hour] &&
+      date.setHours((info[Reserve.slot] ? 12 : 0) + info[Reserve.hour])
+  info[Reserve.minute] && date.setMinutes(info[Reserve.minute])
+  info[Reserve.second] && date.setSeconds(info[Reserve.second])
+  info[Reserve.milliSecond] && date.setMilliseconds(info[Reserve.milliSecond])
+
+  return date
 }
 
 export { formatDate as default, getDateByString }

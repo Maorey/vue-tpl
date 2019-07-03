@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-03 14:48:49
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 15:41:33
+ * @LastEditTime: 2019-07-03 17:32:01
  */
 
 const REG_HEX = /#([0-9a-f]{3,8})/i // hex3/hex颜色
@@ -17,7 +17,7 @@ const REG_RGB = /rgba? *\( *(\d+ *, *\d+ *, *\d+) *,? *(\d+\.?\d+?)? *\)/i
  *
  * @returns {String}
  */
-function toRgb(
+function toGRB(
   color: string,
   opacity: number | ((alpha: number) => number | any) = 1,
   filter?: (rgba: number[]) => number[] | void
@@ -72,10 +72,12 @@ function toRgb(
   }
 
   // 透明度处理
-  if (typeof opacity === 'function') {
-    alpha = opacity(isNaN(alpha) ? 1 : alpha)
-  } else {
-    alpha = opacity
+  if (opacity !== undefined) {
+    if (typeof opacity === 'function') {
+      alpha = opacity(isNaN(alpha) ? 1 : alpha)
+    } else {
+      alpha = opacity
+    }
   }
   alpha = isNaN(alpha) ? 1 : Math.max(0, alpha) // 使大于等于0
 
@@ -95,4 +97,4 @@ function toRgb(
   return 'rgb(' + rgb.toString() + ')'
 }
 
-export { toRgb }
+export { toGRB }
