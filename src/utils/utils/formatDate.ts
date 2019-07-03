@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 23:22:27
+ * @LastEditTime: 2019-07-03 23:41:48
  */
 import { Memory } from '@/utils/storage'
 import { IObject } from '@/types'
@@ -370,16 +370,17 @@ function getDateByString(
   // 智障啊，传undefined报Invalid Date，就不会忽略一下？
   const date = new Date()
 
-  info[Reserve.year] && date.setFullYear(info[Reserve.year])
-  info[Reserve.month] && date.setMonth(info[Reserve.month] - 1) // 0~11 ？？？
-  info[Reserve.day] && date.setDate(info[Reserve.day])
-  info[Reserve.Hour]
-    ? date.setHours(info[Reserve.Hour])
-    : info[Reserve.hour] &&
+  isNaN(info[Reserve.year]) || date.setFullYear(info[Reserve.year])
+  isNaN(info[Reserve.month]) || date.setMonth(info[Reserve.month] - 1) // 0~11 ？？？
+  isNaN(info[Reserve.day]) || date.setDate(info[Reserve.day])
+  isNaN(info[Reserve.Hour])
+    ? isNaN(info[Reserve.hour]) ||
       date.setHours((info[Reserve.slot] ? 12 : 0) + info[Reserve.hour])
-  info[Reserve.minute] && date.setMinutes(info[Reserve.minute])
-  info[Reserve.second] && date.setSeconds(info[Reserve.second])
-  info[Reserve.milliSecond] && date.setMilliseconds(info[Reserve.milliSecond])
+    : date.setHours(info[Reserve.Hour])
+  isNaN(info[Reserve.minute]) || date.setMinutes(info[Reserve.minute])
+  isNaN(info[Reserve.second]) || date.setSeconds(info[Reserve.second])
+  isNaN(info[Reserve.milliSecond]) ||
+    date.setMilliseconds(info[Reserve.milliSecond])
 
   return date
 }
