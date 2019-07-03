@@ -2,6 +2,8 @@
 
 vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架
 
+## 日志 [releaseLog](releaseLog.md)
+
 ## 命令参考
 
 以`yarn`为例（使用`npm`或`cnpm`替换`yarn`命令即可）:
@@ -192,26 +194,28 @@ yarn run test:unit
   ```TypeScript
   // math.ts
   /** 点
-  * @summary 描述一个点的信息
-  */
+   * @summary 描述一个点的信息
+   */
   interface IPoint {
     x: number
     y: number
     /** 描述
-    */
+     */
     desc?: string
   }
-  const ANGLE_RADIAN: number = Math.PI / 180 // 角度转弧度常量
+  /** 角度转弧度常量
+   */
+  const ANGLE_RADIAN: number = Math.PI / 180
   /** 计算圆上的点
-  *
-  * @param {IPoint} center 圆心
-  * @param {Number} radius 半径
-  * @param {Number} angle 角度
-  *
-  * @returns {IPoint} 圆上的点坐标
-  */
+   *
+   * @param {IPoint} center 圆心
+   * @param {Number} radius 半径
+   * @param {Number} angle 角度
+   *
+   * @returns {IPoint} 圆上的点坐标
+   */
   function getPointOnCircle(center: IPoint, radius: number, angle: number): IPoint {
-    const redian: number = angle * ANGLE_RADIAN // 角度转弧度
+    const redian: number = angle * ANGLE_RADIAN // 弧度
 
     return {
       x: center.x + radius * Math.sin(redian),
@@ -254,16 +258,16 @@ yarn run test:unit
   }
   ```
 
-- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(避免重名合并)，层级使用小写字母, chunk 名首字母大写，比如: index 页面下的 home 视图命名为 `index_Home`, 其下的用户视图命名为 `index_home_My`, 用户基础信息命名为 `index_home_my_Baseinfo` 。为避免文件名太长，每个层级可以用一到两个字母进行缩写: `iHome`, `ihMy`, `ihmBaseInfo`, 对异步 chunk 进行命名可以方便排查问题。
+- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(避免重名合并, 方便排查问题)，层级使用小写字母, chunk 名首字母大写，比如: index 页面下的 home 视图命名为 `index_Home`, 其下的用户视图命名为 `index_home_My`, 用户基础信息命名为 `index_home_my_Baseinfo` 。为避免文件名太长，每个层级可以用一到两个字母进行缩写: `iHome`, `ihMy`, `ihmBaseInfo`。
 - libs 下库文件需要按需加载的，应提供引入方法（只会成功加载一次），比如:
 
   ```TypeScript
-  // somelib/index.ts
+  // src/libs/somelib/index.ts
   /** 异步引入somelib
-  * @param {Array<String>} plugins 需要加载的somelib插件名列表
-  *
-  * @returns {Promise<Array<Module>>}
-  */
+   * @param {Array<String>} plugins 需要加载的somelib插件名列表
+   *
+   * @returns {Promise<Array<Module>>}
+   */
   function get(plugins: string[] = []): Promise<any> {
     return import(/* webpackChunkName: "lSomelib" */ './somelib.min').then(() =>
       Promise.all(
@@ -271,12 +275,13 @@ yarn run test:unit
           switch (plugin) {
             case 'plugin1':
               return import(
-                /* webpackChunkName: "lsPlugin1" */ './plugins/plugin1.min'
+                /* webpackChunkName: "lsPlugins" */ './plugins/plugin1.min'
               )
             case 'plugin2':
               return import(
-                /* webpackChunkName: "lsPlugin2" */ './plugins/plugin2.min'
+                /* webpackChunkName: "lsPlugins" */ './plugins/plugin2.min'
               )
+            // 上面两个插件合并到一个chunk里
           }
         })
       )
@@ -294,10 +299,6 @@ yarn run test:unit
 - 对多个 js chunk 共同依赖的模块进行单独提取
 - 视情况对 css 文件进行合并(比如按入口等，不设置则按 chunk)
 - [现代模式](https://cli.vuejs.org/zh/guide/browser-compatibility.html#现代模式)
-
-### 日志
-
-版本迭代日志 [releaseLog](releaseLog.md)
 
 ### IDE
 
