@@ -3,12 +3,12 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 17:25:12
+ * @LastEditTime: 2019-07-03 23:22:27
  */
 import { Memory } from '@/utils/storage'
 import { IObject } from '@/types'
 
-/** 保留字枚举, 规则如下:
+/** 保留字枚举, 如下(允许使用转义字符\来输出保留字):
  * y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
  * M: 一到二位，表示月 MM: 始终两位数字 比如7月 => 07 (MM) 7 (M)
  * d: 一到二位，表示日
@@ -36,145 +36,80 @@ const enum Reserve {
   second = 's',
   milliSecond = 'n',
 }
-
-// 获取保留字正则
-const getRegReserve = (reserve: string, length: number = 3): RegExp =>
-  new RegExp(`\\\\?(${reserve}{1,${length}})`, 'g')
-// 匹配前面没有\的保留字 就多加一位吧...
-const REG_RESERVE: IObject<RegExp> = {
-  // 年月日星期
-  [Reserve.year]: getRegReserve(Reserve.year, 5),
-  [Reserve.month]: getRegReserve(Reserve.month),
-  [Reserve.day]: getRegReserve(Reserve.day),
-  [Reserve.week]: getRegReserve(Reserve.week),
-
-  // 时分秒毫秒
-  [Reserve.hour]: getRegReserve(Reserve.hour),
-  [Reserve.Hour]: getRegReserve(Reserve.Hour),
-  [Reserve.slot]: getRegReserve(Reserve.slot),
-  [Reserve.minute]: getRegReserve(Reserve.minute),
-  [Reserve.second]: getRegReserve(Reserve.second),
-  [Reserve.milliSecond]: getRegReserve(Reserve.milliSecond, 4),
-}
-
-/** 保留字处理结果
+/** 是否为保留字
+ * @param {Any} char 目标字符串
+ *
+ * @returns {Boolean}
  */
-interface IReg {
-  /** 保留字
-   */
-  word: string
-  /** 标识
-   */
-  flag: boolean
-  /** 长度
-   */
-  len: number
-  /** 索引
-   */
-  idx: number
+const isReserve = (char: any): boolean => {
+  switch (char) {
+    case Reserve.year:
+    case Reserve.month:
+    case Reserve.day:
+    case Reserve.week:
+    case Reserve.hour:
+    case Reserve.Hour:
+    case Reserve.slot:
+    case Reserve.minute:
+    case Reserve.second:
+    case Reserve.milliSecond:
+      return true
+    default:
+      return false
+  }
 }
+/** 获取保留字最大重复次数
+ * @param {Any} char 目标字符串
+ *
+ * @returns {Number}
+ */
+const getReserveMaxRepeat = (char: any): number => {
+  switch (char) {
+    case Reserve.year:
+      return 4
+    case Reserve.milliSecond:
+      return 3
+    default:
+      return 2
+  }
+}
+
 /** 分组结果
  */
 interface IGroup {
-  /** 格式键 见REG对象
+  /** 保留字
    */
-  key: string
-  /** 长度
+  k: string
+  /** 保留字重复次数
    */
-  len: number
+  l: number
   /** 在原format字符串的索引
    */
-  idx: number
+  i?: number
 }
 /** 格式处理结果
  */
 interface IResult {
   /** 正则表达式字符串
    */
-  tpl: string
+  t: string
   /** 正则表达式
    */
-  reg: RegExp
+  r: RegExp
   /** 分组
    */
-  group: IGroup[]
+  g: IGroup[]
 }
 
-/** 处理保留字等
- * @param {String} key 规则名
- * @param {Array} arr 参数列表
+/** 正则表达式保留字
  */
-function handleReserve(
-  key: string,
-  match: string,
-  word: string,
-  index: number
-): IReg | void {
-  let len: number = word.length
-  let flag: boolean = false
-
-  word = ''
-  if (match.length - len) {
-    // \开头的
-    if (len === 1) {
-      return
-    } else {
-      word = match.substring(0, 2)
-      index += 2 // 跳过俩字符
-      len--
-    }
-  } else {
-    // 非 \ 开头多一个字符的
-    switch (key) {
-      case Reserve.year:
-        if (len === 5) {
-          flag = true
-          len--
-        }
-        break
-      case Reserve.milliSecond:
-        if (len === 4) {
-          flag = true
-          len--
-        }
-        break
-      default:
-        if (len === 3) {
-          flag = true
-          len--
-        }
-    }
-  }
-
-  return { word, flag, len, idx: index }
-}
-/** 按idx属性升序将对象插入数组
- * @param {Array<IGroup>} group 目标数组
- * @param {IGroup} item 待插入值
+const RESERVE_REG: string = '`|{}[]()*?+.^$!'
+/** 转义字符
  */
-function insert(group: IGroup[], item: IGroup): void {
-  const length: number = group.length
-
-  if (length) {
-    let tmp: IGroup
-    let i: number = 0
-    while (i < length) {
-      tmp = group[i]
-      if (tmp.idx > item.idx) {
-        group.splice(i, 0, item)
-        return
-      }
-      i++
-    }
-  }
-
-  group.push(item)
-}
-
-// 正则表达式保留字(保留转义字符\用来转义保留字)
-const REG_WORD: RegExp = /([`|{}[\]()*?+.^$!])/g
-const CACHE = new Memory() // 最多缓存30条, 永不过期
-
+const ESCAPE: string = '\\'
+/** 格式处理结果缓存
+ */
+const CACHE = new Memory()
 /** 获取日期格式化对象，允许使用转义字符 \ 来输出保留字
  * @param {String} format 格式，保留字见Reserve枚举
  *
@@ -186,77 +121,67 @@ function getFormat(format: string): IResult {
     return result
   }
 
-  // format转正则表达式 (先转义正则的保留字)
-  let regString: string = format.replace(REG_WORD, '\\$1')
-
+  const LENGTH: number = format.length
   const group: IGroup[] = []
+  let reserveRepeat: number
+  let reserveMaxRepeat: number
+  let regString: string = ''
+  let currentChar: string
+  let nextChar: string
+  let index: number = 0
+  while (index < LENGTH) {
+    currentChar = format[index]
 
-  let key: string
-  let tmp: IReg | void
-  for (key in REG_RESERVE) {
-    // 确定顺序
-    format.replace(
-      REG_RESERVE[key],
-      (match: string, word: string, index: number): string => {
-        tmp = handleReserve(key, match, word, index)
-        if (tmp) {
-          // 插入排序
-          insert(group, { key, len: tmp.len, idx: tmp.idx })
-          tmp.flag && insert(group, { key, len: 1, idx: tmp.idx + tmp.len })
-        }
+    if (currentChar === ESCAPE) {
+      // 转义字符
+      nextChar = format[index + 1]
 
-        return match
+      if (isReserve(nextChar)) {
+        regString += nextChar
+        index++ // 跳过下个字符
+      } else {
+        regString += ESCAPE + currentChar
       }
-    )
-    // 获得正则表达式
-    regString = regString.replace(
-      REG_RESERVE[key],
-      (match: string, word: string, index: number): string => {
-        tmp = handleReserve(key, match, word, index)
-        if (!tmp) {
-          return match
-        }
+    } else if (RESERVE_REG.includes(currentChar)) {
+      // 正则表达式保留字
+      regString += ESCAPE + currentChar
+    } else if (isReserve(currentChar)) {
+      // 保留字 替换为数字正则并记录信息
+      reserveRepeat = 1
+      reserveMaxRepeat = getReserveMaxRepeat(currentChar)
 
-        let len: string | number = tmp.len
-        let tail: string = tmp.flag ? '(\\d{' : ''
-        let tailLen: string = '1'
-
-        switch (key) {
-          case Reserve.month:
-          case Reserve.day:
-          case Reserve.hour:
-          case Reserve.Hour:
-          case Reserve.minute:
-          case Reserve.second:
-            if (len === 1) {
-              len = len + ',2'
-            }
-            if (tmp.flag) {
-              tailLen += ',2'
-            }
-            break
-        }
-
-        if (tmp.flag) {
-          tail += tailLen + '})'
-        }
-
-        return tmp.word + '(\\d{' + len + '})' + tail
+      while (
+        reserveRepeat <= reserveMaxRepeat &&
+        currentChar === format[index + 1]
+      ) {
+        reserveRepeat++
+        index++
       }
-    )
+
+      group.push({ k: currentChar, l: reserveRepeat })
+      regString += `(\\d{1,${reserveRepeat}})`
+    } else {
+      // 其他字符
+      regString += currentChar
+    }
+
+    index++
   }
 
   return CACHE.set(format, {
-    tpl: regString,
-    reg: new RegExp('^' + regString + '$'),
-    group,
+    t: regString,
+    r: new RegExp(`^${regString}$`),
+    g: group,
   })
 }
 
 const ISO_DATE_FORMAT: string = 'yyyy-MM-ddTHH:mm:ss.nnnZ'
 
 const REG_NUM = /\(\\d\{\d(,\d)?\}\)/g
-const REG_DE_WORD = new RegExp(`\\\\(${REG_WORD.source})`, 'g')
+const REG_RESERVE = new RegExp(
+  `\\\\([${RESERVE_REG.replace(']', '\\]')}])`,
+  'g'
+)
 /** 获得指定格式的日期字符串
  * @param {Date} date 日期对象
  * @param {String} format 格式，保留字如下
@@ -276,32 +201,34 @@ const REG_DE_WORD = new RegExp(`\\\\(${REG_WORD.source})`, 'g')
  */
 function formatDate(date: Date, format: string = ISO_DATE_FORMAT): string {
   // 默认返回ISO格式
-  const formatResult: IResult = getFormat(format)
+  const RESULT: IResult = getFormat(format)
 
   let index: number = 0
   let item: IGroup
 
   // 正则规则的(\d{1,2}) 换成对应内容（再把保留字转回来）
-  return formatResult.tpl
+  return RESULT.t
     .replace(REG_NUM, () => {
-      item = formatResult.group[index++]
+      item = RESULT.g[index++]
       let value: string | number = ''
 
       // 根据规则获取值
-      switch (item.key) {
+      switch (item.k) {
         case Reserve.year:
           // 从末尾开始取指定位数
-          value = String(date.getFullYear()).substring(4 - item.len)
+          value = String(date.getFullYear()).substring(4 - item.l)
           break
         case Reserve.month:
           value = date.getMonth() + 1 // 0~11
-          if (item.len === 2 && value < 10) {
+
+          if (item.l > 1 && value < 10) {
             value = '0' + value
           }
           break
         case Reserve.day:
           value = date.getDate()
-          if (item.len === 2 && value < 10) {
+
+          if (item.l > 1 && value < 10) {
             value = '0' + value
           }
           break
@@ -329,7 +256,7 @@ function formatDate(date: Date, format: string = ISO_DATE_FORMAT): string {
               value = '六'
               break
           }
-          value = (item.len === 2 ? '星期' : '周') + value
+          value = (item.l > 1 ? '星期' : '周') + value
           break
 
         case Reserve.hour:
@@ -338,31 +265,35 @@ function formatDate(date: Date, format: string = ISO_DATE_FORMAT): string {
             value -= 12
           }
 
-          if (item.len === 2 && value < 10) {
+          if (item.l > 1 && value < 10) {
             value = '0' + value
           }
           break
         case Reserve.Hour:
           value = date.getHours()
-          if (item.len === 2 && value < 10) {
+
+          if (item.l > 1 && value < 10) {
             value = '0' + value
           }
           break
         case Reserve.slot:
           value = date.getHours() > 12 ? '下' : '上'
-          if (item.len === 2) {
+
+          if (item.l > 1) {
             value += '午'
           }
           break
         case Reserve.minute:
           value = date.getMinutes()
-          if (item.len === 2 && value < 10) {
+
+          if (item.l > 1 && value < 10) {
             value = '0' + value
           }
           break
         case Reserve.second:
           value = date.getSeconds()
-          if (item.len === 2 && value < 10) {
+
+          if (item.l > 1 && value < 10) {
             value = '0' + value
           }
           break
@@ -377,13 +308,13 @@ function formatDate(date: Date, format: string = ISO_DATE_FORMAT): string {
               break
           }
 
-          value = value.substring(3 - item.len)
+          value = value.substring(3 - item.l)
           break
       }
 
-      return String(value)
+      return value as string
     })
-    .replace(REG_DE_WORD, '$1')
+    .replace(REG_RESERVE, '$1')
 }
 
 const REG_WEEK = /(周|星期)[一二三四五六日]/g
@@ -412,7 +343,7 @@ function getDateByString(
   dateString: string,
   format: string = ISO_DATE_FORMAT
 ): Date {
-  const { reg, group } = getFormat(format)
+  const { r, g } = getFormat(format)
   const info: IObject<number> = {}
 
   dateString
@@ -420,13 +351,13 @@ function getDateByString(
     .replace(REG_WEEK, REPLACE_WEEK)
     .replace(REG_NOON, REPLACE_NOON)
     // 处理结果
-    .replace(reg, (...args) => {
-      const length: number = group.length
+    .replace(r, (...args) => {
+      const length: number = g.length
 
       let key: string
       let i: number = 0
       while (i < length) {
-        key = group[i].key
+        key = g[i].k
         info[key] = Math.max(info[key] || 0, parseInt(args[i + 1]))
 
         i++

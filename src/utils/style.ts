@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 16:50:15
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 11:31:32
+ * @LastEditTime: 2019-07-03 22:48:23
  */
 import { IObject } from '@/types'
 
@@ -125,29 +125,27 @@ function styleToObject(
 
   /// RegExp.exec【更快】 ///
   let json: string = '{'
-  let result: string[] | null
   let temp: [string, string] | string | boolean | void
-  do {
-    result = REG_STYLE.exec(style)
-    if (result) {
-      if (filter) {
-        temp = filter(result[1], result[2], result[0])
-        if (temp) {
-          if (temp === true) {
-            continue
-          } else if (typeof temp === 'string') {
-            result[2] = temp
-          } else {
-            result[1] = temp[0]
-            result[2] = temp[1]
-          }
+  let result: string[] | null = REG_STYLE.exec(style)
+  while (result) {
+    if (filter) {
+      temp = filter(result[1], result[2], result[0])
+      if (temp) {
+        if (temp === true) {
+          continue
+        } else if (typeof temp === 'string') {
+          result[2] = temp
+        } else {
+          result[1] = temp[0]
+          result[2] = temp[1]
         }
       }
-
-      // 首尾双引号直接去掉
-      json += `"${result[1]}":"${result[2].replace(REG_QUOT, '\\"')}",`
     }
-  } while (result)
+
+    // 首尾双引号直接去掉
+    json += `"${result[1]}":"${result[2].replace(REG_QUOT, '\\"')}",`
+    result = REG_STYLE.exec(style)
+  }
   json = json.replace(REG_COMMA, '}') // 去末尾,加}
 
   /// replace ///

@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:05:04
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-27 18:26:25
+ * @LastEditTime: 2019-07-03 21:20:06
  */
 
 interface INumberUnit {
@@ -12,7 +12,7 @@ interface INumberUnit {
   limit?: number // 位数超过该值才处理单位,比如:len=4,limit=5,unit=万 时:12345 => 12345;123456 => 12.3456万
 }
 
-const REG_NUMBER: RegExp = /(\d)(?=(?:\d{3})+$)/g // 数字三位
+const REG_NUMBER: RegExp = /(\d)(?=(\d{3})+$)/g // 数字三位
 
 /** 格式化数字 每三位数字增加个逗号 （小数点后的除外）
  * @param {Number|String} num
