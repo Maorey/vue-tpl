@@ -3,20 +3,6 @@
   // https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-    // 在vscode中调试
-    {
-      "type": "chrome", // 需安装 Debugger for Chrome 扩展
-      "request": "launch",
-      "name": "app",
-      "url": "http://localhost:9000",
-      "webRoot": "${workspaceFolder}/src",
-      "breakOnLoad": true,
-      "sourceMapPathOverrides": {
-        "webpack:///./~/*": "${workspaceRoot}/node_modules/*",
-        "webpack:///./*": "${workspaceRoot}/*",
-        "webpack:///*": "*"
-      }
-    },
     // 调试开发环境脚手架
     {
       "type": "node",

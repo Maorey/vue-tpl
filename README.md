@@ -310,7 +310,6 @@ yarn run test:unit
 - EditorConfig for VS Code: IDE 设置
 - koroFileHeader: 文件头注释
 - Bracket Pair Colorizer: 彩虹色括号（()[]{}<>）
-- Debugger for Chrome: 在 VSCode 中远程调试 Chrome 上运行的网页
 
 推荐工具： `@vue/cli`: v3.X，全局安装时可使用 `vue ui` 命令启动图形化界面管理项目(运行 inspect 任务查看 webpack 配置)[文档链接](https://cli.vuejs.org/zh/guide)
 
