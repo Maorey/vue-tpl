@@ -401,7 +401,7 @@ server {
 - 在 `scss`中引入 `css` 有两种方式
   1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件。比如: `@import '~normalize.css/normalize';`
   1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import)。比如: `@import '~normalize.css/normalize.css';`
-- `TypeScript` 中 `for in` 一个对象 obj 可以:
+- `TypeScript` 中 `for in` 一个对象 obj 可以申明接口或者:
 
   ```TypeScript
   const temp: any = obj

@@ -1,11 +1,19 @@
+/*
+ * @Description: 路由管理
+ * @Author: 毛瑞
+ * @Date: 2019-06-18 15:58:46
+ * @LastEditors: 毛瑞
+ * @LastEditTime: 2019-07-03 11:30:50
+ */
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import { IObject } from '@/types'
 import CONFIG from '@/config/router'
 
-const ROUTER: any = CONFIG // 使允许 for in...
-
 Vue.use(Router) // 全局注册
+
+const ROUTER = CONFIG as IObject<any>
 
 const router = new Router({
   mode: 'hash',
@@ -34,6 +42,7 @@ const router = new Router({
   ],
 })
 
+// 可以引入store根据用户权限控制跳转
 router.beforeEach((to, from, next) => {
   // 设置页面标题
   const name: string | undefined = to.name
@@ -47,7 +56,7 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  next()
+  next() // 不调用则不跳转
 })
 
 export default router

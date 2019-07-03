@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 14:18:19
+ * @LastEditTime: 2019-07-03 10:20:44
  */
 
 interface IClone {
@@ -22,11 +22,11 @@ function extend(
   target: any | any[],
   deep?: number, // 递归层级
   filter?: (
-    key?: string, // 待拷贝属性
-    targetValue?: any, // 目标值
-    currentValue?: any, // 当前值
-    currentObject?: any | any[], // 当前对象
-    targetObject?: any | any[], // 目标对象
+    key: string, // 待拷贝属性
+    targetValue: any, // 目标值
+    currentValue: any, // 当前值
+    currentObject: any | any[], // 当前对象
+    targetObject: any | any[], // 目标对象
     deep?: number // 递归层级
   ) => undefined | false | IClone
 ): any | any[] {
@@ -34,7 +34,8 @@ function extend(
   let targetValue: any
 
   let tmp: any
-  for (const key in target) {
+  let key: string
+  for (key in target) {
     currentValue = source[key]
     targetValue = target[key]
 
@@ -72,11 +73,11 @@ function extend(
 function clone(...args: any[]): any {
   let filter:
     | ((
-        key?: string, // 待拷贝属性
-        valueValue?: any, // 目标值
-        currentValue?: any, // 当前值
-        currentObject?: any[] | object, // 当前对象
-        targetObject?: any[] | object, // 目标对象
+        key: string, // 待拷贝属性
+        valueValue: any, // 目标值
+        currentValue: any, // 当前值
+        currentObject: any[] | object, // 当前对象
+        targetObject: any[] | object, // 目标对象
         deep?: number // 递归层级
       ) => undefined | false | IClone)
     | undefined
