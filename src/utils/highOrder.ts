@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:32:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:43:40
+ * @LastEditTime: 2019-07-04 21:47:44
  */
 import { CreateElement, Component, RenderContext } from 'vue'
 import CONFIG from '@/config'
@@ -64,7 +64,7 @@ function getAsync(getter: () => Promise<any>) {
 <template>
   <Transition name="fade">
     <KeepAlive>
-      <Chooser :is="is"/>
+      <Chooser :is="is" :type="type"/>
     </KeepAlive>
   </Transition>
 </template>
@@ -88,6 +88,9 @@ const Chooser = getChooser({
 @Component({ components: { Chooser } })
 export default class extends Vue {
   get is() {
+    return 'B'
+  }
+  get type() {
     return 'A'
   }
 }
@@ -103,7 +106,7 @@ export default class extends Vue {
 @Component({
   components: {
     // 按规范命名哈 (多个异步组件合并到一个chunk用一样的名字)
-    AsyncComponent: getAsync(() => import('A.vue')),
+    AsyncComponent: getAsync(/* webpackChunkName: "ocA" * / () => import('A.vue')),
   },
 })
 export default class extends Vue {}
@@ -121,8 +124,8 @@ export default class extends Vue {}
 
 <script lang="ts">
 const Chooser = getChooser({
-  A: getAsync(() => import('A.vue')),
-  B: getAsync(() => import('A.vue')),
+  A: getAsync(/* webpackChunkName: "oCom" * /() => import('A.vue')),
+  B: getAsync(/* webpackChunkName: "oCom" * / () => import('A.vue')),
 })
 
 @Component({ components: { Chooser } })
@@ -149,7 +152,7 @@ export default Chooser // 异步加载的时候必须是default
 <script lang="ts">
 @Component({
   components: {
-    AsyncComponent: getAsync(() => import('Chooser/index.ts')),
+    AsyncComponent: getAsync(/* webpackChunkName: "ocChooser" * / () => import('Chooser')),
   },
 })
 export default class extends Vue {

@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:06:28
+ * @LastEditTime: 2019-07-04 21:41:25
  */
 import Vue from 'vue'
 import Router from 'vue-router'
@@ -22,7 +22,7 @@ const router = new Router({
       path: `/${ROUTER.home.name}`,
       name: ROUTER.home.name,
       component: () =>
-        import(/* webpackChunkName: "iHome" */ './views/Home.vue'),
+        import(/* webpackChunkName: "oHome" */ './views/Home.vue'),
     },
     {
       path: `/${ROUTER.about.name}`,
@@ -31,7 +31,7 @@ const router = new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () =>
-        import(/* webpackChunkName: "iAbout" */ './views/About.vue'),
+        import(/* webpackChunkName: "oAbout" */ './views/About.vue'),
     },
 
     // 默认重定向到首页去

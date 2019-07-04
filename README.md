@@ -378,6 +378,8 @@ server {
 
 ### 备忘
 
+#### 文档
+
 - [scss](https://www.sass.hk/docs)
 - [axios](https://github.com/axios/axios)
 - [crypto-js](http://cryptojs.altervista.org)
@@ -390,6 +392,15 @@ server {
 - [vuex-module-decorators](https://championswimmer.in/vuex-module-decorators/)
 - [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator)
 - [vue-i18n](http://kazupon.github.io/vue-i18n)
+
+#### 问题及思考
+
+- 关于异步组件
+  > **css Module**: 要考虑样式的提取和加载顺序（异步组件按需加载，样式就可能覆盖现有的），后期无力排查处理时才修改 class 命名规避（比如加个随机 emoji 或其它命名方式使 class 名唯一，但是共同样式就不能抽取了）<br><br> **异步组件加载失败重试**: 暂时无解，因为各层级（RouterView functional 等）的组件分发，很难统一实现点击加载失败重试，最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)，比如可以通过增加指令、钩子、监听事件等选项并提供上下文去更改异步组件加载状态和重新加载等）。当然，异步 chunk ( import() )可以自己实现失败后重新加载（resolved 则记录 promise，下次 import 直接返回；rejected 则不记录，下次 import 重新请求）
+- 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，&lt;script type="module"&gt; & &lt;link rel="modulepreload"&gt;)；不支持则加载 Babel 转码后的代码(&lt;script nomodule&gt; & &lt;link rel="preload"&gt;)。但是不知何故未能生效，github 上有一些相关 issue。
+
+#### 笔记
+
 - 在 `js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串
 - 在 `scss`中引入 `css` 有两种方式
   1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件。比如: `@import '~normalize.css/normalize';`
@@ -404,8 +415,6 @@ server {
   }
   ```
 
-#### 问题及思考
+#### 其他
 
-- 关于异步组件
-  > **css Module**: 要考虑样式的提取和加载顺序（异步组件按需加载，样式就可能覆盖现有的），后期无力排查处理时才修改 class 命名规避（比如加个随机 emoji 或其它命名方式使 class 名唯一，但是共同样式就不能抽取了）<br><br> **异步组件加载失败重试**: 暂时无解，因为各层级（RouterView functional 等）的组件分发，很难统一实现点击加载失败重试，最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)，比如可以通过增加指令、钩子、监听事件等选项并提供上下文去更改异步组件加载状态和重新加载等）。当然，异步 chunk ( import() )可以自己实现失败后重新加载（resolved 则记录 promise，下次 import 直接返回；rejected 则不记录，下次 import 重新请求）
-- 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，&lt;script type="module"&gt; & &lt;link rel="modulepreload"&gt;)；不支持则加载 Babel 转码后的代码(&lt;script nomodule&gt; & &lt;link rel="preload"&gt;)。但是不知何故未能生效，github 上有一些相关 issue。
+- 升级包，全面拥抱 babel7, 暂时不能运行测试 (babel 7.4.5 版本可运行单元测试)，待相关插件跟上
