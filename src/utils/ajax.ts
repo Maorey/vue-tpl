@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 15:56:35
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 12:34:45
+ * @LastEditTime: 2019-07-04 16:15:17
  */
 import AXIOS from 'axios'
 
@@ -37,7 +37,7 @@ clone(AXIOS.defaults, {
 
   // 缓存配置
   // noCache: true, // 该请求不缓存响应 默认:false
-  // alive: true, // 该请求响应缓存最大存活时间 默认:CONFIG.apiCacheAlive
+  // alive: 0, // 该请求响应缓存最大存活时间 默认:CONFIG.apiCacheAlive
 })
 
 /** 请求队列 相同请求只允许一个pending

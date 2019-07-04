@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-04 16:07:30
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:45:25
+ * @LastEditTime: 2019-07-04 16:21:30
  */
 import { IObject } from '@/types'
 
@@ -92,7 +92,7 @@ class Memory {
    * @returns {Any} val 存储值
    */
   public set(key: any, value: any, expires?: number): any {
-    expires = expires || this.alive // 缓存存活时间
+    (expires === undefined || isNaN(expires)) && (expires = this.alive)
     clearTimeout(this.get(key, 1, this.out)) // 先清除该key的timeout
 
     const tmp: any = this.get(key, 0) // 获取{key, val}
