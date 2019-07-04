@@ -3,31 +3,10 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 16:50:15
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 11:13:09
+ * @LastEditTime: 2019-07-04 12:28:46
  */
 import { IObject } from '@/types'
-
-const REG_C2K = /[A-Z]/g
-const REPLACE_C2K = (match: string): string => '-' + match.toLowerCase()
-/** camelCase 转 kebab-case，如: camelCase -> camel-case
- * @param {String} str
- *
- * @returns {String}
- */
-function camelToKebab(str: string): string {
-  return str.replace(REG_C2K, REPLACE_C2K)
-}
-
-const REG_K2C = /-[a-z]/g // 就不分组了
-const REPLACE_K2C = (match: string): string => match[1].toUpperCase()
-/** kebab-case 转 camelCase 如: camel-case -> camelCase
- * @param {String} str
- *
- * @returns {String}
- */
-function kebabToCamel(str: string): string {
-  return str.replace(REG_K2C, REPLACE_K2C)
-}
+import { camelToKebab } from '@/utils'
 
 const PREV_STRING = ';\\s*'
 const TAIL_STRING = '\\s*:\\s*(.*?)\\s*;'
@@ -311,11 +290,4 @@ function updateStyle(
   return objectToStyle(current) || ''
 }
 
-export {
-  camelToKebab,
-  kebabToCamel,
-  getStyleByName,
-  styleToObject,
-  objectToStyle,
-  updateStyle,
-}
+export { getStyleByName, styleToObject, objectToStyle, updateStyle }

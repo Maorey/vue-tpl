@@ -6,7 +6,7 @@
  * @LastEditTime: 2019-07-03 17:32:28
  */
 
-import { toGRB } from '@/utils/color'
+import { toGRB } from '@/utils/utils/color'
 
 const HEX1 = '#abc'
 const HEX2 = '#abcd'

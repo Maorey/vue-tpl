@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-03 14:48:49
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:36:11
+ * @LastEditTime: 2019-07-04 11:23:49
  */
 
 /** hex3/hex颜色
@@ -49,18 +49,14 @@ function toGRB(
       i < len;
       i += step
     ) {
-      // substr 不推荐使用了
       tmp = val.substring(i, i + step)
-      // 16进制转10进制
-      // 不足2位的补足 比如 'f' => 'ff'
+      // 16进制转10进制 不足2位的补足 比如 'f' => 'ff'
       // rgb.push(parseInt('0x' + tmp.padEnd(2, tmp)))
-      // 为了兼容
       rgb.push(parseInt('0x' + (tmp.length < 2 ? tmp + tmp : tmp)))
     }
 
     // 去掉数组超过三个的并得到透明度，无透明度为NaN
-    // hex的透明度也是0（0%）到255（100%）
-    alpha = rgb.splice(3)[0] * 0.0039
+    alpha = rgb.splice(3)[0] * 0.0039 // hex透明度:0（0%）到255（100%）
   } else {
     /// rgb/rgba颜色处理 ///
     tmp = REG_RGB.exec(color)

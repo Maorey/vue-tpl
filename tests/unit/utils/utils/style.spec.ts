@@ -3,24 +3,15 @@
  * @Author: 毛瑞
  * @Date: 2019-07-03 09:03:17
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 11:31:52
+ * @LastEditTime: 2019-07-04 12:27:48
  */
 
 import {
-  camelToKebab,
-  kebabToCamel,
   getStyleByName,
   styleToObject,
   objectToStyle,
   updateStyle,
-} from '@/utils/style'
-
-test('camelCase to kebab-case', () => {
-  expect(camelToKebab('thisIsCamelCase')).toBe('this-is-camel-case')
-})
-test('kebab-case to camelCase', () => {
-  expect(kebabToCamel('this-is-kebab-case')).toBe('thisIsKebabCase')
-})
+} from '@/utils/utils/style'
 
 const STYLE = `float: left;
 margin: 15px 13px;
