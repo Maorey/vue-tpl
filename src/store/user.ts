@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 15:16:19
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-28 17:32:23
+ * @LastEditTime: 2019-07-04 10:08:21
  */
 import { VuexModule, Action, Mutation } from 'vuex-module-decorators'
 
@@ -11,8 +11,14 @@ import { get as getCookie, set as setCookie } from '@/utils/cookie'
 import { ILogin, login, logout } from '@/api/user'
 import { local } from '@/utils/storage'
 
-const LOCAL_KEY: string = 'vuetpl_user' // 本地存储的KEY
+/** 本地存储的KEY
+ */
+const LOCAL_KEY: string = 'vuetpl_user'
+/** 本地存储的用户信息
+ */
 const USER_INFO: IUser = local.get(LOCAL_KEY) as IUser
+/** 本地存储的token
+ */
 const TOKEN: string = getCookie(LOCAL_KEY)
 
 /** 偏好

@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 15:55:50
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 09:25:05
+ * @LastEditTime: 2019-07-04 10:01:45
  */
 import { get, post } from '@/utils/ajax'
 import API from './config/user'
@@ -12,7 +12,9 @@ import API from './config/user'
 import Jsencrypt from 'jsencrypt'
 import md5 from 'crypto-js/md5'
 
-let publicKey: string // rsa加密公匙
+/** rsa加密公匙
+ */
+let publicKey: string
 
 /** 获取验证码(及publicKey)
  *

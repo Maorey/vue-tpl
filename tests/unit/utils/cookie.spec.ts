@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 11:09:27
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-27 12:41:49
+ * @LastEditTime: 2019-07-04 10:56:38
  */
 import { set, has, get, entries, remove } from '@/utils/cookie'
 
@@ -28,8 +28,8 @@ test('get cookie', () => {
 
 test('cookie entries', () => {
   expect(entries()).toEqual([
-    { key: '测试', value: '测试值' },
-    { key: 'test', value: 'value' },
+    { k: '测试', v: '测试值' },
+    { k: 'test', v: 'value' },
   ])
 })
 

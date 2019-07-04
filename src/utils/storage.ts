@@ -3,26 +3,42 @@
  * @Author: 毛瑞
  * @Date: 2019-06-04 16:07:30
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-27 12:44:35
+ * @LastEditTime: 2019-07-04 10:45:25
  */
+import { IObject } from '@/types'
 
-// 存储池
+/** 存储池
+ */
 interface IPool {
-  k: any // 存储键
-  v: any // 存储值
-  c?: number // 使用计数
+  /** 键
+   */
+  k: any
+  /** 值
+   */
+  v: any
+  /** 使用计数
+   */
+  c?: number
 }
 /** 内存存储 key/value可以任意类型
  */
-export const Memory = class {
-  public pool: IPool[] // 存储池
-  protected max: number // 最大缓存数量，默认30
-  protected alive: number // 缓存存活时间
-  private out: IPool[] // timeout队列
+class Memory {
+  /** 存储池
+   */
+  public pool: IPool[]
+  /** 最大缓存数量，默认30
+   */
+  protected max: number
+  /** 缓存存活时间 0为永久
+   */
+  protected alive: number
+  /** timeout队列
+   */
+  private out: IPool[]
 
   /** 构造函数
    * @param {Number} max 最大缓存数量，默认30
-   * @param {Number} alive 缓存存活时间
+   * @param {Number} alive 缓存存活时间 0为永久
    *
    * @returns {Object} Memory实例
    */
@@ -30,8 +46,8 @@ export const Memory = class {
     this.max = max
     this.alive = alive
 
-    this.pool = [] // 存储池
-    this.out = [] // timeout队列
+    this.pool = []
+    this.out = []
   }
 
   /** 获取值
@@ -117,6 +133,7 @@ export const Memory = class {
     for (item of this.out) {
       clearTimeout(item.v)
     }
+
     this.out = []
     this.pool = []
   }
@@ -149,11 +166,18 @@ export const Memory = class {
   }
 }
 
-// 本地存储 (单例 localStorage)
-const STORAGE: Storage = window.localStorage // 本地存储
-const REG_TIMESPAN: RegExp = /^(\d+)(.*)$/ // 提取时间戳
-const timeoutDic: Map<string, number> = new Map() // timeout字典(直接用{}啊...)
-export const local = {
+/** 本地存储
+ */
+const STORAGE: Storage = window.localStorage
+/** 提取时间戳
+ */
+const REG_TIMESPAN: RegExp = /^(\d+)(.*)$/
+/** timeout字典
+ */
+let timeoutDic: IObject<number> = {}
+/** 本地存储 (localStorage 单例)
+ */
+const local = {
   /** 获取值
    * @param {String} key 存储键
    *
@@ -198,10 +222,10 @@ export const local = {
       throw e
     }
 
-    clearTimeout(timeoutDic.get(key)) // 先清除该key的timeout
+    clearTimeout(timeoutDic[key]) // 先清除该key的timeout
     // 设置过期时间
     if (expires) {
-      timeoutDic.set(key, setTimeout(() => this.remove(key), expires))
+      timeoutDic[key] = setTimeout(() => this.remove(key), expires)
       // 加时间戳
       str = Date.now() + expires + str
     }
@@ -217,8 +241,8 @@ export const local = {
    */
   remove(key: string): object | undefined {
     // 同时移除timeout
-    clearTimeout(timeoutDic.get(key))
-    timeoutDic.delete(key)
+    clearTimeout(timeoutDic[key])
+    delete timeoutDic[key]
 
     const val: object | undefined = this.get(key) // 获取值
     STORAGE.removeItem(key) // 移除存储（无论成败，返回undefined）
@@ -229,12 +253,14 @@ export const local = {
    */
   clear(): void {
     // 清空timeout
-    let timeoutId: number
-    for (timeoutId of timeoutDic.values()) {
-      clearTimeout(timeoutId)
+    let key: string
+    for (key in timeoutDic) {
+      clearTimeout(timeoutDic[key])
     }
 
-    timeoutDic.clear()
+    timeoutDic = {}
     STORAGE.clear()
   },
 }
+
+export { IPool, Memory, local }

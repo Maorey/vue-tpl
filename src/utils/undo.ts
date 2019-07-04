@@ -3,13 +3,22 @@
  * @Author: 毛瑞
  * @Date: 2019-01-28 13:57:42
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 14:03:10
+ * @LastEditTime: 2019-07-04 10:48:25
  */
-let pool: any[] = [] // 存储池
-let index = 0 // 下一个位置索引
-let maxLength = 50 // 最大记录数
 
-export const undo = {
+/** 存储池
+ */
+let pool: any[] = []
+/** 下一个位置索引
+ */
+let index = 0
+/** 最大记录数
+ */
+let maxLength = 50
+
+/** 撤销重做【单例】
+ */
+const undo = {
   /** 移除当前位置之后的并添加指定项
    * @param {Object} obj 存入的对象
    */
@@ -44,3 +53,5 @@ export const undo = {
     maxLength = max
   },
 }
+
+export default undo

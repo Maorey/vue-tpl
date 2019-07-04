@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 16:50:15
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 22:48:23
+ * @LastEditTime: 2019-07-04 11:13:09
  */
 import { IObject } from '@/types'
 
@@ -66,9 +66,15 @@ function getStyleByName(style: string | IObject<string>, name: string): string {
   return ''
 }
 
-const REG_STYLE = / *(.*?) *: *(.*?) *;/g // 提取样式正则 分组：key,value
-const REG_QUOT = /"+/g // 转义双引号
-const REG_COMMA = /,*$/ // 末尾逗号
+/** 提取样式正则 分组：key,value
+ */
+const REG_STYLE = / *(.*?) *: *(.*?) *;/g
+/** 双引号
+ */
+const REG_QUOT = /"+/g
+/** 末尾逗号
+ */
+const REG_COMMA = /,*$/
 /** css样式字符串转为对象/JSON
  *  (不处理key 'margin-top: 2px' -> {'margin-top': '2px'})
  * @param {String} style 样式字符串
@@ -126,8 +132,10 @@ function styleToObject(
   /// RegExp.exec【更快】 ///
   let json: string = '{'
   let temp: [string, string] | string | boolean | void
-  let result: string[] | null = REG_STYLE.exec(style)
-  while (result) {
+  let result: string[] | null
+  // 不这么写不能得到下一次匹配...
+  // tslint:disable-next-line: no-conditional-assignment
+  while ((result = REG_STYLE.exec(style))) {
     if (filter) {
       temp = filter(result[1], result[2], result[0])
       if (temp) {
@@ -144,7 +152,6 @@ function styleToObject(
 
     // 首尾双引号直接去掉
     json += `"${result[1]}":"${result[2].replace(REG_QUOT, '\\"')}",`
-    result = REG_STYLE.exec(style)
   }
   json = json.replace(REG_COMMA, '}') // 去末尾,加}
 
@@ -164,7 +171,9 @@ function styleToObject(
   return isjson ? json : JSON.parse(json)
 }
 
-const NO_UNIT = ['z-index'] // 值没有单位的样式
+/** 值没有单位的样式
+ */
+const NO_UNIT = ['z-index']
 /** 样式对象还原为css样式（值为数字的默认单位px）
  * @param {IObject<string>} styleObj 样式对象
  * @param {Function} filter 过滤函数

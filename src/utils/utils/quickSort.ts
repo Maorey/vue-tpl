@@ -1,17 +1,26 @@
 /*
  * @Description: 快速排序, 交换数组索引并返回【不会被vue2监测到数组变化】
+ *  参考 https://segmentfault.com/a/1190000010928302#articleHeader4
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:01:27
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-27 18:08:23
+ * @LastEditTime: 2019-07-04 10:34:52
  */
-// 参考 https://segmentfault.com/a/1190000010928302#articleHeader4
-const CUTOFF: number = 4 // 快速排序和插入排序阈值 最佳取4
-const ASC = (a: any, b: any): boolean => a > b // 默认比较方法【升序】
+
+/** 使用插入排序阈值 最佳取4
+ */
+const CUTOFF: number = 4
+/** 升序
+ * @param {Any} current 当前项
+ * @param {Any} next 下一项
+ *
+ * @returns {Boolean}
+ */
+const ASC = (current: any, next: any): boolean => current > next
 
 // 闭包变量
 let arr: any[]
-let compare: (a: any, b: any) => boolean
+let compare: (current: any, next: any) => boolean
 
 /** 比较并交换数据
  * @param {Number} i 待交换的数组索引
@@ -108,13 +117,16 @@ function partition(left: number, right: number): void {
  *
  * @returns {Array} arr 排序后的原数组
  */
-function quickSort(array: any[], fun?: (a: any, b: any) => boolean): any[] {
+function quickSort(
+  array: any[],
+  fun: (current: any, next: any) => boolean = ASC
+): any[] {
   if (!Array.isArray(array) || array.length < 2) {
     return array
   }
 
   arr = array
-  compare = fun || ASC
+  compare = fun
 
   partition(0, arr.length - 1)
 

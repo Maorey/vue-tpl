@@ -3,13 +3,13 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 11:30:50
+ * @LastEditTime: 2019-07-04 10:06:01
  */
 import Vue from 'vue'
 import Router from 'vue-router'
 
 import { IObject } from '@/types'
-import CONFIG from '@/config/router'
+import CONFIG from '@/config/router/index'
 
 Vue.use(Router) // 全局注册
 

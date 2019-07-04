@@ -3,11 +3,14 @@
  * @Author: 毛瑞
  * @Date: 2019-07-03 14:48:49
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 17:32:01
+ * @LastEditTime: 2019-07-04 10:36:11
  */
 
-const REG_HEX = /#([0-9a-f]{3,8})/i // hex3/hex颜色
-// rgb/rgba颜色
+/** hex3/hex颜色
+ */
+const REG_HEX = /#([0-9a-f]{3,8})/i //
+/** rgb/rgba颜色
+ */
 const REG_RGB = /rgba? *\( *(\d+ *, *\d+ *, *\d+) *,? *(\d+\.?\d+?)? *\)/i
 /** 颜色转rgb(a)
  * @param {String} color rgb\rgba\hex\hex3 颜色

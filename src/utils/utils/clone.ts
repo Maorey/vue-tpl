@@ -3,12 +3,18 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 10:20:44
+ * @LastEditTime: 2019-07-04 10:10:15
  */
 
+/** 克隆过滤函数返回值
+ */
 interface IClone {
-  jump?: boolean // 不拷贝该属性
-  value?: any // 替换值
+  /** 不拷贝该属性
+   */
+  jump?: boolean
+  /** 替换值
+   */
+  value?: any
 }
 
 /** 深扩展一个对象/数组

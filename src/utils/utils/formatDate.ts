@@ -3,9 +3,9 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 23:41:48
+ * @LastEditTime: 2019-07-04 10:11:03
  */
-import { Memory } from '@/utils/storage'
+import { Memory, IPool } from '@/utils/storage'
 import { IObject } from '@/types'
 
 /** 保留字枚举, 如下(允许使用转义字符\来输出保留字):
@@ -36,28 +36,19 @@ const enum Reserve {
   second = 's',
   milliSecond = 'n',
 }
-/** 是否为保留字
- * @param {Any} char 目标字符串
- *
- * @returns {Boolean}
+/** 保留字串
  */
-const isReserve = (char: any): boolean => {
-  switch (char) {
-    case Reserve.year:
-    case Reserve.month:
-    case Reserve.day:
-    case Reserve.week:
-    case Reserve.hour:
-    case Reserve.Hour:
-    case Reserve.slot:
-    case Reserve.minute:
-    case Reserve.second:
-    case Reserve.milliSecond:
-      return true
-    default:
-      return false
-  }
-}
+const RESERVED =
+  Reserve.year +
+  Reserve.month +
+  Reserve.day +
+  Reserve.week +
+  Reserve.hour +
+  Reserve.Hour +
+  Reserve.slot +
+  Reserve.minute +
+  Reserve.second +
+  Reserve.milliSecond
 /** 获取保留字最大重复次数
  * @param {Any} char 目标字符串
  *
@@ -136,7 +127,7 @@ function getFormat(format: string): IResult {
       // 转义字符
       nextChar = format[index + 1]
 
-      if (isReserve(nextChar)) {
+      if (RESERVED.includes(nextChar)) {
         regString += nextChar
         index++ // 跳过下个字符
       } else {
@@ -145,7 +136,7 @@ function getFormat(format: string): IResult {
     } else if (RESERVE_REG.includes(currentChar)) {
       // 正则表达式保留字
       regString += ESCAPE + currentChar
-    } else if (isReserve(currentChar)) {
+    } else if (RESERVED.includes(currentChar)) {
       // 保留字 替换为数字正则并记录信息
       reserveRepeat = 1
       reserveMaxRepeat = getReserveMaxRepeat(currentChar)
@@ -176,10 +167,11 @@ function getFormat(format: string): IResult {
 }
 
 const ISO_DATE_FORMAT: string = 'yyyy-MM-ddTHH:mm:ss.nnnZ'
+getFormat(ISO_DATE_FORMAT) // warm 下
 
-const REG_NUM = /\(\\d\{\d(,\d)?\}\)/g
+const REG_NUM_REG = /\(\\d\{\d(,\d)?\}\)/g
 const REG_RESERVE = new RegExp(
-  `\\\\([${RESERVE_REG.replace(']', '\\]')}])`,
+  `\\\\([${RESERVE_REG.replace(']', '\\]\\\\')}])`,
   'g'
 )
 /** 获得指定格式的日期字符串
@@ -200,16 +192,15 @@ const REG_RESERVE = new RegExp(
  * @returns {String} 格式化的日期字符串
  */
 function formatDate(date: Date, format: string = ISO_DATE_FORMAT): string {
-  // 默认返回ISO格式
-  const RESULT: IResult = getFormat(format)
+  const { t, g } = getFormat(format)
 
   let index: number = 0
   let item: IGroup
 
   // 正则规则的(\d{1,2}) 换成对应内容（再把保留字转回来）
-  return RESULT.t
-    .replace(REG_NUM, () => {
-      item = RESULT.g[index++]
+  return t
+    .replace(REG_NUM_REG, () => {
+      item = g[index++]
       let value: string | number = ''
 
       // 根据规则获取值
@@ -341,17 +332,21 @@ const REPLACE_NOON = (match: string, slot: string) =>
  */
 function getDateByString(
   dateString: string,
-  format: string = ISO_DATE_FORMAT
-): Date {
-  const { r, g } = getFormat(format)
-  const info: IObject<number> = {}
+  format: string | IResult = ISO_DATE_FORMAT,
+  tryHistory: boolean = true
+): Date | void {
+  const { r, g } = typeof format === 'string' ? getFormat(format) : format
 
+  let info: IObject<number> | undefined
+  // 提取信息
   dateString
     // 先把星期几、上午/下午换成数字
     .replace(REG_WEEK, REPLACE_WEEK)
     .replace(REG_NOON, REPLACE_NOON)
     // 处理结果
     .replace(r, (...args) => {
+      info || (info = {})
+
       const length: number = g.length
 
       let key: string
@@ -366,23 +361,33 @@ function getDateByString(
       return args[0]
     })
 
-  // Date构造方法参数列表：年月日时分秒毫秒
-  // 智障啊，传undefined报Invalid Date，就不会忽略一下？
-  const date = new Date()
+  if (info) {
+    // Date构造方法参数列表：年月日时分秒毫秒，有undefined报Invalid Date，就不会忽略一下？
+    const date = new Date()
 
-  isNaN(info[Reserve.year]) || date.setFullYear(info[Reserve.year])
-  isNaN(info[Reserve.month]) || date.setMonth(info[Reserve.month] - 1) // 0~11 ？？？
-  isNaN(info[Reserve.day]) || date.setDate(info[Reserve.day])
-  isNaN(info[Reserve.Hour])
-    ? isNaN(info[Reserve.hour]) ||
-      date.setHours((info[Reserve.slot] ? 12 : 0) + info[Reserve.hour])
-    : date.setHours(info[Reserve.Hour])
-  isNaN(info[Reserve.minute]) || date.setMinutes(info[Reserve.minute])
-  isNaN(info[Reserve.second]) || date.setSeconds(info[Reserve.second])
-  isNaN(info[Reserve.milliSecond]) ||
-    date.setMilliseconds(info[Reserve.milliSecond])
+    isNaN(info[Reserve.year]) || date.setFullYear(info[Reserve.year])
+    isNaN(info[Reserve.month]) || date.setMonth(info[Reserve.month] - 1) // 0~11 ？？？
+    isNaN(info[Reserve.day]) || date.setDate(info[Reserve.day])
+    isNaN(info[Reserve.Hour])
+      ? isNaN(info[Reserve.hour]) ||
+        date.setHours((info[Reserve.slot] ? 12 : 0) + info[Reserve.hour])
+      : date.setHours(info[Reserve.Hour])
+    isNaN(info[Reserve.minute]) || date.setMinutes(info[Reserve.minute])
+    isNaN(info[Reserve.second]) || date.setSeconds(info[Reserve.second])
+    isNaN(info[Reserve.milliSecond]) ||
+      date.setMilliseconds(info[Reserve.milliSecond])
 
-  return date
+    return date
+  } else if (tryHistory) {
+    // 从记录中尝试
+    let item: IPool
+    for (item of CACHE.pool) {
+      const result = getDateByString(dateString, item.v, false)
+      if (result) {
+        return result
+      }
+    }
+  }
 }
 
 export { formatDate as default, getDateByString }

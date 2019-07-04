@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:32:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-03 15:28:00
+ * @LastEditTime: 2019-07-04 10:43:40
  */
 import { CreateElement, Component, RenderContext } from 'vue'
 import CONFIG from '@/config'
@@ -161,4 +161,4 @@ export default class extends Vue {
 */
 // 更多...
 
-export { filterByIS as filter, getChooser, getAsync }
+export { filterByIS as filter, getChooser, getAsync, IDictionary }
