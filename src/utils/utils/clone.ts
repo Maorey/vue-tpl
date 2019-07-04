@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:10:15
+ * @LastEditTime: 2019-07-04 12:36:44
  */
 
 /** 克隆过滤函数返回值
@@ -47,17 +47,13 @@ function extend(
 
     tmp = filter && filter(key, targetValue, currentValue, source, target, deep)
     if (tmp) {
-      if (!tmp.jump) {
-        source[key] = tmp.value // 自定义拷贝
-      }
+      tmp.jump || (source[key] = tmp.value) // 自定义拷贝
     } else if (!targetValue || typeof targetValue !== 'object') {
       source[key] = targetValue // 拷贝值
     } else {
       // 当前类型应与目标相同（数组/对象）
       tmp = Array.isArray(targetValue) // 目标是否数组
-      if (Array.isArray(currentValue) !== tmp) {
-        currentValue = 0 // 类型不同
-      }
+      Array.isArray(currentValue) === tmp || (currentValue = 0) // 类型不同
 
       source[key] = extend(
         currentValue || (tmp ? [] : {}),

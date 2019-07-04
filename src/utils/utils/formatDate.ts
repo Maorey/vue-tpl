@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:11:03
+ * @LastEditTime: 2019-07-04 12:40:37
  */
 import { Memory, IPool } from '@/utils/storage'
 import { IObject } from '@/types'
@@ -211,17 +211,11 @@ function formatDate(date: Date, format: string = ISO_DATE_FORMAT): string {
           break
         case Reserve.month:
           value = date.getMonth() + 1 // 0~11
-
-          if (item.l > 1 && value < 10) {
-            value = '0' + value
-          }
+          item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.day:
           value = date.getDate()
-
-          if (item.l > 1 && value < 10) {
-            value = '0' + value
-          }
+          item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.week:
           switch (date.getDay()) {
@@ -252,41 +246,24 @@ function formatDate(date: Date, format: string = ISO_DATE_FORMAT): string {
 
         case Reserve.hour:
           value = date.getHours()
-          if (value > 12) {
-            value -= 12
-          }
-
-          if (item.l > 1 && value < 10) {
-            value = '0' + value
-          }
+          value > 12 && (value -= 12)
+          item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.Hour:
           value = date.getHours()
-
-          if (item.l > 1 && value < 10) {
-            value = '0' + value
-          }
+          item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.slot:
           value = date.getHours() > 12 ? '下' : '上'
-
-          if (item.l > 1) {
-            value += '午'
-          }
+          item.l > 1 && (value += '午')
           break
         case Reserve.minute:
           value = date.getMinutes()
-
-          if (item.l > 1 && value < 10) {
-            value = '0' + value
-          }
+          item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.second:
           value = date.getSeconds()
-
-          if (item.l > 1 && value < 10) {
-            value = '0' + value
-          }
+          item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.milliSecond:
           value = String(date.getMilliseconds())

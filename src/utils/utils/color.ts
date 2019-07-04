@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-03 14:48:49
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 11:23:49
+ * @LastEditTime: 2019-07-04 12:37:44
  */
 
 /** hex3/hex颜色
@@ -32,9 +32,7 @@ function toGRB(
   }
 
   // 颜色名对应
-  if (color === 'transparent') {
-    color = 'rgba(0,0,0,0)'
-  }
+  color === 'transparent' && (color = 'rgba(0,0,0,0)')
 
   let rgb: number[] // rgb色值数组
   let alpha: number = NaN // 透明度

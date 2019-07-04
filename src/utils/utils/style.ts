@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 16:50:15
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 12:28:46
+ * @LastEditTime: 2019-07-04 12:44:14
  */
 import { IObject } from '@/types'
 import { camelToKebab } from '@/utils'
@@ -219,11 +219,9 @@ function objectToStyle(
       }
     }
 
-    if (Number(value) && !NO_UNIT.includes(key)) {
-      // Number('') === Number(' ') === 0
-      // 纯数字（除0）加上px单位
-      value += 'px'
-    }
+    // Number('') === Number(' ') === 0
+    // 纯数字（除0）加上px单位
+    Number(value) && !NO_UNIT.includes(key) && (value += 'px')
 
     css += `${key}:${value};`
   }

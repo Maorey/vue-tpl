@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:05:04
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:13:10
+ * @LastEditTime: 2019-07-04 12:41:23
  */
 
 /** 单位设置
@@ -36,9 +36,7 @@ function formatNumber(
   digit?: any,
   unit?: string | INumberUnit
 ): string {
-  if (!unit && typeof digit !== 'number') {
-    unit = digit
-  }
+  !unit && typeof digit !== 'number' && (unit = digit)
 
   const numSplit: string[] = String(num || 0).split('.')
   let decimal: string = numSplit[1] || '' // 小数部分
@@ -48,6 +46,7 @@ function formatNumber(
   if (typeof unit === 'object') {
     const len: number = num.length
     const limit: number = unit.limit || unit.len
+
     if (limit && len > limit) {
       const index: number = len - unit.len
       decimal = num.slice(index) + decimal

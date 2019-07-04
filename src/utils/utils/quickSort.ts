@@ -4,7 +4,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:01:27
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:34:52
+ * @LastEditTime: 2019-07-04 12:42:47
  */
 
 /** 使用插入排序阈值 最佳取4
@@ -28,9 +28,7 @@ let compare: (current: any, next: any) => boolean
  * @param {boolean} force 直接交换（不通过compare回调来比较）
  */
 function swap(i: number, j: number, force?: boolean | undefined): void {
-  if (force || compare(arr[i], arr[j])) {
-    [arr[i], arr[j]] = [arr[j], arr[i]]
-  }
+  (force || compare(arr[i], arr[j])) && ([arr[i], arr[j]] = [arr[j], arr[i]])
 }
 
 /** 插入排序

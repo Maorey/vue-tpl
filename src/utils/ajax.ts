@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 15:56:35
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:34:18
+ * @LastEditTime: 2019-07-04 12:34:45
  */
 import AXIOS from 'axios'
 
@@ -70,12 +70,11 @@ function getKEY(url: string, params?: IObject<any>): string {
   // 处理查询参数
   let query: string = part[1]
 
-  if (query) {
-    params = clone(
+  query &&
+    (params = clone(
       JSON.parse(`{${query.replace(/&/g, ',').replace(/=/g, ':')}}`),
       params
-    )
-  }
+    ))
 
   query = '.'
   // 按key升序排列 拼接字符

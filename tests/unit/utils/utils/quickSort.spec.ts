@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 17:41:06
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 10:59:42
+ * @LastEditTime: 2019-07-04 12:45:09
  */
 import quickSort from '@/utils/utils/quickSort'
 
@@ -22,6 +22,7 @@ test('quickSort', () => {
   for (let i: number = 0; i < arrayLength; i++) {
     if (testArray[i + 1] < testArray[i]) {
       pass = false
+      break
     }
   }
   expect(pass).toBe(true)
@@ -31,6 +32,7 @@ test('quickSort', () => {
     for (let i: number = 0; i < arrayLength; i++) {
       if (testArray[i + 1] > testArray[i]) {
         pass = false
+        break
       }
     }
     expect(pass).toBe(true)
