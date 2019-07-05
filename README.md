@@ -179,6 +179,23 @@ yarn run test:unit
 
 - 提交代码请使用标识: Add/Del/Fix/Mod 等
 - 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后(方便查看代码)
+- **不要使用全局样式覆盖已有全局样式**, 使用 `CSSModule` 并使优先级相等(注意顺序，比如异步代码会比同步后加载)或更高:
+  ```scss
+  // bad →_→
+  :global {
+    .content .title.active {
+      color: @colorHighlight;
+    }
+  }
+  // good ｂ(￣▽￣)ｄ
+  .content {
+    :global {
+      .title.active {
+        color: @colorHighlight;
+      }
+    }
+  }
+  ```
 
 ### 其他建议
 

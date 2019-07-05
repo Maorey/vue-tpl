@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 00:23:40
+ * @LastEditTime: 2019-07-05 17:30:06
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -16,9 +16,21 @@ const chainWebpack = require(isProd
   ? './production.config' // 生产环境配置
   : './development.config') // 开发环境配置
 
-const short = require('./shortString')() // 闭包 得到字符串唯一缩写
-
 const updateJSON = require('./updateJSON')
+
+// 命名缩写记录
+let DIC
+// 闭包 得到字符串唯一缩写
+const short = require('./shortString')({}, (name, n) => {
+  // 同步的
+  if (!DIC) {
+    DIC = {}
+    setTimeout(() => updateJSON('fileName.map', 'chunkName', DIC))
+  }
+
+  DIC[n] = name
+})
+
 // TypeScript目录别名
 const TS_CONFIG_FILE = 'tsconfig.json'
 const TS_PATHS_KEY = 'compilerOptions.paths'
@@ -163,7 +175,8 @@ module.exports = {
       maxAsyncRequests: 6, // 最大异步代码请求数【浏览器并发请求数】
       maxInitialRequests: 3, // 最大初始化时异步代码请求数
 
-      automaticNameDelimiter: '.', // 超过大小,分包时文件名分隔符
+      automaticNameDelimiter: '.', // 超过大小, 分包时文件名分隔符
+      // automaticNameMaxLength: 15, // 分包文件名自动命名最大长度【文档有写，但是报错unknown】
       name:
         !isProd ||
         // 生产环境缩写 vendors.main.show.user.77d.js => v.HTY.05b.js
@@ -185,7 +198,64 @@ module.exports = {
           return name
         }),
       cacheGroups: {
-        /// css ///
+        /// 【 js 】 ///
+        // 所有其他依赖的模块
+        dll: {
+          name: 'dll',
+          chunks: 'initial',
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]/,
+        },
+        // polyfills
+        plf: {
+          name: 'plf',
+          chunks: 'initial',
+          priority: 6,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]core-js(?:-pure)?[\\/]/,
+        },
+        // configs
+        conf: {
+          name: 'conf',
+          chunks: 'all',
+          enforce: true, // 确保会创建这个chunk (否则可能会根据splitChunks选项被合并/拆分)
+          priority: 666,
+          test: /[\\/]config[\\/]/,
+        },
+        // elementUI (建议按需引入)
+        eui: {
+          name: 'eui',
+          chunks: 'all',
+          priority: 66,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]element-ui[\\/]/,
+        },
+        // d3.js
+        d3: {
+          name: 'd3',
+          chunks: 'all',
+          priority: 66,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]d3[\\/]/,
+        },
+        // zrender (二维绘图引擎)
+        zrd: {
+          name: 'zrd',
+          chunks: 'all',
+          priority: 66,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]zrender[\\/]/,
+        },
+        // echarts (依赖 zrender)
+        ect: {
+          name: 'ect',
+          chunks: 'all',
+          priority: 66,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]echarts[\\/]/,
+        },
+
+        /// 【 css 】(多数情况下不需要) ///
         // 提取各入口的 css 到单独文件(还抽了一个空数组的 [entryName].*.*.js 出来???)
         // ...(() => {
         //   /** 获取模块是否是指定入口的
@@ -203,13 +273,16 @@ module.exports = {
         //   let css = {}
         //   let chunkName
         //   for (let entryName in pages) {
-        //     chunkName = entryName + '.c' // 多页时与入口名重了要报错
+        //     chunkName = entryName + '_' // 多页时与入口名重了要报错
 
         //     css[chunkName] = {
         //       name: chunkName,
-        //       chunks: 'all',
+        //       // 异步chunk的css合并可能存在因加载顺序改变导致的样式优先级问题，
+        //       // 但这绝大多数都是异步chunk里存在覆盖全局的样式的全局样式
+        //       // 减少使用全局样式，用好CSSModule可以避免
+        //       chunks: 'async', // 'initial'、'all'
         //       enforce: true,
-        //       priority: 666666,
+        //       priority: 66,
         //       // https://github.com/webpack-contrib/mini-css-extract-plugin
         //       // test: module =>
         //       //   module.constructor.name === 'CssModule' &&
@@ -221,64 +294,6 @@ module.exports = {
 
         //   return css
         // })(),
-        /// js ///
-        // configs
-        conf: {
-          name: 'conf',
-          chunks: 'all',
-          enforce: true, // 确保会创建这个chunk (否则可能会根据splitChunks选项被合并/拆分)
-          priority: 666666,
-          test: /[\\/]config[\\/]/,
-        },
-        // // elementUI (建议按需引入)
-        // eui: {
-        //   name: 'eui',
-        //   chunks: 'all',
-        //   enforce: true,
-        //   priority: 666666,
-        //   test: /[\\/]node_modules[\\/]element-ui[\\/]/,
-        // },
-        // // d3.js
-        // d3: {
-        //   name: 'd3',
-        //   chunks: 'all',
-        //   priority: 666666,
-        //   minChunks: 3,
-        //   test: /[\\/]node_modules[\\/]d3[\\/]/,
-        // },
-        // // zrender (二维绘图引擎)
-        // zrd: {
-        //   name: 'zrd',
-        //   chunks: 'all',
-        //   enforce: true,
-        //   priority: 666666,
-        //   test: /[\\/]node_modules[\\/]zrender[\\/]/,
-        // },
-        // // echarts (依赖 zrender)
-        // ect: {
-        //   name: 'ect',
-        //   chunks: 'all',
-        //   priority: 666660,
-        //   minChunks: 3,
-        //   test: /[\\/]node_modules[\\/]echarts[\\/]/,
-        // },
-        // // polyfills
-        // plf: {
-        //   name: 'plf',
-        //   chunks: 'all',
-        //   priority: 666,
-        //   minChunks: 3,
-        //   test: /[\\/]node_modules[\\/]core-js[\\/]/,
-        // },
-        // // 所有其他依赖的模块
-        // dll: {
-        //   name: 'dll',
-        //   chunks: 'initial',
-        //   priority: 66,
-        //   minChunks: 3,
-        //   reuseExistingChunk: true,
-        //   test: /[\\/]node_modules[\\/]/,
-        // },
       },
     })
 

@@ -6,7 +6,7 @@
  * @Author: Maorey
  * @Date: 2019-01-17 11:42:24
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-26 16:51:12
+ * @LastEditTime: 2019-07-05 10:56:06
  */
 
 const PLUGIN_NAME = 'insert-preload' // 插件名
@@ -95,7 +95,7 @@ module.exports = class {
         }
 
         // 下一个不是样式则把样式放在下一个
-        tmp = (head[index + 1] || { attributes: {} }).attributes
+        tmp = (head[index + 1] || {}).attributes || {}
         if (!(tmp.as || tmp.rel === relStyle)) {
           ++index
           break

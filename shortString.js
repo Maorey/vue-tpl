@@ -3,7 +3,7 @@
  * @Author: Maorey
  * @LastEditors: 毛瑞
  * @Date: 2019-03-04 09:42:36
- * @LastEditTime: 2019-07-01 12:18:31
+ * @LastEditTime: 2019-07-05 13:23:24
  */
 
 /** 缩写字符串为一个字母（52个）
@@ -84,15 +84,23 @@ function getUnique(DIC, char, str = '', i = 0) {
 }
 
 /** 获取唯一字符串缩写方法
- * @param {Object} DIC 命名字典，用于去重, 默认:{}
+ * @param {Object} DIC 命名字典，用于去重
  * 【优化】 按码值总和区间分成多个字典 暂无必要
+ * @param {Function} callback 获取到新的缩写时执行的回调
  *
  * @returns {String:name => String:shortName} 返回唯一字符串缩写的方法
  */
-module.exports = function(DIC = {}) {
+module.exports = function(DIC = {}, callback) {
   return name => {
     name = String(name)
 
-    return DIC[name] || (DIC[name] = getUnique(DIC, getChar(name)))
+    let Abbreviation = DIC[name]
+
+    if (!Abbreviation) {
+      Abbreviation = DIC[name] = getUnique(DIC, getChar(name))
+      callback && callback(name, Abbreviation)
+    }
+
+    return Abbreviation
   }
 }

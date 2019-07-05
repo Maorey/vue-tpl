@@ -18,6 +18,7 @@ selenium-debug.log
 # 日志文件
 *.log
 *.lock
+*.map
 
 # IDE
 .idea
