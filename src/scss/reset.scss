@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-01 14:01:23
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 11:30:24
+ * @LastEditTime: 2019-07-06 08:41:26
  */
 
 // placeholder 样式
@@ -37,5 +37,6 @@
 //   }
 // }
 
-@import '~normalize.css/normalize'; // 浏览器样式重置
+// 浏览器样式重置 https://www.sass.hk/docs @import
+@import '~normalize.css/normalize';
 @import 'scroll.scss'; // 滚动条样式

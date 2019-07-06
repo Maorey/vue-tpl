@@ -165,7 +165,7 @@ yarn run test:unit
 
 推荐使用 [TypeScript](https://www.tslang.cn)
 
-- CSS Modules class 名使用 `camelCase` (global Scope 可以 `kebab-case` ), 选择器嵌套**不应超过三层**
+- CSS Modules class 名使用 `camelCase` (global 可以 kebab-case), 选择器嵌套**不应超过三层**
 - JavaScript 代码风格为 [**JavaScript standard**](https://standardjs.com/rules-zhcn.html)，除了以下区别:
 
   - 使用单引号
@@ -179,7 +179,7 @@ yarn run test:unit
 
 - 提交代码请使用标识: Add/Del/Fix/Mod 等
 - 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后(方便查看代码)
-- **不要使用全局样式覆盖已有全局样式**, 使用 `CSSModule` 并使优先级相等(注意顺序，比如异步代码会比同步后加载)或更高:
+- **不要用全局样式覆盖全局样式**, 使用 `CSSModule` 并使优先级相等(注意顺序，包括同步/异步)或更高:
   ```scss
   // bad →_→
   :global {
@@ -268,7 +268,7 @@ yarn run test:unit
   }
   ```
 
-- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(避免重名合并, 方便排查问题)，层级使用小写字母, chunk 名首字母大写，比如: index 页面下的 home 视图命名为 `index_Home`, 其下的用户视图命名为 `index_home_My`, 用户基础信息命名为 `index_home_my_Baseinfo` 。为避免文件名太长，每个层级可以用一到两个字母进行缩写: `iHome`, `ihMy`, `ihmBaseInfo`。
+- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(避免重名合并, 方便排查问题)，比如: index 页面下的 home 视图命名为 `index_home`, 其下的用户视图命名为 `index_home_my`, 用户基础信息命名为 `index_home_my_baseinfo` 。为避免文件名太长，每个层级可以用一到两个字母进行缩写: `iHome`, `ihMy`, `ihmBaseInfo`。
 - libs 下库文件需要按需加载的，应提供引入方法（只会成功加载一次），比如:
 
   ```TypeScript
@@ -306,7 +306,7 @@ yarn run test:unit
 请参照 `vue.config.js` 文件中 _chainWebpack_ 的注释进行配置
 
 - 减小图片大小(比如背景图片等)
-- 对多个 js chunk 共同依赖的模块进行单独提取
+- 对多个 js chunk 共同依赖的模块进行单独提取(cacheGroups)
 - 视情况对 css 文件进行合并(比如按入口等，不设置则按 chunk)
 - [现代模式](https://cli.vuejs.org/zh/guide/browser-compatibility.html#现代模式)
 
@@ -316,13 +316,13 @@ yarn run test:unit
 
 - Vetur: vue 开发必备
 - GitLens: Git 工具
-- ESLint/TSLint: 代码检查
+- ESLint & TSLint: 代码检查
 - Prettier - Code formatter: 代码格式化
-- EditorConfig for VS Code: IDE 设置
 - koroFileHeader: 文件头注释
+- EditorConfig for VS Code: IDE 设置
 - Bracket Pair Colorizer: 彩虹色括号（()[]{}<>）
 
-推荐工具： `@vue/cli`: v3.X，全局安装时可使用 `vue ui` 命令启动图形化界面管理项目(运行 inspect 任务查看 webpack 配置)[文档链接](https://cli.vuejs.org/zh/guide)
+推荐工具： [`@vue/cli`](https://cli.vuejs.org/zh/guide)，全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
 
 ## 部署（nginx）
 
@@ -412,14 +412,13 @@ server {
 
 #### 问题及思考
 
-- 关于异步组件
-  > **css Module**: 要考虑样式的提取和加载顺序（异步组件按需加载，样式就可能覆盖现有的），后期无力排查处理时才修改 class 命名规避（比如加个随机 emoji 或其它命名方式使 class 名唯一，但是共同样式就不能抽取了）<br><br> **异步组件加载失败重试**: 暂时无解，因为各层级（RouterView functional 等）的组件分发，很难统一实现点击加载失败重试，最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)，比如可以通过增加指令、钩子、监听事件等选项并提供上下文去更改异步组件加载状态和重新加载等）。当然，异步 chunk ( import() )可以自己实现失败后重新加载（resolved 则记录 promise，下次 import 直接返回；rejected 则不记录，下次 import 重新请求）
+- **Vue 异步组件加载失败重试**: 暂时无解，因各层级（RouterView functional 等）的分发，很难统一实现加载失败后点击重新下载，最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)。
 - 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，&lt;script type="module"&gt; & &lt;link rel="modulepreload"&gt;)；不支持则加载 Babel 转码后的代码(&lt;script nomodule&gt; & &lt;link rel="preload"&gt;)。但是不知何故未能生效，github 上有一些相关 issue。
 
 #### 笔记
 
 - 在 `js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串
-- 在 `scss`中引入 `css` 有两种方式
+- 在 `scss`中引入 `css` ([@import](https://www.sass.hk/docs)) 有两种方式
   1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件。比如: `@import '~normalize.css/normalize';`
   1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import)。比如: `@import '~normalize.css/normalize.css';`
 - `TypeScript` 中 `for in` 一个对象 obj 可以申明接口或者:
@@ -435,3 +434,4 @@ server {
 #### 其他
 
 - 升级包，全面拥抱 babel7, 暂时不能运行测试 (babel 7.4.5 版本可运行单元测试)，待相关插件跟上
+- 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) + [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 + [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)

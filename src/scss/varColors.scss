@@ -1,0 +1,28 @@
+/*
+ * @Description: 全局颜色变量
+ * @Author: 毛瑞
+ * @Date: 2019-07-06 08:30:59
+ * @LastEditors: 毛瑞
+ * @LastEditTime: 2019-07-06 09:31:37
+ */
+
+$colorDark: #333;
+$colorDeepGrey: #666;
+$colorGrey: #777;
+$colorLightGrey: #999;
+$colorBackGround: #0d1a25;
+$colorHighlight: #2588df;
+
+/* ---------------------- 我是一条分割线 ㄟ( ▔, ▔ )ㄏ ---------------------- */
+
+/// 共享给js的变量(import COLORS from '@/scss/varColors.scss') ///
+// https://github.com/css-modules/icss#export 不支持嵌套
+:export {
+  dark: $colorDark;
+  grey: $colorGrey;
+  deepgrey: $colorDeepGrey;
+  lightgrey: $colorLightGrey;
+  background: $colorBackGround;
+  highlight: $colorHighlight;
+  // ...
+}

@@ -21,7 +21,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { load } from '@/config/message'
 
 @Component
-export default class Error extends Vue {
+export default class extends Vue {
   get text() {
     return load.fail
   }

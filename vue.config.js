@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-05 17:30:06
+ * @LastEditTime: 2019-07-06 09:50:58
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -63,7 +63,7 @@ module.exports = {
       },
       // 给 sass-loader 传递选项
       sass: {
-        data: '@import "@/scss/variables.scss";', // 本项目全局变量【注意：若有样式会写入到每一个chunk】
+        data: '@import "@/scss/var.scss";', // 本项目全局变量【注意：若有样式会写入到每一个chunk】
       },
     },
   },
@@ -305,7 +305,7 @@ module.exports = {
     //     .use('sass-resources-loader')
     //     .loader('sass-resources-loader')
     //     .options({
-    //       resources: 'src/scss/variables.scss', // 字符串或字符串数组
+    //       resources: 'src/scss/var.scss', // 字符串或字符串数组
     //     })
     //     .end()
     // )

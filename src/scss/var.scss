@@ -1,0 +1,57 @@
+/*
+ * @Description: 全局scss变量【请不要在此文件写和引入具体样式，否则会打包到所有css chunk中】
+ * @Author: 毛瑞
+ * @Date: 2019-06-19 11:34:44
+ * @LastEditors: 毛瑞
+ * @LastEditTime: 2019-07-06 10:16:07
+ */
+
+// 【为避免变量名冲突，请使用命名空间或规划好命名方式】
+
+/// 变量 (私有变量 _Case)///
+@import './varColors.scss'; // 颜色 【colorCase】: colorRed
+@import './varFontSIzes.scss'; // 字号 【同css】: x-smaller、xxx-large
+@import './varZIndexes.scss'; // z-index层级划分 【zCase】: zMessage
+@import './varLayout.scss'; // 固定布局尺寸 【(height|width)Case】: heightHeader、widthLfetColumn
+
+/* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
+
+/// 扩展（@extend %substr;） ///
+
+// 单行文本溢出省略号
+%substr {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// 在页面居中【需要指定高宽】
+%centerPage {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  position: absolute;
+}
+
+/* ---------------------- 我也是一条分割线 (*❦ω❦) ---------------------- */
+
+/// 混入（@include name(args);） ///
+
+// 多行溢出省略号(-webkit-有效，其它截断) 参数为行数
+@mixin ellipsis($clamp) {
+  // 多行溢出省略号
+  overflow: hidden;
+  word-break: break-word;
+
+  display: -webkit-box;
+  -webkit-line-clamp: $clamp;
+  -webkit-box-orient: vertical;
+}
+
+/* ---------------------- 我还是一条分割线 ㄟ( ▔, ▔ )ㄏ ---------------------- */
+
+/// 共享给js的变量(import VAR from '@/scss/var.scss') ///
+// https://github.com/css-modules/icss#export 不支持嵌套
+// :export {}
