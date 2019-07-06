@@ -136,7 +136,6 @@ export default class extends Vue {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" module>
 .wrapper {
   h3 {
@@ -151,7 +150,7 @@ export default class extends Vue {
     margin: 0 10px;
   }
   a {
-    color: #42b983;
+    color: $colorHighlight;
   }
 }
 </style>
