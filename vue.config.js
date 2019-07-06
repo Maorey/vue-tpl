@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-06 09:50:58
+ * @LastEditTime: 2019-07-06 13:20:18
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -106,12 +106,6 @@ module.exports = {
   /// 【webpack配置】 ///
   // https://github.com/neutrinojs/webpack-chain#getting-started
   chainWebpack(config) {
-    /// 【增加一个入口】 ///
-    // config
-    //   .entry('polyfill')
-    //   .add(path.resolve('src/libs/polyfill'))
-    //   .end()
-
     /// 【设置页面入口目录别名 已有: @ => src 】 ///
     // 同时设置TypeScript
     let alias = '@com'
@@ -145,17 +139,6 @@ module.exports = {
     }
     updateJSON(TS_CONFIG_FILE, TS_PATHS_KEY, TS_PATHS)
 
-    // config.output.hashDigest('base64')
-    // config.output.hashFunction('md5')
-    // config.output.hashFunction(require('metrohash').MetroHash64)
-    // config.output.hashDigestLength(5) // 全局hash长度
-
-    /// 【不处理的依赖库】 ///
-    // 一般情况不建议使用，在html模板引入了会创建全局变量的js后可以设置以在src中使用这个全局变量
-    // config.externals({
-    //   global: 'global',
-    // })
-
     /// 【优化(optimization)】 ///
     // https://webpack.docschina.org/configuration/optimization
     // config.optimization.mangleWasmImports(true) // WebAssembly短名【暂不支持短方法】
@@ -178,7 +161,7 @@ module.exports = {
       automaticNameDelimiter: '.', // 超过大小, 分包时文件名分隔符
       // automaticNameMaxLength: 15, // 分包文件名自动命名最大长度【文档有写，但是报错unknown】
       name:
-        !isProd ||
+        isProd &&
         // 生产环境缩写 vendors.main.show.user.77d.js => v.HTY.05b.js
         (module => {
           let name = 'v.' // 前缀
@@ -314,5 +297,22 @@ module.exports = {
 
     /// 【不同环境配置】 ///
     chainWebpack(config)
+
+    /// 【不处理的依赖库】 ///
+    // 一般情况不建议使用，在html模板引入了会创建全局变量的js后可以设置以在src中使用这个全局变量
+    // config.externals({
+    //   global: 'global',
+    // })
+
+    /// 【增加一个入口】 ///
+    // config
+    //   .entry('polyfill')
+    //   .add(path.resolve('src/libs/polyfill'))
+    //   .end()
+
+    // config.output.hashDigest('base64')
+    // config.output.hashFunction('md5')
+    // config.output.hashFunction(require('metrohash').MetroHash64)
+    // config.output.hashDigestLength(5) // 全局hash长度
   },
 }
