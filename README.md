@@ -39,13 +39,13 @@ git config core.ignorecase false # 使git对文件名大小写敏感
 ### 开发环境（开发调试时使用）
 
 ```bash
-yarn run dev
+yarn run dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.development.local 文件中设置)
 ```
 
 ### 构建项目（生成部署文件）
 
 ```bash
-yarn run build
+yarn run build # --watch : 跟踪文件变化
 ```
 
 ### 代码风格检查和修正（提交 Git 时会自动执行）
@@ -63,8 +63,16 @@ yarn run test:e2e
 ### 单元测试
 
 ```bash
-yarn run test:unit
+yarn run test:unit # --watch : 跟踪文件变化
 ```
+
+### 命令帮助
+
+```bash
+yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help test:e2e
+```
+
+tips:
 
 ## 说明及注意事项
 
