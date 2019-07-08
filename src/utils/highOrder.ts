@@ -3,9 +3,10 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:32:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 21:47:44
+ * @LastEditTime: 2019-07-08 14:18:59
  */
 import { CreateElement, Component, RenderContext } from 'vue'
+import { AsyncComponentPromise, AsyncComponentFactory } from 'vue/types/options'
 import CONFIG from '@/config'
 
 import loading from '@com/Loading.vue' // 加载中
@@ -49,7 +50,8 @@ function getChooser(
  *
  * @returns {Function} 带加载状态的异步组件
  */
-function getAsync(getter: () => Promise<any>) {
+function getAsync(getter: () => AsyncComponentPromise): AsyncComponentFactory {
+  // vue 对异步组件工厂函数的返回对象component属性定义有误，按照官网的文档，应该是个Promise对象
   return () => ({
     error, // 加载失败时
     loading, // 加载时

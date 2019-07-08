@@ -4,23 +4,27 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:01:27
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 12:42:47
+ * @LastEditTime: 2019-07-08 13:55:45
  */
+
+/** 排序比较方法
+ * @param {Any} one 待比较的值之一
+ * @param {Any} two 待比较的值之二
+ *
+ * @returns {Any} 返回 truthy: one在two前; falsy: one在two后
+ */
+type Compare = (one: any, two: any) => any
 
 /** 使用插入排序阈值 最佳取4
  */
 const CUTOFF: number = 4
 /** 升序
- * @param {Any} current 当前项
- * @param {Any} next 下一项
- *
- * @returns {Boolean}
  */
-const ASC = (current: any, next: any): boolean => current > next
+const ASC: Compare = (one: any, two: any): boolean => one > two
 
 // 闭包变量
 let arr: any[]
-let compare: (current: any, next: any) => boolean
+let compare: Compare
 
 /** 比较并交换数据
  * @param {Number} i 待交换的数组索引
@@ -115,10 +119,7 @@ function partition(left: number, right: number): void {
  *
  * @returns {Array} arr 排序后的原数组
  */
-function quickSort(
-  array: any[],
-  fun: (current: any, next: any) => boolean = ASC
-): any[] {
+function quickSort(array: any[], fun: Compare = ASC): any[] {
   if (!Array.isArray(array) || array.length < 2) {
     return array
   }

@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 15:56:35
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 16:15:17
+ * @LastEditTime: 2019-07-08 13:57:02
  */
 import AXIOS from 'axios'
 
@@ -65,7 +65,7 @@ function toString(value: any): string {
  * @param {String} url 资源地址
  * @param {Object<any>} params 查询参数
  */
-function getKEY(url: string, params?: IObject<any>): string {
+function getKEY(url: string, params?: IObject): string {
   const part: string[] = url.split('?') // 提取查询参数
   // 处理查询参数
   let query: string = part[1]
@@ -100,9 +100,9 @@ function getKEY(url: string, params?: IObject<any>): string {
 function request(
   url: string,
   method: string,
-  params?: IObject<any>,
+  params?: IObject,
   data?: any,
-  config?: IObject<any>
+  config?: IObject
 ): Promise<any> {
   config = { ...config }
   config.url = url
@@ -155,11 +155,7 @@ function request(
  *
  * @returns {Promise} 响应
  */
-function get(
-  url: string,
-  params?: IObject<any>,
-  config?: IObject<any>
-): Promise<any> {
+function get(url: string, params?: IObject, config?: IObject): Promise<any> {
   return request(url, 'get', params, null, config)
 }
 /** put请求
@@ -173,8 +169,8 @@ function get(
 function put(
   url: string,
   data: any,
-  params?: IObject<any>,
-  config?: IObject<any>
+  params?: IObject,
+  config?: IObject
 ): Promise<any> {
   return request(url, 'put', params, data, config)
 }
@@ -189,8 +185,8 @@ function put(
 function post(
   url: string,
   data: any,
-  params?: IObject<any>,
-  config?: IObject<any>
+  params?: IObject,
+  config?: IObject
 ): Promise<any> {
   return request(url, 'post', params, data, config)
 }
@@ -201,11 +197,7 @@ function post(
  *
  * @returns {Promise} 响应
  */
-function del(
-  url: string,
-  params?: IObject<any>,
-  config?: IObject<any>
-): Promise<any> {
+function del(url: string, params?: IObject, config?: IObject): Promise<any> {
   return request(url, 'delete', params, null, config)
 }
 
