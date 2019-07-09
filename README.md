@@ -147,7 +147,7 @@ tips:
 - 目录及文件命名：<br>
   **文件夹及其它文件**(js/scss/图片等)使用 `camelCase` (即：首字母小写驼峰 = lowerCamelCase)；<br>
   **vue 单文件组件**使用 `PascalCase` ( 即：首字母大写驼峰 = CamelCase = UpperCamelCase)<br><br>
-  例外情况:
+  例外情况([node](https://nodejs.org/api/modules.html)/[ts](https://www.tslang.cn/docs/handbook/module-resolution.html)模块解析无法添加扩展名 ╮(╯▽╰)╭):
 
   - 组件包含不可复用的子组件时，应视为一个组件, 创建**文件夹容器**，比如:
 
@@ -159,7 +159,7 @@ tips:
       ...
 
     // .vue
-    import BillList from '{path}/BillList'
+    import BillList from '{path}/BillList/index.vue'
     ```
 
 - 视图只负责布局及相关，包含子组件的可使用**文件夹容器**方式或将子组件存放在对应层级的 `components` 目录下的同名目录(`camelCase`)下
@@ -183,7 +183,7 @@ tips:
 
   （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含 Prettier 插件相关风格设置）
 
-- 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) 强烈推荐(B)及以上和 TypeScript [tslint.json](https://palantir.github.io/tslint/rules/)
+- 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上**和 TypeScript [tslint.json](https://palantir.github.io/tslint/rules/)
 
 - 提交代码请使用标识: Add/Del/Fix/Mod 等
 - 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后(方便查看代码)
@@ -420,7 +420,7 @@ server {
 
 #### 问题及思考
 
-- **Vue 异步组件加载失败重试**: 暂时无解，因各层级（RouterView functional 等）的分发，很难统一实现加载失败后点击重新下载，最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)。
+- **Vue 异步组件加载失败重试**: 暂时无解，因各层级（RouterView functional 等）的分发，很难统一实现加载失败后可点击重新下载，最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)。
 - 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，&lt;script type="module"&gt; & &lt;link rel="modulepreload"&gt;)；不支持则加载 Babel 转码后的代码(&lt;script nomodule&gt; & &lt;link rel="preload"&gt;)。但是不知何故未能生效，github 上有一些相关 issue。
 
 #### 笔记

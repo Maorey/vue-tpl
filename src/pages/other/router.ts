@@ -13,7 +13,7 @@ import CONFIG from '@/config/router/other'
 
 Vue.use(Router) // 全局注册
 
-const ROUTER = CONFIG as IObject<any>
+const ROUTER = CONFIG as IObject
 
 const router = new Router({
   mode: 'hash',

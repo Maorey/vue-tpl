@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 11:34:44
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-06 10:16:07
+ * @LastEditTime: 2019-07-08 10:37:14
  */
 
 // 【为避免变量名冲突，请使用命名空间或规划好命名方式】
@@ -16,10 +16,10 @@
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 
-/// 扩展（@extend %substr;） ///
+/// 扩展（@extend %ellipsis;） ///
 
 // 单行文本溢出省略号
-%substr {
+%ellipsis {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

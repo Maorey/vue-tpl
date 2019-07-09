@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:32:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-08 14:18:59
+ * @LastEditTime: 2019-07-09 12:29:04
  */
 import { CreateElement, Component, RenderContext } from 'vue'
 import { AsyncComponentPromise, AsyncComponentFactory } from 'vue/types/options'
@@ -45,17 +45,16 @@ function getChooser(
 }
 
 /** 获取带加载状态的【异步】组件
- * @param {Function} getter 异步组件获取方法, 比如: () => import('a.vue')
+ * @param {Function} component 异步组件, 比如: () => import('a.vue')
  *    另: 第一次执行import方法就会开始下载chunk并返回Promise，成功后保存Promise下次直接返回
  *
  * @returns {Function} 带加载状态的异步组件
  */
-function getAsync(getter: () => AsyncComponentPromise): AsyncComponentFactory {
-  // vue 对异步组件工厂函数的返回对象component属性定义有误，按照官网的文档，应该是个Promise对象
+function getAsync(component: AsyncComponentPromise): AsyncComponentFactory {
   return () => ({
     error, // 加载失败时
     loading, // 加载时
-    component: getter(), // 加载成功时(不能是工厂函数啊...)
+    component, // 加载成功时(2.6.10又可以是工厂函数了...)
 
     delay: 1, // 展示加载中延时(默认200)
     timeout: CONFIG.timeout, // 加载超时（默认Infinity）
