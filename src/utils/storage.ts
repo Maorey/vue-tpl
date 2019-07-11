@@ -3,23 +3,26 @@
  * @Author: 毛瑞
  * @Date: 2019-06-04 16:07:30
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 16:21:30
+ * @LastEditTime: 2019-07-11 23:39:34
  */
 import { IObject } from '@/types'
 
-/** 存储池
- */
-interface IPool {
+interface IKeyVal {
   /** 键
    */
   k: any
   /** 值
    */
   v: any
+}
+/** 存储池
+ */
+interface IPool extends IKeyVal {
   /** 使用计数
    */
-  c?: number
+  c: number
 }
+
 /** 内存存储 key/value可以任意类型
  */
 class Memory {
@@ -34,7 +37,7 @@ class Memory {
   protected alive: number
   /** timeout队列
    */
-  private out: IPool[]
+  private out: IKeyVal[]
 
   /** 构造函数
    * @param {Number} max 最大缓存数量，默认30
@@ -56,16 +59,18 @@ class Memory {
    * 0 返回{key, val}
    * 1 移除该key, 返回val
    * 其它 返回val (计引用次数)【默认】
-   * @param {Array} arr 存储池
+   * @param {Array} pool 存储池
    *
    * @returns {Any} 见option
    */
-  public get(key: any, option?: number, arr?: IPool[]): any {
-    arr || (arr = this.pool)
+  public get(key: any, option?: number, pool?: IPool[] | IKeyVal[]): any {
+    pool || (pool = this.pool)
 
     // 从后往前找
-    for (let tmp: IPool, idx: number = arr.length - 1; idx > -1; idx--) {
-      tmp = arr[idx]
+    let tmp: IPool | IKeyVal
+    let index: number = pool.length
+    while (index--) {
+      tmp = pool[index]
 
       if (tmp.k === key) {
         // 找到缓存
@@ -73,10 +78,10 @@ class Memory {
           case 0: // 获取kv
             return tmp
           case 1: // 移除
-            arr.splice(idx, 1)
+            pool.splice(index, 1)
             break
           default:
-            tmp.c === undefined || tmp.c++ // 计数
+            (tmp as IPool).c++ // 计数
         }
 
         return tmp.v // 返回值
@@ -92,7 +97,7 @@ class Memory {
    * @returns {Any} val 存储值
    */
   public set(key: any, value: any, expires?: number): any {
-    (expires === undefined || isNaN(expires)) && (expires = this.alive)
+    expires === undefined && (expires = this.alive)
     clearTimeout(this.get(key, 1, this.out)) // 先清除该key的timeout
 
     const tmp: any = this.get(key, 0) // 获取{key, val}
@@ -129,7 +134,7 @@ class Memory {
    */
   public clear(): void {
     // 清空timeout队列
-    let item: IPool
+    let item: IKeyVal
     for (item of this.out) {
       clearTimeout(item.v)
     }
@@ -138,30 +143,33 @@ class Memory {
     this.pool = []
   }
 
-  // 去掉超出限制数量且使用次数最低的
+  // 去掉使用次数最低的
   private elim(): void {
     const pool: IPool[] = this.pool
 
-    let idx: number = 0 // 待移除项下标
+    let index: number = 0 // 待移除项下标
     let item: IPool = pool[0] // 待移除项
-    // 从前往后找
-    const LEN: number = Math.ceil(pool.length / 2) // 只从前一半里找
-    for (let i: number = 1, count: number = Infinity; i < LEN; i++) {
-      item = pool[i]
 
-      if (item.c !== undefined && item.c < count) {
-        // 找到使用次数最少的
+    // 只从前一半里找
+    for (
+      let i: number = 1, LEN: number = pool.length / 2, count: number = item.c;
+      i < LEN;
+      i++
+    ) {
+      if (!count) {
+        // 使用次数为0(没有get过)
+        break
+      }
+
+      if (pool[i].c < count) {
+        // 记录使用次数更少的
+        index = i
+        item = pool[i]
         count = item.c
-        idx = i
-
-        if (!count) {
-          // 使用次数为0(没有get过)
-          break
-        }
       }
     }
 
-    pool.splice(idx, 1) // 移除该项
+    pool.splice(index, 1) // 移除该项
     clearTimeout(this.get(item.k, 1, this.out)) // 同时移除timeout
   }
 }
@@ -192,7 +200,7 @@ const local = {
       if (execArray) {
         if (Date.now() > parseInt(execArray[1])) {
           // 过期
-          STORAGE.removeItem(key) // 移除
+          STORAGE.removeItem(key)
           return
         }
 
@@ -223,11 +231,9 @@ const local = {
     }
 
     clearTimeout(timeoutDic[key]) // 先清除该key的timeout
-    // 设置过期时间
     if (expires) {
+      str = Date.now() + expires + str // 加时间戳
       timeoutDic[key] = setTimeout(() => this.remove(key), expires)
-      // 加时间戳
-      str = Date.now() + expires + str
     }
 
     STORAGE.setItem(key, str) // 存储
@@ -244,10 +250,10 @@ const local = {
     clearTimeout(timeoutDic[key])
     delete timeoutDic[key]
 
-    const val: object | undefined = this.get(key) // 获取值
-    STORAGE.removeItem(key) // 移除存储（无论成败，返回undefined）
+    const value: object | undefined = this.get(key) // 获取值
+    STORAGE.removeItem(key) // 移除存储
 
-    return val
+    return value
   },
   /** 清空存储
    */
