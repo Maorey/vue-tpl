@@ -3,22 +3,21 @@
  * @Author: 毛瑞
  * @Date: 2019-07-01 14:10:27
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 14:42:53
+ * @LastEditTime: 2019-07-11 16:11:17
  */
 
 // 查看图标: https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=9402
 
-// 不能 @/scss/font/antDesign.eot 只能相对(被引入的地方)路径啊 啊啊啊
 @font-face {
   font-family: 'antDesign';
-  src: url('../../scss/font/antDesign.eot'); // IE9
-  src: url('../../scss/font/antDesign.eot?#iefix') format('embedded-opentype'),
+  src: url('~@/scss/font/antDesign.eot'); // IE9
+  src: url('~@/scss/font/antDesign.eot?#iefix') format('embedded-opentype'),
     // IE6-IE8
-      url('../../scss/font/antDesign.woff2') format('woff2'),
-    url('../../scss/font/antDesign.woff') format('woff'),
-    url('../../scss/font/antDesign.ttf') format('truetype'),
+      url('~@/scss/font/antDesign.woff2') format('woff2'),
+    url('~@/scss/font/antDesign.woff') format('woff'),
+    url('~@/scss/font/antDesign.ttf') format('truetype'),
     // chrome, firefox, opera, Safari, Android, iOS 4.2+
-      url('../../scss/font/antDesign.svg#antDesign') format('svg'); // iOS 4.1-
+      url('~@/scss/font/antDesign.svg#antDesign') format('svg'); // iOS 4.1-
 }
 
 // 所有字体图标

@@ -121,7 +121,7 @@ tips:
 
 2. 已有目录别名如下:
 
-   - `~` -> `node_modules/`(html/scss 中使用) 示例: `@import '~normalize.css/normalize'`
+   - `~` -> 解析别名/package(`vue template/scss` 中使用) 示例: `@import '~normalize.css/normalize'`、`background: url(~@index/assets/bg.png)`
    - `@` -> `src`
    - `@com` -> `src/components`
    - `@{entry}` -> 页面入口文件所在目录，如: `@index`
@@ -444,7 +444,7 @@ server {
 #### 笔记
 
 - 在 `js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串
-- 在 `scss`中引入 `css` ([@import](https://www.sass.hk/docs)) 有两种方式
+- 在 `scss` 中引入 `css` ([@import](https://www.sass.hk/docs)) 有两种方式
   1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件。比如: `@import '~normalize.css/normalize';`
   1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import)。比如: `@import '~normalize.css/normalize.css';`
 - `TypeScript` 中 `for in` 一个对象 obj 可以申明接口或者:

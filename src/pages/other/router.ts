@@ -3,12 +3,14 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 21:41:25
+ * @LastEditTime: 2019-07-11 12:09:50
  */
 import Vue from 'vue'
 import Router from 'vue-router'
 
 import { IObject } from '@/types'
+import { getAsync } from '@/utils/highOrder' // 高阶组件工具
+
 import CONFIG from '@/config/router/other'
 
 Vue.use(Router) // 全局注册
@@ -21,8 +23,9 @@ const router = new Router({
     {
       path: `/${ROUTER.home.name}`,
       name: ROUTER.home.name,
-      component: () =>
-        import(/* webpackChunkName: "oHome" */ './views/Home.vue'),
+      component: getAsync(() =>
+        import(/* webpackChunkName: "oHome" */ './views/Home.vue')
+      ),
     },
     {
       path: `/${ROUTER.about.name}`,
@@ -30,8 +33,9 @@ const router = new Router({
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "oAbout" */ './views/About.vue'),
+      component: getAsync(() =>
+        import(/* webpackChunkName: "oAbout" */ './views/About.vue')
+      ),
     },
 
     // 默认重定向到首页去

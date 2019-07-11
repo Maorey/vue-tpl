@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-09 11:45:23
+ * @LastEditTime: 2019-07-11 15:59:43
  -->
 <template>
   <body>
@@ -57,12 +57,12 @@ export default class extends Vue {
     return [
       {
         name: ROUTER.home.title,
-        src: require('@index/assets/thumbnails/home.png'),
+        src: require('@index/assets/home.png'),
         to: '/' + ROUTER.home.name,
       },
       {
         name: ROUTER.about.title,
-        src: require('@index/assets/thumbnails/about.png'),
+        src: require('@index/assets/about.png'),
         to: '/' + ROUTER.about.name,
       },
     ]
@@ -96,7 +96,7 @@ export default class extends Vue {
   }
 }
 .array {
-  bottom: 5px;
+  bottom: 10px;
   width: 100%;
   position: absolute;
   text-align: center;
