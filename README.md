@@ -121,11 +121,31 @@ tips:
 
 2. 已有目录别名如下:
 
-   - `~` -> 解析别名/package(`vue template/scss` 中使用) 示例: `@import '~normalize.css/normalize'`、`background: url(~@index/assets/bg.png)`
    - `@` -> `src`
    - `@com` -> `src/components`
    - `@{entry}` -> 页面入口文件所在目录，如: `@index`
    - `@{entry}Com` -> 页面入口文件所在目录下的 `components` 目录，如: `@indexCom`
+
+   **Tips**: 在 `vue template` / `scss` 中使用 `~` 解析 `别名`/`依赖包目录`。 示例:
+
+   ```html
+   <!-- SomeView.vue -->
+   <template>
+     <div :class="$style.wrapper">
+       <!-- alias: @ -->
+       <img src="~@/assets/logo.png" />
+     </div>
+   </template>
+
+   <style lang="scss" module>
+     // package normalize.css: node_modules/normalize.css
+     @import '~normalize.css/normalize';
+
+     .wrapper {
+       background: url(~@index/assets/bg.png); // alias: @index
+     }
+   </style>
+   ```
 
 3. 输出目录为 `dist`, 包含 js/css/img/font/media 等文件夹
 4. 所有 `config` 目录下的内容都会被打包到同一个文件`conf.*.js`(需要保留的注释请使用: `/*! 注释内容 */`)，用于支持直接修改配置文件不必重新打包代码
@@ -146,8 +166,8 @@ tips:
 - 新建目录时尽量复用上述列出的目录名，保证结构清晰的情况下减少目录层级
 - 目录及文件命名：<br>
   **文件夹及其它文件**(js/scss/图片等)使用 `camelCase` (即：首字母小写驼峰 = lowerCamelCase)；<br>
-  **vue 单文件组件**使用 `PascalCase` ( 即：首字母大写驼峰 = CamelCase = UpperCamelCase)<br><br>
-  例外情况([node](https://nodejs.org/api/modules.html)/[ts](https://www.tslang.cn/docs/handbook/module-resolution.html)模块解析无法添加扩展名 ╮(╯▽╰)╭):
+  **vue 单文件组件**(含`tsx`/`jsx`/`functional .(ts|js)`)使用 `PascalCase` ( 即：首字母大写驼峰 = CamelCase = UpperCamelCase)<br><br>
+  例外情况:
 
   - 组件包含不可复用的子组件时，应视为一个组件, 创建**文件夹容器**，比如:
 
@@ -162,12 +182,12 @@ tips:
     import BillList from '{path}/BillList'
     ```
 
-    或者
+    或者 ([node](https://nodejs.org/api/modules.html)/[ts](https://www.tslang.cn/docs/handbook/module-resolution.html)模块解析无法添加扩展名 ╮(╯▽╰)╭)
 
     ```TypeScript
     // BillList组件
     BillList
-    │── index.vue # 唯一例外
+    │── index.vue # 可以例外
     │── Item.vue
     └── ...
 
@@ -175,9 +195,9 @@ tips:
     import BillList from '{path}/BillList/index.vue'
     ```
 
-- 视图只负责布局及相关，包含子组件的可使用**文件夹容器**方式或将子组件存放在对应层级的 `components` 目录下的同名目录(`camelCase`)下
+- 视图只负责布局及交互(props 传递和事件监听)，包含子组件的可使用**文件夹容器**方式或将子组件存放在对应层级的 `components` 目录下的同名目录(`camelCase`)下
 - 公共组件/逻辑/函数/样式等模块请按照: `模块 -> 视图 -> 页面 -> 项目` 的层级提升, 配合**提前规划**确定初始层级
-- 越高的层级测试覆盖率也应越高; 修改了测试覆盖的源码后，应视情况增加测试内容并运行测试，以保证功能和行为与之前一致
+- 越高的层级测试覆盖率也应越高; 被测试的代码应加注释`@test: true`表示在对应目录下包含测试用例,否则指明路径; 修改了测试覆盖的代码后，应视情况增加测试内容并运行测试，以保证功能和行为与之前一致
 - 尽量**不要使用全局注册**(插件/组件/指令/混入等)以优化打包和使代码更清晰、易维护
 - 组件尽量**按逻辑和呈现拆分**以更好的复用和维护
 - 尽量**按照依赖库的文档描述**使用，不要从其源码(src)引入模块，这将**不会被转译**且容易随版本更新改变，可以从其构建后的 lib/dist 等目录引入模块
@@ -200,7 +220,7 @@ tips:
 
 - 提交代码请使用标识: Add/Del/Fix/Mod 等
 - 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后(方便查看代码)
-- **不要用全局样式覆盖全局样式**, 使用 `CSSModule` 并使优先级相等(注意顺序，包括同步/异步)或更高:
+- **不要用全局样式覆盖全局样式**, 应使用 `CSSModule` 并使优先级相等(注意顺序，包括同步/异步)或更高:
   ```scss
   // bad →_→
   :global {
@@ -299,23 +319,23 @@ tips:
 
   ```TypeScript
   // src/libs/somelib/index.ts
-  /** 异步引入somelib
+  /** 异步引入somelib及其插件
    * @param {Array<String>} plugins 需要加载的somelib插件名列表
    *
    * @returns {Promise<Array<Module>>}
    */
   function get(plugins: string[] = []): Promise<any> {
-    return import(/* webpackChunkName: "lSomelib" */ './somelib.min').then(() =>
+    return import(/* webpackChunkName: "lSomelib" */ 'somelib').then(() =>
       Promise.all(
         plugins.map((plugin: string) => {
           switch (plugin) {
             case 'plugin1':
               return import(
-                /* webpackChunkName: "lsPlugins" */ './plugins/plugin1.min'
+                /* webpackChunkName: "lsPlugins" */ 'somelib.plugin1'
               )
             case 'plugin2':
               return import(
-                /* webpackChunkName: "lsPlugins" */ './plugins/plugin2.min'
+                /* webpackChunkName: "lsPlugins" */ 'somelib.plugin2'
               )
             // 上面两个插件合并到一个chunk里
           }
@@ -443,7 +463,7 @@ server {
 
 #### 笔记
 
-- 在 `js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串
+- 在 `ts/js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串, 其他类似(新的文件格式请配置loader和增加[ts定义](src/shims-modules.d.ts))
 - 在 `scss` 中引入 `css` ([@import](https://www.sass.hk/docs)) 有两种方式
   1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件。比如: `@import '~normalize.css/normalize';`
   1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import)。比如: `@import '~normalize.css/normalize.css';`

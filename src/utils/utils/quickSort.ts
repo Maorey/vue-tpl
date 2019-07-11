@@ -4,7 +4,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:01:27
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-08 13:55:45
+ * @LastEditTime: 2019-07-11 17:30:14
  */
 
 /** 排序比较方法
@@ -113,6 +113,7 @@ function partition(left: number, right: number): void {
 
 /** 快速排序, 交换数组索引并返回【不会被vue2监测到数组变化】
  * https://segmentfault.com/a/1190000010928302#articleHeader4
+ * @test true
  *
  * @param {Array} arr 待排序数组
  * @param {Function} compare 【可选，默认升序】a > b时：返回真值则升序，返回假值则降序

@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-03 14:48:49
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-08 13:49:43
+ * @LastEditTime: 2019-07-11 17:25:34
  */
 
 /** 透明度回调
@@ -32,6 +32,8 @@ const REG_RGB = /rgba?\s*\(\s*(\d+\s*,\s*\d+\s*,\s*\d+)\s*,?\s*(\d+\.?\d+?)?\s*\
  */
 const PARSEINT = (str: string): number => parseInt(str)
 /** 颜色转rgb(a)
+ * @test true
+ *
  * @param {String} color rgb\rgba\hex\hex3 颜色
  * @param {Number|Function} opacity 要设置的透明度，若回调则接受当前值返回新值
  * [0 - 1] 小于0视为0 大于等于1返回rgb 其它保留原透明度
@@ -109,6 +111,8 @@ function toRGB(
 }
 
 /** 颜色是否透明
+ * @test true
+ *
  * @param {String} color rgb\rgba\hex\hex3 颜色
  *
  * @returns {Boolean}
@@ -161,6 +165,8 @@ const FILLER_REVERSE = (rgb: number[]): void => {
   }
 }
 /** 计算反色
+ * @test true
+ *
  * @param {String} color rgb\rgba\hex\hex3 颜色
  * @param {Function} filter 自定义颜色处理方法 直接修改rgb数组 返回透明度
  * @param {Number|Function} opacity 要设置的透明度[0 - 1] 小于0视为0 大于等于1返回rgb 其它保留原透明度

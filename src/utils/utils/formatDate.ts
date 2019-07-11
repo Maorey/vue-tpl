@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 12:40:37
+ * @LastEditTime: 2019-07-11 17:27:28
  */
 import { Memory, IPool } from '@/utils/storage'
 import { IObject } from '@/types'
@@ -175,6 +175,8 @@ const REG_RESERVE = new RegExp(
   'g'
 )
 /** 获得指定格式的日期字符串
+ * @test true
+ *
  * @param {Date} date 日期对象
  * @param {String} format 格式，保留字如下
  * y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
@@ -291,6 +293,8 @@ const REPLACE_WEEK = (match: string) => (match.length > 2 ? '00' : '0')
 const REPLACE_NOON = (match: string, slot: string) =>
   (match.length > 1 ? '0' : '') + (slot === '上' ? '0' : '1')
 /** 根据日期字符串得到Date对象
+ * @test true
+ *
  * @param {String} dateString 日期字符串
  * @param {String} format 格式，保留字如下
  * y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
