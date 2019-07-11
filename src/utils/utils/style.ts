@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 16:50:15
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 12:44:14
+ * @LastEditTime: 2019-07-11 17:28:57
  */
 import { IObject } from '@/types'
 import { camelToKebab } from '@/utils'
@@ -25,6 +25,8 @@ function getValue(style: string, name: string): string {
 }
 
 /** 获取指定属性的样式
+ * @test true
+ *
  * @param {String | IObject<string>} style 样式字符串
  * @param {String} name 样式名
  *
@@ -56,6 +58,8 @@ const REG_QUOT = /"+/g
 const REG_COMMA = /,*$/
 /** css样式字符串转为对象/JSON
  *  (不处理key 'margin-top: 2px' -> {'margin-top': '2px'})
+ * @test true
+ *
  * @param {String} style 样式字符串
  * @param {Function | Boolean} filter Function: 过滤函数 Boolean: isjson
  *  返回[string, string]: 依次修改样式名和样式值
@@ -154,6 +158,8 @@ function styleToObject(
  */
 const NO_UNIT = ['z-index']
 /** 样式对象还原为css样式（值为数字的默认单位px）
+ * @test true
+ *
  * @param {IObject<string>} styleObj 样式对象
  * @param {Function} filter 过滤函数
  *  返回[string, string]: 依次修改样式名和样式值
@@ -230,6 +236,8 @@ function objectToStyle(
 }
 
 /** 更新样式字符串
+ * @test true
+ *
  * @param {String|Object} current 当前样式
  * @param {String|Object} target 带更新样式
  * @param {Function} filter 过滤函数

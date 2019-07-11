@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-04 16:07:30
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 23:39:34
+ * @LastEditTime: 2019-07-11 23:41:04
  */
 import { IObject } from '@/types'
 
@@ -24,6 +24,8 @@ interface IPool extends IKeyVal {
 }
 
 /** 内存存储 key/value可以任意类型
+ * @test true
+ *
  */
 class Memory {
   /** 存储池
@@ -184,6 +186,8 @@ const REG_TIMESPAN: RegExp = /^(\d+)(.*)$/
  */
 let timeoutDic: IObject<number> = {}
 /** 本地存储 (localStorage 单例)
+ * @test true
+ *
  */
 const local = {
   /** 获取值

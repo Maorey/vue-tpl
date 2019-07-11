@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:05:04
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 12:41:23
+ * @LastEditTime: 2019-07-11 17:27:47
  */
 
 /** 单位设置
@@ -25,6 +25,8 @@ interface INumberUnit {
 const REG_NUMBER: RegExp = /(\d)(?=(\d{3})+$)/g
 
 /** 格式化数字 每三位数字增加个逗号 （小数点后的除外）
+ * @test true
+ *
  * @param {Number|String} num
  * @param {Number} digit Number:保留小数位数
  * @param {String|INumberUnit} unit String 单位 默认按万计算

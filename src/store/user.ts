@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 15:16:19
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:08:21
+ * @LastEditTime: 2019-07-09 11:05:56
  */
 import { VuexModule, Action, Mutation } from 'vuex-module-decorators'
 
@@ -13,7 +13,7 @@ import { local } from '@/utils/storage'
 
 /** 本地存储的KEY
  */
-const LOCAL_KEY: string = 'vuetpl_user'
+const LOCAL_KEY: string = 'vue_tpl_user'
 /** 本地存储的用户信息
  */
 const USER_INFO: IUser = local.get(LOCAL_KEY) as IUser
@@ -38,6 +38,8 @@ interface IUser {
   prefer?: IPerfer
 }
 
+/** 用户状态管理
+ */
 class User extends VuexModule implements IUser {
   public token = TOKEN || ''
   public name = (TOKEN && USER_INFO.name) || ''
@@ -90,5 +92,4 @@ class User extends VuexModule implements IUser {
   }
 }
 
-export default User
-export { IUser }
+export { User as default, IUser }

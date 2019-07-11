@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-04 14:38:59
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 16:08:54
+ * @LastEditTime: 2019-07-11 17:26:55
  */
 
 /** 获取目标元素到页面顶部的绝对定位
@@ -88,6 +88,8 @@ const REG_ATTS = /<\s*(\w+)(.*?)\s*\/?>/g
 const REG_ATT = /([\w|-]+)(?:\s*=\s*["|'](.*?)["|'])?/g
 /** 获取html字符串中标签属性（比如 style）
  *    建文档树啥的就算了
+ * @test true
+ *
  * @param {String} html html 字符串
  *
  * @returns {HtmlInfo} 标签信息
@@ -190,6 +192,8 @@ const REPLACE_TAG = (match: string, tag: string) =>
     : match
 /** 转义html字符串 防注入【只过滤标签】 html转义字符&不管
  *    xss:https://jsxss.com 大小28k+
+ * @test true
+ *
  * @param {String} html
  */
 function escapeHTML(html: string): string {

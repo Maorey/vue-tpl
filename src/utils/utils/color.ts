@@ -3,8 +3,22 @@
  * @Author: 毛瑞
  * @Date: 2019-07-03 14:48:49
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 14:34:06
+ * @LastEditTime: 2019-07-11 17:25:34
  */
+
+/** 透明度回调
+ * @param {Number} alpha 透明度
+ *
+ * @returns {Number|Any}
+ */
+type Alpha = (alpha: number) => number | any
+/** 颜色/透明度过滤器
+ * @param {Array<Number>} rgb rgb 色值(直接修改该数组)
+ * @param {Number} alpha 透明度
+ *
+ * @returns {Number|Any} 返回非NaN数字则修改透明度
+ */
+type Filter = (rgb: number[], alpha: number) => number | any
 
 /** hex3/hex颜色
  */
@@ -18,6 +32,8 @@ const REG_RGB = /rgba?\s*\(\s*(\d+\s*,\s*\d+\s*,\s*\d+)\s*,?\s*(\d+\.?\d+?)?\s*\
  */
 const PARSEINT = (str: string): number => parseInt(str)
 /** 颜色转rgb(a)
+ * @test true
+ *
  * @param {String} color rgb\rgba\hex\hex3 颜色
  * @param {Number|Function} opacity 要设置的透明度，若回调则接受当前值返回新值
  * [0 - 1] 小于0视为0 大于等于1返回rgb 其它保留原透明度
@@ -27,8 +43,8 @@ const PARSEINT = (str: string): number => parseInt(str)
  */
 function toRGB(
   color: string,
-  opacity?: number | ((alpha: number) => number | any) | null,
-  filter?: (rgb: number[], alpha: number) => number | any
+  opacity?: number | null | Alpha,
+  filter?: Filter
 ): string {
   color = color.trim()
   // 非字符串或空字符串返回空字符串
@@ -95,6 +111,8 @@ function toRGB(
 }
 
 /** 颜色是否透明
+ * @test true
+ *
  * @param {String} color rgb\rgba\hex\hex3 颜色
  *
  * @returns {Boolean}
@@ -120,7 +138,7 @@ function isTransparent(color: string): boolean {
 function fitColor(
   color: string,
   ratio: number = 0.25,
-  opacity?: number | ((alpha: number) => number | any) | null
+  opacity?: number | null | Alpha
 ): string {
   return toRGB(
     color,
@@ -147,6 +165,8 @@ const FILLER_REVERSE = (rgb: number[]): void => {
   }
 }
 /** 计算反色
+ * @test true
+ *
  * @param {String} color rgb\rgba\hex\hex3 颜色
  * @param {Function} filter 自定义颜色处理方法 直接修改rgb数组 返回透明度
  * @param {Number|Function} opacity 要设置的透明度[0 - 1] 小于0视为0 大于等于1返回rgb 其它保留原透明度
@@ -155,8 +175,8 @@ const FILLER_REVERSE = (rgb: number[]): void => {
  */
 function reverseColor(
   color: string,
-  filter: (rgb: number[], alpha: number) => number | any = FILLER_REVERSE,
-  opacity?: number | ((alpha: number) => number | any) | null
+  filter: Filter = FILLER_REVERSE,
+  opacity?: number | null | Alpha
 ): string {
   return toRGB(color, opacity, filter)
 }

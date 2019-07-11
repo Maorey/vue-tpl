@@ -3,12 +3,14 @@
  * @Author: 毛瑞
  * @Date: 2019-06-04 16:41:55
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:55:57
+ * @LastEditTime: 2019-07-11 17:29:38
  */
 
 // 参考: https://developer.mozilla.org/zh-CN/docs/Web/API/Document/cookie
 
 /** 设置cookie
+ * @test true
+ *
  * @param {String} key 键
  * @param {String} val 值
  * @param {Number} expires 过期时间（小时）
@@ -34,6 +36,8 @@ const REG_REPLACE_STRING: string = '\\$&'
 const REG_GET_BEFORE: string = '(?:(?:^|.*;)\\s*'
 const REG_GET_AFTER: string = '\\s*\\=\\s*([^;]*).*$)|^.*$'
 /** 获取指定key的cookie
+ * @test true
+ *
  * @param {String} key 键
  *
  * @returns {String} 值
@@ -54,6 +58,8 @@ function get(key: string): string {
 const REG_HAS_BEFORE: string = '(?:^|;\\s*)'
 const REG_HAS_AFTER: string = '\\s*\\='
 /** 是否包含指定键的cookie
+ * @test true
+ *
  * @param {String} key 键
  *
  * @returns {Boolean}
@@ -85,6 +91,7 @@ function stringToEntry(str: string): IEntry {
   }
 }
 /** 获取所有cookie
+ * @test true
  *
  * @returns {Array<Object>} 所有cookie key,value 数组
  */
@@ -94,6 +101,8 @@ function entries(): IEntry[] {
 
 const EXPIRED = '=;expires=Thu, 01 Jan 1970 00:00:00 GMT'
 /** 移除指定key的cookie
+ * @test true
+ *
  * @param {String} key 键
  */
 function remove(key: string): void {

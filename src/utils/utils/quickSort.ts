@@ -4,23 +4,27 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:01:27
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 12:42:47
+ * @LastEditTime: 2019-07-11 17:30:14
  */
+
+/** 排序比较方法
+ * @param {Any} one 待比较的值之一
+ * @param {Any} two 待比较的值之二
+ *
+ * @returns {Any} 返回 truthy: one在two前; falsy: one在two后
+ */
+type Compare = (one: any, two: any) => any
 
 /** 使用插入排序阈值 最佳取4
  */
 const CUTOFF: number = 4
 /** 升序
- * @param {Any} current 当前项
- * @param {Any} next 下一项
- *
- * @returns {Boolean}
  */
-const ASC = (current: any, next: any): boolean => current > next
+const ASC: Compare = (one: any, two: any): boolean => one > two
 
 // 闭包变量
 let arr: any[]
-let compare: (current: any, next: any) => boolean
+let compare: Compare
 
 /** 比较并交换数据
  * @param {Number} i 待交换的数组索引
@@ -109,16 +113,14 @@ function partition(left: number, right: number): void {
 
 /** 快速排序, 交换数组索引并返回【不会被vue2监测到数组变化】
  * https://segmentfault.com/a/1190000010928302#articleHeader4
+ * @test true
  *
  * @param {Array} arr 待排序数组
  * @param {Function} compare 【可选，默认升序】a > b时：返回真值则升序，返回假值则降序
  *
  * @returns {Array} arr 排序后的原数组
  */
-function quickSort(
-  array: any[],
-  fun: (current: any, next: any) => boolean = ASC
-): any[] {
+function quickSort(array: any[], fun: Compare = ASC): any[] {
   if (!Array.isArray(array) || array.length < 2) {
     return array
   }

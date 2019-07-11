@@ -9,3 +9,5 @@
 - 自动设置代理
 - 文档
 - 增加 utils 和对应单元测试
+- 增加 vue-ts/vue-js/tsx/jsx 模板
+- index 页大屏示例
