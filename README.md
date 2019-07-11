@@ -479,6 +479,5 @@ server {
 
 #### 其他
 
-- 升级包，全面拥抱 babel7, 暂时不能运行测试 (babel 7.4.5 版本可运行单元测试)，待相关插件跟上
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) + [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 + [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
-- tsx 报错，虽然不影响编译但是报错很烦诶...
+- tsx 报错很烦诶...
