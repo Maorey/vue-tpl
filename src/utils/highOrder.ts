@@ -3,14 +3,15 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:32:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-09 12:29:04
+ * @LastEditTime: 2019-07-11 12:31:04
  */
-import { CreateElement, Component, RenderContext } from 'vue'
-import { AsyncComponentPromise, AsyncComponentFactory } from 'vue/types/options'
+
 import CONFIG from '@/config'
 
-import loading from '@com/Loading.vue' // 加载中
-import error from '@com/Error.vue' // 加载失败
+import LOADING from '@com/Loading.vue' // 加载中
+import ERROR from '@com/Error.vue' // 加载失败
+
+import { CreateElement, Component, AsyncComponent, RenderContext } from 'vue'
 
 /** 组件字典
  */
@@ -45,16 +46,20 @@ function getChooser(
 }
 
 /** 获取带加载状态的【异步】组件
- * @param {Function} component 异步组件, 比如: () => import('a.vue')
+ * @param {Function} promiseFactory 异步组件, 比如: () => import('a.vue')
  *    另: 第一次执行import方法就会开始下载chunk并返回Promise，成功后保存Promise下次直接返回
  *
  * @returns {Function} 带加载状态的异步组件
  */
-function getAsync(component: AsyncComponentPromise): AsyncComponentFactory {
+function getAsync(
+  promiseFactory: () => Promise<Component | { default: Component }>,
+  loading: Component = LOADING,
+  error: Component = ERROR
+): AsyncComponent {
   return () => ({
     error, // 加载失败时
     loading, // 加载时
-    component, // 加载成功时(2.6.10又可以是工厂函数了...)
+    component: promiseFactory() as any, // 加载成功时(不能是工厂函数了...)
 
     delay: 1, // 展示加载中延时(默认200)
     timeout: CONFIG.timeout, // 加载超时（默认Infinity）

@@ -152,13 +152,26 @@ tips:
   - 组件包含不可复用的子组件时，应视为一个组件, 创建**文件夹容器**，比如:
 
     ```TypeScript
-    // 组件
+    // BillList组件
+    BillList
+    │── index.tsx
+    │── Item.vue
+    └── ...
+
+    // 使用组件
+    import BillList from '{path}/BillList'
+    ```
+
+    或者
+
+    ```TypeScript
+    // BillList组件
     BillList
     │── index.vue # 唯一例外
-    └── Item.vue
-      ...
+    │── Item.vue
+    └── ...
 
-    // .vue
+    // 使用组件
     import BillList from '{path}/BillList/index.vue'
     ```
 
@@ -204,6 +217,11 @@ tips:
     }
   }
   ```
+- 尽量使用项目定义的空白模板，现有模板有(vsCode 输入左侧字符, [其他 IDE](.vscode/vue.code-snippets)):
+  - `ts`: vue 单文件组件中使用，生成使用 `TypeScript` 和 `CSS Module` 的空白模板
+  - `js`: vue 单文件组件中使用，生成使用 `JavaScript` 和 `CSS Module` 的空白模板
+  - `vue`: `tsx` 文件中使用，生成使用 `TypeScript` 的空白模板, 样式请使用 `CSS Module`
+  - `vue`: `jsx` 文件中使用，生成使用 `JavaScript` 的空白模板, 样式请使用 `CSS Module`
 
 ### 其他建议
 
