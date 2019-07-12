@@ -45,8 +45,10 @@ yarn run dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.develo
 ### 构建项目（生成部署文件）
 
 ```bash
-yarn run build # --watch : 跟踪文件变化
+yarn run build # --watch: 跟踪文件变化 --report: 生成打包分析
 ```
+
+同时会生成`fileName.map`以查看包名(公共快抽取到`v.`开头的文件里了)和 chunk 的映射
 
 ### 代码风格检查和修正（提交 Git 时会自动执行）
 
@@ -166,7 +168,7 @@ tips:
 - 新建目录时尽量复用上述列出的目录名，保证结构清晰的情况下减少目录层级
 - 目录及文件命名：<br>
   **文件夹及其它文件**(js/scss/图片等)使用 `camelCase` (即：首字母小写驼峰 = lowerCamelCase)；<br>
-  **vue 单文件组件**(含`tsx`/`jsx`/`functional .(ts|js)`)使用 `PascalCase` ( 即：首字母大写驼峰 = CamelCase = UpperCamelCase)<br><br>
+  **vue 单文件组件**(含[tsx](https://github.com/wonderful-panda/vue-tsx-support)/`jsx`/`functional .(ts|js)`)使用 `PascalCase` ( 即：首字母大写驼峰 = CamelCase = UpperCamelCase)<br><br>
   例外情况:
 
   - 组件包含不可复用的子组件时，应视为一个组件, 创建**文件夹容器**，比如:
@@ -463,7 +465,7 @@ server {
 
 #### 笔记
 
-- 在 `ts/js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串, 其他类似(新的文件格式请配置loader和增加[ts定义](src/shims-modules.d.ts))
+- 在 `ts/js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串, 其他类似(新的文件格式请配置 loader 和增加[ts 定义](src/shims-modules.d.ts))
 - 在 `scss` 中引入 `css` ([@import](https://www.sass.hk/docs)) 有两种方式
   1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件。比如: `@import '~normalize.css/normalize';`
   1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import)。比如: `@import '~normalize.css/normalize.css';`
@@ -480,4 +482,3 @@ server {
 #### 其他
 
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) + [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 + [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
-- tsx 报错很烦诶...

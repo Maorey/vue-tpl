@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-08 16:57:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 15:53:13
+ * @LastEditTime: 2019-07-12 12:29:08
  -->
 <template>
   <div @mouseenter="refresh" />
@@ -28,6 +28,10 @@ const INTERVAL = CONFIG.redraw
 export default class extends Vue {
   /// props ///
   @Prop() private data!: EChartOption
+  /// private instance attributes ///
+  private interval?: number
+  private chart?: ECharts
+  private option?: EChartOption
 
   /// watch ///
   @Watch('data')
@@ -43,10 +47,6 @@ export default class extends Vue {
     this.clear()
   }
 
-  /// private instance attributes ///
-  private interval?: number
-  private chart?: ECharts
-  private option?: EChartOption
   /// methods ///
   private init() {
     this.clear()

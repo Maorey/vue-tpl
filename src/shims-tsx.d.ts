@@ -1,20 +1,10 @@
 /*
- * @Description: tsx 申明
+ * @Description: tsx 支持
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 14:15:30
+ * @LastEditTime: 2019-07-12 16:54:55
  */
-import Vue, { VNode } from 'vue'
 
-// 异步组件怎么shim啊啊啊
-
-declare global {
-  namespace JSX {
-    interface Element extends VNode {}
-    interface ElementClass extends Vue {}
-    interface IntrinsicElements {
-      [elemName: string]: any
-    }
-  }
-}
+// see: https://github.com/wonderful-panda/vue-tsx-support
+import 'vue-tsx-support/enable-check'
