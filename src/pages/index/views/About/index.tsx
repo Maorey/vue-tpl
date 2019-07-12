@@ -3,12 +3,13 @@
  * @Author: 作者
  * @Date: 2019-07-09 16:08:07
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 15:46:43
+ * @LastEditTime: 2019-07-12 23:55:55
  */
 
 // import { getAsync } from '@/utils/highOrder' // utils和其他
 // import PageHeader from '@indexCom/PageHeader.vue' // 同步组件
 
+import { CreateElement } from 'vue'
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue } from 'vue-property-decorator'
 import $style from './index.module.scss' // CSS Module样式
@@ -33,8 +34,8 @@ export default class extends Vue {
   /// watch (@Watch) ///
   /// LifeCycle (beforeCreate/created/.../destroyed) ///
   /// methods (private/public) ///
-  // see: https://github.com/vuejs/jsx#installation
-  private render() {
+  // see: https://github.com/vuejs/jsx#installation 不加h会解析成argument[0]
+  private render(h: CreateElement) {
     return (
       <div class={$style.wrapper}>
         {/* 标题 */}

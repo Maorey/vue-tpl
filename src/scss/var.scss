@@ -1,12 +1,13 @@
 /*
- * @Description: 全局scss变量【请不要在此文件写和引入具体样式，否则会打包到所有css chunk中】
+ * @Description: 全局scss变量
+ *  【此文件中请勿出现具体样式，否则会打包到!所有!css chunk中】
+ *  【在此文件中导出的变量会混合到!所有!scss的导出中】
+ *  【请使用命名空间或规划好命名方式以避免变量名冲突】
  * @Author: 毛瑞
  * @Date: 2019-06-19 11:34:44
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-08 10:37:14
+ * @LastEditTime: 2019-07-13 00:04:02
  */
-
-// 【为避免变量名冲突，请使用命名空间或规划好命名方式】
 
 /// 变量 (私有变量 _Case)///
 @import './varColors.scss'; // 颜色 【colorCase】: colorRed

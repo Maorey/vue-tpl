@@ -48,7 +48,7 @@ yarn run dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.develo
 yarn run build # --watch: 跟踪文件变化 --report: 生成打包分析
 ```
 
-同时会生成`fileName.map`以查看包名(公共快抽取到`v.`开头的文件里了)和 chunk 的映射
+同时会生成`fileName.map`记录文件名/chunk 名映射 (公共代码抽到`v.`开头的文件里了)
 
 ### 代码风格检查和修正（提交 Git 时会自动执行）
 
@@ -128,20 +128,20 @@ tips:
    - `@{entry}` -> 页面入口文件所在目录，如: `@index`
    - `@{entry}Com` -> 页面入口文件所在目录下的 `components` 目录，如: `@indexCom`
 
-   **Tips**: 在 `vue template` / `scss` 中使用 `~` 解析 `别名`/`依赖包目录`。 示例:
+   **Tips**: 在 `scss` 中使用 `~` 解析 `别名`/`依赖包` 对应目录。 示例:
 
    ```html
    <!-- SomeView.vue -->
    <template>
      <div :class="$style.wrapper">
-       <!-- alias: @ -->
-       <img src="~@/assets/logo.png" />
+       <!-- 视为ts/js alias: @ -->
+       <img src="@/assets/logo.png" />
      </div>
    </template>
 
    <style lang="scss" module>
-     // package normalize.css: node_modules/normalize.css
-     @import '~normalize.css/normalize';
+     // package normalize.css: node_modules/normalize.css/normalize.css
+     @import '~normalize.css';
 
      .wrapper {
        background: url(~@index/assets/bg.png); // alias: @index
@@ -227,25 +227,27 @@ tips:
   // bad →_→
   :global {
     .content .title.active {
-      color: @colorHighlight;
+      color: $colorHighlight;
     }
   }
   // good ｂ(￣▽￣)ｄ
   .content {
     :global {
       .title.active {
-        color: @colorHighlight;
+        color: $colorHighlight;
       }
     }
   }
   ```
-- 尽量使用项目定义的空白模板，现有模板有(vsCode 输入左侧字符, [其他 IDE](.vscode/vue.code-snippets)):
-  - `ts`: vue 单文件组件中使用，生成使用 `TypeScript` 和 `CSS Module` 的空白模板
-  - `js`: vue 单文件组件中使用，生成使用 `JavaScript` 和 `CSS Module` 的空白模板
-  - `vue`: `tsx` 文件中使用，生成使用 `TypeScript` 的空白模板, 样式请使用 `CSS Module`
-  - `vue`: `jsx` 文件中使用，生成使用 `JavaScript` 的空白模板, 样式请使用 `CSS Module`
+- 尽量使用项目代码模板，现有模板有(vsCode 输入左侧字符, [其他 IDE](.vscode/vue.code-snippets)):
+  - `ts`: `TypeScript` & `CSS Module`, vue 单文件组件中使用
+  - `vue`: `TypeScript` & `CSS Module`, `tsx` 文件中使用
+  - `js`: `JavaScript` & `CSS Module`, vue 单文件组件中使用
+  - `vue`: `JavaScript` & `CSS Module`, `jsx` 文件中使用
 
 ### 其他建议
+
+- 全局 sccs 中(`src/scss/var.scss`)不要出现具体样式, 最好也不要有[`:export{}`](https://github.com/css-modules/icss#export)
 
 - 规范优雅正确适当的各种**注释**，比如方法注释及必要的变量注释：
 
@@ -461,13 +463,13 @@ server {
 #### 问题及思考
 
 - **Vue 异步组件加载失败重试**: 暂时无解，因各层级（RouterView functional 等）的分发，很难统一实现加载失败后可点击重新下载，最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)。
-- 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，&lt;script type="module"&gt; & &lt;link rel="modulepreload"&gt;)；不支持则加载 Babel 转码后的代码(&lt;script nomodule&gt; & &lt;link rel="preload"&gt;)。但是不知何故未能生效，github 上有一些相关 issue。
+- 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，`<script type="module">` & `<link rel="modulepreload">`)；不支持则加载 Babel 转码后的代码(`<script nomodule>` & `<link rel="preload">`)。但是不知何故未能生效，github 上有一些相关 issue。
 
 #### 笔记
 
 - 在 `ts/js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串, 其他类似(新的文件格式请配置 loader 和增加[ts 定义](src/shims-modules.d.ts))
 - 在 `scss` 中引入 `css` ([@import](https://www.sass.hk/docs)) 有两种方式
-  1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件。比如: `@import '~normalize.css/normalize';`
+  1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件。比如: `@import '~normalize.css';`
   1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import)。比如: `@import '~normalize.css/normalize.css';`
 - `TypeScript` 中 `for in` 一个对象 obj 可以申明接口或者:
 
@@ -481,4 +483,4 @@ server {
 
 #### 其他
 
-- 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) + [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 + [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
+- 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)

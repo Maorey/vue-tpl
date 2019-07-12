@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-09 17:05:49
+ * @LastEditTime: 2019-07-12 23:55:30
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -202,6 +202,14 @@ module.exports = {
           priority: 666,
           test: /[\\/]config[\\/]/,
         },
+        // json文件
+        // json: {
+        //   name: 'json',
+        //   chunks: 'all',
+        //   enforce: true,
+        //   priority: 668,
+        //   test: /[\\/]?.+\.json(?:[^\w].*)?$/,
+        // },
         // elementUI (建议按需引入)
         eui: {
           name: 'eui',

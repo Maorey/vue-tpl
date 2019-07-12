@@ -3,15 +3,18 @@
  * @Author: 毛瑞
  * @Date: 2019-07-01 14:01:23
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-06 08:41:26
+ * @LastEditTime: 2019-07-12 23:04:42
  */
+
+// https://www.sass.hk/docs @import
+@import '~normalize.css'; // 浏览器样式重置
+@import 'scroll.scss'; // 滚动条样式
 
 // placeholder 样式
 // input,
 // textarea {
 //   -webkit-appearance: none;
 
-//   // 得分开写 不然无效
 //   &::placeholder {
 //     color: $colorText;
 //   }
@@ -36,7 +39,3 @@
 //     color: $colorText;
 //   }
 // }
-
-// 浏览器样式重置 https://www.sass.hk/docs @import
-@import '~normalize.css/normalize';
-@import 'scroll.scss'; // 滚动条样式

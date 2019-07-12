@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-09 16:08:07
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 15:38:48
+ * @LastEditTime: 2019-07-12 23:42:11
  */
 import { eventBus } from '@/utils/eventBus' // 全局消息总线
 import { getAsync } from '@/utils/highOrder' // 高阶组件工具
@@ -11,6 +11,7 @@ import { getAsync } from '@/utils/highOrder' // 高阶组件工具
 import PageHeader from '@indexCom/PageHeader.vue' // 页面标题
 import ModuleContainer from '@indexCom/ModuleContainer.vue' // 模块容器
 
+import { CreateElement } from 'vue'
 import { Component, Vue } from 'vue-property-decorator'
 
 import $style from './index.module.scss'
@@ -37,7 +38,7 @@ const ModuleSix = getAsync(() =>
 
 @Component
 export default class extends Vue {
-  private render() {
+  private render(h: CreateElement) {
     return (
       <div class={$style.wrapper}>
         {/* 标题 */}

@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-01 14:04:31
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 14:01:33
+ * @LastEditTime: 2019-07-12 23:59:03
  */
 $barRadius: 5px; // 滚动条圆角
 $barWidth: 5px; // 滚动条宽度
@@ -83,10 +83,12 @@ $barMinHeight: 5px; // 滚动条最小高度
 /// all ///
 * {
   scroll-behavior: smooth; // 平滑滚动
+
   // FireFox
   scrollbar-width: thin;
   scrollbar-color: $colorGrey transparent;
-  // IE 9（不支持透明度/transparent）
+
+  // IE 9及以上（不支持透明度/transparent）
   scrollbar-base-color: $colorLightGrey; // 滚动条的基本颜色
   scrollbar-face-color: $colorGrey; // 立体滚动条的颜色
   scrollbar-track-color: $colorLightGrey; // 立体滚动条背景颜色

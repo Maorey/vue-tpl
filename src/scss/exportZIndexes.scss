@@ -1,0 +1,16 @@
+/*
+ * @Description: 导出全局z-index层级划分
+ * @Author: 毛瑞
+ * @Date: 2019-07-12 23:00:41
+ * @LastEditors: 毛瑞
+ * @LastEditTime: 2019-07-12 23:01:10
+ */
+
+:export {
+  panel: $zPanel;
+  comp: $zComp;
+  menu: $zMenu;
+  fixed: $zFixed;
+  dialog: $zDialog;
+  message: $zMessage;
+}

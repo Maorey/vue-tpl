@@ -1,5 +1,5 @@
 {
-  // vue 空白模板
+  // vue 代码模板
   "A ts": {
     "scope": "vue",
     "prefix": "ts",
@@ -46,7 +46,7 @@
       "</style>",
       ""
     ],
-    "description": "空白vue单文件组件模板，使用TypeScript和scss(module)"
+    "description": "vue单文件组件代码模板，使用TypeScript和scss(module)"
   },
   "A js": {
     "scope": "vue",
@@ -102,7 +102,7 @@
       "</style>",
       ""
     ],
-    "description": "空白vue单文件组件模板，使用JavaScript和scss(module)"
+    "description": "vue单文件组件代码模板，使用JavaScript和scss(module)"
   },
   "A tsx": {
     "scope": "typescriptreact",
@@ -119,6 +119,7 @@
       "// import { getAsync } from '@/utils/highOrder' // utils和其他",
       "// import PageHeader from '@indexCom/PageHeader.vue' // 同步组件",
       "",
+      "import { CreateElement } from 'vue'",
       "// see: https://github.com/kaorun343/vue-property-decorator",
       "import { Component, Vue } from 'vue-property-decorator'",
       "// import $$style from './index.module.scss' // CSS Module样式",
@@ -143,8 +144,8 @@
       "  /// watch (@Watch) ///",
       "  /// LifeCycle (beforeCreate/created/.../destroyed) ///",
       "  /// methods (private/public) ///",
-      "  // see: https://github.com/vuejs/jsx#installation",
-      "  private render() {",
+      "  // see: https://github.com/vuejs/jsx#installation 不加h会解析成argument[0]",
+      "  private render(h: CreateElement) {",
       "    return (",
       "      <div>",
       "        {/* <div class={$$style.wrapper}> */}",
@@ -164,7 +165,7 @@
       "}",
       ""
     ],
-    "description": "空白vue tsx模板"
+    "description": "vue tsx代码模板"
   },
   "A jsx": {
     "scope": "javascriptreact",
@@ -213,8 +214,8 @@
       "  // watch: {}",
       "  // [LifeCycle]: {}",
       "  // methods: {}",
-      "  // see: https://github.com/vuejs/jsx#installation",
-      "  render() {",
+      "  // see: https://github.com/vuejs/jsx#installation 不加h会解析成argument[0]",
+      "  render(h) {",
       "    return (",
       "      <div>",
       "        {/* <div class={$$style.wrapper}> */}",
@@ -234,6 +235,6 @@
       "}",
       ""
     ],
-    "description": "空白vue jsx模板"
+    "description": "vue jsx代码模板"
   }
 }

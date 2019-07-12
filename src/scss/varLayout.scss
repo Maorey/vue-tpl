@@ -3,27 +3,18 @@
  * @Author: 毛瑞
  * @Date: 2019-07-06 09:11:16
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-06 10:18:30
+ * @LastEditTime: 2019-07-12 23:01:43
  */
 
-// ↓ 私有变量 ↓
+// ↓ 私有变量(用于导出) ↓
 $_heightHeader: 60;
 $_heightFooter: 60;
 $_widthLfetColumn: 60;
 $_widthRightColumn: 60;
-// ↑ 私有变量 ↑
+// ↑ 私有变量(用于导出) ↑
 
 $heightHeader: $_heightHeader + px; // header高度
 $heightFooter: $_heightFooter + px; // footer高度
 
 $widthLfetColumn: $_widthLfetColumn + px; // 左边栏宽度
 $widthRightColumn: $_widthRightColumn + px; // 右边栏宽度
-
-/// 共享给js的变量(import LAYOUT from '@/scss/varLayout.scss') ///
-// https://github.com/css-modules/icss#export 不支持嵌套
-:export {
-  head: $_heightHeader;
-  foot: $_heightFooter;
-  lfet: $_widthLfetColumn;
-  right: $_widthRightColumn;
-}

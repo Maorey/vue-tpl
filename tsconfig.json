@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "pretty": true,
     "strict": true,
     "allowJs": true,
     "sourceMap": true,

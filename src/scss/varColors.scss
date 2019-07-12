@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-06 08:30:59
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-08 12:47:46
+ * @LastEditTime: 2019-07-12 22:57:49
  */
 
 $colorDark: #333;
@@ -13,17 +13,3 @@ $colorLightGrey: #999;
 $colorBackGround: #0d1a25;
 $colorHighlight: #2588df;
 $colorText: #cfcfcf;
-
-/* ---------------------- 我是一条分割线 ㄟ( ▔, ▔ )ㄏ ---------------------- */
-
-/// 共享给js的变量(import COLORS from '@/scss/varColors.scss') ///
-// https://github.com/css-modules/icss#export 不支持嵌套
-:export {
-  dark: $colorDark;
-  grey: $colorGrey;
-  deepgrey: $colorDeepGrey;
-  lightgrey: $colorLightGrey;
-  background: $colorBackGround;
-  highlight: $colorHighlight;
-  // ...
-}

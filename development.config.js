@@ -3,12 +3,12 @@
  * @Author: Maorey
  * @LastEditors: 毛瑞
  * @Date: 2019-04-01 13:15:59
- * @LastEditTime: 2019-06-26 16:52:43
+ * @LastEditTime: 2019-07-12 22:02:02
  */
 const FIGURE = require('./figure') // 输出图形
 
 const COUNTER = {} // 重命名计数器
-const REG_GLOBAL_VUE = /^([^\\/]+\.)vue$/ // 是否无路径vue文件
+const REG_GLOBAL_VUE = /^([^\\/]+\.)(vue|tsx|jsx)$/ // 是否无路径vue组件
 
 // 开发环境配置
 /** webpack 配置
@@ -45,7 +45,7 @@ module.exports = function(config) {
     if (match) {
       if (COUNTER[fileName]) {
         // 重名
-        fileName = match[1] + COUNTER[fileName]++ + '.vue'
+        fileName = match[1] + COUNTER[fileName]++ + '.' + match[2]
       } else {
         COUNTER[fileName] = 1
       }
