@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-12 23:55:30
+ * @LastEditTime: 2019-07-13 00:50:50
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -20,50 +20,51 @@ const updateJSON = require('./updateJSON')
 
 // 命名缩写记录
 let DIC
-// 闭包 得到字符串唯一缩写
-const short = require('./shortString')({}, (name, n) => {
-  // 同步的
-  if (!DIC) {
-    DIC = {}
-    setTimeout(() => updateJSON('fileName.map', 'chunkName', DIC))
+// 字符串缩写函数
+const short = require('./shortString')(
+  {
+    // 指定chunk名缩写 eg: home: 'h'
+  },
+  (name, n) => {
+    if (!DIC) {
+      DIC = {}
+      setTimeout(() => updateJSON('fileName.map', 'chunkName', DIC))
+    }
+
+    DIC[n] = name
   }
+)
 
-  DIC[n] = name
-})
-
-// TypeScript目录别名
 const TS_CONFIG_FILE = 'tsconfig.json'
 const TS_PATHS_KEY = 'compilerOptions.paths'
 const TS_PATHS = {
+  // ts 目录别名
   '@/*': ['src/*'],
 }
-const REG_BACKSLASH = /\\/g
 const CURRENT_DIR = path.join(process.cwd(), '/')
 
 /// 【配置项】 ///
 // https://cli.vuejs.org/zh/config
 module.exports = {
   /// 普通 ///
-  publicPath: './', // 基础路径（当前脚本所在目录）（用于找图片等）
+  publicPath: './', // 发布路径（./: 相对路径）
   lintOnSave: !isProd, // 保存时检查代码
   productionSourceMap: false, // 生产环境不要sourceMap
-  transpileDependencies: ['vuex-module-decorators'], // 转码
+  transpileDependencies: ['vuex-module-decorators'], // babel转码, 默认不转依赖包
 
   /// 【配置样式选项】 ///
   css: {
     // https://cli.vuejs.org/zh/config/#css-loaderoptions
     loaderOptions: {
-      // 给 css-loader 传递选项
       css: {
-        // class名 内容哈希5个字符（数字开头的会自动补个下划线）足够
+        // class名 内容哈希5个字符足够（数字开头的会自动补个下划线）
         // https://github.com/webpack-contrib/css-loader#localidentname
         // https://github.com/webpack/loader-utils#interpolatename
         localIdentName: isProd ? '[hash:5]' : '[folder]-[name]-[local][emoji]',
-        camelCase: 'only', // 驼峰化class名，不保留locals级别的原样式
+        camelCase: 'only', // 驼峰化class名，不保留非驼峰class名
       },
-      // 给 sass-loader 传递选项
       sass: {
-        data: '@import "@/scss/var.scss";', // 本项目全局变量【注意：若有样式会写入到每一个chunk】
+        data: '@import "@/scss/var.scss";', // 全局引入
       },
     },
   },
@@ -91,7 +92,7 @@ module.exports = {
           proxyList[key] = {
             target: environment[TARGET + tmp[1]],
             changeOrigin: true,
-            pathRewrite: path => path.replace(new RegExp(`^/${key}/`), '/'),
+            pathRewrite: url => url.replace(new RegExp(`^/${key}/`), '/'),
           }
         }
       }
@@ -103,43 +104,41 @@ module.exports = {
   /// 【webpack配置】 ///
   // https://github.com/neutrinojs/webpack-chain#getting-started
   chainWebpack(config) {
-    /// 【设置页面入口目录别名 已有: @ => src 】 ///
-    // 同时设置TypeScript
+    /// 【设置目录别名 已有: @ => src 】 ///
     let alias = '@com'
     let folderName = path.resolve('src/components')
-    config.resolve.alias.set(alias, folderName)
 
     const SUFFIX = '/*'
-    TS_PATHS[alias + SUFFIX] = [
-      folderName.replace(CURRENT_DIR, '').replace(REG_BACKSLASH, '/') + SUFFIX,
-    ]
+    const REG_BACKSLASH = /\\/g
+    const setAlias = () => {
+      config.resolve.alias.set(alias, folderName)
+
+      TS_PATHS[alias + SUFFIX] = [
+        folderName.replace(CURRENT_DIR, '').replace(REG_BACKSLASH, '/') +
+          SUFFIX,
+      ]
+    }
+    setAlias()
 
     let tmp
     for (let entryName in pages) {
       tmp = pages[entryName]
       if (tmp.alias) {
         alias = '@' + entryName
-        config.resolve.alias.set('@' + entryName, tmp.alias)
-        TS_PATHS[alias + SUFFIX] = [
-          tmp.alias.replace(CURRENT_DIR, '').replace(REG_BACKSLASH, '/') +
-            SUFFIX,
-        ]
+        folderName = tmp.alias
+        setAlias()
 
         alias = '@' + entryName + 'Com'
         folderName = path.join(tmp.alias, 'components')
-        config.resolve.alias.set(alias, folderName)
-        TS_PATHS[alias + SUFFIX] = [
-          folderName.replace(CURRENT_DIR, '').replace(REG_BACKSLASH, '/') +
-            SUFFIX,
-        ]
+        setAlias()
       }
     }
     updateJSON(TS_CONFIG_FILE, TS_PATHS_KEY, TS_PATHS)
 
     /// 【优化(optimization)】 ///
-    // https://webpack.docschina.org/configuration/optimization
+    // https://webpack.docschina.org/configuration/optimization 使用默认就好
     // config.optimization.mangleWasmImports(true) // WebAssembly短名【暂不支持短方法】
-    // config.optimization.runtimeChunk('single') // 所有生成chunk共享运行时
+    // config.optimization.runtimeChunk('single') // 所有chunk共享一个运行时文件
 
     /// 【代码分割(optimization.splitChunks 不能config.merge({}))】 ///
     // https://webpack.docschina.org/plugins/split-chunks-plugin
@@ -152,19 +151,17 @@ module.exports = {
       // 超过maxSize分割命名 true:hash(长度8，不造哪儿改)[默认] false:路径
       // hidePathInfo: true, // 也没个文件名配置啊...
       minChunks: 3, // 某个chunk被超过该数量的chunk依赖时才拆分出来
-      maxAsyncRequests: 6, // 最大异步代码请求数【浏览器并发请求数】
+      maxAsyncRequests: 6, // 最大异步代码请求数【http <= 1.1 浏览器同域名并发请求上限: 6】
       maxInitialRequests: 3, // 最大初始化时异步代码请求数
 
       automaticNameDelimiter: '.', // 超过大小, 分包时文件名分隔符
       // automaticNameMaxLength: 15, // 分包文件名自动命名最大长度【文档有写，但是报错unknown】
       name:
         isProd &&
-        // 生产环境缩写 vendors.main.show.user.77d.js => v.HTY.05b.js
+        // 生产环境缩写 vendors.main.other.user.d0ae3f07.77d.js => v.AGX.d0ae3f07.77d.js
         (module => {
           let name = 'v.' // 前缀
-
           for (let chunk of module.chunksIterable) {
-            // 缩写 chunk 名
             name += short(chunk.name)
           }
 
@@ -202,7 +199,7 @@ module.exports = {
           priority: 666,
           test: /[\\/]config[\\/]/,
         },
-        // json文件
+        // json文件 (-> json.*.*.js)
         // json: {
         //   name: 'json',
         //   chunks: 'all',
