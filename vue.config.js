@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-13 00:50:50
+ * @LastEditTime: 2019-07-13 01:13:19
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -23,7 +23,7 @@ let DIC
 // 字符串缩写函数
 const short = require('./shortString')(
   {
-    // 指定chunk名缩写 eg: home: 'h'
+    // 指定chunk名缩写 eg: index: 'i'
   },
   (name, n) => {
     if (!DIC) {
@@ -158,7 +158,7 @@ module.exports = {
       // automaticNameMaxLength: 15, // 分包文件名自动命名最大长度【文档有写，但是报错unknown】
       name:
         isProd &&
-        // 生产环境缩写 vendors.main.other.user.d0ae3f07.77d.js => v.AGX.d0ae3f07.77d.js
+        // 生产环境缩写 vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
         (module => {
           let name = 'v.' // 前缀
           for (let chunk of module.chunksIterable) {
