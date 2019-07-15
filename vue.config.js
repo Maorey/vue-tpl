@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-13 01:13:19
+ * @LastEditTime: 2019-07-15 13:35:54
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -146,8 +146,19 @@ module.exports = {
       chunks: 'all', // 包含所有类型包（同步&异步 用insert-preload补齐依赖）
 
       // 分割优先级: maxInitialRequest/maxAsyncRequests < maxSize < minSize
-      minSize: 124928, // 最小分包大小 122k
-      maxSize: 249856, // 最大分包大小 244k （超过后尝试分出大于minSize的包）
+      // 最小分包大小 122k, 183k(122*1.5)
+      minSize: 124928,
+      // webpack 5
+      // minSize: {
+      //   javascript: 124928,
+      //   style: 187392,
+      // },
+      // 最大分包大小 244k, 366k(244*1.5) （超过后尝试分出大于minSize的包）
+      maxSize: 249856,
+      // maxSize: {
+      //   javascript: 249856,
+      //   style: 374784,
+      // },
       // 超过maxSize分割命名 true:hash(长度8，不造哪儿改)[默认] false:路径
       // hidePathInfo: true, // 也没个文件名配置啊...
       minChunks: 3, // 某个chunk被超过该数量的chunk依赖时才拆分出来
@@ -240,7 +251,7 @@ module.exports = {
           test: /[\\/]node_modules[\\/]echarts[\\/]/,
         },
 
-        /// 【 css 】(多数情况下不需要) ///
+        /// 【 css 】(多数情况下不需要，webpack 5可以去掉) ///
         // 提取各入口的 css 到单独文件(还抽了一个空数组的 [entryName].*.*.js 出来???)
         // ...(() => {
         //   /** 获取模块是否是指定入口的
