@@ -3,6 +3,7 @@
 .git
 node_modules
 /dist
+/build
 
 # 测试
 /tests/e2e/reports/

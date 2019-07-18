@@ -44,9 +44,9 @@
     "vuex-module-decorators": "^0.9.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.4",
-    "@babel/plugin-transform-runtime": "^7.5.0",
-    "@babel/runtime-corejs3": "^7.5.4",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/runtime-corejs3": "^7.5.5",
     "@types/crypto-js": "^3.1.43",
     "@types/echarts": "^4.1.9",
     "@types/jest": "^24.0.15",
@@ -69,7 +69,7 @@
     "ts-jest": "^24.0.2",
     "typescript": "^3.5.3",
     "vue-template-compiler": "^2.6.10",
-    "vue-tsx-support": "^2.3.0",
+    "vue-tsx-support": "^2.3.1",
     "webpack": "^5.0.0-alpha.18"
   },
   "gitHooks": {

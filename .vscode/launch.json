@@ -28,7 +28,10 @@
       "type": "node",
       "request": "launch",
       "name": "file",
-      "program": "${file}"
+      "program": "${file}",
+      "preLaunchTask": "tsc: 监视 - tsconfig.json", // cn
+      // "preLaunchTask": "tsc: watch - tsconfig.json", // en
+      "outFiles": ["${workspaceFolder}/build/**/*.js"]
     }
   ]
 }

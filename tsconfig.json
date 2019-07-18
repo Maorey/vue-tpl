@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "help": true,
     "pretty": true,
     "strict": true,
     "allowJs": true,
@@ -8,11 +9,13 @@
     "jsx": "preserve",
     "target": "esnext",
     "module": "esnext",
+    "diagnostics": true,
     "importHelpers": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+    "outDir": "build",
     "types": [
       "webpack-env",
       "jest"
