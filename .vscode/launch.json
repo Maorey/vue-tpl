@@ -1,5 +1,4 @@
 {
-  // 调试 package.json scripts
   // https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
@@ -9,9 +8,9 @@
       "request": "launch",
       "name": "dev",
       // "stopOnEntry": true,
+      "cwd": "${workspaceFolder}",
       "program": "${workspaceFolder}/node_modules/@vue/cli-service/bin/vue-cli-service.js",
-      "args": ["serve", "--open"],
-      "cwd": "${workspaceFolder}"
+      "args": ["serve", "--open"]
     },
     // 调试生产环境脚手架
     {
@@ -19,19 +18,21 @@
       "request": "launch",
       "name": "build",
       // "stopOnEntry": true,
+      "cwd": "${workspaceFolder}",
       "program": "${workspaceFolder}/node_modules/@vue/cli-service/bin/vue-cli-service.js",
-      "args": ["build", "--report"],
-      "cwd": "${workspaceFolder}"
+      "args": ["build", "--report"]
     },
     // node环境调试当前激活编辑器代码
     {
       "type": "node",
       "request": "launch",
       "name": "file",
+      "cwd": "${workspaceFolder}",
       "program": "${file}",
-      "preLaunchTask": "tsc: 监视 - tsconfig.json", // cn
-      // "preLaunchTask": "tsc: watch - tsconfig.json", // en
+      "preLaunchTask": "tsc: 监视 - .vscode/tsconfig.json", // cn
+      // "preLaunchTask": "tsc: watch - .vscode/tsconfig.json", // en
       "outFiles": ["${workspaceFolder}/build/**/*.js"]
+      // "args": ["--experimental-modules", "--loader", "./loader.mjs"]
     }
   ]
 }

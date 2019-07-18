@@ -1,10 +1,10 @@
 {
+  "type": "module",
   "name": "vue-tpl",
+  "author": "毛瑞 <Maorey@Foxmail.com>",
   "version": "0.1.0",
   "private": false,
   "license": "MIT",
-  "author": "毛瑞 <Maorey@Foxmail.com>",
-  "description": "vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架",
   "keywords": [
     "vue2",
     "vuex3",
@@ -12,6 +12,7 @@
     "typescript3",
     "scaffolding"
   ],
+  "description": "vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Maorey/vue-tpl.git"
@@ -53,8 +54,10 @@
     "@vue/cli-plugin-babel": "^4.0.0-alpha.5",
     "@vue/cli-plugin-e2e-nightwatch": "^4.0.0-alpha.5",
     "@vue/cli-plugin-eslint": "^4.0.0-alpha.5",
+    "@vue/cli-plugin-router": "^4.0.0-alpha.5",
     "@vue/cli-plugin-typescript": "^4.0.0-alpha.5",
     "@vue/cli-plugin-unit-jest": "^4.0.0-alpha.5",
+    "@vue/cli-plugin-vuex": "^4.0.0-alpha.5",
     "@vue/cli-service": "^4.0.0-alpha.5",
     "@vue/eslint-config-standard": "^4.0.0",
     "@vue/eslint-config-typescript": "^4.0.0",
@@ -64,7 +67,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.3",
     "lint-staged": "^9.2.0",
-    "node-sass": "^4.12.0",
+    "sass": "^1.22.6",
     "sass-loader": "^7.1.0",
     "ts-jest": "^24.0.2",
     "typescript": "^3.5.3",
