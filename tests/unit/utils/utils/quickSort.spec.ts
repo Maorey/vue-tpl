@@ -3,10 +3,9 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 17:41:06
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-19 16:43:43
+ * @LastEditTime: 2019-07-19 21:05:49
  */
 import quickSort from '@/utils/utils/quickSort'
-// import quickSort from 'F:\\template\\vue-tpl\\build\\src\\utils\\utils\\quickSort.js'
 
 test('quickSort', () => {
   const testArray: number[] = []

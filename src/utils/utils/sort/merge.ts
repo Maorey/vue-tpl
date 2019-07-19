@@ -4,61 +4,27 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 10:53:34
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-19 17:32:18
+ * @LastEditTime: 2019-07-19 21:04:56
  */
 
-import { Compare } from './'
+import { ASC, Compare } from './'
 
-/** 合并两个已排序数组(在原数组上连续, 比如:[1,3,5,7,9,0,2,4,6,8] 借助辅助数组)
- * @param {Array} array 待排序数组
- * @param {Compare} compare 数组比较方法
- * @param {Number} left 第一个数组起始索引
- * @param {Number} middle 第一个数组结束索引
- * @param {Number} right 第二个数组结束索引
- *
- * @returns {Array} 原数组
- */
-function merge(
-  array: any[],
-  compare: Compare,
-  left: number,
-  middle: number,
-  right: number
-): any[] {
-  const temp: any[] = array.slice(middle + 1, right + 1) // 辅助空间(第二个数组)
-
-  let i: number = middle // 第一个数组结束索引
-  let j: number = temp.length - 1 // 第二个数组结束索引
-  while (i >= left && j >= 0) {
-    array[right--] =
-      Number(compare(array[i], temp[j])) > 0 ? array[i--] : temp[j--]
-  }
-  while (i >= left) {
-    array[right--] = array[i--]
-  }
-  while (j >= 0) {
-    array[right--] = temp[j--]
-  }
-
-  return array
-}
-/** 合并两个已排序数组(在原数组上连续, 比如:[1,3,5,7,9,0,2,4,6,8])
+/** 合并原数组上连续的两个有序数组(比如:[1,3,5,7,9,0,2,4,6,8])
  *    使用Array.prototype.splice、Array.prototype.unshift 【平均耗时为merge的5倍左右】
+ * @deprecated
  * @param {Array} array 待排序数组
  * @param {Compare} compare 数组比较方法
  * @param {Number} left 第一个数组起始索引
  * @param {Number} middle 第一个数组结束索引
  * @param {Number} right 第二个数组结束索引
- *
- * @returns {Array} 原数组
  */
-function mergeSplice(
+function mergeSp(
   array: any[],
   compare: Compare,
   left: number,
   middle: number,
   right: number
-): any[] {
+): void {
   middle++ // 第二个数组起始索引
   let temp
   while (left < right) {
@@ -73,38 +39,93 @@ function mergeSplice(
     }
     left++
   }
+}
+/** 合并原数组上连续的两个有序数组(比如:[1,3,5,7,9,0,2,4,6,8] 借助辅助数组)
+ * @param {Array} array 待排序数组
+ * @param {Compare} compare 数组比较方法
+ * @param {Number} left 第一个数组起始索引
+ * @param {Number} middle 第一个数组结束索引
+ * @param {Number} right 第二个数组结束索引
+ */
+function merge(
+  array: any[],
+  compare: Compare,
+  left: number,
+  middle: number,
+  right: number
+): void {
+  const temp: any[] = array.slice(middle + 1, right + 1) // 辅助空间(第二个数组)
 
-  return array
+  let i: number = middle // 第一个数组结束索引
+  let j: number = temp.length - 1 // 第二个数组结束索引
+  while (i >= left && j >= 0) {
+    array[right--] =
+      Number(compare(array[i], temp[j])) > 0 ? array[i--] : temp[j--]
+  }
+  while (i >= left) {
+    array[right--] = array[i--]
+  }
+  while (j >= 0) {
+    array[right--] = temp[j--]
+  }
 }
 /** 归并排序（迭代非递归）
  * @param {Array} array 待排序数组
  * @param {Compare} compare 数组比较方法
+ * @param {Number} start 数组起始索引（含）
+ * @param {Number} end 数组结束索引（含）
+ *
+ * @returns {Array} 原数组
  */
-function mergeSort(array: any[], compare: Compare): any[] {
-  const length: number = array.length
-  if (length < 2) {
+function mergeSort(
+  array: any[],
+  compare: Compare = ASC,
+  start?: number,
+  end?: number
+): any[] {
+  end === undefined && (end = array.length - 1)
+  if (end < 1) {
     return array
   }
-  const last: number = length - 1
+  start === undefined && (start = 0)
+
   // 子数组索引 前一个为[left, ..., middle]，后一个为[middle + 1, ..., right]
   let left: number
   let middle: number
   let right: number
 
-  let i: number = 1 // 子数组的大小
-  while (i < length) {
-    left = 0
-    while (left + i < length) {
+  let size: number = 1 // 子数组的大小
+  while (size < end) {
+    left = start
+    // tslint:disable-next-line: no-conditional-assignment
+    while ((middle = left + size - 1) < end) {
       // 后一个子数组存在(需要归并)
-      middle = left + i - 1
-      right = Math.min(middle + i, last)
+      right = Math.min(middle + size, end)
       merge(array, compare, left, middle, right)
       left = right + 1 // 前一个子数组索引向后移动
     }
-    i *= 2 // 每轮翻倍
+    // tslint:disable-next-line: no-bitwise
+    size <<= 1 // 每轮翻倍(*2)
   }
 
   return array
 }
+
+/// 耗时 ///
+// const testArray: number[] = []
+// let end: number = 10000
+// while (end--) {
+//   testArray.push(Math.random() * end)
+// }
+// end = testArray.length - 1
+
+// console.time('cost')
+// mergeSort(testArray)
+// console.timeEnd('cost')
+// // cost: 9ms
+// console.time('cost')
+// mergeSort(testArray, (a: number, b: number): boolean => a < b)
+// console.timeEnd('cost')
+// // cost: 15ms
 
 export default mergeSort

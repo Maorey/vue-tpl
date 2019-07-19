@@ -1,13 +1,13 @@
 /*
- * @Description: 归并排序 测试
+ * @Description: 插入排序 测试
  * @Author: 毛瑞
  * @Date: 2019-07-19 16:24:03
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-19 20:57:06
+ * @LastEditTime: 2019-07-19 20:57:10
  */
-import mergeSort from '@/utils/utils/sort/merge'
+import insertSort from '@/utils/utils/sort/insert'
 
-test('mergeSort', () => {
+test('insertSort', () => {
   const testArray: number[] = []
 
   let arrayLength: number = 10000
@@ -18,7 +18,7 @@ test('mergeSort', () => {
 
   let pass: boolean = true
 
-  mergeSort(testArray)
+  insertSort(testArray)
   for (let i: number = 0; i < arrayLength; i++) {
     if (testArray[i + 1] < testArray[i]) {
       pass = false
@@ -27,7 +27,7 @@ test('mergeSort', () => {
   }
 
   if (pass) {
-    mergeSort(testArray, (a: number, b: number): boolean => a < b)
+    insertSort(testArray, (a: number, b: number): boolean => a < b)
     for (let i: number = 0; i < arrayLength; i++) {
       if (testArray[i + 1] > testArray[i]) {
         pass = false

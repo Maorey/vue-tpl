@@ -4,7 +4,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 10:52:16
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-19 16:47:34
+ * @LastEditTime: 2019-07-19 20:11:53
  */
 
 import mergeSort from './merge' // 归并排序
@@ -16,6 +16,28 @@ import mergeSort from './merge' // 归并排序
  * @returns {Number | Boolean | null | undefined} true/大于0数字: a在b后; 其它: a在b前
  */
 type Compare = (a: any, b: any) => number | boolean | null | undefined
+
+/** 比较并交换数据
+ * @param {Number} i 待交换的数组索引
+ * @param {Number} j 待交换的数组索引
+ * @param {boolean} force 直接交换（不通过compare回调来比较）
+ */
+function swap(
+  array: any[],
+  compare: Compare,
+  i: number,
+  j: number,
+  force?: boolean
+): true | void {
+  if (force || Number(compare(array[i], array[j])) > 0) {
+    // [array[i], array[j]] = [array[j], array[i]] // 格式化时前面老自己加个;
+    force = array[i]
+    array[i] = array[j]
+    array[j] = force
+    return true
+  }
+}
+
 /** 升序
  */
 const ASC: Compare = (a: any, b: any): boolean => a > b
@@ -32,4 +54,4 @@ function sort(array: any[], compare: Compare = ASC): any[] {
   return array
 }
 
-export { sort as default, Compare }
+export { sort as default, swap, ASC, Compare }

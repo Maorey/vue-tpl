@@ -7,6 +7,7 @@
     "allowJs": true,
     "sourceMap": true,
     "jsx": "preserve",
+    "outDir": "build",
     "target": "esnext",
     "module": "esnext",
     "diagnostics": true,
@@ -15,7 +16,6 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "outDir": "build",
     "types": [
       "webpack-env",
       "jest"
