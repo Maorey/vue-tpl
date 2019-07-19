@@ -4,12 +4,14 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 10:53:34
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-19 16:24:41
+ * @LastEditTime: 2019-07-19 17:32:18
  */
 
 import { Compare } from './'
 
 /** 合并两个已排序数组(在原数组上连续, 比如:[1,3,5,7,9,0,2,4,6,8] 借助辅助数组)
+ * @param {Array} array 待排序数组
+ * @param {Compare} compare 数组比较方法
  * @param {Number} left 第一个数组起始索引
  * @param {Number} middle 第一个数组结束索引
  * @param {Number} right 第二个数组结束索引
@@ -42,6 +44,8 @@ function merge(
 }
 /** 合并两个已排序数组(在原数组上连续, 比如:[1,3,5,7,9,0,2,4,6,8])
  *    使用Array.prototype.splice、Array.prototype.unshift 【平均耗时为merge的5倍左右】
+ * @param {Array} array 待排序数组
+ * @param {Compare} compare 数组比较方法
  * @param {Number} left 第一个数组起始索引
  * @param {Number} middle 第一个数组结束索引
  * @param {Number} right 第二个数组结束索引
