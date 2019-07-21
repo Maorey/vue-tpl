@@ -3,14 +3,14 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 17:29:55
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-19 21:02:41
+ * @LastEditTime: 2019-07-21 22:28:36
  */
 
 import { ASC, Compare } from './'
 
-/** 插入排序
+/** 插入排序(稳定)
  * @param {Array} array 待排序数组
- * @param {Compare} compare 数组比较方法
+ * @param {Compare} compare 数值比较方法
  * @param {Number} start 数组起始索引（含）
  * @param {Number} end 数组结束索引（含）
  *
@@ -25,21 +25,20 @@ function insertSort(
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)
 
-  let i: number = start
-  let j: number
-  let elementI: any
-  let elementJ: any
-  while (i < end) {
-    j = ++i
-    elementJ = array[j]
-    while (j > start) {
-      elementI = array[j - 1]
-      if (Number(compare(elementI, elementJ)) > 0) {
+  if (end > start) {
+    let i: number = start
+    let j: number
+    let elementI: any
+    let elementJ: any
+    while (i++ < end) {
+      elementJ = array[(j = i)]
+      while (
+        j > start &&
+        Number(compare((elementI = array[j - 1]), elementJ)) > 0
+      ) {
         array[j--] = elementI
-      } else {
-        array[j] = elementJ
-        break
       }
+      j < i && (array[j] = elementJ)
     }
   }
 
@@ -48,19 +47,26 @@ function insertSort(
 
 /// 耗时 ///
 // const testArray: number[] = []
-// let end: number = 10000
-// while (end--) {
-//   testArray.push(Math.random() * end)
+// let last: number = 10000
+// while (last--) {
+//   testArray.push(Math.random() * last)
 // }
-// end = testArray.length - 1
 
 // console.time('cost')
 // insertSort(testArray)
 // console.timeEnd('cost')
-// // cost: 86ms
+// // cost: 66ms
+// console.time('cost')
+// insertSort(testArray)
+// console.timeEnd('cost')
+// // cost: 2ms
 // console.time('cost')
 // insertSort(testArray, (a: number, b: number): boolean => a < b)
 // console.timeEnd('cost')
-// // cost: 波动很大(6ms ~ 900ms) 不造为啥
+// // cost: 780ms ┐(：´ゞ｀)┌
+// console.time('cost')
+// insertSort(testArray, (): boolean => Math.random() > 0.5)
+// console.timeEnd('cost')
+// // cost: 6ms 不够乱
 
 export default insertSort

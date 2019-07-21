@@ -3,11 +3,11 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 16:10:48
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 12:29:29
+ * @LastEditTime: 2019-07-21 22:29:45
  */
 
+import sort from './utils/sort'
 import clone from './utils/clone'
-import quickSort from './utils/quickSort'
 import formatNumber from './utils/formatNumber'
 import formatDate, { getDateByString } from './utils/formatDate'
 import {
@@ -26,8 +26,8 @@ import {
 } from './utils/style'
 
 export {
+  sort,
   clone,
-  quickSort,
   formatNumber,
   formatDate,
   getDateByString,

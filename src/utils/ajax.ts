@@ -8,7 +8,7 @@
 import AXIOS from 'axios'
 
 import CONFIG from '@/config'
-import { clone, quickSort } from '@/utils'
+import { clone, sort } from '@/utils'
 import { Memory } from '@/utils/storage'
 
 import { IObject } from '@/types'
@@ -80,7 +80,7 @@ function getKEY(url: string, params?: IObject): string {
   // 按key升序排列 拼接字符
   if (params) {
     let key: string
-    for (key of quickSort(Object.keys(params))) {
+    for (key of sort(Object.keys(params))) {
       query += `${key}.${toString(params[key])}.`
     }
   }

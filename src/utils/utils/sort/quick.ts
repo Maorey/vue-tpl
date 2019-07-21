@@ -4,7 +4,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:01:27
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 17:30:14
+ * @LastEditTime: 2019-07-21 22:28:27
  */
 
 /** 排序比较方法
@@ -54,7 +54,8 @@ function insertSort(left: number, right: number): void {
  * @returns {Any} 主元
  */
 function findPivot(left: number, right: number): any {
-  const center: number = Math.floor((left + right) / 2)
+  // tslint:disable-next-line: no-bitwise
+  const center: number = (left + right) << 1
 
   // 将中位数放在中间 至少比较三次
   swap(left, center)
@@ -78,11 +79,10 @@ function partition(left: number, right: number): void {
   } else {
     // 得到主元 且左中右有序
     const pivot: any = findPivot(left, right)
-    // 数组长度大于阈值采用快速排序
-    // 从两边向中间找 比主元大的放到同一边 小的另一边
     let i: number = left + 1 // 最左除外
     let j: number = right - 2 // 主元（right - 1处）及最右除外
 
+    // 从两边向中间找
     while (i < j) {
       // 从左边开始找到第一个比主元大/小的
       while (i < j && compare(pivot, arr[i])) {
@@ -101,17 +101,16 @@ function partition(left: number, right: number): void {
     }
 
     // 主元换到合适位置
-    // i前面已经++了 现在是主元的位置
-    swap(i, right - 1, true)
+    swap(i, right - 1, true) // i前面已经++了 现在是主元的位置
 
-    // 对主元左侧的子数组展开快排
+    // 对主元左侧的子数组排序
     left < i - 1 && partition(left, i - 1)
-    // 对主元右侧的子数组展开快排
+    // 对主元右侧的子数组排序
     i + 1 < right && partition(i + 1, right)
   }
 }
 
-/** 快速排序, 交换数组索引并返回【不会被vue2监测到数组变化】
+/** 快速排序(不稳定)
  * https://segmentfault.com/a/1190000010928302#articleHeader4
  * @test true
  *
@@ -121,7 +120,7 @@ function partition(left: number, right: number): void {
  * @returns {Array} arr 排序后的原数组
  */
 function quickSort(array: any[], fun: Compare = ASC): any[] {
-  if (!Array.isArray(array) || array.length < 2) {
+  if (array.length < 2) {
     return array
   }
 
@@ -132,5 +131,29 @@ function quickSort(array: any[], fun: Compare = ASC): any[] {
 
   return arr
 }
+
+/// 耗时 ///
+// const testArray: number[] = []
+// let last: number = 10000
+// while (last--) {
+//   testArray.push(Math.random() * last)
+// }
+
+// console.time('cost')
+// quickSort(testArray)
+// console.timeEnd('cost')
+// // cost: 21ms
+// console.time('cost')
+// quickSort(testArray)
+// console.timeEnd('cost')
+// // cost: 0.5ms
+// console.time('cost')
+// quickSort(testArray, (a: number, b: number): boolean => a < b)
+// console.timeEnd('cost')
+// // cost: 25ms
+// console.time('cost')
+// quickSort(testArray, (): boolean => Math.random() > 0.5)
+// console.timeEnd('cost')
+// // cost: 6ms
 
 export default quickSort

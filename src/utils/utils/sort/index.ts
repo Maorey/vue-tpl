@@ -1,13 +1,14 @@
 /*
- * @Description: 排序, 兼顾内存、效率与稳定
- *   桶排序 + 基础类型(数字/字符串):快速排序 / 非基础类型:归并排序
+ * @Description: 排序 基础类型(数字/字符串):快速排序(稳定) 非基础类型:归并排序(稳定)
+ *  【重要】 排序使用compare时，a的下标一定要小于b
  * @Author: 毛瑞
  * @Date: 2019-07-19 10:52:16
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-19 20:11:53
+ * @LastEditTime: 2019-07-21 22:30:19
  */
 
 import mergeSort from './merge' // 归并排序
+import quickSort from './quickStable' // 快速排序
 
 /** 排序比较方法
  * @param {Any} a 待比较的值之一
@@ -17,41 +18,54 @@ import mergeSort from './merge' // 归并排序
  */
 type Compare = (a: any, b: any) => number | boolean | null | undefined
 
-/** 比较并交换数据
- * @param {Number} i 待交换的数组索引
- * @param {Number} j 待交换的数组索引
- * @param {boolean} force 直接交换（不通过compare回调来比较）
- */
-function swap(
-  array: any[],
-  compare: Compare,
-  i: number,
-  j: number,
-  force?: boolean
-): true | void {
-  if (force || Number(compare(array[i], array[j])) > 0) {
-    // [array[i], array[j]] = [array[j], array[i]] // 格式化时前面老自己加个;
-    force = array[i]
-    array[i] = array[j]
-    array[j] = force
-    return true
-  }
-}
-
 /** 升序
  */
-const ASC: Compare = (a: any, b: any): boolean => a > b
+const ASC: Compare = (a: any, b: any): any => a - b
 
-/** 排序
- * @param {Array} array 待排序数组
- * @param {Compare} compare 排序比较方法
+/** 目标值是否基础类型
+ * @param {Any} value 目标值
+ *
+ * @returns {Boolean} 是否基础类型
  */
-function sort(array: any[], compare: Compare = ASC): any[] {
-  if (array.length < 2) {
-    return array
+function isBaseType(value: any): boolean {
+  return (
+    value === null ||
+    value === undefined ||
+    value.constructor === Number ||
+    value.constructor === String ||
+    value.constructor === Boolean
+    // typeof value === 'symbol' // 不能类型转换和比较大小（只能 === 或 == ）
+  )
+}
+
+/** 排序 基础类型(数字/字符串):快速排序(稳定) 非基础类型:归并排序(稳定)
+ * @param {Array} array 待排序数组
+ * @param {Compare} compare 数值比较方法
+ * @param {Number} start 数组起始索引（含）
+ * @param {Number} end 数组结束索引（含）
+ *
+ * #param {Boolean} reverse 数值相等时: true:颠倒相对顺序 undefined:保留相对顺序 false: 任意
+ *
+ * @returns {Array} 原数组
+ */
+function sort(
+  array: any[],
+  compare: Compare = ASC,
+  start?: number,
+  end?: number
+): any[] {
+  start === undefined && (start = 0)
+  end === undefined && (end = array.length - 1)
+
+  if (end > start) {
+    // 判断首尾元素类型
+    // if (isBaseType(array[start]) && isBaseType(array[end])) {
+    //   return quickSort(array, compare, start, end)
+    // }
+    return mergeSort(array, compare, start, end)
   }
 
   return array
 }
 
-export { sort as default, swap, ASC, Compare }
+export { sort as default, ASC, Compare }
