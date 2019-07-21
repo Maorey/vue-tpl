@@ -5,7 +5,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 21:33:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-21 22:25:51
+ * @LastEditTime: 2019-07-21 22:33:06
  */
 
 import { ASC, Compare } from '.'
@@ -341,27 +341,27 @@ function quickSort(
 // check(quickSort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1]))
 
 /// 耗时 ///
-const testArray: number[] = []
-let last: number = 10000
-while (last--) {
-  testArray.push(Math.random() * last)
-}
+// const testArray: number[] = []
+// let last: number = 10000
+// while (last--) {
+//   testArray.push(Math.random() * last)
+// }
 
-console.time('cost')
-quickSort(testArray)
-console.timeEnd('cost')
-// cost: 21ms
-console.time('cost')
-quickSort(testArray)
-console.timeEnd('cost')
-// cost: 0.5ms
-console.time('cost')
-quickSort(testArray, (a: number, b: number): boolean => a < b)
-console.timeEnd('cost')
-// cost: 25ms
-console.time('cost')
-quickSort(testArray, (): boolean => Math.random() > 0.5)
-console.timeEnd('cost')
-// cost: 6ms
+// console.time('cost')
+// quickSort(testArray)
+// console.timeEnd('cost')
+// // cost: 21ms
+// console.time('cost')
+// quickSort(testArray)
+// console.timeEnd('cost')
+// // cost: 0.5ms
+// console.time('cost')
+// quickSort(testArray, (a: number, b: number): boolean => a < b)
+// console.timeEnd('cost')
+// // cost: 25ms
+// console.time('cost')
+// quickSort(testArray, (): boolean => Math.random() > 0.5)
+// console.timeEnd('cost')
+// // cost: 6ms
 
 export default quickSort
