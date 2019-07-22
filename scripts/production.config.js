@@ -3,7 +3,7 @@
  * @Author: Maorey
  * @LastEditors: 毛瑞
  * @Date: 2019-04-01 13:28:06
- * @LastEditTime: 2019-07-22 10:56:19
+ * @LastEditTime: 2019-07-22 11:13:17
  */
 
 /** 获取配置对象
@@ -30,7 +30,7 @@ function getLoaderOption(name) {
 module.exports = function(config) {
   config.merge({
     // https://webpack.js.org/configuration/other-options/#recordspath
-    recordsPath: require('path').resolve('./records.json'),
+    recordsPath: require('path').resolve('build/records.json'),
   })
   /// 构建优化(vue cli 大法好) ///
   // 已使用 cache-loader
