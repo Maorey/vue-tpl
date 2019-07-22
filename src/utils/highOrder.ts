@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:32:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 12:31:04
+ * @LastEditTime: 2019-07-23 02:17:25
  */
 
 import CONFIG from '@/config'
@@ -131,7 +131,7 @@ export default class extends Vue {}
 <script lang="ts">
 const Chooser = getChooser({
   A: getAsync(/* webpackChunkName: "oCom" * /() => import('A.vue')),
-  B: getAsync(/* webpackChunkName: "oCom" * / () => import('A.vue')),
+  B: getAsync(/* webpackChunkName: "oCom" * / () => import('B.vue')),
 })
 
 @Component({ components: { Chooser } })

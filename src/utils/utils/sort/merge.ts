@@ -4,7 +4,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 10:53:34
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 02:12:22
+ * @LastEditTime: 2019-07-23 02:16:54
  */
 
 import { ASC, Compare } from './'
@@ -76,7 +76,7 @@ const empty: any = null
  * @param {Number} right 第二个数组结束索引
  */
 function merge(left: number, middle: number, right: number): void {
-  // // 尽量减少辅助数组大小【耗时会略增加，为啥】
+  // // 尽量减小辅助数组大小【耗时会略增加，为啥】
   // while (right > middle) {
   //   if (Number(contrast(LIST[middle], LIST[right])) > 0) {
   //     break
@@ -129,8 +129,8 @@ function mergeSort(
       left = start
       // tslint:disable-next-line: no-conditional-assignment
       while ((middle = left + size - 1) < end) {
+        // 【并不能减少耗时，哪怕只是二者交换，又是为啥?】
         // if (right - left < CUTOFF) {
-        //   // 【并不能减少耗时，哪怕只是二者交换，又是为啥?】
         //   insertSort(left, right)
         // } else {
         // if (size === 1) {
