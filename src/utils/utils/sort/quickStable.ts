@@ -5,48 +5,77 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 21:33:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-22 11:03:24
+ * @LastEditTime: 2019-07-23 00:13:14
  */
 
 import { ASC, Compare } from '.'
-import insertSort from './insert'
+
+/** 数组长度低值:小于低值使用插入排序
+ */
+const LOW: number = 7
+/** 数组长度高值 划分时:介于低值高值左中右3数取中值,大于高值左中右各3个数取中值(9数取中)
+ */
+const HIGH: number = 40
+// 将这些变量放入执行上下文
+/** 待排序数组
+ */
+let LIST: any[]
+/** 数组元素比较方法
+ */
+let contrast: Compare
+
+/** 用于释放引用
+ */
+const empty: any = null
+
+/** 插入排序(稳定)
+ * @param {Number} start 数组起始索引（含）
+ * @param {Number} end 数组结束索引（含）
+ */
+function insertSort(start: number, end: number): void {
+  let temp: any
+  let current: any
+  let pointer: number
+  let anchor: number = start
+  while (anchor++ < end) {
+    current = LIST[(pointer = anchor)]
+    while (
+      pointer > start &&
+      Number(contrast((temp = LIST[pointer - 1]), current)) > 0
+    ) {
+      LIST[pointer--] = temp
+    }
+    pointer < anchor && (LIST[pointer] = current)
+  }
+}
 
 /** 交换数组元素
- * @param {Array} array 数组
- * @param {Number} a
- * @param {Number} b
+ * @param {Number} p1
+ * @param {Number} p2
  */
-function swap(array: any[], a: number, b: number): any {
-  [array[a], array[b]] = [array[b], array[a]]
+function swap(p1: number, p2: number): void {
+  [LIST[p1], LIST[p2]] = [LIST[p2], LIST[p1]]
 }
 
 /** 得到数组里 指定3个递增的索引 的中值索引 (最多比较三次,优先中间)
- * @param {Array} array 数组
- * @param {Compare} compare 数值比较方法
  * @param {Number} a
  * @param {Number} b
  * @param {Number} c
  *
  * @returns {Number} 中值索引
  */
-function mid3(
-  array: any[],
-  compare: Compare = ASC,
-  a: number,
-  b: number,
-  c: number
-): number {
+function mid3(a: number, b: number, c: number): number {
   /// ↓【所有情况】↓ ///
   // /// 至少两个相等 ///
-  // const ab: any = compare(array[a], array[b])
+  // const ab: any = contrast(LIST[a], LIST[b])
   // if (ab === 0) {
   //   return b
   // }
-  // const bc: any = compare(array[b], array[c])
+  // const bc: any = contrast(LIST[b], LIST[c])
   // if (bc === 0) {
   //   return b
   // }
-  // const ac: any = compare(array[a], array[c])
+  // const ac: any = contrast(LIST[a], LIST[c])
   // if (ac === 0) {
   //   return b
   // }
@@ -65,12 +94,12 @@ function mid3(
   /// ↑【所有情况】↑ ///
 
   // 减少比较，尽早返回
-  let ab: any = compare(array[a], array[b]) // (兼职:ac)
+  let ab: any = contrast(LIST[a], LIST[b]) // (兼职:ac)
   if (ab === 0) {
     return b
   }
 
-  let bc: any = compare(array[b], array[c])
+  let bc: any = contrast(LIST[b], LIST[c])
   if (bc === 0) {
     return b
   }
@@ -83,7 +112,7 @@ function mid3(
     return b
   }
 
-  ab = compare(array[a], array[c]) // ac
+  ab = contrast(LIST[a], LIST[c]) // ac
   if (ab === 0) {
     return b
   }
@@ -94,45 +123,30 @@ function mid3(
   // ab = Number(ab) > 0
   // if (ab === bc) {
   //   // 取a: (bc && ac) || (!bc && !ac)
-  //   bc && swap(array, b, c)
-  //   swap(array, a, b)
+  //   bc && swap(LIST, b, c)
+  //   swap(LIST, a, b)
   //   return b
   // }
 
   // // 取c: (bc && !ac) || (!bc && ac)
-  // bc || swap(array, a, b)
-  // swap(array, b, c)
+  // bc || swap(LIST, a, b)
+  // swap(LIST, b, c)
   // return b
 }
 
-/** 数组长度低值:小于低值使用插入排序
- */
-const LOW: number = 7
-/** 数组长度高值 划分时:介于低值高值左中右3数取中值,大于高值左中右各3个数取中值(9数取中)
- */
-const HIGH: number = 40
 /** 快速排序(稳定)
  *    怎么就写得这么难看了 ┐(：´ゞ｀)┌
- * @param {Array} array 待排序数组
- * @param {Compare} compare 数值比较方法
  * @param {Number} start 数组起始索引（含）
  * @param {Number} end 数组结束索引（含）
  *
  * @returns {Array} 原数组
  */
-function quickSort(
-  array: any[],
-  compare: Compare = ASC,
-  start?: number,
-  end?: number
-): any[] {
-  start === undefined && (start = 0)
-  end === undefined && (end = array.length - 1)
-
+function partition(start: number, end: number): void {
   let result: any = end - start + 1 // (打杂)
   if (result < LOW) {
     // 使用插入排序
-    return insertSort(array, compare, start, end)
+    insertSort(start, end)
+    return
   }
   /// 选择基准 ///
   // tslint:disable-next-line: no-bitwise 9 -> 4, 10 -> 4
@@ -141,19 +155,17 @@ function quickSort(
     // tslint:disable-next-line: no-bitwise
     result = result >> 3
     pivot = mid3(
-      array,
-      compare,
       // tslint:disable-next-line: no-bitwise
-      mid3(array, compare, start, start + result, start + (result << 1)),
-      mid3(array, compare, pivot - result, pivot, pivot + result),
+      mid3(start, start + result, start + (result << 1)),
+      mid3(pivot - result, pivot, pivot + result),
       // tslint:disable-next-line: no-bitwise
-      mid3(array, compare, end - (result << 1), end - result, end)
+      mid3(end - (result << 1), end - result, end)
     )
   } else {
-    pivot = mid3(array, compare, start, pivot, end)
+    pivot = mid3(start, pivot, end)
   }
   /// 划分数组 |=pivotValue|<pivotValue|pivotValue|>pivotValue|=pivotValue| ///
-  let pivotValue: any = array[pivot] // (兼职:pivot位置标记)
+  let pivotValue: any = LIST[pivot] // (兼职:pivot位置标记)
   let left: number = start < pivot ? start : start + 1 // 左扫描索引
   let right: number = end > pivot ? end : end + 1 // 右扫描索引
   let leftEqual: number = left // 左侧相等值<=left(不含)
@@ -165,14 +177,14 @@ function quickSort(
     // 从左侧起找到大于pivotValue的元素并交换等于的到两端(已在两端的除外)
     while (left < right) {
       if (left !== pivot) {
-        result = compare(array[left], pivotValue)
+        result = contrast(LIST[left], pivotValue)
         if (result === 0) {
           if (left < pivot) {
-            left > leftEqual && swap(array, leftEqual, left)
+            left > leftEqual && swap(leftEqual, left)
             leftEqual++
           } else {
             if (left < rightEqual) {
-              swap(array, left, rightEqual--)
+              swap(left, rightEqual--)
             } else {
               left = end
               right = --rightEqual
@@ -193,14 +205,14 @@ function quickSort(
         break
       }
       if (right !== pivot) {
-        result = compare(pivotValue, array[right])
+        result = contrast(pivotValue, LIST[right])
         if (result === 0) {
           if (right > pivot) {
-            right < rightEqual && swap(array, right, rightEqual)
+            right < rightEqual && swap(right, rightEqual)
             rightEqual--
           } else {
             if (right > leftEqual) {
-              swap(array, leftEqual++, right)
+              swap(leftEqual++, right)
             } else {
               left = ++leftEqual
               right = start
@@ -218,7 +230,7 @@ function quickSort(
 
     if (left < right) {
       // 左侧大于pivotValue的元素与右侧小于pivotValue的元素交换
-      swap(array, left++, right--)
+      swap(left++, right--)
     } else {
       // rightHit/leftHit:  false true // 左右扫描是否找到目标 不可能同时true
       if (rightHit) {
@@ -232,7 +244,7 @@ function quickSort(
       if (result !== pivot) {
         // pivot 位置 start(1) middle(0) end(2)
         pivotValue = pivot > start ? (pivot < end ? 0 : 2) : 1
-        swap(array, pivot, result)
+        swap(pivot, result)
         pivot = result
       }
 
@@ -247,7 +259,7 @@ function quickSort(
     if (leftEqual < left) {
       result = pivotValue === 1 ? start + 1 : start
       while (leftEqual > result) {
-        swap(array, --leftEqual, --left)
+        swap(--leftEqual, --left)
       }
     }
   }
@@ -258,14 +270,43 @@ function quickSort(
     if (rightEqual > right) {
       result = pivotValue === 2 ? end - 1 : end
       while (rightEqual < result) {
-        swap(array, ++right, ++rightEqual)
+        swap(++right, ++rightEqual)
       }
     }
   }
 
   /// 尾递归子序列 ///
-  --left > start && quickSort(array, compare, start, left)
-  return ++right < end ? quickSort(array, compare, right, end) : array
+  --left > start && partition(start, left)
+  ++right < end && partition(right, end)
+}
+
+/** 归并排序(稳定)
+ * @param {Array} array 待排序数组
+ * @param {Compare} compare 数值比较方法
+ * @param {Number} start 数组起始索引（含）
+ * @param {Number} end 数组结束索引（含）
+ *
+ * @returns {Array} 原数组
+ */
+function quickSort(
+  array: any[],
+  compare: Compare = ASC,
+  start?: number,
+  end?: number
+): any[] {
+  start === undefined && (start = 0)
+  end === undefined && (end = array.length - 1)
+
+  if (end > start) {
+    LIST = array
+    contrast = compare
+
+    partition(start, end)
+
+    LIST = contrast = empty // 释放引用
+  }
+
+  return array
 }
 
 // let id: number = 0

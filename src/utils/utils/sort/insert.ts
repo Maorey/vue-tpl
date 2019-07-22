@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 17:29:55
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-21 22:28:36
+ * @LastEditTime: 2019-07-23 02:12:30
  */
 
 import { ASC, Compare } from './'
@@ -25,20 +25,20 @@ function insertSort(
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)
 
-  if (end > start) {
-    let i: number = start
-    let j: number
-    let elementI: any
-    let elementJ: any
-    while (i++ < end) {
-      elementJ = array[(j = i)]
+  if (start < end) {
+    let temp: any
+    let current: any
+    let pointer: number
+    let anchor: number = start
+    while (anchor++ < end) {
+      current = array[(pointer = anchor)]
       while (
-        j > start &&
-        Number(compare((elementI = array[j - 1]), elementJ)) > 0
+        pointer > start &&
+        Number(compare((temp = array[pointer - 1]), current)) > 0
       ) {
-        array[j--] = elementI
+        array[pointer--] = temp
       }
-      j < i && (array[j] = elementJ)
+      pointer < anchor && (array[pointer] = current)
     }
   }
 

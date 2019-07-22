@@ -4,7 +4,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 10:52:16
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-22 11:04:48
+ * @LastEditTime: 2019-07-23 02:13:16
  */
 
 import mergeSort from './merge' // 归并排序
@@ -59,9 +59,9 @@ function sort(
 
   if (end > start) {
     // 判断首尾元素类型
-    // if (isBaseType(array[start]) && isBaseType(array[end])) {
-    //   return quickSort(array, compare, start, end)
-    // }
+    if (isBaseType(array[start]) && isBaseType(array[end])) {
+      return quickSort(array, compare, start, end)
+    }
     // TODO: 归并/分治 + 插入
     return mergeSort(array, compare, start, end)
   }
@@ -69,4 +69,4 @@ function sort(
   return array
 }
 
-export { sort as default, ASC, Compare }
+export { mergeSort as default, ASC, Compare }
