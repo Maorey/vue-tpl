@@ -103,6 +103,7 @@ tips:
 ├── tests # 测试用例目录
 │   │── e2e # e2e 测试: https://nightwatchjs.org
 │   └── unit # unit 测试: https://jestjs.io/docs/zh-Hans/getting-started.html
+├── scripts # 脚本
 ├── .env、.env.* # 环境变量设置
 ├── tsconfig.json # typeScript 配置: https://www.tslang.cn/docs/handbook/tsconfig-json.html
 ├── tslint.json # tslint 配置: https://palantir.github.io/tslint/rules/

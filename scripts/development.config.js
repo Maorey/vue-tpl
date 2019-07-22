@@ -3,10 +3,8 @@
  * @Author: Maorey
  * @LastEditors: 毛瑞
  * @Date: 2019-04-01 13:15:59
- * @LastEditTime: 2019-07-12 22:02:02
+ * @LastEditTime: 2019-07-22 10:09:02
  */
-const FIGURE = require('./figure') // 输出图形
-
 const COUNTER = {} // 重命名计数器
 const REG_GLOBAL_VUE = /^([^\\/]+\.)(vue|tsx|jsx)$/ // 是否无路径vue组件
 
@@ -66,6 +64,4 @@ module.exports = function(config) {
   //     defaultAttribute: 'defer',
   //   },
   // ])
-
-  console.log(FIGURE['d' + Math.ceil(Math.random() * 5)]) // 输出图形
 }

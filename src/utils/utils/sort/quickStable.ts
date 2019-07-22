@@ -5,7 +5,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 21:33:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-21 22:33:06
+ * @LastEditTime: 2019-07-22 11:03:24
  */
 
 import { ASC, Compare } from '.'
@@ -90,6 +90,7 @@ function mid3(
 
   // b > c && a < b(bc=true,b最大) 或者 b < c && a > b(bc=false,b最小)
   return Number(ab) > 0 ? (bc ? a : c) : bc ? c : a
+  // 交换破坏稳定性
   // ab = Number(ab) > 0
   // if (ab === bc) {
   //   // 取a: (bc && ac) || (!bc && !ac)
@@ -170,24 +171,12 @@ function quickSort(
             left > leftEqual && swap(array, leftEqual, left)
             leftEqual++
           } else {
-            while (left < rightEqual) {
-              result = compare(array[rightEqual], pivotValue)
-              if (result === 0) {
-                if (--rightEqual <= left) {
-                  left = end
-                  right = --rightEqual
-                  rightHit = true
-                  break
-                }
-              } else {
-                swap(array, left, rightEqual--)
-                right > rightEqual && (right = rightEqual)
-                leftHit = Number(result) > 0
-                break
-              }
-            }
-
-            if (leftHit || rightHit) {
+            if (left < rightEqual) {
+              swap(array, left, rightEqual--)
+            } else {
+              left = end
+              right = --rightEqual
+              rightHit = true
               break
             }
           }
@@ -210,24 +199,12 @@ function quickSort(
             right < rightEqual && swap(array, right, rightEqual)
             rightEqual--
           } else {
-            while (right > leftEqual) {
-              result = compare(pivotValue, array[leftEqual])
-              if (result === 0) {
-                if (++leftEqual >= right) {
-                  left = ++leftEqual
-                  right = start
-                  leftHit = true
-                  break
-                }
-              } else {
-                swap(array, leftEqual++, right)
-                left < leftEqual && (left = leftEqual)
-                rightHit = Number(result) > 0
-                break
-              }
-            }
-
-            if (leftHit || rightHit) {
+            if (right > leftEqual) {
+              swap(array, leftEqual++, right)
+            } else {
+              left = ++leftEqual
+              right = start
+              leftHit = true
               break
             }
           }

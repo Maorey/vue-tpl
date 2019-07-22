@@ -6,7 +6,7 @@
  * @Author: Maorey
  * @Date: 2019-01-17 11:42:24
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-05 10:56:06
+ * @LastEditTime: 2019-07-22 09:45:57
  */
 
 const PLUGIN_NAME = 'insert-preload' // 插件名

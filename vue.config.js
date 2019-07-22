@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-15 13:35:54
+ * @LastEditTime: 2019-07-22 11:02:10
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -11,37 +11,40 @@ const path = require('path')
 const environment = process.env // 环境变量
 const isProd = environment.NODE_ENV === 'production' // 是否生产环境
 
-const pages = require('./getPages')(isProd) // 自动检测并返回页面入口设置
+const pages = require('./scripts/getPages')(isProd) // 自动检测并返回页面入口设置
 const chainWebpack = require(isProd
-  ? './production.config' // 生产环境配置
-  : './development.config') // 开发环境配置
+  ? './scripts/production.config' // 生产环境配置
+  : './scripts/development.config') // 开发环境配置
 
-const updateJSON = require('./updateJSON')
+const updateJSON = require('./scripts/updateJSON')
 
-// 命名缩写记录
-let DIC
+let DIC // 命名缩写记录
 // 字符串缩写函数
-const short = require('./shortString')(
+const short = require('./scripts/shortString')(
   {
     // 指定chunk名缩写 eg: index: 'i'
   },
   (name, n) => {
     if (!DIC) {
       DIC = {}
-      setTimeout(() => updateJSON('fileName.map', 'chunkName', DIC))
+      setTimeout(() =>
+        updateJSON(path.resolve('build/fileName.map'), 'chunkName', DIC)
+      )
     }
 
     DIC[n] = name
   }
 )
-
-const TS_CONFIG_FILE = 'tsconfig.json'
-const TS_PATHS_KEY = 'compilerOptions.paths'
-const TS_PATHS = {
-  // ts 目录别名
-  '@/*': ['src/*'],
-}
 const CURRENT_DIR = path.join(process.cwd(), '/')
+
+// 输出图形
+console.log(
+  require('./scripts/figure')[
+    isProd
+      ? 'd' + Math.ceil(Math.random() * 5)
+      : 'p' + Math.ceil(Math.random() * 10)
+  ]
+)
 
 /// 【配置项】 ///
 // https://cli.vuejs.org/zh/config
@@ -110,6 +113,10 @@ module.exports = {
 
     const SUFFIX = '/*'
     const REG_BACKSLASH = /\\/g
+    const TS_PATHS = {
+      // ts 目录别名
+      '@/*': ['src/*'],
+    }
     const setAlias = () => {
       config.resolve.alias.set(alias, folderName)
 
@@ -133,7 +140,7 @@ module.exports = {
         setAlias()
       }
     }
-    updateJSON(TS_CONFIG_FILE, TS_PATHS_KEY, TS_PATHS)
+    updateJSON('tsconfig.json', 'compilerOptions.paths', TS_PATHS)
 
     /// 【优化(optimization)】 ///
     // https://webpack.docschina.org/configuration/optimization 使用默认就好
@@ -306,7 +313,9 @@ module.exports = {
     //     .end()
     // )
     // 补全html插入资源
-    config.plugin('insert-preload').use(path.resolve('insertPreload.js'))
+    config
+      .plugin('insert-preload')
+      .use(path.resolve('scripts/insertPreload.js'))
 
     /// 【不同环境配置】 ///
     chainWebpack(config)

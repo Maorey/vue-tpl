@@ -3,9 +3,8 @@
  * @Author: Maorey
  * @LastEditors: 毛瑞
  * @Date: 2019-04-01 13:28:06
- * @LastEditTime: 2019-07-01 14:44:25
+ * @LastEditTime: 2019-07-22 10:56:19
  */
-const FIGURE = require('./figure') // 输出图形
 
 /** 获取配置对象
  * @param {String} name 文件名
@@ -31,7 +30,7 @@ function getLoaderOption(name) {
 module.exports = function(config) {
   config.merge({
     // https://webpack.js.org/configuration/other-options/#recordspath
-    recordsPath: require('path').resolve('records.json'),
+    recordsPath: require('path').resolve('./records.json'),
   })
   /// 构建优化(vue cli 大法好) ///
   // 已使用 cache-loader
@@ -102,6 +101,4 @@ module.exports = function(config) {
       minRatio: 0.7, // 最小压缩率
     },
   ])
-
-  console.log(FIGURE['p' + Math.ceil(Math.random() * 10)]) // 输出图形
 }
