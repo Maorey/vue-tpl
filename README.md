@@ -485,4 +485,4 @@ server {
 #### 其他
 
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
-- css-loader 得用 2.1.1，@vue/cli bug[#4337](https://github.com/vuejs/vue-cli/issues/4337)
+- css-loader 得用 2.1.1，@vue/cli issue[#4337](https://github.com/vuejs/vue-cli/issues/4337)

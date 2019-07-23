@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 12:57:58
+ * @LastEditTime: 2019-07-23 13:44:10
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -96,7 +96,7 @@ module.exports = {
           proxyList[key] = {
             target: environment[TARGET + tmp[1]],
             changeOrigin: true,
-            pathRewrite: url => url.replace(new RegExp(`^/${key}/`), '/'),
+            pathRewrite: url => url.replace(new RegExp(`^/${key}(/.*)?$`), '$1'),
           }
         }
       }
