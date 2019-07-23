@@ -5,7 +5,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 21:33:33
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 14:08:27
+ * @LastEditTime: 2019-07-23 22:08:49
  */
 
 import { ASC, Compare } from '.'
@@ -280,7 +280,7 @@ function partition(start: number, end: number): void {
   ++right < end && partition(right, end)
 }
 
-/** 快速排序(稳定)
+/** 快速排序(稳定)【未完成】
  * @param {Array} array 待排序数组
  * @param {Compare} compare 数值比较方法
  * @param {Number} start 数组起始索引（含）

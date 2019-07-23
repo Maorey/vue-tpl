@@ -3,12 +3,13 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 17:29:55
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 02:12:30
+ * @LastEditTime: 2019-07-23 22:02:52
  */
 
 import { ASC, Compare } from './'
 
 /** 插入排序(稳定)
+ * @test true
  * @param {Array} array 待排序数组
  * @param {Compare} compare 数值比较方法
  * @param {Number} start 数组起始索引（含）
