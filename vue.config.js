@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 13:44:10
+ * @LastEditTime: 2019-07-23 17:33:08
  */
 // TODO: 环境变量/入口文件 改变热更新
 const path = require('path')
@@ -68,7 +68,20 @@ module.exports = {
         // localsConvention: 'camelCaseOnly', // 只允许驼峰class名
       },
       sass: {
-        data: '@import "@/scss/var.scss";', // 全局引入
+        // 全局引入
+        data({ resourcePath, rootContext }) {
+          // More information about avalaible options https://webpack.js.org/api/loaders/
+          let global = '@import "@/scss/var.scss";' // 项目全局
+          const relativePath = path.relative(rootContext, resourcePath)
+
+          debugger
+
+          if (relativePath === 'styles/foo.scss') {
+            return '$value: 100px;'
+          }
+
+          return global
+        },
       },
     },
   },
@@ -96,7 +109,8 @@ module.exports = {
           proxyList[key] = {
             target: environment[TARGET + tmp[1]],
             changeOrigin: true,
-            pathRewrite: url => url.replace(new RegExp(`^/${key}(/.*)?$`), '$1'),
+            pathRewrite: url =>
+              url.replace(new RegExp(`^/${key}(/.*)?$`), '$1'),
           }
         }
       }
