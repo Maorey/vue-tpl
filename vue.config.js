@@ -1,11 +1,12 @@
-/*
+/**
  * @Description: 脚手架(vue cli)配置入口
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 17:33:08
+ * @LastEditTime: 2019-07-23 20:36:46
  */
 // TODO: 环境变量/入口文件 改变热更新
+const fs = require('fs')
 const path = require('path')
 
 const environment = process.env // 环境变量
@@ -68,16 +69,21 @@ module.exports = {
         // localsConvention: 'camelCaseOnly', // 只允许驼峰class名
       },
       sass: {
-        // 全局引入
-        data({ resourcePath, rootContext }) {
+        // 全局scss变量(入口覆盖全局)
+        data(loaderContext) {
           // More information about avalaible options https://webpack.js.org/api/loaders/
-          let global = '@import "@/scss/var.scss";' // 项目全局
-          const relativePath = path.relative(rootContext, resourcePath)
+          let global = `@import "@${environment.GLOBAL_SCSS}";` // 项目全局
 
-          debugger
-
-          if (relativePath === 'styles/foo.scss') {
-            return '$value: 100px;'
+          let temp
+          let key
+          for (key in pages) {
+            if (
+              loaderContext.resourcePath.includes((temp = pages[key].alias)) &&
+              fs.existsSync(path.join(temp, environment.GLOBAL_SCSS))
+            ) {
+              global += `@import "@${key + environment.GLOBAL_SCSS}";`
+              break
+            }
           }
 
           return global

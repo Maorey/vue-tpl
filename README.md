@@ -248,7 +248,7 @@ tips:
 
 ### 其他建议
 
-- 全局 sccs 中(`src/scss/var.scss`)不要出现具体样式, 最好也不要有[`:export{}`](https://github.com/css-modules/icss#export)
+- 全局 sccs 中(见 .env 文件`GLOBAL_SCSS=/scss/var.scss`)不要出现具体样式, 最好也不要有[`:export{}`](https://github.com/css-modules/icss#export)
 
 - 规范优雅正确适当的各种**注释**，比如方法注释及必要的变量注释：
 
