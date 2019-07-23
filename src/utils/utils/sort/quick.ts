@@ -4,7 +4,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:01:27
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-21 22:28:27
+ * @LastEditTime: 2019-07-23 13:57:34
  */
 
 /** 排序比较方法
@@ -55,7 +55,7 @@ function insertSort(left: number, right: number): void {
  */
 function findPivot(left: number, right: number): any {
   // tslint:disable-next-line: no-bitwise
-  const center: number = (left + right) << 1
+  const center: number = (left + right) >> 1
 
   // 将中位数放在中间 至少比较三次
   swap(left, center)
