@@ -3,14 +3,19 @@
  * @Author: 毛瑞
  * @Date: 2019-07-23 16:54:10
  * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 21:07:11
+ * @LastEditTime: 2019-07-23 21:24:41
  */
 
 // see: https://github.com/ElemeFE/element/blob/dev/packages/theme-chalk/src/common/var.scss
 // or: node_modules/element-ui/packages/theme-chalk/src/common/var.scss
 
-/// 覆盖 element-ui scss变量 ///
+/// Typography ///
 $--font-path: '~element-ui/lib/theme-chalk/fonts'; // icon 字体路径变量【必需】
+
+/// z-index ///
+$--index-normal: $zPanel;
+$--index-top: $zFixed;
+$--index-popper: $zTop;
 
 /// 颜色 ///
 $--color-primary: teal; // 主题色
