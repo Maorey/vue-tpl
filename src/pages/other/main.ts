@@ -10,10 +10,10 @@ import store from './store'
 
 /// 全局注册的组件，请尽量不要让这个列表变太长 ///
 import { Row, Button, Select } from 'element-ui'
-import 'element-ui/packages/theme-chalk/src/row'
-import 'element-ui/packages/theme-chalk/src/icon'
-import 'element-ui/packages/theme-chalk/src/button'
-import 'element-ui/packages/theme-chalk/src/select'
+import 'element-ui/packages/theme-chalk/src/row.scss'
+import 'element-ui/packages/theme-chalk/src/icon.scss'
+import 'element-ui/packages/theme-chalk/src/button.scss'
+import 'element-ui/packages/theme-chalk/src/select.scss'
 
 Vue.use(Row)
 Vue.use(Button)

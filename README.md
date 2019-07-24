@@ -366,12 +366,10 @@ tips:
 推荐使用： **Visual Studio Code** (VSCode)，推荐插件：
 
 - Vetur: vue 开发必备
-- GitLens: Git 工具
 - ESLint & TSLint: 代码检查
 - Prettier - Code formatter: 代码格式化
-- koroFileHeader: 文件头注释
+- GitLens: Git 工具
 - EditorConfig for VS Code: IDE 设置
-- Bracket Pair Colorizer: 彩虹色括号（()[]{}<>）
 
 推荐工具： [`@vue/cli`](https://cli.vuejs.org/zh/guide)，全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
 
