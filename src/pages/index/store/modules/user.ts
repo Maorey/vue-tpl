@@ -2,8 +2,6 @@
  * @Description: 用户状态管理
  * @Author: 毛瑞
  * @Date: 2019-06-19 15:16:19
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-09 11:06:55
  */
 import { Module, getModule } from 'vuex-module-decorators'
 import RootUser, { IUser } from '@/store/user'

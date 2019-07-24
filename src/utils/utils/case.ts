@@ -2,8 +2,6 @@
  * @Description: 词语风格转换
  * @Author: 毛瑞
  * @Date: 2019-07-04 11:26:26
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 17:26:09
  */
 
 /** 匹配大写字母

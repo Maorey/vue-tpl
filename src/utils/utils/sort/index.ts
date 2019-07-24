@@ -3,8 +3,6 @@
  *  【重要】 排序使用compare时，a的下标一定要小于b
  * @Author: 毛瑞
  * @Date: 2019-07-19 10:52:16
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 02:13:16
  */
 
 import mergeSort from './merge' // 归并排序

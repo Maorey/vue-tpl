@@ -2,8 +2,6 @@
  * @Description: 标题
  * @Author: 毛瑞
  * @Date: 2019-07-08 12:44:14
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 15:44:54
  -->
 <template>
   <header :class="$style.wrapper">

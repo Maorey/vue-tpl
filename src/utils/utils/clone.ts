@@ -2,8 +2,6 @@
  * @Description: 深克隆/扩展 对象/数组(无其他原型和循环引用)
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 17:25:53
  */
 
 import { IObject } from '@/types'

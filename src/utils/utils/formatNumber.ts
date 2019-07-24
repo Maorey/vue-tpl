@@ -2,8 +2,6 @@
  * @Description: 格式化数字
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:05:04
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 17:27:47
  */
 
 /** 单位设置

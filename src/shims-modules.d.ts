@@ -2,8 +2,6 @@
  * @Description: 模块申明
  * @Author: 毛瑞
  * @Date: 2019-07-09 16:19:51
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-12 23:31:41
  */
 
 declare module '*.vue' {

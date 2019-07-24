@@ -1,9 +1,7 @@
 /*
  * @description: 生产环境配置
- * @Author: Maorey
- * @LastEditors: 毛瑞
+ * @Author: 毛瑞
  * @Date: 2019-04-01 13:28:06
- * @LastEditTime: 2019-07-22 11:13:17
  */
 
 /** 获取配置对象

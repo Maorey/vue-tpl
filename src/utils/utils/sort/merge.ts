@@ -3,8 +3,6 @@
  *  see: https://www.cnblogs.com/eniac12/p/5329396.html#s4
  * @Author: 毛瑞
  * @Date: 2019-07-19 10:53:34
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 22:07:43
  */
 
 import { ASC, Compare } from './'

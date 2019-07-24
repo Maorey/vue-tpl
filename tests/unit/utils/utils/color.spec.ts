@@ -2,8 +2,6 @@
  * @Description: 颜色处理 测试
  * @Author: 毛瑞
  * @Date: 2019-07-03 17:26:45
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 14:37:08
  */
 
 import { toRGB, isTransparent, reverseColor } from '@/utils/utils/color'

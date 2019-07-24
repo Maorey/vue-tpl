@@ -2,8 +2,6 @@
  * @Description: 折线图 示例
  * @Author: 毛瑞
  * @Date: 2019-07-08 16:57:33
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-12 12:29:08
  -->
 <template>
   <div @mouseenter="refresh" />

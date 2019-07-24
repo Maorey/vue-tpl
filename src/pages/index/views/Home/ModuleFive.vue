@@ -2,8 +2,6 @@
  * @Description: 模块五
  * @Author: 毛瑞
  * @Date: 2019-07-08 12:51:49
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 15:33:10
  -->
 <template>
   <div :class="$style.wrapper">

@@ -2,8 +2,6 @@
  * @Description: 自动检测并返回页面入口设置
  * @Author: 毛瑞
  * @Date: 2019-06-19 10:05:40
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-22 10:55:09
  */
 const fs = require('fs')
 const path = require('path')

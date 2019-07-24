@@ -2,8 +2,6 @@
  * @Description: 日期格式化/反格式化
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 17:27:28
  */
 import { Memory, IPool } from '@/utils/storage'
 import { IObject } from '@/types'

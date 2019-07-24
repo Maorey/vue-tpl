@@ -2,8 +2,6 @@
  * @Description: 深克隆/扩展 对象/数组(无其他原型和循环引用) 测试
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:17:12
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 14:23:25
  */
 import clone from '@/utils/utils/clone'
 

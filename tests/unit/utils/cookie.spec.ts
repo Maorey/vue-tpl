@@ -2,8 +2,6 @@
  * @Description: cookie 操作测试
  * @Author: 毛瑞
  * @Date: 2019-06-27 11:09:27
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:56:38
  */
 import { set, has, get, entries, remove } from '@/utils/cookie'
 

@@ -2,8 +2,6 @@
  * @Description: 代码风格定义
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-09 11:37:20
  */
 module.exports = {
   root: true,

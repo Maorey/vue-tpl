@@ -2,8 +2,6 @@
  * @Description: 存储 测试
  * @Author: 毛瑞
  * @Date: 2019-06-27 11:57:46
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-27 16:39:01
  */
 import { Memory, local } from '@/utils/storage'
 

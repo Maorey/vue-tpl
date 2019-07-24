@@ -2,8 +2,6 @@
  * @description: 获取当前浏览器类型（type）及版本（version）
  * @Author: 毛瑞
  * @Date: 2018-12-29 11:32:52
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 14:09:13
  */
 const browsers = [
   {

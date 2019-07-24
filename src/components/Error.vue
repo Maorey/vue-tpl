@@ -2,8 +2,6 @@
  * @Description: 失败提示 比如异步组件加载失败时用
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:34:26
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 14:54:01
  -->
 <template>
   <div :class="$style.wrapper">

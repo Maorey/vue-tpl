@@ -2,8 +2,6 @@
  * @Description: Home 页
  * @Author: 毛瑞
  * @Date: 2019-07-09 16:08:07
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-12 23:42:11
  */
 import { eventBus } from '@/utils/eventBus' // 全局消息总线
 import { getAsync } from '@/utils/highOrder' // 高阶组件工具

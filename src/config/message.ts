@@ -2,8 +2,6 @@
  * @Description: 消息文字
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:41:53
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 14:49:14
  */
 
 /// 加载消息 ///

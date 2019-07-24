@@ -2,8 +2,6 @@
  * @Description: 日期格式化/反格式化 测试
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:50:03
  */
 import formatDate, { getDateByString } from '@/utils/utils/formatDate'
 

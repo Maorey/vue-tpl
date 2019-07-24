@@ -3,8 +3,6 @@
  *
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 17:15:42
  */
 module.exports = {
   presets: ['@vue/app'], // https://cli.vuejs.org/zh/config/#babel

@@ -2,8 +2,6 @@
  * @Description: cookie 操作
  * @Author: 毛瑞
  * @Date: 2019-06-04 16:41:55
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 17:29:38
  */
 
 // 参考: https://developer.mozilla.org/zh-CN/docs/Web/API/Document/cookie

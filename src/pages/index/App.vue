@@ -2,8 +2,6 @@
  * @Description: index页布局
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 15:59:43
  -->
 <template>
   <body>

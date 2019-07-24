@@ -2,8 +2,6 @@
  * @Description: index页全局配置
  * @Author: 毛瑞
  * @Date: 2019-07-08 17:00:16
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-09 12:46:48
  */
 /*! 【index页配置 开始】 */
 export default {

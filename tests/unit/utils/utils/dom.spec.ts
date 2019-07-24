@@ -2,8 +2,6 @@
  * @Description: 和dom结构相关的工具 测试
  * @Author: 毛瑞
  * @Date: 2019-07-04 15:23:29
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 16:10:48
  */
 import { getInfoByHtml, escapeHTML } from '@/utils/utils/dom'
 

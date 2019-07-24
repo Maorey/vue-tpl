@@ -2,8 +2,6 @@
  * @Description: 描述
  * @Author: 作者
  * @Date: 2019-07-09 16:08:07
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-12 23:55:55
  */
 
 // import { getAsync } from '@/utils/highOrder' // utils和其他

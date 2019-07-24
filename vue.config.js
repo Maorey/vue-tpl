@@ -2,8 +2,6 @@
  * @Description: 脚手架(vue cli)配置入口
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 20:36:46
  */
 // TODO: 环境变量/入口文件 改变热更新
 const fs = require('fs')

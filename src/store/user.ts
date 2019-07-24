@@ -2,8 +2,6 @@
  * @Description: 用户状态管理（所有页面通用）
  * @Author: 毛瑞
  * @Date: 2019-06-19 15:16:19
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-09 11:05:56
  */
 import { VuexModule, Action, Mutation } from 'vuex-module-decorators'
 

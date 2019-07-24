@@ -2,8 +2,6 @@
  * @Description: 插入排序 测试
  * @Author: 毛瑞
  * @Date: 2019-07-19 16:24:03
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-19 20:57:10
  */
 import insertSort from '@/utils/utils/sort/insert'
 

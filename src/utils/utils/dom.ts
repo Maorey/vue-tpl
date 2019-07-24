@@ -2,8 +2,6 @@
  * @Description: 和dom结构相关的工具
  * @Author: 毛瑞
  * @Date: 2019-07-04 14:38:59
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 17:26:55
  */
 
 /** 获取目标元素到页面顶部的绝对定位

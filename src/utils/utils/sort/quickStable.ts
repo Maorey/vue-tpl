@@ -4,8 +4,6 @@
  *  http://www.blogjava.net/killme2008/archive/2010/09/08/quicksort_optimized.html
  * @Author: 毛瑞
  * @Date: 2019-07-19 21:33:33
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 22:08:49
  */
 
 import { ASC, Compare } from '.'

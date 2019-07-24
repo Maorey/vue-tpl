@@ -1,9 +1,7 @@
 /*
  * @description: 开发环境配置
  * @Author: Maorey
- * @LastEditors: 毛瑞
  * @Date: 2019-04-01 13:15:59
- * @LastEditTime: 2019-07-22 10:09:02
  */
 const COUNTER = {} // 重命名计数器
 const REG_GLOBAL_VUE = /^([^\\/]+\.)(vue|tsx|jsx)$/ // 是否无路径vue组件

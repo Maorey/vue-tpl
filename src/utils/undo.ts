@@ -2,8 +2,6 @@
  * @description: 撤销重做【单例】
  * @Author: 毛瑞
  * @Date: 2019-01-28 13:57:42
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:48:25
  */
 
 /** 存储池

@@ -2,8 +2,6 @@
  * @Description: 全局（单例）消息总线
  * @Author: 毛瑞
  * @Date: 2019-06-03 12:12:12
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-02 14:28:59
  */
 import Vue from 'vue'
 

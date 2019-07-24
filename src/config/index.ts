@@ -2,8 +2,6 @@
  * @Description: 项目全局配置
  * @Author: 毛瑞
  * @Date: 2019-06-19 12:52:09
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 21:47:59
  */
 
 /*! 【全局配置 开始】 */

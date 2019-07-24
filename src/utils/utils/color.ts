@@ -2,8 +2,6 @@
  * @Description: 颜色处理
  * @Author: 毛瑞
  * @Date: 2019-07-03 14:48:49
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 17:25:34
  */
 
 /** 透明度回调

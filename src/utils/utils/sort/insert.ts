@@ -2,8 +2,6 @@
  * @Description: 插入排序(不使用不稳定的希尔排序，不使用二分查找)
  * @Author: 毛瑞
  * @Date: 2019-07-19 17:29:55
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-23 22:02:52
  */
 
 import { ASC, Compare } from './'

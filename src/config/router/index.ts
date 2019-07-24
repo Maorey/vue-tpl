@@ -2,8 +2,6 @@
  * @Description: index页路由配置
  * @Author: 毛瑞
  * @Date: 2019-07-01 16:26:36
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 10:05:24
  */
 
 /*! 【路由配置 开始】 */

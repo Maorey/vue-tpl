@@ -2,8 +2,6 @@
  * @Description: css样式处理
  * @Author: 毛瑞
  * @Date: 2019-07-02 16:50:15
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-11 17:28:57
  */
 import { IObject } from '@/types'
 import { camelToKebab } from '@/utils'

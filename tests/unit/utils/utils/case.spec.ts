@@ -2,8 +2,6 @@
  * @Description: 词语风格转换测试
  * @Author: 毛瑞
  * @Date: 2019-07-04 12:12:42
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-04 12:25:36
  */
 import {
   camelToKebab,

@@ -3,8 +3,6 @@
  *  https://github.com/postcss/postcss
  * @Author: 毛瑞
  * @Date: 2018-11-09 00:55:35
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-06-18 17:27:24
  */
 module.exports = {
   plugins: {

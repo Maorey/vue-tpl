@@ -2,8 +2,6 @@
  * @Description: 用户接口字典
  * @Author: 毛瑞
  * @Date: 2019-06-28 16:11:40
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-01 10:46:09
  */
 
 /*! 【用户接口 开始】 */

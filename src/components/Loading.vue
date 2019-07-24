@@ -2,8 +2,6 @@
  * @Description: 加载动画(svg转圈) 比如异步组件加载时用
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:34:16
- * @LastEditors: 毛瑞
- * @LastEditTime: 2019-07-06 11:02:32
  -->
 <template>
   <div :class="$style.wrapper">
