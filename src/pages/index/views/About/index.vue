@@ -5,7 +5,7 @@
  -->
 <template>
   <div :class="$style.wrapper">
-    这里是about页
+    这里是About视图
   </div>
 </template>
 
