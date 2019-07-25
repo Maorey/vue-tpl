@@ -220,7 +220,6 @@ tips:
     import BillList from '{path}/BillList'
     ```
 
-- 引用 vue 单文件组件不要加文件扩展名，有利于后期重构代码
 - 视图只负责布局及交互(props 传递和事件监听)，包含子组件的可使用**文件夹容器**方式或将子组件存放在对应层级的 `components` 目录下的同名目录(`camelCase`)下
 - 公共组件/逻辑/函数/样式等模块请按照: `模块 -> 视图 -> 页面 -> 项目` 的层级提升, 配合**提前规划**确定初始层级
 - 越高的层级测试覆盖率也应越高; 被测试的代码应加注释`@test: true`表示在对应目录下包含测试用例,否则指明路径; 修改了测试覆盖的代码后，应视情况增加测试内容并运行测试，以保证功能和行为与之前一致
@@ -243,8 +242,7 @@ tips:
   （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含 Prettier 插件相关风格设置）
 
 - 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上**和 TypeScript [tslint.json](https://palantir.github.io/tslint/rules/)
-
-- 提交代码请使用标识: Add/Del/Fix/Mod 等
+- 引用 vue 单文件组件不要加文件扩展名，有利于后期重构代码
 - 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后(方便查看代码)
 - **不要用全局样式覆盖全局样式**, 应使用 `CSSModule` 并使优先级相等(注意顺序，包括同步/异步)或更高:
   ```scss
@@ -268,6 +266,7 @@ tips:
   - `vue`: `TypeScript` & `CSS Module`, `tsx` 文件中使用
   - `js`: `JavaScript` & `CSS Module`, vue 单文件组件中使用
   - `vue`: `JavaScript` & `CSS Module`, `jsx` 文件中使用
+- 提交代码请使用标识: Add/Del/Fix/Mod 等
 
 ### 其他建议
 
