@@ -6,8 +6,8 @@
 import { eventBus } from '@/utils/eventBus' // 全局消息总线
 import { getAsync } from '@/utils/highOrder' // 高阶组件工具
 
-import PageHeader from '@indexCom/PageHeader.vue' // 页面标题
-import ModuleContainer from '@indexCom/ModuleContainer.vue' // 模块容器
+import PageHeader from '@indexCom/PageHeader' // 页面标题
+import ModuleContainer from '@indexCom/ModuleContainer' // 模块容器
 
 import { CreateElement } from 'vue'
 import { Component, Vue } from 'vue-property-decorator'
@@ -16,22 +16,22 @@ import $style from './index.module.scss'
 
 // 异步组件
 const ModuleOne = getAsync(() =>
-  import(/* webpackChunkName: "ihOne" */ './ModuleOne.vue')
+  import(/* webpackChunkName: "ihOne" */ './ModuleOne')
 ) as any
 const ModuleTwo = getAsync(() =>
-  import(/* webpackChunkName: "ihTwo" */ './ModuleTwo.vue')
+  import(/* webpackChunkName: "ihTwo" */ './ModuleTwo')
 ) as any
 const ModuleThree = getAsync(() =>
-  import(/* webpackChunkName: "ihThree" */ './ModuleThree.vue')
+  import(/* webpackChunkName: "ihThree" */ './ModuleThree')
 ) as any
 const ModuleFour = getAsync(() =>
-  import(/* webpackChunkName: "ihFour" */ './ModuleFour.vue')
+  import(/* webpackChunkName: "ihFour" */ './ModuleFour')
 ) as any
 const ModuleFive = getAsync(() =>
-  import(/* webpackChunkName: "ihFive" */ './ModuleFive.vue')
+  import(/* webpackChunkName: "ihFive" */ './ModuleFive')
 ) as any
 const ModuleSix = getAsync(() =>
-  import(/* webpackChunkName: "ihSix" */ './ModuleSix.vue')
+  import(/* webpackChunkName: "ihSix" */ './ModuleSix')
 ) as any
 
 @Component

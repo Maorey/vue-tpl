@@ -13,7 +13,7 @@
   /// 代码风格(prettier插件) ///
   "prettier.semi": false, // 不要句尾分号
   "prettier.singleQuote": true, // 使用单引号
-  "prettier.jsxSingleQuote": true, // jsx(.vue .jsx)里使用单引号
+  "prettier.jsxSingleQuote": true, // jsx(vue jsx tsx mjs)里使用单引号
   "prettier.trailingComma": "es5", // 多行末尾保留逗号
 
   /// 代码风格(vetur插件) ///

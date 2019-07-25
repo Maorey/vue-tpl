@@ -4,11 +4,6 @@
  * @Date: 2019-07-09 16:19:51
  */
 
-declare module '*.vue' {
-  import Vue from 'vue'
-  export default Vue
-}
-
 declare module '*.module.scss' {
   /** parsed class names with css-loader option, indexing by class selector names (must camelCase) in scss
    */
@@ -82,3 +77,9 @@ declare module '*.json' {
 //   const content: string
 //   export = content
 // }
+
+/// vue 单文件组件，放最后 ///
+declare module '*' {
+  import Vue from 'vue'
+  export default Vue
+}

@@ -22,7 +22,7 @@ const router = new Router({
       path: `/${ROUTER.home.name}`,
       name: ROUTER.home.name,
       component: getAsync(() =>
-        import(/* webpackChunkName: "oHome" */ './views/Home.vue')
+        import(/* webpackChunkName: "oHome" */ './views/Home')
       ),
     },
     {
@@ -32,7 +32,7 @@ const router = new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: getAsync(() =>
-        import(/* webpackChunkName: "oAbout" */ './views/About.vue')
+        import(/* webpackChunkName: "oAbout" */ './views/About')
       ),
     },
 

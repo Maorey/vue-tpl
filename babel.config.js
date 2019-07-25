@@ -11,7 +11,7 @@ module.exports = {
     // ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true }],
     // '@babel/plugin-proposal-class-properties',
     // polyfill 工具 https://babeljs.io/docs/en/next/babel-plugin-transform-runtime.html
-    ['@babel/plugin-transform-runtime', { corejs: 3 }],
+    // ['@babel/plugin-transform-runtime', { corejs: 3 }],
     // https://github.com/ElementUI/babel-plugin-component
     [
       'component',

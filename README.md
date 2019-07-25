@@ -1,3 +1,5 @@
+[toc]
+
 # vue-tpl
 
 vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架
@@ -169,23 +171,10 @@ tips:
 - 新建目录时尽量复用上述列出的目录名，保证结构清晰的情况下减少目录层级
 - 目录及文件命名：<br>
   **文件夹及其它文件**(js/scss/图片等)使用 `camelCase` (即：首字母小写驼峰 = lowerCamelCase)；<br>
-  **vue 单文件组件**(含[tsx](https://github.com/wonderful-panda/vue-tsx-support)/`jsx`/`functional .(ts|js)`)使用 `PascalCase` ( 即：首字母大写驼峰 = CamelCase = UpperCamelCase)<br><br>
+  **vue 单文件组件**(含[tsx](https://github.com/wonderful-panda/vue-tsx-support)/`jsx`/`functional.(ts|js)`)使用 `PascalCase` ( 即：首字母大写驼峰 = CamelCase = UpperCamelCase)<br><br>
   例外情况:
 
   - 组件包含不可复用的子组件时，应视为一个组件, 创建**文件夹容器**，比如:
-
-    ```TypeScript
-    // BillList组件
-    BillList
-    │── index.tsx
-    │── Item.vue
-    └── ...
-
-    // 使用组件
-    import BillList from '{path}/BillList'
-    ```
-
-    或者 ([node](https://nodejs.org/api/modules.html)/[ts](https://www.tslang.cn/docs/handbook/module-resolution.html)模块解析无法添加扩展名 ╮(╯▽╰)╭)
 
     ```TypeScript
     // BillList组件
@@ -195,15 +184,29 @@ tips:
     └── ...
 
     // 使用组件
-    import BillList from '{path}/BillList/index.vue'
+    import BillList from '{path}/BillList'
     ```
 
+    或者
+
+    ```TypeScript
+    // BillList组件
+    BillList
+    │── index.tsx # 可以例外
+    │── Item.vue
+    └── ...
+
+    // 使用组件
+    import BillList from '{path}/BillList'
+    ```
+
+- 引用 vue 单文件组件不要加文件扩展名，有利于后期重构代码
 - 视图只负责布局及交互(props 传递和事件监听)，包含子组件的可使用**文件夹容器**方式或将子组件存放在对应层级的 `components` 目录下的同名目录(`camelCase`)下
 - 公共组件/逻辑/函数/样式等模块请按照: `模块 -> 视图 -> 页面 -> 项目` 的层级提升, 配合**提前规划**确定初始层级
 - 越高的层级测试覆盖率也应越高; 被测试的代码应加注释`@test: true`表示在对应目录下包含测试用例,否则指明路径; 修改了测试覆盖的代码后，应视情况增加测试内容并运行测试，以保证功能和行为与之前一致
 - 尽量**不要使用全局注册**(插件/组件/指令/混入等)以优化打包和使代码更清晰、易维护
 - 组件尽量**按逻辑和呈现拆分**以更好的复用和维护
-- 尽量**按照依赖库的文档描述**使用，从其源码(src)引入模块，将可能**不会被转译**且更可能随版本更新改变，可以从其构建后的 lib/dist 等目录引入模块
+- 尽量**按照依赖库的文档描述**来使用她，从其源码(src)引入模块(css/scss/.../js/mjs/ts/jsx/tsx/vue)，将可能**不会被转译**且更可能随版本更新改变，需要时可以从其构建后的 lib/dist 等目录引入或者增加一些配置(需要了解模块解析及转码规则和相关插件，不推荐)
 
 ### 风格建议
 
@@ -248,7 +251,7 @@ tips:
 
 ### 其他建议
 
-- 全局 sccs 中(见 .env 文件`GLOBAL_SCSS=/scss/var.scss`)不要出现具体样式, 最好也不要有[`:export{}`](https://github.com/css-modules/icss#export)
+- 全局 sccs 中(见 .env 文件`GLOBAL_SCSS=/scss/var.scss`)不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)
 
 - 规范优雅正确适当的各种**注释**，比如方法注释及必要的变量注释：
 
@@ -358,7 +361,7 @@ tips:
 
 - 减小图片大小(比如背景图片等)
 - 对多个 js chunk 共同依赖的模块进行单独提取(cacheGroups)
-- 视情况对 css 文件进行合并(比如按入口等，不设置则按 chunk)
+- 视情况对 css 文件进行合并(比如按入口等，不设置则按 chunk)【webpack 5 支持设置 css chunk 的 minSize/maxSize 啦】
 - [现代模式](https://cli.vuejs.org/zh/guide/browser-compatibility.html#现代模式)
 
 ### IDE
@@ -381,7 +384,7 @@ tips:
 2. 反向代理，绕过同源策略限制（api/图片等资源跨域等）
 3. 添加请求头字段 `access_token` 使后台能读到该字段（nginx 的 http 或 server 节点下需要添加配置`underscores_in_headers on; # 允许带下划线的请求头`）
 4. 开启 `gzip` 压缩，并重用已有 gz 文件 `gzip_static on;`
-5. 缓存**除 html**之外其他静态资源
+5. 缓存静态资源(html 可减小缓存时间)
 
 配置示例:
 
@@ -447,9 +450,6 @@ server {
 #### 文档
 
 - [scss](https://www.sass.hk/docs)
-- [axios](https://github.com/axios/axios)
-- [crypto-js](http://cryptojs.altervista.org)
-- [jsencrypt](http://travistidwell.com/jsencrypt)
 - [vue](https://cn.vuejs.org)
 - [vuex](https://vuex.vuejs.org)
 - [vue-router](https://router.vuejs.org)
@@ -458,27 +458,22 @@ server {
 - [vuex-module-decorators](https://championswimmer.in/vuex-module-decorators/)
 - [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator)
 - [vue-i18n](http://kazupon.github.io/vue-i18n)
+- [element-ui](https://element.eleme.cn)
+- [axios](https://github.com/axios/axios)
+- [crypto-js](http://cryptojs.altervista.org)
+- [jsencrypt](http://travistidwell.com/jsencrypt)
 
 #### 问题及思考
 
-- **Vue 异步组件加载失败重试**: 暂时无解，因各层级（RouterView functional 等）的分发，很难统一实现加载失败后可点击重新下载，最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)。
-- 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，`<script type="module">` & `<link rel="modulepreload">`)；不支持则加载 Babel 转码后的代码(`<script nomodule>` & `<link rel="preload">`)。但是不知何故未能生效，github 上有一些相关 issue。
+- **Vue 异步组件加载失败重试**: 暂时无解，因各层级（RouterView functional 等）的分发，很难统一实现加载失败后可点击重新下载，最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)
+- 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，`<script type="module">` & `<link rel="modulepreload">`)；不支持则加载 Babel 转码后的代码(`<script nomodule>` & `<link rel="preload">`)。但是不知何故未能生效，github 上有一些相关 issue
 
 #### 笔记
 
-- 在 `ts/js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`, 将得到输出路径或 base64 字符串, 其他类似(新的文件格式请配置 loader 和增加[ts 定义](src/shims-modules.d.ts))
+- 在 `ts/js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`(或 import), 将得到输出路径或 base64 字符串, 其他类似(新的文件格式请配置 loader 和增加[ts 定义](src/shims-modules.d.ts))
 - 在 `scss` 中引入 `css` ([@import](https://www.sass.hk/docs)) 有两种方式
   1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件。比如: `@import '~normalize.css';`
   1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import)。比如: `@import '~normalize.css/normalize.css';`
-- `TypeScript` 中 `for in` 一个对象 obj 可以申明接口或者:
-
-  ```TypeScript
-  const temp: any = obj
-  let key: string
-  for(key of temp) {
-    temp[key]
-  }
-  ```
 
 #### 其他
 

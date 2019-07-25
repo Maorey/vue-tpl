@@ -46,8 +46,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
-    "@babel/plugin-transform-runtime": "^7.5.5",
-    "@babel/runtime-corejs3": "^7.5.5",
     "@types/crypto-js": "^3.1.43",
     "@types/echarts": "^4.1.9",
     "@types/jest": "^24.0.15",

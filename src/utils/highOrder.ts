@@ -6,8 +6,8 @@
 
 import CONFIG from '@/config'
 
-import LOADING from '@com/Loading.vue' // 加载中
-import ERROR from '@com/Error.vue' // 加载失败
+import LOADING from '@com/Loading' // 加载中
+import ERROR from '@com/Error' // 加载失败
 
 import { CreateElement, Component, AsyncComponent, RenderContext } from 'vue'
 
@@ -44,7 +44,7 @@ function getChooser(
 }
 
 /** 获取带加载状态的【异步】组件
- * @param {Function} promiseFactory 异步组件, 比如: () => import('a.vue')
+ * @param {Function} promiseFactory 异步组件, 比如: () => import('a')
  *    另: 第一次执行import方法就会开始下载chunk并返回Promise，成功后保存Promise下次直接返回
  *
  * @returns {Function} 带加载状态的异步组件
@@ -74,8 +74,8 @@ function getAsync(
 </template>
 
 <script lang="ts">
-import A from 'A.vue'
-import B from 'B.vue'
+import A from 'A'
+import B from 'B'
 const Chooser = getChooser({ A, B }) // 使用默认过滤器
 const Chooser = getChooser(
   { A, B },
@@ -110,7 +110,7 @@ export default class extends Vue {
 @Component({
   components: {
     // 按规范命名哈 (多个异步组件合并到一个chunk用一样的名字)
-    AsyncComponent: getAsync(/* webpackChunkName: "ocA" * / () => import('A.vue')),
+    AsyncComponent: getAsync(/* webpackChunkName: "ocA" * / () => import('A')),
   },
 })
 export default class extends Vue {}
@@ -128,8 +128,8 @@ export default class extends Vue {}
 
 <script lang="ts">
 const Chooser = getChooser({
-  A: getAsync(/* webpackChunkName: "oCom" * /() => import('A.vue')),
-  B: getAsync(/* webpackChunkName: "oCom" * / () => import('B.vue')),
+  A: getAsync(/* webpackChunkName: "oCom" * /() => import('A')),
+  B: getAsync(/* webpackChunkName: "oCom" * / () => import('B')),
 })
 
 @Component({ components: { Chooser } })
@@ -142,8 +142,8 @@ export default class extends Vue {
 
 组合2: 异步的高阶选择组件
 // Chooser/index.ts
-import A from 'A.vue'
-import B from 'B.vue'
+import A from 'A'
+import B from 'B'
 const Chooser = getChooser({ A, B }) // 使用默认过滤器
 
 export default Chooser // 异步加载的时候必须是default

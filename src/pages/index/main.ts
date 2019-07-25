@@ -4,7 +4,7 @@
  * @Date: 2019-06-18 15:58:46
  */
 import Vue, { CreateElement, VNode } from 'vue'
-import App from './App.vue'
+import App from './App'
 import router from './router'
 import store from './store'
 
