@@ -8,10 +8,10 @@
  */
 
 /// 变量 (私有变量 _Case)///
-@import './varColors.scss'; // 颜色 【colorCase】: colorRed
-@import './varFontSIzes.scss'; // 字号 【同css】: x-smaller、xxx-large
-@import './varZIndexes.scss'; // z-index层级划分 【zCase】: zMessage
-@import './varLayout.scss'; // 固定布局尺寸 【(height|width)Case】: heightHeader、widthLfetColumn
+@import './varColors'; // 颜色 【colorCase】: colorRed
+@import './varFontSIzes'; // 字号 【同css】: x-smaller、xxx-large
+@import './varZIndexes'; // z-index层级划分 【zCase】: zMessage
+@import './varLayout'; // 固定布局尺寸 【(height|width)Case】: heightHeader、widthLfetColumn
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 
