@@ -154,5 +154,5 @@
   }
 }
 
-@import '@/scss/reset';
+@import '@/scss/reset.scss';
 </style>

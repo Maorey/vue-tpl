@@ -6,12 +6,17 @@
 const fs = require('fs')
 const path = require('path')
 
-/** 模块是否被指定入口路径引用
- * @param {WebpackModule} module webpack模块
- * @param {string} entry 入口路径
- *
- * @returns {Boolean}
- */
+const cache = {}
+function exists(key, rootDir, fileName) {
+  let result = cache[key]
+  if (result === undefined) {
+    result = cache[key] = fs.existsSync(path.join(rootDir, fileName))
+    setTimeout(() => (cache[key] = undefined), 60000)
+  }
+
+  return result
+}
+
 function includes(module, entry) {
   return (
     !!module &&
@@ -50,7 +55,7 @@ module.exports = function(isProd, pages, globalSCSS) {
           for (key in pages) {
             if (
               includes(_module, (temp = pages[key].alias)) &&
-              fs.existsSync(path.join(temp, globalSCSS))
+              exists(key, temp, globalSCSS)
             ) {
               global += `@import "@${key + globalSCSS}";`
               break

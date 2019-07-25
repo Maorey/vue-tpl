@@ -13,12 +13,12 @@ module.exports = {
     // polyfill 工具 https://babeljs.io/docs/en/next/babel-plugin-transform-runtime.html
     // ['@babel/plugin-transform-runtime', { corejs: 3 }],
     // https://github.com/ElementUI/babel-plugin-component
-    [
-      'component',
-      {
-        libraryName: 'element-ui',
-        styleLibraryName: 'theme-chalk',
-      },
-    ],
+    // [
+    //   'component',
+    //   {
+    //     libraryName: 'element-ui',
+    //     styleLibraryName: 'theme-chalk',
+    //   },
+    // ],
   ],
 }
