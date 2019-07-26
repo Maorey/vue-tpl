@@ -242,6 +242,25 @@ tips:
   （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含 Prettier 插件相关风格设置）
 
 - 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上**和 TypeScript [tslint.json](https://palantir.github.io/tslint/rules/)
+- 在 jsx/tsx 中使用全局注册的组件时可以使用`kebab-case`, 否则会在控制台输出错误 ┐(：´ ゞ｀)┌
+
+  ```TypeScript
+  import { CreateElement } from 'vue'
+  import { Component, Vue } from 'vue-property-decorator'
+
+  @Component
+  export default class extends Vue {
+    private render(h: CreateElement) {
+
+      return (
+        <el-row>
+          <el-button>这是个按钮</el-button>
+        </el-row>
+      )
+    }
+  }
+  ```
+
 - 引用 vue 单文件组件不要加文件扩展名，有利于后期重构代码
 - 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后(方便查看代码)
 - **不要用全局样式覆盖全局样式**, 应使用 `CSSModule` 并使优先级相等(注意顺序，包括同步/异步)或更高:
