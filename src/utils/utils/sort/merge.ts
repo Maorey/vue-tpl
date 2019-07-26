@@ -124,7 +124,7 @@ function mergeSort(
     let right: number
 
     let size: number = 1 // 子数组的大小 【那么2/4/8...归并就是最高效的了】
-    while (size < end) {
+    do {
       left = start
       // tslint:disable-next-line: no-conditional-assignment
       while ((middle = left + size - 1) < end) {
@@ -144,7 +144,8 @@ function mergeSort(
       }
       // tslint:disable-next-line: no-bitwise
       size <<= 1 // 每轮翻倍(*2)
-    }
+    } while (size < end)
+    left > end || merge(0, left - 1, end) // 末尾捡漏
 
     LIST = contrast = empty // 释放引用
   }

@@ -18,7 +18,7 @@ type Compare = (a: any, b: any) => number | boolean | null | undefined
 
 /** 升序
  */
-const ASC: Compare = (a: any, b: any): any => a - b
+const ASC: Compare = (a: any, b: any): any => a > b
 
 /** 目标值是否基础类型
  * @param {Any} value 目标值

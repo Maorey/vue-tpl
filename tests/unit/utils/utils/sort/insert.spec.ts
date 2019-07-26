@@ -5,15 +5,15 @@
  */
 import insertSort from '@/utils/utils/sort/insert'
 
+const testArray: number[] = []
+
+let arrayLength: number = 10000
+while (arrayLength--) {
+  testArray.push(Math.random() * arrayLength)
+}
+arrayLength = testArray.length - 1
+
 test('insertSort', () => {
-  const testArray: number[] = []
-
-  let arrayLength: number = 10000
-  while (arrayLength--) {
-    testArray.push(Math.random() * arrayLength)
-  }
-  arrayLength = testArray.length - 1
-
   let pass: boolean = true
 
   insertSort(testArray)

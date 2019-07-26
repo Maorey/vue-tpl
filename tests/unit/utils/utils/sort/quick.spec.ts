@@ -5,15 +5,15 @@
  */
 import quickSort from '@/utils/utils/sort/quick'
 
+const testArray: number[] = []
+
+let arrayLength: number = 10000
+while (arrayLength--) {
+  testArray.push(Math.random() * arrayLength)
+}
+arrayLength = testArray.length - 1
+
 test('quickSort', () => {
-  const testArray: number[] = []
-
-  let arrayLength: number = 10000
-  while (arrayLength--) {
-    testArray.push(Math.random() * arrayLength)
-  }
-  arrayLength = testArray.length - 1
-
   let pass: boolean = true
 
   quickSort(testArray)
