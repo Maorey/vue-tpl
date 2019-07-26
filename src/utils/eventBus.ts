@@ -9,7 +9,7 @@ const BUS = new Vue()
 
 /** 全局（单例）消息总线
  */
-export const eventBus = {
+const eventBus = {
   /** 监听事件
    * @param {String} eventName 事件名
    * @param {String|Function} nameSpace:String 命名空间 handler:Function 事件处理函数
@@ -86,3 +86,5 @@ export const eventBus = {
     return this
   },
 }
+
+export default eventBus
