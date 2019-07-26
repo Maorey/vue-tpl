@@ -28,7 +28,8 @@ module.exports = {
   publicPath: './', // 发布路径（./: 相对路径）
   lintOnSave: !isProd, // 保存时检查代码
   productionSourceMap: false, // 生产环境不要sourceMap
-  transpileDependencies: ['vuex-module-decorators'], // babel转码, 默认不转依赖包
+  // babel转码, 默认不转依赖包
+  transpileDependencies: ['vuex-module-decorators'],
 
   /// 【配置页面入口】https://cli.vuejs.org/zh/config/#pages ///
   pages,

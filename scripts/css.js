@@ -34,14 +34,15 @@ module.exports = function(isProd, pages, globalSCSS) {
     // https://cli.vuejs.org/zh/config/#css-loaderoptions
     loaderOptions: {
       css: {
-        modules: {
-          // class名 内容哈希5个字符足够（数字开头的会自动补个下划线）
-          // https://github.com/webpack-contrib/css-loader#localidentname
-          // https://github.com/webpack/loader-utils#interpolatename
-          localIdentName: isProd
-            ? '[hash:5]'
-            : '[folder]-[name]-[local][emoji]',
-        },
+        // wait vue/cli-service bug fix
+        // modules: {
+        //   // class名 内容哈希5个字符足够（数字开头的会自动补个下划线）
+        //   // https://github.com/webpack-contrib/css-loader#localidentname
+        //   // https://github.com/webpack/loader-utils#interpolatename
+        //   localIdentName: isProd
+        //     ? '[hash:5]'
+        //     : '[folder]-[name]-[local][emoji]',
+        // },
         localsConvention: 'camelCaseOnly', // 只允许驼峰class名
       },
       sass: {
