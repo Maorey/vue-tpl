@@ -10,8 +10,8 @@
 <script lang="ts">
 import CONFIG from '@index/config'
 
-import echarts from './echarts'
 import { EChartOption, ECharts } from 'echarts'
+import echarts from './echarts'
 import 'echarts/lib/chart/line' // 折线图
 
 import 'echarts/lib/component/grid' // 直角坐标系

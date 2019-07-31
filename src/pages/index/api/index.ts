@@ -6,6 +6,7 @@
 
 const API = {
   chartLine: 'chart-line',
+  chartPie: 'chart-pie',
 }
 
 export default API
