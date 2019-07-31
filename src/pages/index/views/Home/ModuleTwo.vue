@@ -4,10 +4,10 @@
  * @Date: 2019-07-08 12:51:49
  -->
 <template>
-  <ChartRose
-    :class="$style.wrapper"
-    :data="data"
-  />
+  <div :class="$style.wrapper">
+    <MoveCircle :class="$style.circle" />
+    <ChartRose :data="data" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -15,6 +15,7 @@ import { get } from '@/utils/ajax'
 import API from '@index/api'
 import CONFIG from '@index/config'
 import ChartRose from '@indexCom/charts/Rose'
+import MoveCircle from '@indexCom/visual/Circle'
 
 import { EChartOption } from 'echarts'
 // see: https://github.com/kaorun343/vue-property-decorator
@@ -26,7 +27,7 @@ import { Component, Vue } from 'vue-property-decorator'
 
 /// name,components,directives,filters,extends,mixins ///
 @Component({
-  components: { ChartRose },
+  components: { ChartRose, MoveCircle },
 })
 export default class extends Vue {
   /// model (@Model) ///
@@ -77,5 +78,13 @@ export default class extends Vue {
   height: 100%;
   padding: 10% 0;
   box-sizing: border-box;
+
+  > div {
+    width: 100%;
+    height: 100%;
+  }
+}
+.circle {
+  position: absolute;
 }
 </style>

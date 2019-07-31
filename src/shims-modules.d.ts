@@ -78,6 +78,8 @@ declare module '*.json' {
 //   export = content
 // }
 
+declare module 'zrender/lib/*'
+
 /// vue 单文件组件，放最后 ///
 declare module '*' {
   import Vue from 'vue'
