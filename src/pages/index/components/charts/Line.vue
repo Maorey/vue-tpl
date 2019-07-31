@@ -10,7 +10,7 @@
 <script lang="ts">
 import CONFIG from '@index/config'
 
-import echarts from 'echarts/lib/echarts'
+import echarts from './echarts'
 import { EChartOption, ECharts } from 'echarts'
 import 'echarts/lib/chart/line' // 折线图
 
@@ -25,7 +25,7 @@ const INTERVAL = CONFIG.redraw
 @Component
 export default class extends Vue {
   /// props ///
-  @Prop() private data!: EChartOption
+  @Prop() private data!: EChartOption.SeriesLine[] | null
   /// private instance attributes ///
   private interval?: number
   private chart?: ECharts
@@ -33,7 +33,7 @@ export default class extends Vue {
 
   /// watch ///
   @Watch('data')
-  private onDataChange(data: EChartOption | void) {
+  private onDataChange(data?: EChartOption.SeriesLine[]) {
     this.init()
   }
 
@@ -55,9 +55,92 @@ export default class extends Vue {
     if (!el || !data) {
       return
     }
-    this.chart || (this.chart = echarts.init(el as HTMLDivElement))
+    this.chart || (this.chart = echarts.init(el as HTMLDivElement, 'tpl'))
 
-    this.option = data
+    const series: EChartOption.SeriesLine[] = []
+    const legend: object[] = []
+    const xAxis: string[] = []
+
+    data.forEach((seriesLine: EChartOption.SeriesLine) => {
+      seriesLine = {
+        type: 'line',
+        areaStyle: {
+          opacity: 0.3,
+        },
+        symbolSize: 1,
+        ...seriesLine,
+      }
+
+      series.push(seriesLine)
+      legend.push({
+        name: seriesLine.name,
+        icon: 'roundRect',
+      })
+      seriesLine.data &&
+        seriesLine.data.forEach((item: any) => {
+          xAxis.includes(item.name) || xAxis.push(item.name)
+        })
+    })
+
+    // 一些设置
+    this.option = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+          crossStyle: {
+            color: '#999',
+          },
+        },
+      },
+      legend: {
+        data: legend,
+        bottom: '0',
+        type: 'scroll',
+        itemWidth: 15,
+        itemHeight: 10,
+        textStyle: {
+          color: '#fff',
+          fontSize: 12,
+        },
+      },
+      grid: {
+        left: 15,
+        top: 30,
+        right: 15,
+        bottom: 30,
+        containLabel: true,
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: xAxis,
+        axisLabel: {
+          textStyle: {
+            color: '#fff',
+          },
+        },
+      },
+      yAxis: {
+        type: 'value',
+        name: '单位（%）',
+        nameTextStyle: {
+          color: '#fff',
+        },
+        axisLabel: {
+          color: '#fff',
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#2A655F',
+          },
+        },
+        axisLine: {
+          show: false,
+        },
+      },
+      series,
+    } as EChartOption
 
     this.refresh()
   }

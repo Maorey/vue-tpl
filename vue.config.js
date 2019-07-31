@@ -179,6 +179,38 @@ module.exports = {
           reuseExistingChunk: true,
           test: /[\\/]node_modules[\\/]echarts[\\/]/,
         },
+        // zdog
+        zdg: {
+          name: 'zdg',
+          chunks: 'all',
+          priority: 66,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]zdog[\\/]/,
+        },
+        // pixi.js
+        pix: {
+          name: 'pix',
+          chunks: 'all',
+          priority: 66,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]pixi.js[\\/]/,
+        },
+        // three.js
+        thr: {
+          name: 'pix',
+          chunks: 'all',
+          priority: 66,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]three[\\/]/,
+        },
+        // luma.gl
+        lum: {
+          name: 'lum',
+          chunks: 'all',
+          priority: 66,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]luma.gl[\\/]/,
+        },
 
         /// 【 css 】(多数情况下不需要，webpack 5可以去掉) ///
         // 提取各入口的 css 到单独文件(还抽了一个空数组的 [entryName].*.*.js 出来???)
