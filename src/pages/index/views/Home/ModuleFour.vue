@@ -4,12 +4,12 @@
  * @Date: 2019-07-08 12:51:49
  -->
 <template>
-  <div :class="$style.wrapper">
-    这里是模块四
-  </div>
+  <LumaRipple :class="$style.wrapper" />
 </template>
 
 <script lang="ts">
+import LumaRipple from '@indexCom/visual/Ripple'
+
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue } from 'vue-property-decorator'
 
@@ -18,7 +18,9 @@ import { Component, Vue } from 'vue-property-decorator'
 // function utils() {} // 函数(无副作用)
 
 /// name,components,directives,filters,extends,mixins ///
-@Component
+@Component({
+  components: { LumaRipple },
+})
 export default class extends Vue {
   /// model (@Model) ///
   /// props (@Prop) ///
@@ -34,6 +36,9 @@ export default class extends Vue {
 
 <style lang="scss" module>
 .wrapper {
-  padding: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 5% 0;
+  box-sizing: border-box;
 }
 </style>
