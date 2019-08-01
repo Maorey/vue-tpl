@@ -8,6 +8,8 @@ import sort from './utils/sort'
 import clone from './utils/clone'
 import formatNumber from './utils/formatNumber'
 import formatDate, { getDateByString } from './utils/formatDate'
+import { toRGB, isTransparent, fitColor, reverseColor } from './utils/color'
+import { getOffset, getInfoByHtml, escapeHTML, HtmlInfo } from './utils/dom'
 import {
   camelToKebab,
   camelToUpper,
@@ -29,6 +31,14 @@ export {
   formatNumber,
   formatDate,
   getDateByString,
+  toRGB,
+  isTransparent,
+  fitColor,
+  reverseColor,
+  getOffset,
+  getInfoByHtml,
+  escapeHTML,
+  HtmlInfo,
   camelToKebab,
   camelToUpper,
   kebabToCamel,

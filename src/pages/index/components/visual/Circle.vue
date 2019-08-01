@@ -8,7 +8,6 @@
 </template>
 
 <script lang="ts">
-import CONFIG from '@index/config'
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue } from 'vue-property-decorator'
 
@@ -16,8 +15,6 @@ import { Component, Vue } from 'vue-property-decorator'
 import { init } from 'zrender/lib/zrender' // 核心
 import { Circle } from 'zrender/lib/export' // 可选
 // const zrender = { init, Circle } // 这样就和文档的使用方式一致了
-
-const INTERVAL = CONFIG.redraw
 
 /// name,components,directives,filters,extends,mixins ///
 @Component
@@ -38,9 +35,9 @@ export default class extends Vue {
     const r = 30
     const circle = new Circle({
       shape: {
+        r,
         cx: r,
         cy: h / 2,
-        r: r,
       },
       style: {
         fill: 'transparent',

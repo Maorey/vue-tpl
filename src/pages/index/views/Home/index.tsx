@@ -48,8 +48,8 @@ export default class extends Vue {
             <template slot='icon'>
               <i class='i-check-circle' />
             </template>
-            <template slot='title'>模块一</template>
-            <template slot='unit'>单位: GB</template>
+            <template slot='title'>ECharts</template>
+            <template slot='unit'>(模块)</template>
 
             <ModuleOne />
           </ModuleContainer>
@@ -58,8 +58,8 @@ export default class extends Vue {
             <template slot='icon'>
               <i class='i-CI' />
             </template>
-            <template slot='title'>模块二</template>
-            <template slot='unit'>单位: %</template>
+            <template slot='title'>ECharts + ZRender</template>
+            <template slot='unit'>(模块)</template>
 
             <ModuleTwo />
           </ModuleContainer>
@@ -88,8 +88,8 @@ export default class extends Vue {
             <template slot='icon'>
               <i class='i-close-circle' />
             </template>
-            <template slot='title'>模块五</template>
-            <template slot='unit'>单位: 条</template>
+            <template slot='title'>d3</template>
+            <template slot='unit'>(模块)</template>
 
             <ModuleFive />
           </ModuleContainer>

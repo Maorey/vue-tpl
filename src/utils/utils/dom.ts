@@ -4,20 +4,26 @@
  * @Date: 2019-07-04 14:38:59
  */
 
-/** 获取目标元素到页面顶部的绝对定位
+/** 获取目标元素到页面左上角的绝对定位
  * @param {Dom} dom dom对象
+ * @param {Boolean} flag undefined: 返回{top,left}; true: 返回top; false: 返回left
  *
- * @returns {Number} 当前元素到顶部距离（px）
+ * @returns {Number|{ top: number; left: number } } 见flag
  */
-function getOffsetTop(dom: any): number {
+function getOffset(
+  dom: any,
+  flag?: boolean
+): number | { top: number; left: number } {
   let top: number = 0
+  let left: number = 0
 
   do {
-    top += dom.offsetTop
+    flag || (left += dom.offsetLeft)
+    flag === false || (top += dom.offsetTop)
     dom = dom.offsetParent
   } while (dom)
 
-  return top
+  return flag === undefined ? { top, left } : flag ? top : left
 }
 
 /** html标签信息
@@ -204,4 +210,4 @@ function escapeHTML(html: string): string {
   return html.replace(REG_TAGS, REPLACE_TAG)
 }
 
-export { getOffsetTop, getInfoByHtml, escapeHTML, HtmlInfo }
+export { getOffset, getInfoByHtml, escapeHTML, HtmlInfo }
