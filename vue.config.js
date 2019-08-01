@@ -29,7 +29,7 @@ module.exports = {
   lintOnSave: !isProd, // 保存时检查代码
   productionSourceMap: false, // 生产环境不要sourceMap
   // babel转码, 默认不转依赖包
-  transpileDependencies: ['vuex-module-decorators'],
+  transpileDependencies: ['vuex-module-decorators', 'three'],
 
   /// 【配置页面入口】https://cli.vuejs.org/zh/config/#pages ///
   pages,
