@@ -11,7 +11,7 @@ function exists(key, rootDir, fileName) {
   let result = cache[key]
   if (result === undefined) {
     result = cache[key] = fs.existsSync(path.join(rootDir, fileName))
-    setTimeout(() => (cache[key] = undefined), 60000)
+    setTimeout(() => (cache[key] = undefined), 20000)
   }
 
   return result
@@ -47,19 +47,24 @@ module.exports = function(isProd, pages, globalSCSS) {
       },
       sass: {
         // 全局scss变量(入口覆盖全局)
-        data({ _module }) {
+        // data({ _module }) {
+        data() {
           // More information about avalaible options https://webpack.js.org/api/loaders/
           let global = `@import "@${globalSCSS}";` // 项目全局
 
-          let temp
+          // let temp
           let key
           for (key in pages) {
-            if (
-              includes(_module, (temp = pages[key].alias)) &&
-              exists(key, temp, globalSCSS)
-            ) {
+            // production 时 module.issuer=null 没法知道入口 ┐(：´ゞ｀)┌
+            // if (
+            //   includes(_module, (temp = pages[key].alias)) &&
+            //   exists(key, temp, globalSCSS)
+            // ) {
+            //   global += `@import "@${key + globalSCSS}";`
+            //   break
+            // }
+            if (exists(key, pages[key].alias, globalSCSS)) {
               global += `@import "@${key + globalSCSS}";`
-              break
             }
           }
 
