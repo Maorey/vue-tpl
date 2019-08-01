@@ -104,7 +104,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
   })
 
     // eyes
-  ;[-1, 1].forEach(function(xSide) {
+  ;[-1, 1].forEach((xSide: number) => {
     // cheek blush
     isGood &&
       new Ellipse({
@@ -268,7 +268,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
   })
 
   // arms
-  ;[-1, 1].forEach(function(xSide) {
+  ;[-1, 1].forEach((xSide: number) => {
     const isLeft = xSide === 1
     // shoulder ball
     empty = new Shape({
@@ -515,8 +515,8 @@ export default class extends Vue {
       const barb = new Shape({
         path: [
           { x: 0, y: y0, z: -radius },
-          { x: x, y: -sector / 2, z: z1 },
-          { x: x, y: (-sector * 3) / 4, z: z1 },
+          { x, y: -sector / 2, z: z1 },
+          { x, y: (-sector * 3) / 4, z: z1 },
           { x: 0, y: y3, z: z2 },
         ],
         addTo: feather,

@@ -44,7 +44,7 @@ export default class extends Vue {
     const halfHeight = height / 2
     const tau = 2 * Math.PI
 
-    const nodes = range(200).map(i => ({
+    const nodes = range(200).map((i: number) => ({
       r: Math.random() * 14 + 4, // 半径
       c: schemeCategory10[i % 10], // 颜色
       x: NaN,

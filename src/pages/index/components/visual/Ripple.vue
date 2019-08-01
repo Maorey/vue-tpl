@@ -109,37 +109,33 @@ class InstancedCube extends ModelNode {
       () => Math.random() * 0.75 + 0.25
     )
 
-    const vs = `\
-  attribute float instanceSizes;
-  attribute vec3 positions;
-  attribute vec3 normals;
-  attribute vec2 instanceOffsets;
-  attribute vec3 instanceColors;
-  attribute vec2 instancePickingColors;
-  uniform mat4 uModel;
-  uniform mat4 uView;
-  uniform mat4 uProjection;
-  uniform float uTime;
-  varying vec3 color;
-  void main(void) {
-    vec3 normal = vec3(uModel * vec4(normals, 1.0));
-    // Set up data for modules
-    color = instanceColors;
-    project_setNormal(normal);
-    vec4 pickColor = vec4(0., instancePickingColors, 1.0);
-    MY_SHADER_HOOK_pickColor(pickColor);
-    // Vertex position (z coordinate undulates with time), and model rotates around center
-    float delta = length(instanceOffsets);
-    vec4 offset = vec4(instanceOffsets, sin((uTime + delta) * 0.1) * 16.0, 0);
-    gl_Position = uProjection * uView * (uModel * vec4(positions * instanceSizes, 1.0) + offset);
-  }`
-    const fs = `\
-  precision highp float;
-  varying vec3 color;
-  void main(void) {
-    gl_FragColor = vec4(color, 1.);
-    MY_SHADER_HOOK_fragmentColor(gl_FragColor);
-  }`
+    const vs = `attribute float instanceSizes;
+attribute vec3 positions;
+attribute vec3 normals;
+attribute vec2 instanceOffsets;
+attribute vec3 instanceColors;
+attribute vec2 instancePickingColors;
+uniform mat4 uModel;
+uniform mat4 uView;
+uniform mat4 uProjection;
+uniform float uTime;
+varying vec3 color;
+void main(void) {
+  vec3 normal = vec3(uModel * vec4(normals, 1.0));
+  color = instanceColors;
+  project_setNormal(normal);
+  vec4 pickColor = vec4(0., instancePickingColors, 1.0);
+  MY_SHADER_HOOK_pickColor(pickColor);
+  float delta = length(instanceOffsets);
+  vec4 offset = vec4(instanceOffsets, sin((uTime + delta) * 0.1) * 16.0, 0);
+  gl_Position = uProjection * uView * (uModel * vec4(positions * instanceSizes, 1.0) + offset);
+}`
+    const fs = `precision highp float;
+varying vec3 color;
+void main(void) {
+  gl_FragColor = vec4(color, 1.);
+  MY_SHADER_HOOK_fragmentColor(gl_FragColor);
+}`
 
     const offsetsBuffer = new Buffer(gl, offsets)
     const colorsBuffer = new Buffer(gl, colors)
@@ -166,12 +162,13 @@ class InstancedCube extends ModelNode {
 }
 
 class AppAnimationLoop extends AnimationLoop {
+  private cube: any
+
   constructor() {
     super({ createFramebuffer: true })
   }
 
-  private cube: any
-  onInitialize(o: any) {
+  protected onInitialize(o: any) {
     const { gl, _animationLoop } = o
 
     setParameters(gl, {
@@ -233,7 +230,7 @@ class AppAnimationLoop extends AnimationLoop {
     })
   }
 
-  onRender(animationProps: any) {
+  protected onRender(animationProps: any) {
     const { gl } = animationProps
 
     const { framebuffer, useDevicePixels, _mousePosition } = animationProps
@@ -247,12 +244,12 @@ class AppAnimationLoop extends AnimationLoop {
       pickInstance(gl, pickX, pickY, this.cube, framebuffer)
     }
 
-    // Draw the cubes
+    // tslint:disable-next-line: no-bitwise Draw the cubes
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     this.cube.draw()
   }
 
-  onFinalize() {
+  protected onFinalize() {
     this.cube.delete()
   }
 }
