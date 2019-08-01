@@ -98,6 +98,7 @@ function merge(left: number, middle: number, right: number): void {
 }
 /** 归并排序(稳定 迭代非递归)
  * @test true
+ *
  * @param {Array} array 待排序数组
  * @param {Compare} compare 数值比较方法
  * @param {Number} start 数组起始索引（含）

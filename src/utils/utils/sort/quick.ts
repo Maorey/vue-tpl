@@ -49,7 +49,7 @@ function insertSort(start: number, end: number): void {
  * @param {Number} p2
  */
 function swap(p1: number, p2: number): void {
-  ;[LIST[p1], LIST[p2]] = [LIST[p2], LIST[p1]]
+  [LIST[p1], LIST[p2]] = [LIST[p2], LIST[p1]]
 }
 
 /** 得到基准 【左中右排序取中位数，并把中位数交换到倒数第二个】

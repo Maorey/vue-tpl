@@ -38,6 +38,7 @@ function isBaseType(value: any): boolean {
 }
 
 /** 排序 基础类型(数字/字符串):快速排序 非基础类型:归并排序(稳定)
+ *    尝试各种组合后还是归并最快
  * @param {Array} array 待排序数组
  * @param {Compare} compare 数值比较方法
  * @param {Number} start 数组起始索引（含）
@@ -57,11 +58,10 @@ function sort(
   end === undefined && (end = array.length - 1)
 
   if (end > start) {
-    // 判断首尾元素类型
     if (isBaseType(array[start]) && isBaseType(array[end])) {
+      // 不可变类型
       return quickSort(array, compare, start, end)
     }
-    // TODO: 归并/分治 + 插入
     return mergeSort(array, compare, start, end)
   }
 

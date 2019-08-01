@@ -8,6 +8,7 @@ import { ASC, Compare } from './'
 
 /** 插入排序(稳定)
  * @test true
+ *
  * @param {Array} array 待排序数组
  * @param {Compare} compare 数值比较方法
  * @param {Number} start 数组起始索引（含）

@@ -341,7 +341,7 @@ function quickSort(
 // check(quickSort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]))
 // check(quickSort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1]))
 
-/// 耗时 ///
+/// 耗时 > 不稳定版 ///
 // const testArray: number[] = []
 // let last: number = 10000
 // while (last--) {
@@ -351,18 +351,18 @@ function quickSort(
 // console.time('cost')
 // quickSort(testArray)
 // console.timeEnd('cost')
-// // cost: 21ms
+// // cost: ?ms
 // console.time('cost')
 // quickSort(testArray)
 // console.timeEnd('cost')
-// // cost: 0.5ms
+// // cost: ?ms
 // console.time('cost')
 // quickSort(testArray, (a: number, b: number): boolean => a < b)
 // console.timeEnd('cost')
-// // cost: 25ms
+// // cost: ?ms
 // console.time('cost')
 // quickSort(testArray, (): boolean => Math.random() > 0.5)
 // console.timeEnd('cost')
-// // cost: 6ms
+// // cost: ?ms
 
 export default quickSort
