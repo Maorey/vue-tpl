@@ -85,6 +85,8 @@ export default class extends Vue {
   }
 }
 .circle {
+  top: 0;
+  left: 0;
   position: absolute;
 }
 </style>

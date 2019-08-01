@@ -79,6 +79,7 @@ declare module '*.json' {
 // }
 
 declare module 'zrender/lib/*'
+declare module 'zdog/js/*'
 
 /// vue 单文件组件，放最后 ///
 declare module '*' {

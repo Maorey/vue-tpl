@@ -5,11 +5,15 @@
  -->
 <template>
   <div :class="$style.wrapper">
-    这里是模六
+    <StarWarp :class="$style.star" />
+    <TwoRotate />
   </div>
 </template>
 
 <script lang="ts">
+import TwoRotate from '@indexCom/visual/TwoRotate'
+import StarWarp from '@indexCom/visual/StarWarp'
+
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue } from 'vue-property-decorator'
 
@@ -18,7 +22,9 @@ import { Component, Vue } from 'vue-property-decorator'
 // function utils() {} // 函数(无副作用)
 
 /// name,components,directives,filters,extends,mixins ///
-@Component
+@Component({
+  components: { TwoRotate, StarWarp },
+})
 export default class extends Vue {
   /// model (@Model) ///
   /// props (@Prop) ///
@@ -34,6 +40,19 @@ export default class extends Vue {
 
 <style lang="scss" module>
 .wrapper {
-  padding: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 10% 0;
+  box-sizing: border-box;
+
+  > canvas {
+    width: 100%;
+    height: 100%;
+  }
+}
+.star {
+  top: 0;
+  left: 0;
+  position: absolute;
 }
 </style>
