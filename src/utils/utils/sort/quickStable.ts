@@ -10,7 +10,7 @@ import { ASC, Compare } from '.'
 
 /** 数组长度低值:小于低值使用插入排序
  */
-const LOW: number = 7
+const LOW: number = 6
 /** 数组长度高值 划分时:介于低值高值左中右3数取中值,大于高值左中右各3个数取中值(9数取中)
  */
 const HIGH: number = 40
@@ -140,7 +140,7 @@ function mid3(a: number, b: number, c: number): number {
  * @returns {Array} 原数组
  */
 function partition(start: number, end: number): void {
-  let result: any = end - start + 1 // (打杂)
+  let result: any = end - start // (打杂)
   if (result < LOW) {
     // 使用插入排序
     insertSort(start, end)
@@ -148,7 +148,7 @@ function partition(start: number, end: number): void {
   }
   /// 选择基准 ///
   // tslint:disable-next-line: no-bitwise 9 -> 4, 10 -> 4
-  let pivot: number = start + ((result + 1) >> 1) - 1
+  let pivot: number = start + (result++ >> 1)
   if (result > HIGH) {
     // tslint:disable-next-line: no-bitwise
     result = result >> 3
@@ -163,9 +163,9 @@ function partition(start: number, end: number): void {
     pivot = mid3(start, pivot, end)
   }
   /// 划分数组 |=pivotValue|<pivotValue|pivotValue|>pivotValue|=pivotValue| ///
-  let pivotValue: any = LIST[pivot] // (兼职:pivot位置标记)
-  let left: number = start < pivot ? start : start + 1 // 左扫描索引
-  let right: number = end > pivot ? end : end + 1 // 右扫描索引
+  const pivotValue: any = LIST[pivot]
+  let left: number = pivot === start ? start + 1 : start // 左扫描索引
+  let right: number = pivot === end ? end - 1 : end // 右扫描索引
   let leftEqual: number = left // 左侧相等值<=left(不含)
   let rightEqual: number = right // 右侧相等值>=right(不含)
   let leftHit: boolean // 左侧是否找到
@@ -181,14 +181,7 @@ function partition(start: number, end: number): void {
             left > leftEqual && swap(leftEqual, left)
             leftEqual++
           } else {
-            if (left < rightEqual) {
-              swap(left, rightEqual--)
-            } else {
-              left = end
-              right = --rightEqual
-              rightHit = true
-              break
-            }
+            break // 稳定
           }
         } else if (Number(result) > 0) {
           leftHit = true
@@ -209,14 +202,7 @@ function partition(start: number, end: number): void {
             right < rightEqual && swap(right, rightEqual)
             rightEqual--
           } else {
-            if (right > leftEqual) {
-              swap(leftEqual++, right)
-            } else {
-              left = ++leftEqual
-              right = start
-              leftHit = true
-              break
-            }
+            break // 稳定
           }
         } else if (Number(result) > 0) {
           rightHit = true
@@ -236,12 +222,13 @@ function partition(start: number, end: number): void {
       } else if (leftHit) {
         result = left <= pivot ? left : left - 1
       } else {
-        result = rightEqual
+        result = right > pivot ? right : pivot
       }
 
+      leftHit = pivot === start // (兼职)
+      rightHit = pivot === end // (兼职)
+
       if (result !== pivot) {
-        // pivot 位置 start(1) middle(0) end(2)
-        pivotValue = pivot > start ? (pivot < end ? 0 : 2) : 1
         swap(pivot, result)
         pivot = result
       }
@@ -251,23 +238,21 @@ function partition(start: number, end: number): void {
   }
   /// 相等值交换到移到pivot左右 ///
   if (leftEqual === pivot) {
-    left = start
+    left = start // 左侧已有序
   } else {
-    left = pivot < end ? pivot : rightEqual + 1
-    if (leftEqual < left) {
-      result = pivotValue === 1 ? start + 1 : start
-      while (leftEqual > result) {
+    left = pivot
+    if (!leftHit) {
+      while (leftEqual > start) {
         swap(--leftEqual, --left)
       }
     }
   }
   if (rightEqual === pivot) {
-    right = end
+    right = end // 右侧已有序
   } else {
-    right = pivot > start ? pivot : leftEqual - 1
-    if (rightEqual > right) {
-      result = pivotValue === 2 ? end - 1 : end
-      while (rightEqual < result) {
+    right = pivot
+    if (!rightHit) {
+      while (rightEqual < end) {
         swap(++right, ++rightEqual)
       }
     }
@@ -315,7 +300,7 @@ function quickSort(
 //       console.log('failed: ', id)
 //       console.log(array)
 //       debugger
-//       break
+//       return
 //     }
 //   }
 //   console.log('pass: ', id)

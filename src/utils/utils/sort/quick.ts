@@ -5,106 +5,107 @@
  * @Date: 2019-06-27 13:01:27
  */
 
-/** 排序比较方法
- * @param {Any} one 待比较的值之一
- * @param {Any} two 待比较的值之二
- *
- * @returns {Any} 返回 truthy: one在two前; falsy: one在two后
- */
-type Compare = (one: any, two: any) => any
+import { ASC, Compare } from '.'
 
-/** 使用插入排序阈值 最佳取4
+/** 使用插入排序阈值
  */
-const CUTOFF: number = 4
-/** 升序
- */
-const ASC: Compare = (one: any, two: any): boolean => one > two
+const LOW: number = 6
 
-// 闭包变量
-let arr: any[]
-let compare: Compare
-
-/** 比较并交换数据
- * @param {Number} i 待交换的数组索引
- * @param {Number} j 待交换的数组索引
- * @param {boolean} force 直接交换（不通过compare回调来比较）
+// 将这些变量放入执行上下文
+/** 待排序数组
  */
-function swap(i: number, j: number, force?: boolean | undefined): void {
-  (force || compare(arr[i], arr[j])) && ([arr[i], arr[j]] = [arr[j], arr[i]])
-}
-
-/** 插入排序
- * @param {Number} left 数组起始索引（含）
- * @param {Number} right 数组结束索引（含）
+let LIST: any[]
+/** 数组元素比较方法
  */
-function insertSort(left: number, right: number): void {
-  for (let i: number = left; i < right; i++) {
-    for (let j: number = i + 1; j > left; j--) {
-      swap(j - 1, j)
+let contrast: Compare
+
+/** 用于释放引用
+ */
+const empty: any = null
+
+/** 插入排序(稳定)
+ * @param {Number} start 数组起始索引（含）
+ * @param {Number} end 数组结束索引（含）
+ */
+function insertSort(start: number, end: number): void {
+  let temp: any
+  let current: any
+  let pointer: number
+  let anchor: number = start
+  while (anchor++ < end) {
+    current = LIST[(pointer = anchor)]
+    while (
+      pointer > start &&
+      Number(contrast((temp = LIST[pointer - 1]), current)) > 0
+    ) {
+      LIST[pointer--] = temp
     }
+    pointer < anchor && (LIST[pointer] = current)
   }
 }
 
-/** 得到主元 【左中右排序取中位数，并把中位数交换到倒数第二个】
- * @param {Number} left 数组起始索引（含）
- * @param {Number} right 数组结束索引（含）
- *
- * @returns {Any} 主元
+/** 交换数组元素
+ * @param {Number} p1
+ * @param {Number} p2
  */
-function findPivot(left: number, right: number): any {
-  // tslint:disable-next-line: no-bitwise
-  const center: number = (left + right) >> 1
-
-  // 将中位数放在中间 至少比较三次
-  swap(left, center)
-  swap(left, right)
-  swap(center, right)
-
-  // 将主元换到右二 使之不参与后面的一系列交换
-  swap(center, --right, true)
-
-  return arr[right]
+function swap(p1: number, p2: number): void {
+  ;[LIST[p1], LIST[p2]] = [LIST[p2], LIST[p1]]
 }
 
-/** 分割
- * @param {Number} left 数组起始索引（含）
- * @param {Number} right 数组结束索引（含）
+/** 得到基准 【左中右排序取中位数，并把中位数交换到倒数第二个】
+ * @param {Number} start 数组起始索引（含）
+ * @param {Number} end 数组结束索引（含）
+ *
+ * @returns {Any} 基准
  */
-function partition(left: number, right: number): void {
-  if (right - left < CUTOFF) {
-    // 数组长度小于阈值时采用插入排序
-    insertSort(left, right)
+function findPivot(start: number, end: number): any {
+  // tslint:disable-next-line: no-bitwise
+  const pivot: number = (start + end) >> 1
+
+  contrast(LIST[start], LIST[pivot]) && swap(start, pivot)
+  contrast(LIST[start], LIST[end]) && swap(start, end)
+  contrast(LIST[pivot], LIST[end]) && swap(pivot, end)
+
+  swap(pivot, --end) // 将基准换到右二
+
+  return LIST[end]
+}
+
+/** 快速排序(不稳定)
+ * @param {Number} start 数组起始索引（含）
+ * @param {Number} end 数组结束索引（含）
+ */
+function partition(start: number, end: number): void {
+  if (end - start < LOW) {
+    insertSort(start, end)
   } else {
-    // 得到主元 且左中右有序
-    const pivot: any = findPivot(left, right)
-    let i: number = left + 1 // 最左除外
-    let j: number = right - 2 // 主元（right - 1处）及最右除外
+    const pivot: any = findPivot(start, end)
+    let left: number = start + 1
+    let right: number = end - 2
 
-    // 从两边向中间找
-    while (i < j) {
-      // 从左边开始找到第一个比主元大/小的
-      while (i < j && compare(pivot, arr[i])) {
-        i++
+    while (true) {
+      // 从左边开始找到第一个比pivot大的
+      while (left < right && contrast(pivot, LIST[left])) {
+        left++
       }
-      // 从右边开始找到第一个比主元小/大的
-      while (j > i && compare(arr[j], pivot)) {
-        j--
+      // 从右边开始找到第一个比pivot小的
+      while (right > left && contrast(LIST[right], pivot)) {
+        right--
       }
 
-      // 将左边大/小于主元的交换到右边
-      i < j && swap(i++, j--, true)
-
-      // 出现相等时的主元位置
-      i === j && compare(pivot, arr[i]) && i++
+      if (left < right) {
+        swap(left++, right--)
+      } else {
+        left === right && contrast(pivot, LIST[left]) && left++
+        right = left
+        break
+      }
     }
+    swap(left, end - 1)
 
-    // 主元换到合适位置
-    swap(i, right - 1, true) // i前面已经++了 现在是主元的位置
-
-    // 对主元左侧的子数组排序
-    left < i - 1 && partition(left, i - 1)
-    // 对主元右侧的子数组排序
-    i + 1 < right && partition(i + 1, right)
+    // 尾递归子序列
+    --left > start && partition(start, left)
+    ++right < end && partition(right, end)
   }
 }
 
@@ -112,22 +113,30 @@ function partition(left: number, right: number): void {
  * https://segmentfault.com/a/1190000010928302#articleHeader4
  * @test true
  *
- * @param {Array} arr 待排序数组
- * @param {Function} compare 【可选，默认升序】a > b时：返回真值则升序，返回假值则降序
+ * @param {Array} LIST 待排序数组
+ * @param {Function} contrast 【可选，默认升序】a > b时：返回真值则升序，返回假值则降序
  *
- * @returns {Array} arr 排序后的原数组
+ * @returns {Array} LIST 排序后的原数组
  */
-function quickSort(array: any[], fun: Compare = ASC): any[] {
-  if (array.length < 2) {
-    return array
+function quickSort(
+  array: any[],
+  compare: Compare = ASC,
+  start?: number,
+  end?: number
+): any[] {
+  start === undefined && (start = 0)
+  end === undefined && (end = array.length - 1)
+
+  if (end > start) {
+    LIST = array
+    contrast = compare
+
+    partition(start, end)
+
+    LIST = contrast = empty // 释放引用
   }
 
-  arr = array
-  compare = fun
-
-  partition(0, arr.length - 1)
-
-  return arr
+  return array
 }
 
 /// 耗时 ///

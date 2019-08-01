@@ -1,12 +1,12 @@
 /*
- * @Description: 排序 基础类型(数字/字符串):快速排序(稳定) 非基础类型:归并排序(稳定)
+ * @Description: 排序 基础类型(数字/字符串):快速排序 非基础类型:归并排序(稳定)
  *  【重要】 排序使用compare时，a的下标一定要小于b
  * @Author: 毛瑞
  * @Date: 2019-07-19 10:52:16
  */
 
 import mergeSort from './merge' // 归并排序
-import quickSort from './quickStable' // 快速排序
+import quickSort from './quick' // 快速排序
 
 /** 排序比较方法
  * @param {Any} a 待比较的值之一
@@ -19,6 +19,7 @@ type Compare = (a: any, b: any) => number | boolean | null | undefined
 /** 升序
  */
 const ASC: Compare = (a: any, b: any): any => a > b
+// const ASC: Compare = (a: any, b: any): 0 | boolean => (a === b ? 0 : a > b)
 
 /** 目标值是否基础类型
  * @param {Any} value 目标值
@@ -36,7 +37,7 @@ function isBaseType(value: any): boolean {
   )
 }
 
-/** 排序 基础类型(数字/字符串):快速排序(稳定) 非基础类型:归并排序(稳定)
+/** 排序 基础类型(数字/字符串):快速排序 非基础类型:归并排序(稳定)
  * @param {Array} array 待排序数组
  * @param {Compare} compare 数值比较方法
  * @param {Number} start 数组起始索引（含）
