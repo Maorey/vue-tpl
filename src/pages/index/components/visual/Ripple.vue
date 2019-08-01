@@ -170,6 +170,7 @@ class AppAnimationLoop extends AnimationLoop {
     super({ createFramebuffer: true })
   }
 
+  private cube: any
   onInitialize(o: any) {
     const { gl, _animationLoop } = o
 
