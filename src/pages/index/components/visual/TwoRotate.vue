@@ -103,8 +103,8 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
     translate: { z: face.stroke / 2 - 0.5 },
   })
 
-    // eyes
-  ;[-1, 1].forEach((xSide: number) => {
+  // eyes
+  const createEye = (xSide: number) => {
     // cheek blush
     isGood &&
       new Ellipse({
@@ -144,7 +144,9 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
       fill: false,
       closed: true,
     })
-  })
+  }
+  createEye(-1)
+  createEye(1)
 
   // hair ball
   empty = new Shape({
@@ -268,7 +270,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
   })
 
   // arms
-  ;[-1, 1].forEach((xSide: number) => {
+  const createArm = (xSide: number) => {
     const isLeft = xSide === 1
     // shoulder ball
     empty = new Shape({
@@ -343,7 +345,9 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
       rotate: isLeft ? {} : { x: (-TAU / 16) * 5 },
       color: colors.tight,
     })
-  })
+  }
+  createArm(-1)
+  createArm(1)
 
   // butt
   empty = new Shape({

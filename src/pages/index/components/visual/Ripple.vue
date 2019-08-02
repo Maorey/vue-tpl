@@ -85,6 +85,7 @@ function pickInstance(
   }
 }
 
+/* tslint:disable:max-classes-per-file */
 class InstancedCube extends ModelNode {
   constructor(gl: any, props: any) {
     let offsets: any = []
