@@ -92,16 +92,16 @@ module.exports = {
       chunks: 'all', // 包含所有类型包（同步&异步 用insert-preload补齐依赖）
 
       // 分割优先级: maxInitialRequest/maxAsyncRequests < maxSize < minSize
-      minSize: 216064, // 最小分包大小
+      minSize: 134144, // 最小分包大小
       // webpack 5
       // minSize: {
-      //   javascript: 216064, // 211k
-      //   style: 318464, // 311k
+      //   javascript: 134144, // 131k
+      //   style: 216064, // 211k
       // },
-      maxSize: 398336, // 最大分包大小（超过后尝试分出大于minSize的包）
+      maxSize: 320512, // 最大分包大小（超过后尝试分出大于minSize的包）
       // maxSize: {
-      //   javascript: 398336, // 389k
-      //   style: 515072, // 503k
+      //   javascript: 320512, // 313k
+      //   style: 398336, // 389k
       // },
       // 超过maxSize分割命名 true:hash(长度8，不造哪儿改)[默认] false:路径
       // hidePathInfo: true, // 也没个文件名配置啊...
