@@ -30,26 +30,24 @@ function includes(module, entry) {
  * @param {String} globalSCSS 全局scss相对路径
  */
 module.exports = function(isProd, pages, globalSCSS) {
+  // https://cli.vuejs.org/zh/config/#css-loaderoptions
   return {
-    // https://cli.vuejs.org/zh/config/#css-loaderoptions
+    requireModuleExtension: true,
     loaderOptions: {
+      // https://github.com/webpack-contrib/css-loader
       css: {
-        // wait vue/cli-service bug fix
-        // modules: {
-        //   // class名 内容哈希5个字符足够（数字开头的会自动补个下划线）
-        //   // https://github.com/webpack-contrib/css-loader#localidentname
-        //   // https://github.com/webpack/loader-utils#interpolatename
-        //   localIdentName: isProd
-        //     ? '[hash:5]'
-        //     : '[folder]-[name]-[local][emoji]',
-        // },
+        modules: {
+          // https://github.com/webpack/loader-utils#interpolatename
+          localIdentName: isProd ? '[hash:5]' : '[folder]-[name]-[local]',
+        },
         localsConvention: 'camelCaseOnly', // 只允许驼峰class名
       },
-      sass: {
+      // https://github.com/webpack-contrib/sass-loader
+      scss: {
         // 全局scss变量(入口覆盖全局)
         // data({ _module }) {
+        // https://webpack.js.org/api/loaders
         data() {
-          // More information about avalaible options https://webpack.js.org/api/loaders/
           let global = `@import "@${globalSCSS}";` // 项目全局
 
           // let temp

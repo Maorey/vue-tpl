@@ -83,7 +83,7 @@ module.exports = {
 
     /// 【优化(optimization)】 ///
     // https://webpack.docschina.org/configuration/optimization 使用默认就好
-    // config.optimization.mangleWasmImports(true) // WebAssembly短名【暂不支持短方法】
+    // config.optimization.mangleWasmImports(true) // WebAssembly短名
     // config.optimization.runtimeChunk('single') // 所有chunk共享一个运行时文件
 
     /// 【代码分割(optimization.splitChunks 不能config.merge({}))】 ///
@@ -92,18 +92,16 @@ module.exports = {
       chunks: 'all', // 包含所有类型包（同步&异步 用insert-preload补齐依赖）
 
       // 分割优先级: maxInitialRequest/maxAsyncRequests < maxSize < minSize
-      // 最小分包大小 183k, 275k(183*1.5)
-      minSize: 187392,
+      minSize: 216064, // 最小分包大小
       // webpack 5
       // minSize: {
-      //   javascript: 187392,
-      //   style: 281600,
+      //   javascript: 216064, // 211k
+      //   style: 318464, // 311k
       // },
-      // 最大分包大小 366k, 366k(366*1.5) （超过后尝试分出大于minSize的包）
-      maxSize: 374784,
+      maxSize: 398336, // 最大分包大小（超过后尝试分出大于minSize的包）
       // maxSize: {
-      //   javascript: 374784,
-      //   style: 562176,
+      //   javascript: 398336, // 389k
+      //   style: 515072, // 503k
       // },
       // 超过maxSize分割命名 true:hash(长度8，不造哪儿改)[默认] false:路径
       // hidePathInfo: true, // 也没个文件名配置啊...
@@ -112,7 +110,7 @@ module.exports = {
       maxInitialRequests: 3, // 最大初始化时异步代码请求数
 
       automaticNameDelimiter: '.', // 超过大小, 分包时文件名分隔符
-      // automaticNameMaxLength: 15, // 分包文件名自动命名最大长度【文档有写，但是报错unknown】
+      // automaticNameMaxLength: 15, // 分包文件名自动命名最大长度
       name: isProd && require('./scripts/rename'),
       cacheGroups: {
         /// 【 js 】 ///
