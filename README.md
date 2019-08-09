@@ -99,8 +99,6 @@ yarn run test:unit # --watch : 跟踪文件变化
 yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help test:e2e
 ```
 
-tips:
-
 ## 说明及注意事项
 
 ### 目录结构
@@ -141,9 +139,9 @@ tips:
 
    1. 遍历 public 下的 html 模板文件，得到一个 html 模板
    2. 依次对 src 目录及 src/pages 进行如下查找:
-      1. 若该目录下存在与该 html 模板名同名的 ts/tsx/js/jsx 文件则设置为入口，未找到或已占用则 2
-      2. 依次检查下列文件名: main/index/entry/app/page 设置为入口，未找到或已占用则 3
-      3. 在该目录下与 html 模板同名的目录下按照 1、2 的规则继续查找，最终仍未找到或已占用则不设置入口
+      1. 若该目录下存在与该 html 模板名同名的 ts/tsx/js/jsx 文件则设置为入口，未找到或已占用则**↓**
+      2. 依次检查下列文件名: main/index/entry/app/page 设置为入口，未找到或已占用则**↓**
+      3. 在该目录下与 html 模板同名的目录下按照**上述**规则继续查找，最终仍未找到或已占用则不设置入口
 
    建议：**单页入口直接放 src 目录下，多页时入口分别放在 pages 目录下与 html 模板同名的文件夹下**
 
@@ -160,42 +158,43 @@ tips:
    <!-- SomeView.vue -->
    <template>
      <div :class="$style.wrapper">
-       <!-- 视为ts/js alias: @ -->
+       <!-- 视为ts/js -->
        <img src="@/assets/logo.png" />
      </div>
    </template>
 
    <style lang="scss" module>
-     // package normalize.css: node_modules/normalize.css/normalize.css
-     @import '~normalize.css';
+     @import '~normalize.css'; // => node_modules/normalize.css/normalize.css
 
      .wrapper {
-       background: url(~@index/assets/bg.png); // alias: @index
+       background: url(~@index/assets/bg.png);
      }
    </style>
    ```
 
 3. 输出目录为 `dist`, 包含 js/css/img/font/media 等文件夹
-4. 所有 `config` 目录下的内容都会被打包到同一个文件`conf.*.js`(需要保留的注释请使用: `/*! 注释内容 */`)，用于支持直接修改配置文件不必重新打包代码
-5. 除了以下样式:
+4. 所有 `config` 目录下的内容都会被打包到同一个文件`conf.*.js`(需要保留的注释请使用: `/*! 注释内容 */`)，用于支持直接修改配置而不必重新打包代码
+5. 除了以下样式可以使用全局:
 
    - 浏览器默认样式重置
-   - Transition 动画样式
+   - `Transition` 动画样式
    - 字体图标样式
-   - 公共组件样式(使用[BEM ](https://en.bem.info)约定[参考链接](https://www.ibm.com/developerworks/cn/web/1512_chengfu_bem/))
-   - 少量全局样式【慎用】
+   - 公共组件默认样式(使支持换肤，使用[BEM](https://en.bem.info)约定[参考链接](https://www.ibm.com/developerworks/cn/web/1512_chengfu_bem/))
 
-   均应使用 [CSSModule](https://vue-loader-v14.vuejs.org/zh-cn/features/css-modules.html)，以更好的组件化和复用、打包样式
+   均应使用 [CSSModule](https://vue-loader-v14.vuejs.org/zh-cn/features/css-modules.html)，以更好的模块化和复用、打包样式
 
 6. 测试用例目录层级与文件名应尽量与源码对应
 
 > **提示和建议**
 
 - 新建目录时尽量复用上述列出的目录名，保证结构清晰的情况下减少目录层级
-- 目录及文件命名：<br>
-  **文件夹及其它文件**(js/scss/图片等)使用 `camelCase` (即：首字母小写驼峰 = lowerCamelCase)；<br>
-  **vue 单文件组件**(含[tsx](https://github.com/wonderful-panda/vue-tsx-support)/`jsx`/`functional.(ts|js)`)使用 `PascalCase` ( 即：首字母大写驼峰 = CamelCase = UpperCamelCase)<br><br>
-  例外情况:
+- 目录及文件命名:
+
+  **文件夹及其它文件**(js/scss/图片等)使用 `camelCase` (即：首字母小写驼峰 = lowerCamelCase)
+
+  **vue 单文件组件**(含[tsx](https://github.com/wonderful-panda/vue-tsx-support)/`jsx`/`functional.(ts|js)`)使用 `PascalCase` ( 即：首字母大写驼峰 = CamelCase = UpperCamelCase)
+
+  例外情况(方便重构):
 
   - 组件包含不可复用的子组件时，应视为一个组件, 创建**文件夹容器**，比如:
 
@@ -242,9 +241,9 @@ tips:
   - 多行末尾保留逗号
   - 方法名后不要空格
 
-  （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含 Prettier 插件相关风格设置）
+  （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含 Prettier、ESLint 插件相关设置）
 
-- 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上**和 TypeScript [tslint.json](https://palantir.github.io/tslint/rules/)
+- 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上**和 [tslint.json](tslint.json)
 - 在`jsx/tsx`中使用全局注册的组件时可以使用`kebab-case`, 否则会在控制台输出错误 ┐(：´ ゞ｀)┌
 
   ```TypeScript
@@ -264,9 +263,9 @@ tips:
   }
   ```
 
-- 引用 vue 单文件组件不要加文件扩展名，有利于后期重构代码
-- 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后(方便查看代码)
-- **不要用全局样式覆盖全局样式**, 应使用 `CSSModule` 并使优先级相等(注意顺序，包括同步/异步)或更高:
+- 引用 vue 单文件组件**不要加文件扩展名**，有利于重构代码
+- 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
+- **不要用全局样式覆盖全局样式**, 应使用 `CSSModule` 并使[优先级](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Specificity)相等(注意顺序，包括同步/异步)或更高:
   ```scss
   // bad →_→
   :global(.content .title.active) {
@@ -283,7 +282,7 @@ tips:
     }
   }
   ```
-- 尽量使用项目代码模板，现有模板有(vsCode 输入左侧字符, [其他 IDE](.vscode/vue.code-snippets)):
+- 尽量使用项目代码模板，现有模板有(VSCode 输入左侧字符, [其他 IDE](.vscode/vue.code-snippets)):
   - `ts`: `TypeScript` & `CSS Module`, vue 单文件组件中使用
   - `vue`: `TypeScript` & `CSS Module`, `tsx` 文件中使用
   - `js`: `JavaScript` & `CSS Module`, vue 单文件组件中使用
@@ -306,14 +305,13 @@ tips:
   1. 非当前入口下的 scss 文件不要在 ts/js 中引入, 应在当前入口下的 scss 中引入
   2. 为避免多个入口对 node_modules 下的全局变量注入冲突, 也可以使用类似 1 的方法
 
-  ([#714](https://github.com/webpack-contrib/sass-loader/issues/714) 解决后就可以自动根据引入位置注入变量啦, 当然, 代码不需要改)
+  ([#714](https://github.com/webpack-contrib/sass-loader/issues/714) 解决后就可以自动根据引入位置注入变量啦, 当然, 已有代码不需要改)
 
 - 规范优雅正确适当的各种**注释**，比如方法注释及必要的变量注释：
 
   ```TypeScript
   // math.ts
-  /** 点
-   * @summary 描述一个点的信息
+  /** 二维点
    */
   interface IPoint {
     x: number
@@ -324,7 +322,7 @@ tips:
   }
   /** 角度转弧度常量
    */
-  const ANGLE_RADIAN: number = Math.PI / 180
+  const ANGLE_RADIAN = Math.PI / 180
   /** 计算圆上的点
    *
    * @param {IPoint} center 圆心
@@ -334,7 +332,7 @@ tips:
    * @returns {IPoint} 圆上的点坐标
    */
   function getPointOnCircle(center: IPoint, radius: number, angle: number): IPoint {
-    const redian: number = angle * ANGLE_RADIAN // 弧度
+    const redian = angle * ANGLE_RADIAN // 弧度
 
     return {
       x: center.x + radius * Math.sin(redian),
@@ -362,7 +360,7 @@ tips:
     // 说明
   }
 
-  // 使用枚举或字典时可视情况不写注释
+  // 使用枚举或字典时可不写注释
   switch(expression) {
     case value1:
       // 说明
@@ -373,41 +371,60 @@ tips:
       ...
       break
     default:
-      // 说明
+      ...
   }
   ```
 
-- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(避免重名合并, 方便排查问题)，比如: index 页面下的 home 视图命名为 `index_home`, 其下的用户视图命名为 `index_home_my`, 用户基础信息命名为 `index_home_my_baseinfo` 。为避免文件名太长，每个层级可以用一到两个字母进行缩写: `iHome`, `ihMy`, `ihmBaseInfo`。
-- libs 下库文件需要按需加载的，应提供引入方法（只会成功加载一次），比如:
+- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(避免重名合并, 方便排查问题)，比如: index 页面下的 home 视图命名为 `index_home`, 其下的用户视图命名为 `index_home_my`, 用户基础信息命名为 `index_home_my_baseinfo` 。为避免文件名太长，每个层级可以缩写: `iHome`, `ihMy`, `ihmBaseInfo`。
+- libs 下的库文件需要按需加载的，应提供引入方法（只会成功加载一次），比如:
 
   ```TypeScript
   // src/libs/somelib/index.ts
-  /** 异步引入somelib及其插件
-   * @param {Array<String>} plugins 需要加载的somelib插件名列表
-   *
-   * @returns {Promise<Array<Module>>}
-   */
+  /** 异步引入somelib(模块化)及其插件
+  * @param {Array<String>} plugins 需要加载的somelib插件名列表，支持:
+  *
+  *   plugin1: 插件1
+  *
+  *   plugin2: 插件2
+  *
+  *   ...
+  *
+  * @returns {Promise<Array<Module>>} 模块
+  */
   function get(plugins: string[] = []): Promise<any> {
-    return import(/* webpackChunkName: "lSomelib" */ 'somelib').then(() =>
-      Promise.all(
-        plugins.map((plugin: string) => {
+    let somelib: any
+    return import(/* webpackChunkName: "lSomelib" */ 'somelib')
+      .then((lib: any) => {
+        somelib = lib
+        return Promise.all(plugins.map((plugin: string) => {
           switch (plugin) {
             case 'plugin1':
-              return import(
-                /* webpackChunkName: "lsPlugins" */ 'somelib.plugin1'
-              )
+              return import(/* webpackChunkName: "lsPlugins" */ 'somelib.plugin1')
             case 'plugin2':
-              return import(
-                /* webpackChunkName: "lsPlugins" */ 'somelib.plugin2'
-              )
+              return import(/* webpackChunkName: "lsPlugins" */ 'somelib.plugin2')
             // 上面两个插件合并到一个chunk里
+            // ...
           }
-        })
-      )
-    )
+        }) as Array<Promise<any>>)
+      })
+      .then(() => somelib)
   }
 
   export default get
+
+  // src/pages/index/components/Foo.vue
+  // ...
+  // <script lang="ts"> ...
+  import get from '@/libs/somelib'
+
+  @Component
+  export default class extends Vue {
+    /// methods (private/public) ///
+    private refreshPanel() {
+      get(['plugin2']).then((somelib: any) => somelib.init(this.$refs.panel))
+    }
+  }
+  // ...
   ```
 
 ### 优化
