@@ -394,8 +394,8 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
   function get(plugins: string[] = []): Promise<any> {
     let somelib: any
     return import(/* webpackChunkName: "lSomelib" */ 'somelib')
-      .then((lib: any) => {
-        somelib = lib
+      .then((module: any) => {
+        somelib = module.default
         return Promise.all(plugins.map((plugin: string) => {
           switch (plugin) {
             case 'plugin1':
@@ -407,7 +407,8 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
           }
         }) as Array<Promise<any>>)
       })
-      .then(() => somelib)
+      // 注册插件(略)，返回somelib
+      .then((modules: Array<Promise<any>>) => somelib)
   }
 
   export default get
