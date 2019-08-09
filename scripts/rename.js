@@ -15,14 +15,14 @@ const short = require('./shortString')(
   (name, n) => {
     if (!DIC) {
       DIC = {}
-      setTimeout(() => updateJSON('build/fileName.map', 'chunkName', DIC))
+      setTimeout(() => updateJSON('scripts/fileName.map', 'chunkName', DIC))
     }
 
     DIC[n] = name
   }
 )
 
-/** 重命名 vender chunks (命名映射:build/fileName.map)
+/** 重命名 vender chunks (命名映射:scripts/fileName.map)
  *    vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
  * @param {WebpackModule} module webpack模块
  */

@@ -2,6 +2,18 @@
   // https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+    // node环境调试当前激活编辑器代码
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "file",
+      "cwd": "${workspaceFolder}",
+      "program": "${file}",
+      "preLaunchTask": "tsc: 监视 - .vscode/tsconfig.json", // cn
+      // "preLaunchTask": "tsc: watch - .vscode/tsconfig.json", // en
+      "outFiles": ["${workspaceFolder}/build/**/*.js"]
+      // "args": ["--experimental-modules", "--loader", "./loader.mjs"]
+    },
     // 调试开发环境脚手架
     {
       "type": "node",
@@ -21,18 +33,6 @@
       "cwd": "${workspaceFolder}",
       "program": "${workspaceFolder}/node_modules/@vue/cli-service/bin/vue-cli-service.js",
       "args": ["build", "--report"]
-    },
-    // node环境调试当前激活编辑器代码
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "file",
-      "cwd": "${workspaceFolder}",
-      "program": "${file}",
-      "preLaunchTask": "tsc: 监视 - .vscode/tsconfig.json", // cn
-      // "preLaunchTask": "tsc: watch - .vscode/tsconfig.json", // en
-      "outFiles": ["${workspaceFolder}/build/**/*.js"]
-      // "args": ["--experimental-modules", "--loader", "./loader.mjs"]
     }
   ]
 }

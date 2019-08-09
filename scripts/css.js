@@ -5,6 +5,7 @@
  */
 const fs = require('fs')
 const path = require('path')
+const REG_EXCLUDE = /[\\/]node_modules[\\/]/
 
 const cache = {}
 function exists(key, rootDir, fileName) {
@@ -27,9 +28,9 @@ function includes(module, entry) {
 /** 获取样式选项
  * @param {Boolean} isProd 是否生产环境
  * @param {Object} pages 页面入口配置
- * @param {String} globalSCSS 全局scss相对路径
+ * @param {String} resource 全局scss文件相对路径
  */
-module.exports = function(isProd, pages, globalSCSS) {
+module.exports = function(isProd, pages, resource) {
   // https://cli.vuejs.org/zh/config/#css-loaderoptions
   return {
     requireModuleExtension: true,
@@ -44,29 +45,32 @@ module.exports = function(isProd, pages, globalSCSS) {
       },
       // https://github.com/webpack-contrib/sass-loader
       scss: {
-        // 全局scss变量(入口覆盖全局)
-        // data({ _module }) {
-        // https://webpack.js.org/api/loaders
-        data() {
-          let global = `@import "@${globalSCSS}";` // 项目全局
+        // 全局scss变量(入口覆盖全局或node_modules)
+        data({ _module }) {
+          const isExclude = REG_EXCLUDE.test(_module.context)
+          const scssVar = `@import "@${resource}";`
 
-          // let temp
+          let scss = isExclude ? '' : scssVar
+
+          // 入口scss变量 https://webpack.js.org/api/loaders
           let key
+          let alias
           for (key in pages) {
             // production 时 module.issuer=null 没法知道入口 ┐(：´ゞ｀)┌
-            // if (
-            //   includes(_module, (temp = pages[key].alias)) &&
-            //   exists(key, temp, globalSCSS)
-            // ) {
-            //   global += `@import "@${key + globalSCSS}";`
-            //   break
-            // }
-            if (exists(key, pages[key].alias, globalSCSS)) {
-              global += `@import "@${key + globalSCSS}";`
+            alias = pages[key].alias
+            if (
+              (isExclude || includes(_module, alias)) &&
+              exists(key, alias, resource)
+            ) {
+              scss += `@import "@${key + resource}";`
+
+              if (!isExclude) {
+                break
+              }
             }
           }
 
-          return global
+          return (isExclude && scss ? scssVar : '') + scss
         },
       },
     },

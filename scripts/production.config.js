@@ -28,7 +28,7 @@ function getLoaderOption(name) {
 module.exports = function(config) {
   config.merge({
     // https://webpack.js.org/configuration/other-options/#recordspath
-    recordsPath: require('path').resolve('build/records.json'),
+    recordsPath: require('path').resolve('scripts/records.json'),
   })
   /// 构建优化(vue cli 大法好) ///
   // 已使用 cache-loader

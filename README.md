@@ -18,6 +18,8 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架
   - [风格建议](#风格建议)
   - [其他建议](#其他建议)
   - [优化](#优化)
+    - [web 页面](#web%20页面)
+    - [工程](#工程)
   - [IDE](#ide)
 - [部署（nginx）](#部署nginx)
 - [备忘](#备忘)
@@ -71,7 +73,7 @@ yarn run dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.develo
 yarn run build # --watch: 跟踪文件变化 --report: 生成打包分析
 ```
 
-同时会生成`build/fileName.map`记录 文件名/chunk 名映射 (公共代码抽到`v.`开头的文件里了)
+同时会生成[fileName.map](scripts/fileName.map)记录 文件名/chunk 名映射 (公共代码抽到`v.`开头的文件里了)
 
 ### 代码风格检查和修正（提交 Git 时会自动执行）
 
@@ -243,7 +245,7 @@ tips:
   （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含 Prettier 插件相关风格设置）
 
 - 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上**和 TypeScript [tslint.json](https://palantir.github.io/tslint/rules/)
-- 在 jsx/tsx 中使用全局注册的组件时可以使用`kebab-case`, 否则会在控制台输出错误 ┐(：´ ゞ｀)┌
+- 在`jsx/tsx`中使用全局注册的组件时可以使用`kebab-case`, 否则会在控制台输出错误 ┐(：´ ゞ｀)┌
 
   ```TypeScript
   import { CreateElement } from 'vue'
@@ -267,17 +269,17 @@ tips:
 - **不要用全局样式覆盖全局样式**, 应使用 `CSSModule` 并使优先级相等(注意顺序，包括同步/异步)或更高:
   ```scss
   // bad →_→
-  :global {
-    .content .title.active {
-      color: $colorHighlight;
-    }
+  :global(.content .title.active) {
+    color: $colorHighlight;
   }
   // good ｂ(￣▽￣)ｄ
-  .content {
-    :global {
-      .title.active {
-        color: $colorHighlight;
-      }
+  .content :global(.title.active) {
+    color: $colorHighlight;
+  }
+  // good ｂ(￣▽￣)ｄ
+  .content .title {
+    &:global(.active) {
+      color: $colorHighlight;
     }
   }
   ```
@@ -290,7 +292,21 @@ tips:
 
 ### 其他建议
 
-- 全局 sccs 中(见 .env 文件`GLOBAL_SCSS=/scss/var.scss`)不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)
+- **全局 sccs** _([.env](.env) `GLOBAL_SCSS`变量指定)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)
+
+  全局 sccs 包含 src 目录(全局, 必须存在该文件)和各 html 入口目录下的指定文件
+
+  注入顺序(`production`下无法追溯引入当前 scss 的位置 ┐(：´ ゞ｀)┌):
+
+  - `node_modules`下的 scss: 依次注入全局、**各入口**(若存在)的 scss 变量文件
+  - 其他位置: 依次注入全局、所在入口(若文件位置在入口目录下)的 scss 变量文件
+
+  故(`只有在 ts/js 中引入 scss 需要这么做`):
+
+  1. 非当前入口下的 scss 文件不要在 ts/js 中引入, 应在当前入口下的 scss 中引入
+  2. 为避免多个入口对 node_modules 下的全局变量注入冲突, 也可以使用类似 1 的方法
+
+  ([#714](https://github.com/webpack-contrib/sass-loader/issues/714) 解决后就可以自动根据引入位置注入变量啦, 当然, 代码不需要改)
 
 - 规范优雅正确适当的各种**注释**，比如方法注释及必要的变量注释：
 
@@ -396,12 +412,18 @@ tips:
 
 ### 优化
 
-请参照 `vue.config.js` 文件中 _chainWebpack_ 的注释进行配置
+#### web 页面
+
+请参照 [vue.config.js](vue.config.js) 文件中 _chainWebpack_ 的注释进行配置
 
 - 减小图片大小(比如背景图片等)
-- 对多个 js chunk 共同依赖的模块进行单独提取(cacheGroups)
+- 对多个 js chunk 共同依赖的模块进行缓存/单独提取(cacheGroups)
 - 视情况对 css 文件进行合并(比如按入口等，不设置则按 chunk)【webpack 5 支持设置 css chunk 的 minSize/maxSize 啦】
 - [现代模式](https://cli.vuejs.org/zh/guide/browser-compatibility.html#现代模式)
+
+#### 工程
+
+因为模块加载，所以不能预编译依赖库；依赖库的 scss 文件倒是可以用下 cache-loader；暂未找到更多可优化内容(run scripts 确实慢 ┐(：´ ゞ｀)┌)
 
 ### IDE
 
@@ -411,7 +433,6 @@ tips:
 - ESLint & TSLint: 代码检查
 - Prettier - Code formatter: 代码格式化
 - GitLens: Git 工具
-- EditorConfig for VS Code: IDE 设置
 
 推荐工具： [`@vue/cli`](https://cli.vuejs.org/zh/guide)，全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
 
@@ -425,7 +446,7 @@ tips:
 4. 开启 `gzip` 压缩，并重用已有 gz 文件 `gzip_static on;`
 5. 缓存静态资源(html 可减小缓存时间)
 
-配置示例:
+配置示例(`{value}` 换成对应值):
 
 ```bash
 server {
@@ -447,7 +468,7 @@ server {
 
   # 部署在根目录 直接访问域名
   location / {
-    # rewrite ^/app/(?:path|path-alias)/(.*)$ /app/$1 last; # 兼容某些路径
+    # rewrite ^/app/(?:path|path-alias)/(.*)$ /app/$1 last; # 兼容某些路由
     proxy_set_header access_token ''; # 添加允许的请求头
 
     # 设置静态资源缓存(文件名带内容哈希)
@@ -502,7 +523,7 @@ server {
 - [crypto-js](http://cryptojs.altervista.org)
 - [jsencrypt](http://travistidwell.com/jsencrypt)
 
-#### 数据可视化
+#### 图形库
 
 2D
 
@@ -510,16 +531,16 @@ server {
 - [zrender](https://ecomfe.github.io/zrender-doc/public/api.html)
 - [d3](https://github.com/d3/d3/wiki)
 - [zdog](https://zzz.dog)
-- [pixi.js](https://www.pixijs.com) _(WebGL)_
+- [pixi.js](https://www.pixijs.com) _(WebGL2/WebGL)_
 
 3D
 
-- [three.js](https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene) _(WebGL)_
-- [luma.gl](https://luma.gl/#/documentation/api-reference/api-overview/api-structure) _(WebGL)_
+- [three.js](https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene) _(WebGL2/WebGL)_
+- [luma.gl](https://luma.gl/#/documentation/api-reference/api-overview/api-structure) _(WebGL2/WebGL)_
 
 ### 问题及思考
 
-- **Vue 异步组件加载失败重试**: 暂时无解，因各层级（RouterView functional 等）的分发，很难统一实现加载失败后可点击重新下载，最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)
+- **Vue 异步组件加载失败重试**: 最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)
 - 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，`<script type="module">` & `<link rel="modulepreload">`)；不支持则加载 Babel 转码后的代码(`<script nomodule>` & `<link rel="preload">`)。但是不知何故未能生效，github 上有一些相关 issue
 
 ### 笔记
@@ -532,4 +553,4 @@ server {
 ### 其他
 
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
-- [#4357](https://github.com/vuejs/vue-cli/issues/4357)
+- [#714](https://github.com/webpack-contrib/sass-loader/issues/714)

@@ -1,3 +1,8 @@
+<!--
+ * @Description: 页面布局
+ * @Author: 毛瑞
+ * @Date: 2019-08-08 17:48:25
+ -->
 <template>
   <body :class="$style.wrapper">
     <div :class="$style.nav">
@@ -148,10 +153,8 @@
     font-weight: bold;
     color: $colorText;
 
-    :global {
-      &.router-link-exact-active {
-        color: $colorHighlight;
-      }
+    &:global(.router-link-exact-active) {
+      color: $colorHighlight;
     }
   }
 }

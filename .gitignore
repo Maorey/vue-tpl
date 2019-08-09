@@ -1,13 +1,13 @@
 # git忽略文件
-.DS_Store
 .git
+.DS_Store
 node_modules
 /dist
 /build
 
 # 测试
-/tests/e2e/reports/
 /tests/e2e/videos/
+/tests/e2e/reports/
 /tests/e2e/screenshots/
 /tests/**/coverage/
 selenium-debug.log
@@ -18,8 +18,6 @@ selenium-debug.log
 
 # 日志文件
 *.log
-*.lock
-*.map
 
 # IDE
 .idea
