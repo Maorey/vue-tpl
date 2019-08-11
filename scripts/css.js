@@ -48,7 +48,7 @@ module.exports = function(isProd, pages, resource) {
         // 全局scss变量(入口覆盖全局或node_modules)
         data({ _module }) {
           const isExclude = REG_EXCLUDE.test(_module.context)
-          const scssVar = `@import "@${resource}";`
+          const scssVar = `@import "~@${resource}";`
 
           let scss = isExclude ? '' : scssVar
 
@@ -62,7 +62,7 @@ module.exports = function(isProd, pages, resource) {
               (isExclude || includes(_module, alias)) &&
               exists(key, alias, resource)
             ) {
-              scss += `@import "@${key + resource}";`
+              scss += `@import "~@${key + resource}";`
 
               if (!isExclude) {
                 break
