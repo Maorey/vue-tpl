@@ -606,4 +606,5 @@ server {
 ### 其他
 
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
+- [#149](https://github.com/webpack/loader-utils/issues/149): 开发环境 class 名加个 emoji 更好区分是否全局样式
 - [#714](https://github.com/webpack-contrib/sass-loader/issues/714): 可追踪引用，使在 js 中引用 scss 时可正确<a href="#全局scss">注入 scss 变量</a>

@@ -128,7 +128,6 @@ function getInfoByHtml(html: string): HtmlInfo {
   let attributes: string // 标签属性集合字符串
   // let index; // 配置开始索引
   let info: ITag // 提取结果
-  // tslint:disable-next-line: no-conditional-assignment
   while ((result = REG_ATTS.exec(html))) {
     // match = result[0]
     tagName = result[1]
@@ -142,7 +141,6 @@ function getInfoByHtml(html: string): HtmlInfo {
 
     // 提取属性 分组：属性值 属性名
     if (attributes) {
-      // tslint:disable-next-line: no-conditional-assignment
       while ((result = REG_ATT.exec(attributes))) {
         // 空属性等于自身,比如 disabled、checked等
         // 呃，某些自定义的空属性也这么搞吧...

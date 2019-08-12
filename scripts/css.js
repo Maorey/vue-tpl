@@ -31,7 +31,7 @@ module.exports = function(isProd, ALIAS, resource) {
       css: {
         modules: {
           // https://github.com/webpack/loader-utils#interpolatename
-          localIdentName: isProd ? '[hash:5]' : '[folder]-[name]-[local]',
+          localIdentName: isProd ? '[hash:5]' : '[folder]__[name]_[local]',
         },
         localsConvention: 'camelCaseOnly', // 只允许驼峰class名
       },
@@ -51,7 +51,6 @@ module.exports = function(isProd, ALIAS, resource) {
               exists(alias, temp, resource) &&
               (scss += `@import "~${alias}/${resource}";`)
           }
-          loaderContext.cacheable(false) // 不缓存(相对路径的启用缓存, 但是没法追溯)
 
           return scss
         },

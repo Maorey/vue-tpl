@@ -9,7 +9,12 @@ import CONFIG from '@/config'
 import LOADING from '@com/Loading' // 加载中
 import ERROR from '@com/Error' // 加载失败
 
-import { CreateElement, Component, AsyncComponent, RenderContext } from 'vue'
+import Vue, {
+  CreateElement,
+  Component,
+  AsyncComponent,
+  RenderContext,
+} from 'vue'
 
 /** 组件字典
  */
@@ -47,21 +52,34 @@ function getChooser(
  * @param {Function} promiseFactory 异步组件, 比如: () => import('a')
  *    另: 第一次执行import方法就会开始下载chunk并返回Promise，成功后保存Promise下次直接返回
  *
- * @returns {Function} 带加载状态的异步组件
+ * @returns {Component} 带加载状态的异步组件
  */
 function getAsync(
   promiseFactory: () => Promise<Component | { default: Component }>,
   loading: Component = LOADING,
   error: Component = ERROR
-): AsyncComponent {
-  return () => ({
+): Component {
+  const asyncComponentFactory = (): AsyncComponent => () => ({
     error, // 加载失败时
     loading, // 加载时
-    component: promiseFactory() as any, // 加载成功时(不能是工厂函数了...)
+    component: promiseFactory() as any,
 
-    delay: 1, // 展示加载中延时(默认200)
     timeout: CONFIG.timeout, // 加载超时（默认Infinity）
   })
+
+  const observe = Vue.observable({ c: asyncComponentFactory() })
+
+  return {
+    functional: true,
+    render(createElement: CreateElement, { data, children }) {
+      // 保留 event: $ 用于 hack 加载失败时点击重新加载
+      if (data.on ? !data.on.$ : (data.on = {})) {
+        data.on.$ = () => (observe.c = asyncComponentFactory())
+      }
+
+      return createElement(observe.c, data, children)
+    },
+  }
 }
 
 /* 示例1: 从指定组件中选择 (自由度高于 <Component /> )

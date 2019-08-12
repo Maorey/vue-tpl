@@ -22,15 +22,16 @@
         "esSpecCompliant": true
       }
     ],
+    "no-console": [true, "log"],
     "space-before-function-paren": [true, "never"],
-    "interface-name": true,
-    "class-name": true,
-    "ordered-imports": false,
-    "object-literal-sort-keys": false,
-    "no-consecutive-blank-lines": false,
-    "no-unused-expression": false,
-    "radix": false,
     "forin": false,
-    "no-console": [true, "log"]
+    "radix": false,
+    "class-name": true,
+    "interface-name": true,
+    "ordered-imports": false,
+    "no-unused-expression": false,
+    "object-literal-sort-keys": false,
+    "no-conditional-assignment": false,
+    "no-consecutive-blank-lines": false
   }
 }

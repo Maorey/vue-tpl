@@ -115,7 +115,6 @@ function styleToObject(
   let temp: [string, string] | string | boolean | void
   let result: string[] | null
   // 不这么写不能得到下一次匹配...
-  // tslint:disable-next-line: no-conditional-assignment
   while ((result = REG_STYLE.exec(style))) {
     if (filter) {
       temp = filter(result[1], result[2], result[0])

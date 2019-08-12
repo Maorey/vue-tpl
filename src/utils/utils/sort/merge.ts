@@ -127,7 +127,6 @@ function mergeSort(
     let size: number = 1 // 子数组的大小 【那么2/4/8...归并就是最高效的了】
     do {
       left = start
-      // tslint:disable-next-line: no-conditional-assignment
       while ((middle = left + size - 1) < end) {
         // 【并不能减少耗时，哪怕只是二者交换，又是为啥?】
         // if (right - left < CUTOFF) {

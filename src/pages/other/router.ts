@@ -23,7 +23,7 @@ const router = new Router({
       name: ROUTER.home.name,
       component: getAsync(() =>
         import(/* webpackChunkName: "oHome" */ './views/Home')
-      ),
+      ) as any,
     },
     {
       path: `/${ROUTER.about.name}`,
@@ -33,7 +33,7 @@ const router = new Router({
       // which is lazy-loaded when the route is visited.
       component: getAsync(() =>
         import(/* webpackChunkName: "oAbout" */ './views/About')
-      ),
+      ) as any,
     },
 
     // 默认重定向到首页去

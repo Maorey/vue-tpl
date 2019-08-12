@@ -23,14 +23,14 @@ const router = new Router({
       name: ROUTER.home.name,
       component: getAsync(() =>
         import(/* webpackChunkName: "iHome" */ '@index/views/Home')
-      ),
+      ) as any,
     },
     {
       path: `/${ROUTER.about.name}`,
       name: ROUTER.about.name,
       component: getAsync(() =>
         import(/* webpackChunkName: "iAbout" */ '@index/views/About')
-      ),
+      ) as any,
     },
 
     // 默认重定向到首页去

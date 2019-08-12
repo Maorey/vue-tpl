@@ -5,7 +5,10 @@
  -->
 <template>
   <div :class="$style.wrapper">
-    <div :class="$style.error">
+    <div
+      :class="$style.error"
+      @click="$emit('$')"
+    >
       <!-- 图标 -->
       <i class="i-frown-fill" />
       <!-- 文字 -->
@@ -32,8 +35,9 @@ export default class extends Vue {
   height: -webkit-fill-available;
 }
 .error {
-  width: 120px;
+  width: 160px;
   height: 70px;
+  cursor: pointer;
   color: $colorText;
   text-align: center;
   @extend %centerPage;
@@ -43,16 +47,10 @@ export default class extends Vue {
     width: 30px;
     padding: 5px;
     margin-bottom: 5px;
-    font-size: $x-large;
     border-radius: 100%;
+    font-size: $xx-large;
     display: inline-block;
     border: 1px solid $colorText;
-
-    // hack 位置修正
-    &:before {
-      top: -1px;
-      position: relative;
-    }
   }
 }
 </style>
