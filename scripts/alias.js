@@ -9,13 +9,15 @@ const updateJSON = require('./updateJSON')
 /** 设置入口目录别名 (包含入口和入口下的components目录)
  * @param {Objects} pages 页面入口配置
  * @param {ChainWebpack} config
- * @param {string} CURRENT_DIR 项目根目录
+ * @param {Object} ALIAS 别名字典
  */
-module.exports = function(pages, config, CURRENT_DIR) {
+module.exports = function(pages, config, ALIAS) {
   const TS_PATHS = {
     // ts 目录别名
     '@/*': ['src/*'],
   }
+  const CURRENT_DIR = path.resolve()
+  // ALIAS['@'] = path.resolve('src') // 应有序，先目录层级高的
 
   let alias = '@com'
   let folderName = path.resolve('src/components')
@@ -24,9 +26,11 @@ module.exports = function(pages, config, CURRENT_DIR) {
   const REG_BACKSLASH = /\\/g
   const setAlias = () => {
     config.resolve.alias.set(alias, folderName)
+    ALIAS[alias] = folderName
 
     TS_PATHS[alias + SUFFIX] = [
-      folderName.replace(CURRENT_DIR, '').replace(REG_BACKSLASH, '/') + SUFFIX,
+      path.relative(CURRENT_DIR, folderName).replace(REG_BACKSLASH, '/') +
+        SUFFIX,
     ]
   }
   setAlias()

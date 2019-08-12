@@ -19,17 +19,7 @@ import {
   Link,
   Select,
 } from 'element-ui'
-import 'element-ui/packages/theme-chalk/src/base.scss'
-
-import 'element-ui/packages/theme-chalk/src/row.scss'
-import 'element-ui/packages/theme-chalk/src/col.scss'
-import 'element-ui/packages/theme-chalk/src/container.scss'
-import 'element-ui/packages/theme-chalk/src/aside.scss'
-import 'element-ui/packages/theme-chalk/src/main.scss'
-
-import 'element-ui/packages/theme-chalk/src/button.scss'
-import 'element-ui/packages/theme-chalk/src/link.scss'
-import 'element-ui/packages/theme-chalk/src/select.scss'
+import './scss/main.scss'
 
 Vue.use(Row)
 Vue.use(Col)

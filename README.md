@@ -145,7 +145,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 
    建议：**单页入口直接放 src 目录下，多页时入口分别放在 pages 目录下与 html 模板同名的文件夹下**
 
-2. 已有目录别名如下:
+2. <a id="别名"></a>已有目录别名如下:
 
    - `@` -> `src`
    - `@com` -> `src/components`
@@ -163,9 +163,12 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
      </div>
    </template>
 
-   <style lang="scss" module>
-     @import '~normalize.css'; // => node_modules/normalize.css/normalize.css
+   <style lang="scss">
+     /* => node_modules/normalize.css/normalize.css */
+     @import '~normalize.css';
+   </style>
 
+   <style lang="scss" module>
      .wrapper {
        background: url(~@index/assets/bg.png);
      }
@@ -265,7 +268,54 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 
 - 引用 vue 单文件组件**不要加文件扩展名**，有利于重构代码
 - 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
+- <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export); 为保证`ts/js`中引入时 scss 变量注入正确 _(从近到远依次注入所属别名目录下的指定文件)_, 应在适合的 scss 文件中引入目标样式源码:
+
+  ```scss
+  // el.scss
+  @import '~element-ui/packages/theme-chalk/src/button.scss';
+  ```
+
+  ```html
+  <template>
+    <ElButton>默认按钮</ElButton>
+  </template>
+
+  <script lang="ts">
+    import { Component, Vue } from 'vue-property-decorator'
+
+    import { Button as ElButton } from 'element-ui'
+    import './el.scss'
+
+    @Component({
+      components: { ElButton },
+    })
+    export default class extends Vue {}
+  </script>
+  <!-- 也可以在这儿引用
+  <style lang="scss">
+    @import '~element-ui/packages/theme-chalk/src/button.scss';
+  </style> -->
+  ```
+
+  或
+
+  ```TypeScript
+  import { CreateElement } from 'vue'
+  import { Component, Vue } from 'vue-property-decorator'
+
+  import { Button as ElButton } from 'element-ui'
+  import './el.scss'
+
+  @Component
+  export default class extends Vue {
+    private render(h: CreateElement) {
+      return <ElButton>默认按钮</ElButton>
+    }
+  }
+  ```
+
 - **不要用全局样式覆盖全局样式**, 应使用 `CSSModule` 并使[优先级](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Specificity)相等(注意顺序，包括同步/异步)或更高:
+
   ```scss
   // bad →_→
   :global(.content .title.active) {
@@ -282,6 +332,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
     }
   }
   ```
+
 - 尽量使用项目代码模板，现有模板有(VSCode 输入左侧字符, [其他 IDE](.vscode/vue.code-snippets)):
   - `ts`: `TypeScript` & `CSS Module`, vue 单文件组件中使用
   - `vue`: `TypeScript` & `CSS Module`, `tsx` 文件中使用
@@ -290,22 +341,6 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 - 提交代码请使用标识: Add/Del/Fix/Mod 等
 
 ### 其他建议
-
-- **全局 sccs** _([.env](.env) `GLOBAL_SCSS`变量指定)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)
-
-  全局 sccs 包含 src 目录(全局, 必须存在该文件)和各 html 入口目录下的指定文件
-
-  注入顺序(`production`下无法追溯引入当前 scss 的位置 ┐(：´ ゞ｀)┌):
-
-  - `node_modules`下的 scss: 依次注入全局、**各入口**(若存在)的 scss 变量文件
-  - 其他位置: 依次注入全局、所在入口(若文件位置在入口目录下)的 scss 变量文件
-
-  故(`只有在 ts/js 中引入 scss 需要这么做`):
-
-  1. 非当前入口下的 scss 文件不要在 ts/js 中引入, 应在当前入口下的 scss 中引入
-  2. 为避免多个入口对 node_modules 下的全局变量注入冲突, 也可以使用类似 1 的方法
-
-  ([#714](https://github.com/webpack-contrib/sass-loader/issues/714) 解决后就可以自动根据引入位置注入变量啦, 当然, 已有代码不需要改)
 
 - 规范优雅正确适当的各种**注释**，比如方法注释及必要的变量注释：
 
@@ -375,13 +410,13 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
   }
   ```
 
-- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(避免重名合并, 方便排查问题)，比如: index 页面下的 home 视图命名为 `index_home`, 其下的用户视图命名为 `index_home_my`, 用户基础信息命名为 `index_home_my_baseinfo` 。为避免文件名太长，每个层级可以缩写: `iHome`, `ihMy`, `ihmBaseInfo`。
-- libs 下的库文件需要按需加载的，应提供引入方法（只会成功加载一次），比如:
+- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(方便排查问题和碎文件合并)，比如: index 页面下的 home 视图命名为 `index_home`, 其下的用户视图命名为 `index_home_my`, 用户基础信息命名为 `index_home_my_baseinfo` 。为避免文件名太长，每个层级可以缩写: `iHome`, `ihMy`, `ihmBaseInfo`。
+- libs 下的库文件需要按需加载的，应提供引入方法（只会成功加载一次），比如(模块化, 全局的类似):
 
   ```TypeScript
   // src/libs/somelib/index.ts
   /** 异步引入somelib(模块化)及其插件
-  * @param {Array<String>} plugins 需要加载的somelib插件名列表，支持:
+  * @param {Array<String>} plugins 需要加载的somelib插件名列表:
   *
   *   plugin1: 插件1
   *
@@ -500,7 +535,7 @@ server {
     }
 
     index index.html;
-    try_files $uri $uri/  /; # 使支持history路由
+    try_files $uri $uri.html $uri/  /; # 使支持history路由
     root {path};
   }
 
@@ -509,7 +544,7 @@ server {
     # 略
 
     index index.html;
-    try_files $uri $uri/ /app/;
+    try_files $uri $uri.html $uri/ /app/;
     alias {path};
   }
 
@@ -571,4 +606,4 @@ server {
 ### 其他
 
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
-- [#714](https://github.com/webpack-contrib/sass-loader/issues/714)
+- [#714](https://github.com/webpack-contrib/sass-loader/issues/714): 可追踪引用，使在 js 中引用 scss 时可正确<a href="#全局scss">注入 scss 变量</a>

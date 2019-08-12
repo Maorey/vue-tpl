@@ -158,6 +158,4 @@
     }
   }
 }
-
-@import '@/scss/reset.scss';
 </style>

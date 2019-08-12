@@ -5,7 +5,6 @@
  */
 const fs = require('fs')
 const path = require('path')
-const REG_EXCLUDE = /[\\/]node_modules[\\/]/
 
 const cache = {}
 function exists(key, rootDir, fileName) {
@@ -18,19 +17,12 @@ function exists(key, rootDir, fileName) {
   return result
 }
 
-function includes(module, entry) {
-  return (
-    !!module &&
-    (module.context.includes(entry) || includes(module.issuer, entry))
-  )
-}
-
 /** 获取样式选项
  * @param {Boolean} isProd 是否生产环境
- * @param {Object} pages 页面入口配置
+ * @param {Object} ALIAS 别名字典
  * @param {String} resource 全局scss文件相对路径
  */
-module.exports = function(isProd, pages, resource) {
+module.exports = function(isProd, ALIAS, resource) {
   // https://cli.vuejs.org/zh/config/#css-loaderoptions
   return {
     requireModuleExtension: true,
@@ -46,31 +38,26 @@ module.exports = function(isProd, pages, resource) {
       // https://github.com/webpack-contrib/sass-loader
       scss: {
         // 全局scss变量(入口覆盖全局或node_modules)
-        data({ _module }) {
-          const isExclude = REG_EXCLUDE.test(_module.context)
-          const scssVar = `@import "~@${resource}";`
+        data(loaderContext) {
+          let scss = `@import "~@/${resource}";`
 
-          let scss = isExclude ? '' : scssVar
-
-          // 入口scss变量 https://webpack.js.org/api/loaders
-          let key
+          // 别名scss变量 https://webpack.js.org/api/loaders
+          let temp
           let alias
-          for (key in pages) {
-            // production 时 module.issuer=null 没法知道入口 ┐(：´ゞ｀)┌
-            alias = pages[key].alias
+          let cacheable = true
+          for (alias in ALIAS) {
+            temp = ALIAS[alias]
             if (
-              (isExclude || includes(_module, alias)) &&
-              exists(key, alias, resource)
+              loaderContext.context.includes(temp) &&
+              exists(alias, temp, resource)
             ) {
-              scss += `@import "~@${key + resource}";`
-
-              if (!isExclude) {
-                break
-              }
+              scss += `@import "~${alias}/${resource}";`
+              cacheable = false
             }
           }
+          cacheable || loaderContext.cacheable(cacheable)
 
-          return (isExclude && scss ? scssVar : '') + scss
+          return scss
         },
       },
     },

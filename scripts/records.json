@@ -368,5 +368,18 @@
     "byName": {},
     "bySource": {},
     "usedIds": []
-  }
+  },
+  "mini-css-extract-plugin node_modules/css-loader/dist/cjs.js??ref--8-oneOf-3-1!node_modules/postcss-loader/src/index.js??ref--8-oneOf-3-2!node_modules/sass-loader/lib/loader.js??ref--8-oneOf-3-3!src/pages/other/scss/main.scss": [
+    {
+      "modules": {
+        "byIdentifier": {},
+        "usedIds": {}
+      },
+      "chunks": {
+        "byName": {},
+        "bySource": {},
+        "usedIds": []
+      }
+    }
+  ]
 }

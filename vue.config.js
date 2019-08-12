@@ -13,6 +13,7 @@ const isProd = environment.NODE_ENV === 'production' // 是否生产环境
 
 const pages = require('./scripts/pages')(isProd) // 自动检测并返回页面入口设置
 
+let ALIAS = {} // 别名字典
 // 输出图形
 console.log(
   require('./scripts/figure')[
@@ -37,7 +38,7 @@ module.exports = {
   pages,
 
   /// 【配置样式】 ///
-  css: require('./scripts/css')(isProd, pages, environment.GLOBAL_SCSS),
+  css: require('./scripts/css')(isProd, ALIAS, environment.GLOBAL_SCSS),
 
   /// 【开发服务器配置】 ///
   devServer: require('./scripts/devServer')(environment),
@@ -52,7 +53,7 @@ module.exports = {
     //   .end()
 
     /// 【设置目录别名 已有: @ => src 】 ///
-    require('./scripts/alias')(pages, config, path.join(process.cwd(), '/'))
+    require('./scripts/alias')(pages, config, ALIAS)
 
     /// 出口 ///
     // config.output.hashDigest('base64')
