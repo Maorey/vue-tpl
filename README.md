@@ -2,7 +2,7 @@
 
 vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架
 
-[更新日志](releaseLog.md)
+[更新日志](CHANGELOG.md)
 
 - [命令参考](#命令参考)
   - [安装项目](#安装项目)
@@ -25,8 +25,8 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架
 - [备忘](#备忘)
   - [文档](#文档)
     - [数据可视化](#数据可视化)
-  - [问题及思考](#问题及思考)
   - [笔记](#笔记)
+  - [问题及思考](#问题及思考)
   - [其他](#其他)
 
 ## 命令参考
@@ -591,17 +591,17 @@ server {
 - [three.js](https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene) _(WebGL2/WebGL)_
 - [luma.gl](https://luma.gl/#/documentation/api-reference/api-overview/api-structure) _(WebGL2/WebGL)_
 
-### 问题及思考
-
-- **Vue 异步组件加载失败重试**: 最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)
-- 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，`<script type="module">` & `<link rel="modulepreload">`)；不支持则加载 Babel 转码后的代码(`<script nomodule>` & `<link rel="preload">`)。但是不知何故未能生效，github 上有一些相关 issue
-
 ### 笔记
 
 - 在 `ts/js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`(或 import), 将得到输出路径或 base64 字符串, 其他类似(新的文件格式请配置 loader 和增加[ts 定义](src/shims-modules.d.ts))
 - 在 `scss` 中引入 `css` ([@import](https://www.sass.hk/docs)) 有两种方式
   1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件。比如: `@import '~normalize.css';`
   1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import)。比如: `@import '~normalize.css/normalize.css';`
+
+### 问题及思考
+
+- Vue 异步组件加载失败重试: 最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)
+- 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，`<script type="module">` & `<link rel="modulepreload">`)；不支持则加载 Babel 转码后的代码(`<script nomodule>` & `<link rel="preload">`)。但是不知何故未能生效，github 上有一些相关 issue
 
 ### 其他
 
