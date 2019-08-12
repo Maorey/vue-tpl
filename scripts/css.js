@@ -44,18 +44,14 @@ module.exports = function(isProd, ALIAS, resource) {
           // 别名scss变量 https://webpack.js.org/api/loaders
           let temp
           let alias
-          let cacheable = true
           for (alias in ALIAS) {
             temp = ALIAS[alias]
-            if (
-              loaderContext.context.includes(temp) &&
-              exists(alias, temp, resource)
-            ) {
-              scss += `@import "~${alias}/${resource}";`
-              cacheable = false
-            }
+
+            loaderContext.context.includes(temp) &&
+              exists(alias, temp, resource) &&
+              (scss += `@import "~${alias}/${resource}";`)
           }
-          cacheable || loaderContext.cacheable(cacheable)
+          loaderContext.cacheable(false) // 不缓存(相对路径的启用缓存, 但是没法追溯)
 
           return scss
         },

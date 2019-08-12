@@ -35,7 +35,7 @@
     "echarts": "^4.2.1",
     "element-ui": "^2.11.1",
     "jsencrypt": "^3.0.0-rc.1",
-    "luma.gl": "^7.1.1",
+    "luma.gl": "^7.2.0",
     "normalize.css": "^8.0.1",
     "pixi.js": "^5.1.1",
     "three": "^0.107.0",
@@ -46,7 +46,7 @@
     "vue-router": "^3.1.2",
     "vuex": "^3.1.1",
     "vuex-class": "^0.3.2",
-    "vuex-module-decorators": "^0.9.9",
+    "vuex-module-decorators": "^0.9.11",
     "zdog": "^1.1.0",
     "zrender": "^4.0.7"
   },
