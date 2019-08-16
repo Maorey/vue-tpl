@@ -99,4 +99,6 @@ module.exports = function(config) {
       minRatio: 0.7, // 最小压缩率
     },
   ])
+  // commonJS tree-shaking 没用
+  // config.plugin('common-shake').use(require('webpack-common-shake').Plugin)
 }

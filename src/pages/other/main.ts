@@ -9,16 +9,15 @@ import router from './router'
 import store from './store'
 
 /// 全局注册的组件，请尽量不要让这个列表变太长 ///
-import {
-  Row,
-  Col,
-  Container,
-  Aside,
-  Main,
-  Button,
-  Link,
-  Select,
-} from 'element-ui'
+import Row from 'element-ui/lib/row'
+import Col from 'element-ui/lib/col'
+import Container from 'element-ui/lib/container'
+import Aside from 'element-ui/lib/aside'
+import Main from 'element-ui/lib/main'
+import Button from 'element-ui/lib/button'
+import Link from 'element-ui/lib/link'
+import Select from 'element-ui/lib/select'
+
 import './scss/main.scss'
 
 Vue.use(Row)

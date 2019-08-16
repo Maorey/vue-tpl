@@ -78,6 +78,13 @@ declare module '*.json' {
 //   export = content
 // }
 
+declare module 'element-ui/lib/*' {
+  /* eslint-disable import/no-duplicates */
+  import Vue, { PluginFunction, PluginObject } from 'vue'
+
+  const plugin: PluginObject<Vue> | PluginFunction<Vue>
+  export default plugin
+}
 declare module 'zrender/lib/*'
 declare module 'zdog/js/*'
 declare module 'luma.gl'
