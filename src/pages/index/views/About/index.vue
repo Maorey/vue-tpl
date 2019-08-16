@@ -39,6 +39,6 @@ export default class extends Vue {
   color: $colorText;
   text-align: center;
   font-size: $xx-large;
-  background: url(~@index/assets/bg-grid.png);
+  background: url(~@index/assets/bg-grid.jpg);
 }
 </style>
