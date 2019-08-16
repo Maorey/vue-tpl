@@ -26,7 +26,7 @@ const short = require('./shortString')(
  *    vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
  * @param {WebpackModule} module webpack模块
  */
-module.exports = function(module) {
+module.exports = module => {
   let name = 'v.' // 前缀
   for (let chunk of module.chunksIterable) {
     name += short(chunk.name)

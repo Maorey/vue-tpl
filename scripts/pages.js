@@ -38,7 +38,7 @@ const MINIFY = {
  *
  * @returns {String} 改文件夹下存在的文件名（含文件格式后缀）
  */
-function getEntry(dir, files) {
+const getEntry = (dir, files) => {
   let fileName
   for (let entry of files) {
     for (let format of ENTRY_FORMATS) {

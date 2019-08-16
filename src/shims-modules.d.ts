@@ -5,10 +5,10 @@
  */
 
 declare module '*.module.scss' {
-  /** parsed class names with css-loader option, indexing by class selector names (must camelCase) in scss
+  /** css 模块
    */
   const content: {
-    [className: string]: string
+    [localClassName: string]: string
   }
   export default content
 }
@@ -64,7 +64,7 @@ declare module '*.json' {
   const content: object | any[]
   export default content
 }
-// 需要配置loader,否则会 eval(内容)
+// 需要配置loader,否则会当成js eval(内容)
 // declare module '*.text' {
 //   /** 文件内容
 //    */

@@ -7,7 +7,7 @@ const fs = require('fs')
 const path = require('path')
 
 const cache = {}
-function exists(key, rootDir, fileName) {
+const exists = (key, rootDir, fileName) => {
   let result = cache[key]
   if (result === undefined) {
     result = cache[key] = fs.existsSync(path.join(rootDir, fileName))
@@ -22,7 +22,7 @@ function exists(key, rootDir, fileName) {
  * @param {Object} ALIAS 别名字典
  * @param {String} resource 全局scss文件相对路径
  */
-module.exports = function(isProd, ALIAS, resource) {
+module.exports = (isProd, ALIAS, resource) => {
   // https://cli.vuejs.org/zh/config/#css-loaderoptions
   return {
     requireModuleExtension: true,

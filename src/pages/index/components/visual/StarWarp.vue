@@ -13,6 +13,9 @@ import { Component, Vue } from 'vue-property-decorator'
 
 /// 按需引入pixi.js (参考 ~pixi.js/lib/pixi.es.js) ///
 import { Application, Texture, Sprite } from 'pixi.js'
+import { isWebGLSupported } from '@pixi/utils'
+
+isWebGLSupported() || require('pixi.js-legacy') // TS 要警告啊...
 
 /// name,components,directives,filters,extends,mixins ///
 @Component

@@ -30,9 +30,7 @@ module.exports = {
   lintOnSave: !isProd, // 保存时检查代码
   productionSourceMap: false, // 生产环境不要sourceMap
   // babel转码, 默认不转依赖包
-  transpileDependencies: isProd
-    ? ['vuex-module-decorators', 'three']
-    : undefined,
+  transpileDependencies: isProd ? ['vuex-module-decorators'] : undefined,
 
   /// 【配置页面入口】https://cli.vuejs.org/zh/config/#pages ///
   pages,
@@ -132,7 +130,7 @@ module.exports = {
           reuseExistingChunk: true,
           test: /[\\/]node_modules[\\/]core-js(?:-pure)?[\\/]/,
         },
-        // configs
+        // configs (每个页面分开应无必要)
         conf: {
           name: 'conf',
           chunks: 'all',
@@ -194,7 +192,7 @@ module.exports = {
           chunks: 'all',
           priority: 66,
           reuseExistingChunk: true,
-          test: /[\\/]node_modules[\\/]pixi.js[\\/]/,
+          test: /[\\/]node_modules[\\/](?:@pixi|pixi\.js(?:-legacy))[\\/]/,
         },
         // three.js
         thr: {
@@ -204,13 +202,13 @@ module.exports = {
           reuseExistingChunk: true,
           test: /[\\/]node_modules[\\/]three[\\/]/,
         },
-        // luma.gl
+        // luma.gl & math.gl
         lum: {
           name: 'lum',
           chunks: 'all',
           priority: 66,
           reuseExistingChunk: true,
-          test: /[\\/]node_modules[\\/]luma.gl[\\/]/,
+          test: /[\\/]node_modules[\\/]@?(?:luma|math)\.gl[\\/]/,
         },
 
         /// 【 css 】(多数情况下不需要，webpack 5可以去掉) ///

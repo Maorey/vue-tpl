@@ -8,7 +8,7 @@
  *
  * @param {Object} environment 环境变量
  */
-module.exports = function(environment) {
+module.exports = environment => {
   const TARGET = 'PROXY_TARGET'
   const REG_PROXY = /^BASE_URL(\d*)$/
 

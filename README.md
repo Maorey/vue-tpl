@@ -283,7 +283,8 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
   <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator'
 
-    import { Button as ElButton } from 'element-ui'
+    // import { ElButton } from 'element-ui' // 没有打包模块，不支持 tree-shaking ┐(：´ ゞ｀)┌
+    import ElButton from 'element-ui/lib/button'
     import './el.scss'
 
     @Component({
@@ -303,7 +304,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
   import { CreateElement } from 'vue'
   import { Component, Vue } from 'vue-property-decorator'
 
-  import { Button as ElButton } from 'element-ui'
+  import ElButton from 'element-ui/lib/button'
   import './el.scss'
 
   @Component

@@ -9,23 +9,21 @@
  *
  * @returns {Object} loader 配置对象
  */
-function getLoaderOption(name) {
-  return {
-    limit: 4096,
-    fallback: {
-      loader: 'file-loader',
-      options: {
-        name,
-      },
+const getLoaderOption = name => ({
+  limit: 4096,
+  fallback: {
+    loader: 'file-loader',
+    options: {
+      name,
     },
-  }
-}
+  },
+})
 
 /** webpack 配置
  * @param {chainWebpack} config 配置对象
  *  https://github.com/neutrinojs/webpack-chain#getting-started
  */
-module.exports = function(config) {
+module.exports = config => {
   config.merge({
     // https://webpack.js.org/configuration/other-options/#recordspath
     recordsPath: require('path').resolve('scripts/records.json'),
@@ -99,6 +97,6 @@ module.exports = function(config) {
       minRatio: 0.7, // 最小压缩率
     },
   ])
-  // commonJS tree-shaking 没用
+  // commonJS tree-shaking 耗时且效果微弱
   // config.plugin('common-shake').use(require('webpack-common-shake').Plugin)
 }

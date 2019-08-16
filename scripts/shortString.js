@@ -11,7 +11,7 @@
  *
  * @returns {String} 一个字符
  */
-function getChar(str, code = 0) {
+const getChar = (str, code = 0) => {
   if (typeof str === 'number') {
     code += str
   } else {
@@ -52,7 +52,7 @@ const TRIAL = 8 // 重名重试次数
  *
  * @returns {String} 唯一缩写
  */
-function getUnique(DIC, char, str = '', i = 0) {
+const getUnique = (DIC, char, str = '', i = 0) => {
   const code = str + char // 当前缩写
   let unique = true // 是否唯一
   // 查重
@@ -81,17 +81,15 @@ function getUnique(DIC, char, str = '', i = 0) {
  *
  * @returns {String:name => String:shortName} 返回唯一字符串缩写的方法
  */
-module.exports = function(DIC = {}, callback) {
-  return name => {
-    name = String(name)
+module.exports = (DIC = {}, callback) => name => {
+  name = String(name)
 
-    let abbreviation = DIC[name]
+  let abbreviation = DIC[name]
 
-    if (!abbreviation) {
-      abbreviation = DIC[name] = getUnique(DIC, getChar(name))
-      callback && callback(name, abbreviation)
-    }
-
-    return abbreviation
+  if (!abbreviation) {
+    abbreviation = DIC[name] = getUnique(DIC, getChar(name))
+    callback && callback(name, abbreviation)
   }
+
+  return abbreviation
 }

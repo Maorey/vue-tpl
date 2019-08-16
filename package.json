@@ -38,6 +38,7 @@
     "luma.gl": "^7.2.0",
     "normalize.css": "^8.0.1",
     "pixi.js": "^5.1.1",
+    "pixi.js-legacy": "^5.1.1",
     "three": "^0.107.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",

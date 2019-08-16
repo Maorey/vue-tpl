@@ -11,7 +11,7 @@ const updateJSON = require('./updateJSON')
  * @param {ChainWebpack} config
  * @param {Object} ALIAS 别名字典
  */
-module.exports = function(pages, config, ALIAS) {
+module.exports = (pages, config, ALIAS) => {
   const TS_PATHS = {
     // ts 目录别名
     '@/*': ['src/*'],

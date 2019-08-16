@@ -8,7 +8,7 @@ const path = require('path')
 
 const REG_SPLIT = /\.(?!['"])/
 
-module.exports = function(fileName, key, value) {
+module.exports = (fileName, key, value) => {
   fileName = path.resolve(fileName)
   key = key.split(REG_SPLIT)
 

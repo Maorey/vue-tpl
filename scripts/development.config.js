@@ -11,7 +11,7 @@
  * @param {chainWebpack} config 配置对象
  *  https://github.com/neutrinojs/webpack-chain#getting-started
  */
-module.exports = function(config) {
+module.exports = config => {
   // eval 更快(默认cheap-module-eval-source-map), 且无同名.vue文件sourceMap冲突
   // 与默认差别不大（只显示ts/js源码，不过反正<template><style>也不能调试不是）
   config.devtool('eval')
