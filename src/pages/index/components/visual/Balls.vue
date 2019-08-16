@@ -11,7 +11,15 @@
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue } from 'vue-property-decorator'
 
-/// three.js 按需引入 ///
+/* eslint-disable import/no-duplicates */
+import {
+  PerspectiveCamera as PerspectiveCameraType,
+  WebGLRenderer as WebGLRendererType,
+  Clock as ClockType,
+  Group as GroupType,
+  Scene as SceneType,
+} from 'three' // for TS
+/// three.js 按需引入 (摇不动啊, 几乎不能减小尺寸) ///
 import {
   PerspectiveCamera,
   Scene,
@@ -28,7 +36,7 @@ import {
   RGBAFormat,
   Vector2,
   WebGLMultisampleRenderTarget,
-} from 'three'
+} from 'three/build/three.module'
 // three.js 示例: https://threejs.org/examples/#webgl2_multisampled_renderbuffers
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
@@ -53,11 +61,11 @@ export default class extends Vue {
       canvas.appendChild(WEBGL.getWebGL2ErrorMessage())
     }
 
-    let camera: PerspectiveCamera
-    let scene
-    let renderer: WebGLRenderer
-    let clock: Clock
-    let group: Group
+    let camera: PerspectiveCameraType
+    let scene: SceneType
+    let renderer: WebGLRendererType
+    let clock: ClockType
+    let group: GroupType
     let composer1: EffectComposer
     let composer2: EffectComposer
 

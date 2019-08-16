@@ -79,20 +79,16 @@ declare module '*.json' {
 // }
 
 declare module 'element-ui/lib/*' {
-  /* eslint-disable import/no-duplicates */
   import Vue, { PluginFunction, PluginObject } from 'vue'
 
   const plugin: PluginObject<Vue> | PluginFunction<Vue>
   export default plugin
 }
-declare module 'zrender/lib/*'
-declare module 'zdog/js/*'
-declare module 'luma.gl'
-declare module 'math.gl'
-declare module '@luma.gl/addons'
 
-/// vue 单文件组件，放最后 ///
-declare module '*' {
-  import Vue from 'vue'
-  export default Vue
-}
+/// hack 放最后 ///
+// declare module 'zrender/lib/*'
+// declare module 'zdog/js/*'
+// declare module 'luma.gl'
+// declare module 'math.gl'
+// declare module '@luma.gl/addons'
+declare module '*'
