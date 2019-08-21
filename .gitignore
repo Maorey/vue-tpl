@@ -1,15 +1,11 @@
 # git忽略文件
-.git
 .DS_Store
 node_modules
 /dist
 /build
 
 # 测试
-/tests/e2e/videos/
 /tests/e2e/reports/
-/tests/e2e/screenshots/
-/tests/**/coverage/
 selenium-debug.log
 
 # 本地环境变量

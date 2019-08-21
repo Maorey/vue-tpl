@@ -17,6 +17,14 @@ module.exports = {
   parserOptions: {
     parser: '@typescript-eslint/parser',
   },
+  overrides: [
+    {
+      files: ['**/__tests__/*.{j,t}s?(x)'],
+      env: {
+        jest: true,
+      },
+    },
+  ],
   rules: {
     /// 开发环境 ///
     ...(process.env.NODE_ENV === 'production' || {
@@ -31,7 +39,7 @@ module.exports = {
     'comma-dangle': ['error', 'always-multiline'], // 保留多行末尾逗号
     'space-before-function-paren': ['error', 'never'], // 方法名后不要空格
 
-    /// vue https://eslint.vuejs.org/rules/ ///
+    /// Vue https://eslint.vuejs.org/rules/ ///
     // [1]: 文档有写，但是插件还没实现
     // [2]: 不支持TypeScript
     'vue/component-name-in-template-casing': 'error',
