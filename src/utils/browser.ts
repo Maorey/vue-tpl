@@ -28,7 +28,7 @@ const BROWSERS = [
     n: 'Opera',
   },
   {
-    r: '(?:Safari|version)',
+    r: '(?:safari|version)',
     n: 'Safari',
   },
 ]
