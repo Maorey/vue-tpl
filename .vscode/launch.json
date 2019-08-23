@@ -9,7 +9,7 @@
       "name": "file",
       "cwd": "${workspaceFolder}",
       "program": "${file}",
-      "preLaunchTask": "tsc: 监视 - .vscode/tsconfig.json", // cn
+      "preLaunchTask": "tsc: watch - .vscode/tsconfig.json", // cn
       // "preLaunchTask": "tsc: watch - .vscode/tsconfig.json", // en
       "outFiles": ["${workspaceFolder}/build/**/*.js"]
       // "args": ["--experimental-modules", "--loader", "./loader.mjs"]
