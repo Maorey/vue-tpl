@@ -3,26 +3,26 @@
  * @Author: 毛瑞
  * @Date: 2018-12-29 11:32:52
  */
-const browsers = [
+const BROWSERS = [
   {
-    n: 'msie',
-    N: 'IE',
+    n: 'chrome',
+    N: 'Chrome',
   },
   {
     n: 'firefox',
     N: 'Firefox',
   },
   {
-    n: 'chrome',
-    N: 'Chrome',
-  },
-  {
     n: 'opera',
     N: 'Opera',
   },
   {
-    n: 'Safari',
-    r: 'version',
+    n: '(msie|rv)',
+    N: 'IE',
+  },
+  {
+    n: '(Safari|version)',
+    N: 'Safari',
   },
 ]
 
@@ -32,10 +32,10 @@ let version
 const userAgent = window.navigator.userAgent.toLowerCase()
 let tmp
 let item
-for (item of browsers) {
-  tmp = new RegExp((item.r || item.n) + '.([\\d.]+)').exec(userAgent)
+for (item of BROWSERS) {
+  tmp = new RegExp(item.n + '.([\\d.]+)').exec(userAgent)
   if (tmp) {
-    type = item.N || item.n
+    type = item.N
     version = tmp[1]
     break
   }
