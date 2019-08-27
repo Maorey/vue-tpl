@@ -48,7 +48,6 @@ export default class extends Vue {
               <i class='i-check-circle' />
             </template>
             <template slot='title'>ECharts</template>
-            <template slot='unit'>(模块)</template>
 
             <ModuleOne />
           </ModuleContainer>
@@ -58,7 +57,6 @@ export default class extends Vue {
               <i class='i-CI' />
             </template>
             <template slot='title'>ECharts + ZRender</template>
-            <template slot='unit'>(模块)</template>
 
             <ModuleTwo />
           </ModuleContainer>
@@ -68,7 +66,6 @@ export default class extends Vue {
               <i class='i-Dollar' />
             </template>
             <template slot='title'>three.js</template>
-            <template slot='unit'>(模块)</template>
 
             <ModuleThree />
           </ModuleContainer>
@@ -78,7 +75,6 @@ export default class extends Vue {
               <i class='i-compass' />
             </template>
             <template slot='title'>luma.gl</template>
-            <template slot='unit'>(模块)</template>
 
             <ModuleFour />
           </ModuleContainer>
@@ -88,7 +84,6 @@ export default class extends Vue {
               <i class='i-close-circle' />
             </template>
             <template slot='title'>d3</template>
-            <template slot='unit'>(模块)</template>
 
             <ModuleFive />
           </ModuleContainer>
@@ -98,7 +93,6 @@ export default class extends Vue {
               <i class='i-frown' />
             </template>
             <template slot='title'>zdog + pixi.js(背景)</template>
-            <template slot='unit'>(模块)</template>
 
             <ModuleSix />
           </ModuleContainer>

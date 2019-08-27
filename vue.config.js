@@ -192,7 +192,7 @@ module.exports = {
           chunks: 'all',
           priority: 66,
           reuseExistingChunk: true,
-          test: /[\\/]node_modules[\\/](?:@pixi|pixi\.js(?:-legacy))[\\/]/,
+          test: /[\\/]node_modules[\\/]@pixi|pixi\.js(?:-legacy)?[\\/]/,
         },
         // three.js
         thr: {
@@ -208,7 +208,7 @@ module.exports = {
           chunks: 'all',
           priority: 66,
           reuseExistingChunk: true,
-          test: /[\\/]node_modules[\\/]@?(?:luma|math)\.gl[\\/]/,
+          test: /[\\/]node_modules[\\/](?:@?luma|math)\.gl[\\/]/,
         },
 
         /// 【 css 】(多数情况下不需要，webpack 5可以去掉) ///

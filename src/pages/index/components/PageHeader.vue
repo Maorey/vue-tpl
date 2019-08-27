@@ -5,7 +5,7 @@
  -->
 <template>
   <header :class="$style.wrapper">
-    大屏示例
+    大屏示例（模块化加载）
   </header>
 </template>
 
