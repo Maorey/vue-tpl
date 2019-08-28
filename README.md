@@ -254,7 +254,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
   ```
 
 - 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
-- <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export); 为保证`ts/js`中引入时 scss 变量注入正确, 应在适合的 scss 文件中引入目标样式源码:
+- <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)(应在 `export*.scss` 中使用); 为保证`ts/js`中引入时 scss 变量注入正确, 应在合适的 scss 文件中引入目标样式源码:
 
   ```scss
   // el.scss
