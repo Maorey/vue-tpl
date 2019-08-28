@@ -246,7 +246,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 
   （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含 Prettier、ESLint 插件相关设置）
 
-- 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上**和 [tslint.json](tslint.json)
+- 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上**、[tslint](https://palantir.github.io/tslint/rules/) [配置](tslint.json) 和 [stylelint](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md) [配置](.stylelintrc)
 - 在`jsx/tsx`中使用全局注册的组件时可以使用`kebab-case`, 否则会在控制台输出错误 ┐(：´ ゞ｀)┌
 
   ```TypeScript
@@ -484,7 +484,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 推荐使用： **Visual Studio Code** (VSCode)，推荐插件：
 
 - Vetur: vue 开发必备
-- ESLint & TSLint: 代码检查
+- ESLint & TSLint & stylelint: 代码检查
 - Prettier - Code formatter: 代码格式化
 - GitLens: Git 工具
 

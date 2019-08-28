@@ -93,6 +93,7 @@ export default class extends Vue {
     }
   }
 }
+
 .array {
   bottom: 10px;
   width: 100%;
@@ -110,6 +111,7 @@ export default class extends Vue {
       0% {
         transform: rotate(-135deg) translate3d(-5px, -5px, 0);
       }
+
       100% {
         transform: rotate(-135deg) translate3d(5px, 5px, 0);
       }

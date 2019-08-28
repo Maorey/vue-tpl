@@ -1,5 +1,4 @@
 {
-  "doc": "https://palantir.github.io/tslint/rules/",
   "defaultSeverity": "warning",
   "extends": ["tslint:recommended"],
   "linterOptions": {

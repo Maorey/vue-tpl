@@ -34,12 +34,14 @@ export default class extends Vue {
   min-height: 70px;
   height: -webkit-fill-available;
 }
+
 .error {
   width: 160px;
   height: 70px;
   cursor: pointer;
   color: $colorText;
   text-align: center;
+
   @extend %centerPage;
 
   // 图标

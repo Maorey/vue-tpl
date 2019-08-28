@@ -70,6 +70,7 @@ export default class extends Vue {
 
   @extend %ellipsis;
 }
+
 .text {
   margin: 0 10px;
   font-weight: bold;
@@ -106,18 +107,21 @@ export default class extends Vue {
     border-top-left-radius: $radius;
     border-width: $lineWidth 0 0 $lineWidth;
   }
+
   &.rightTop {
     top: $offset;
     right: $offset;
     border-top-right-radius: $radius;
     border-width: $lineWidth $lineWidth 0 0;
   }
+
   &.leftBottom {
     left: $offset;
     bottom: $offset;
     border-bottom-left-radius: $radius;
     border-width: 0 0 $lineWidth $lineWidth;
   }
+
   &.rightBottom {
     right: $offset;
     bottom: $offset;

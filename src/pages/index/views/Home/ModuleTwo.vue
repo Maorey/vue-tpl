@@ -84,6 +84,7 @@ export default class extends Vue {
     height: 100%;
   }
 }
+
 .circle {
   top: 0;
   left: 0;

@@ -30,9 +30,11 @@
   min-height: 70px;
   height: -webkit-fill-available;
 }
+
 .loading {
   width: 100px;
   height: 100%;
+
   @extend %centerPage;
 
   circle {
@@ -42,6 +44,7 @@
     &:first-child {
       stroke: $colorDark;
     }
+
     &:last-child {
       stroke: $colorHighlight;
       stroke-linecap: round;

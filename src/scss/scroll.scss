@@ -20,10 +20,12 @@ $barMinHeight: 5px; // 滚动条最小高度
   }
 }
 // 上下按钮
+/* stylelint-disable-next-line no-descending-specificity */
 ::-webkit-scrollbar-button {
   display: none;
 }
 // 拖拽按钮
+/* stylelint-disable-next-line no-descending-specificity */
 ::-webkit-scrollbar-thumb {
   transition: 0.3s;
   min-width: $barWidth;
@@ -92,7 +94,6 @@ $barMinHeight: 5px; // 滚动条最小高度
   scrollbar-track-color: $colorLightGrey; // 立体滚动条背景颜色
   scrollbar-arrow-color: $colorDeepGrey; // 三角箭头的颜色
   scrollbar-shadow-color: $colorGrey; // 立体滚动条阴影的颜色
-  scrollbar-3dlight-color: $colorGrey; // 立体滚动条亮边的颜色
   scrollbar-highlight-color: $colorLightGrey; // 滚动条空白部分的颜色
   scrollbar-darkshadow-color: $colorDeepGrey; // 立体滚动条强阴影的颜色
 }
