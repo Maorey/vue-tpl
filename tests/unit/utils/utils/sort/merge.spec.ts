@@ -4,20 +4,16 @@
  * @Date: 2019-07-19 16:24:03
  */
 import mergeSort from '@/utils/utils/sort/merge'
-
-const testArray: number[] = []
-
-let arrayLength: number = 10000
-while (arrayLength--) {
-  testArray.push(Math.random() * arrayLength)
-}
-arrayLength = testArray.length - 1
+import getRandomArray from './getRandomArray'
 
 test('mergeSort', () => {
-  let pass: boolean = true
+  let arrayLength = 10000
+  const testArray = getRandomArray(arrayLength--)
+
+  let pass = true
 
   mergeSort(testArray)
-  for (let i: number = 0; i < arrayLength; i++) {
+  for (let i = 0; i < arrayLength; i++) {
     if (testArray[i + 1] < testArray[i]) {
       pass = false
       break
@@ -25,8 +21,8 @@ test('mergeSort', () => {
   }
 
   if (pass) {
-    mergeSort(testArray, (a: number, b: number): boolean => a < b)
-    for (let i: number = 0; i < arrayLength; i++) {
+    mergeSort(testArray, (a, b) => a < b)
+    for (let i = 0; i < arrayLength; i++) {
       if (testArray[i + 1] > testArray[i]) {
         pass = false
         break
