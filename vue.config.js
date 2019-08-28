@@ -16,11 +16,12 @@ const pages = require('./scripts/pages')(isProd) // 自动检测并返回页面�
 let ALIAS = {} // 别名字典
 // 输出图形
 console.log(
-  require('./scripts/figure')[
-    isProd
-      ? 'd' + Math.ceil(Math.random() * 5)
-      : 'p' + Math.ceil(Math.random() * 10)
-  ]
+  '\033[34m' +
+    require('./scripts/figure')[
+      isProd
+        ? 'd' + Math.ceil(Math.random() * 5)
+        : 'p' + Math.ceil(Math.random() * 10)
+    ]
 )
 
 /// 【配置项】https://cli.vuejs.org/zh/config ///
@@ -146,6 +147,14 @@ module.exports = {
         //   priority: 668,
         //   test: /[\\/]?.+\.json(?:[^\w].*)?$/,
         // },
+        // vue全搜集 (vue/vuex/vue-router...)
+        vue: {
+          name: 'vue',
+          chunks: 'all',
+          priority: 66,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]vue.*[\\/]/,
+        },
         // elementUI (建议按需引入)
         eui: {
           name: 'eui',
