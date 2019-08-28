@@ -147,16 +147,13 @@ function partition(start: number, end: number): void {
     return
   }
   /// 选择基准 ///
-  // tslint:disable-next-line: no-bitwise 9 -> 4, 10 -> 4
+  // 9 -> 4, 10 -> 4
   let pivot: number = start + (result++ >> 1)
   if (result > HIGH) {
-    // tslint:disable-next-line: no-bitwise
     result = result >> 3
     pivot = mid3(
-      // tslint:disable-next-line: no-bitwise
       mid3(start, start + result, start + (result << 1)),
       mid3(pivot - result, pivot, pivot + result),
-      // tslint:disable-next-line: no-bitwise
       mid3(end - (result << 1), end - result, end)
     )
   } else {

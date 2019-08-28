@@ -59,7 +59,6 @@ function swap(p1: number, p2: number): void {
  * @returns {Any} 基准
  */
 function findPivot(start: number, end: number): any {
-  // tslint:disable-next-line: no-bitwise
   const pivot: number = (start + end) >> 1
 
   contrast(LIST[start], LIST[pivot]) && swap(start, pivot)

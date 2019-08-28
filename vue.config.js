@@ -45,20 +45,8 @@ module.exports = {
   /// 【webpack配置】 ///
   // https://github.com/neutrinojs/webpack-chain#getting-started
   chainWebpack(config) {
-    /// 入口 ///
-    // config
-    //   .entry('polyfill')
-    //   .add(path.resolve('src/libs/polyfill'))
-    //   .end()
-
     /// 【设置目录别名 已有: @ => src 】 ///
     require('./scripts/alias')(pages, config, ALIAS)
-
-    /// 出口 ///
-    // config.output.hashDigest('base64')
-    // config.output.hashFunction('md5')
-    // config.output.hashFunction(require('metrohash').MetroHash64)
-    // config.output.hashDigestLength(5) // 全局hash长度
 
     /// 不处理的依赖库 ///
     // 一般情况不建议使用，在html模板引入了会创建全局变量的js后可以设置以在src中使用这个全局变量
@@ -67,17 +55,6 @@ module.exports = {
     // })
 
     /// 插件 ///
-    /// 全局scss【弃】 ///
-    // https://www.npmjs.com/package/sass-resources-loader
-    // config.module.rule('scss').oneOfs.store.forEach(item =>
-    //   item
-    //     .use('sass-resources-loader')
-    //     .loader('sass-resources-loader')
-    //     .options({
-    //       resources: 'src/scss/var.scss', // 字符串或字符串数组
-    //     })
-    //     .end()
-    // )
     // 补全html插入资源
     config
       .plugin('insert-preload')
@@ -85,8 +62,6 @@ module.exports = {
 
     /// 【优化(optimization)】 ///
     // https://webpack.docschina.org/configuration/optimization 使用默认就好
-    // config.optimization.mangleWasmImports(true) // WebAssembly短名
-    // config.optimization.runtimeChunk('single') // 所有chunk共享一个运行时文件
 
     /// 【代码分割(optimization.splitChunks 不能config.merge({}))】 ///
     // https://webpack.docschina.org/plugins/split-chunks-plugin

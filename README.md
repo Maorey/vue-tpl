@@ -42,7 +42,7 @@ git config core.ignorecase false # 使git对文件名大小写敏感
 
 #### 可选项
 
-- [点击链接](http://editorconfig.org)确定所用 IDE 是否需要安装插件 _(用于跨 IDE 设置，VS Code 需要安装插件，但因为提交了.vscode 文件夹，所以不装也行)_
+- [点击链接](http://editorconfig.org)确定所用 IDE 是否需要安装插件 _(用于跨 IDE 设置，VS Code 可以不装)_
 
 - 可以如下设置增加使用 node ([V8](https://segmentfault.com/a/1190000000440270)) 的内存上限
 
@@ -129,7 +129,6 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 ├── scripts # 脚本
 ├── .env、.env.* # 环境变量设置
 ├── tsconfig.json # typeScript 配置: https://www.tslang.cn/docs/handbook/tsconfig-json.html
-├── tslint.json # tslint 配置: https://palantir.github.io/tslint/rules/
 └── vue.config.js # 工程(vue cli)配置入口
 ```
 
@@ -164,14 +163,14 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
    </template>
 
    <style lang="scss">
-     /* => node_modules/normalize.css/normalize.css */
-     @import '~normalize.css';
+    /* => node_modules/normalize.css/normalize.css */
+    @import '~normalize.css';
    </style>
 
    <style lang="scss" module>
-     .wrapper {
-       background: url(~@index/assets/bg.png);
-     }
+    .wrapper {
+      background: url(~@index/assets/bg.png);
+    }
    </style>
    ```
 
@@ -204,20 +203,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
     ```TypeScript
     // BillList组件
     BillList
-    │── index.vue # 可以例外
-    │── Item.vue
-    └── ...
-
-    // 使用组件
-    import BillList from '{path}/BillList'
-    ```
-
-    或者
-
-    ```TypeScript
-    // BillList组件
-    BillList
-    │── index.tsx # 可以例外
+    │── index.(vue|tsx|ts|jsx|js) # 可以例外
     │── Item.vue
     └── ...
 
@@ -246,8 +232,9 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 
   （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含 Prettier、ESLint 插件相关设置）
 
-- 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上**、[tslint](https://palantir.github.io/tslint/rules/) [配置](tslint.json) 和 [stylelint](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md) [配置](.stylelintrc)
-- 在`jsx/tsx`中使用全局注册的组件时可以使用`kebab-case`, 否则会在控制台输出错误 ┐(：´ ゞ｀)┌
+- 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上** 和 [stylelint](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md) [配置](.stylelintrc.js)
+- 引用 vue 单文件组件**不要加文件扩展名**，有利于重构代码
+- 在`tsx/jsx`中使用全局注册的组件时可以使用`kebab-case`, 否则会在控制台输出错误 ┐(：´ ゞ｀)┌
 
   ```TypeScript
   import { CreateElement } from 'vue'
@@ -266,9 +253,8 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
   }
   ```
 
-- 引用 vue 单文件组件**不要加文件扩展名**，有利于重构代码
 - 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
-- <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export); 为保证`ts/js`中引入时 scss 变量注入正确 _(从近到远依次注入所属别名目录下的指定文件)_, 应在适合的 scss 文件中引入目标样式源码:
+- <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export); 为保证`ts/js`中引入时 scss 变量注入正确, 应在适合的 scss 文件中引入目标样式源码:
 
   ```scss
   // el.scss
@@ -283,7 +269,8 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
   <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator'
 
-    // import { ElButton } from 'element-ui' // 没有打包模块，不支持 tree-shaking ┐(：´ ゞ｀)┌
+    // 没有打包ESM，不支持 tree-shaking ┐(：´ ゞ｀)┌
+    // import { ElButton } from 'element-ui'
     import ElButton from 'element-ui/lib/button'
     import './el.scss'
 
@@ -294,7 +281,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
   </script>
   <!-- 也可以在这儿引用
   <style lang="scss">
-    @import '~element-ui/packages/theme-chalk/src/button.scss';
+  @import '~element-ui/packages/theme-chalk/src/button.scss';
   </style> -->
   ```
 
@@ -318,6 +305,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 - **不要用全局样式覆盖全局样式**, 应使用 `CSSModule` 并使[优先级](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Specificity)相等(注意顺序，包括同步/异步)或更高:
 
   ```scss
+  // 以下默认local
   // bad →_→
   :global(.content .title.active) {
     color: $colorHighlight;
@@ -346,7 +334,6 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 - 规范优雅正确适当的各种**注释**，比如方法注释及必要的变量注释：
 
   ```TypeScript
-  // math.ts
   /** 二维点
    */
   interface IPoint {
@@ -382,7 +369,6 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
   分支注释：
 
   ```TypeScript
-  // logic.ts
   if(...) {
     // 说明
   } else if(...) {
@@ -477,14 +463,14 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 
 #### 工程
 
-因为模块加载，所以不能预编译依赖库；依赖库的 scss 文件倒是可以用下 cache-loader；暂未找到更多可优化内容(run scripts 确实慢 ┐(：´ ゞ｀)┌)
+因为模块加载，所以不能预编译依赖库；依赖库的 scss 文件倒是可以用下 cache-loader；暂未找到更多可优化内容(run scripts 略慢 ┐(：´ ゞ｀)┌)
 
 ### IDE
 
 推荐使用： **Visual Studio Code** (VSCode)，推荐插件：
 
 - Vetur: vue 开发必备
-- ESLint & TSLint & stylelint: 代码检查
+- ESLint & stylelint: 代码检查
 - Prettier - Code formatter: 代码格式化
 - GitLens: Git 工具
 
@@ -603,10 +589,10 @@ server {
 
 - Vue 异步组件加载失败重试: 最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)
 - 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，`<script type="module">` & `<link rel="modulepreload">`)；不支持则加载 Babel 转码后的代码(`<script nomodule>` & `<link rel="preload">`)。但是不知何故未能生效，github 上有一些相关 issue
+- [#714](https://github.com/webpack-contrib/sass-loader/issues/714): 【不再考虑支持】可追踪引用，使在 js 中引用 scss 时可正确<a href="#全局scss">注入 scss 变量</a>
 - [微服务化](https://github.com/phodal/microfrontends#复合型): 应考虑基于 [Web Components](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components) （[vue 友好](https://cli.vuejs.org/zh/guide/build-targets.html#web-components-组件)，可以兼容其他） 的集成和通信。
 
 ### 其他
 
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
 - [#149](https://github.com/webpack/loader-utils/issues/149): 开发环境 class 名加个 emoji 更好区分是否全局样式
-- [#714](https://github.com/webpack-contrib/sass-loader/issues/714): 可追踪引用，使在 js 中引用 scss 时可正确<a href="#全局scss">注入 scss 变量</a>

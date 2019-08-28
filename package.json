@@ -23,7 +23,7 @@
   "scripts": {
     "dev": "vue-cli-service serve --open",
     "build": "vue-cli-service build --no-unsafe-inline",
-    "lint": "vue-cli-service lint --fix && stylelint **/*.vue **/*.scss !**/export*.scss --cache --cache-location node_modules/.cache/stylelint/ --fix",
+    "lint": "stylelint **/*.vue **/*.scss --cache --cache-location node_modules/.cache/stylelint/ --fix && vue-cli-service lint --fix",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit"
   },
@@ -90,6 +90,10 @@
   "lint-staged": {
     "*.{ts,tsx,js,jsx,vue}": [
       "vue-cli-service lint --fix",
+      "git add"
+    ],
+    "*.{vue,scss}": [
+      "stylelint **/*.vue **/*.scss --cache --cache-location node_modules/.cache/stylelint/ --fix",
       "git add"
     ]
   }

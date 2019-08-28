@@ -13,7 +13,14 @@
         About
       </RouterLink>
     </div>
-    <RouterView />
+    <Transition
+      appear
+      name="fade"
+    >
+      <KeepAlive>
+        <RouterView />
+      </KeepAlive>
+    </Transition>
 
     <ElRow>
       <ElButton>默认按钮</ElButton>

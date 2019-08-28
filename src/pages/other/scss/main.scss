@@ -1,4 +1,5 @@
 @import '~@/scss/reset.scss'; // 浏览器样式重置
+@import '~@/scss/transitions.scss'; // <Transition> 过渡动画
 
 /// 全局注册的element-ui组件样式 ///
 @import '~element-ui/packages/theme-chalk/src/base.scss';

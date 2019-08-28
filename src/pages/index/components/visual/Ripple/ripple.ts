@@ -124,7 +124,7 @@ class Ripple extends AnimationLoop {
       pickInstance(gl, pickX, pickY, this.cube, framebuffer)
     }
 
-    // tslint:disable-next-line: no-bitwise   Draw the cubes
+    // Draw the cubes
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     this.cube.draw()
   }

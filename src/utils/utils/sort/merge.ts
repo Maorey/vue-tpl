@@ -142,7 +142,6 @@ function mergeSort(
         merge(left, middle, right) // 归并
         left = right + 1
       }
-      // tslint:disable-next-line: no-bitwise
       size <<= 1 // 每轮翻倍(*2)
     } while (size < end)
     left > end || merge(0, left - 1, end) // 末尾捡漏

@@ -1,4 +1,4 @@
 # 构建目标(浏览器兼容) https://github.com/browserslist/browserslist
 > 1%
 last 2 versions
-not ie <= 8
+IE 10

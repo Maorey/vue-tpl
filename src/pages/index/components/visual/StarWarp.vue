@@ -15,7 +15,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Application, Texture, Sprite } from 'pixi.js'
 import { isWebGLSupported } from '@pixi/utils'
 
-isWebGLSupported() || require('pixi.js-legacy') // TS 要警告啊...
+isWebGLSupported() || require('pixi.js-legacy')
 
 /// name,components,directives,filters,extends,mixins ///
 @Component
