@@ -1,5 +1,5 @@
 /**
- * @Description: 脚手架(vue cli)配置入口
+ * @Description: 工程(vue cli)配置入口
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  */

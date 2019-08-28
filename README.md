@@ -1,6 +1,6 @@
 # vue-tpl
 
-vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架
+vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
 
 [更新日志](CHANGELOG.md)
 
@@ -130,7 +130,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 ├── .env、.env.* # 环境变量设置
 ├── tsconfig.json # typeScript 配置: https://www.tslang.cn/docs/handbook/tsconfig-json.html
 ├── tslint.json # tslint 配置: https://palantir.github.io/tslint/rules/
-└── vue.config.js # 脚手架(vue cli)配置入口
+└── vue.config.js # 工程(vue cli)配置入口
 ```
 
 > 目录结构说明:

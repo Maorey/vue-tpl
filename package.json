@@ -10,9 +10,9 @@
     "vuex3",
     "vuerouter",
     "typescript3",
-    "scaffolding"
+    "template"
   ],
-  "description": "vue + vuex + vue router + TypeScript(支持 JavaScript) 脚手架",
+  "description": "vue + vuex + vue router + TypeScript(支持 JavaScript) 模板",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Maorey/vue-tpl.git"
