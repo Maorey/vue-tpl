@@ -13,7 +13,7 @@ const isProd = environment.NODE_ENV === 'production' // 是否生产环境
 
 const pages = require('./scripts/pages')(isProd) // 自动检测并返回页面入口设置
 
-let ALIAS = {} // 别名字典
+const ALIAS = {} // 别名字典
 // 输出图形
 console.log(
   '\033[35m' +
@@ -87,8 +87,8 @@ module.exports = {
       maxAsyncRequests: 6, // 最大异步代码请求数【http <= 1.1 浏览器同域名并发请求上限: 6】
       maxInitialRequests: 3, // 最大初始化时异步代码请求数
 
+      automaticNameMaxLength: 15, // 分包文件名自动命名最大长度
       automaticNameDelimiter: '.', // 超过大小, 分包时文件名分隔符
-      // automaticNameMaxLength: 15, // 分包文件名自动命名最大长度
       name: isProd && require('./scripts/rename'),
       cacheGroups: {
         /// 【 js 】 ///

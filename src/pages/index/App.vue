@@ -82,10 +82,15 @@ export default class extends Vue {
     display: inline-block;
     margin: 25px;
     color: $colorLightGrey;
+    border: 1px solid #0000;
 
     &:hover {
       color: $colorText;
       text-decoration: none;
+    }
+
+    &:global(.router-link-active) {
+      border-color: $colorHighlight;
     }
 
     > img {
