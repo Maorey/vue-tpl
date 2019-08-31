@@ -92,13 +92,6 @@ module.exports = {
       name: isProd && require('./scripts/rename'),
       cacheGroups: {
         /// 【 js 】 ///
-        // polyfills
-        plf: {
-          name: 'plf',
-          chunks: 'initial',
-          reuseExistingChunk: true,
-          test: /[\\/]node_modules[\\/]core-js(?:-pure)?[\\/]/,
-        },
         // 所有其他依赖的模块
         dll: {
           name: 'dll',
@@ -106,6 +99,14 @@ module.exports = {
           priority: 6,
           reuseExistingChunk: true,
           test: /[\\/]node_modules[\\/]/,
+        },
+        // polyfills
+        plf: {
+          name: 'plf',
+          chunks: 'initial',
+          priority: 6,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]core-js(?:-pure)?[\\/]/,
         },
         // configs (每个页面分开应无必要)
         conf: {
