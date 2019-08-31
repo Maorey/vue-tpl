@@ -42,7 +42,7 @@ module.exports = config => {
   // })
 
   /// 插件 ///
-  /// html-webpack-plugin ///
+  // html-webpack-plugin
   // 想要直接放到body后html前啊... inject: false、'head'、true(='body')
   // 可以插入到head，用script-ext-html-webpack-plugin指定script defer
   // config.plugin('html-main').tap(() => [{ inject: 'head' }])
@@ -51,4 +51,14 @@ module.exports = config => {
   //     defaultAttribute: 'defer',
   //   },
   // ])
+  // stylelint
+  config.plugin('stylelint').use('stylelint-bare-webpack-plugin', [
+    {
+      fix: true,
+      cache: true,
+      lintDirtyModulesOnly: true,
+      files: ['**/*.vue', '**/*.scss', '**/*.css'],
+      cacheLocation: 'node_modules/.cache/stylelint/',
+    },
+  ])
 }

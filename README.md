@@ -31,12 +31,10 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
 
 ## 命令参考
 
-以`yarn`为例（使用`npm`或`cnpm`替换`yarn`命令即可）:
-
 ### 安装项目
 
 ```bash
-yarn install # 安装依赖
+yarn # 安装依赖
 git config core.ignorecase false # 使git对文件名大小写敏感
 ```
 
@@ -64,13 +62,13 @@ git config core.ignorecase false # 使git对文件名大小写敏感
 ### 开发环境（开发调试时使用）
 
 ```bash
-yarn run dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.development.local 文件中设置)
+yarn dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.development.local 文件中设置)
 ```
 
 ### 构建项目（生成部署文件）
 
 ```bash
-yarn run build # --watch: 跟踪文件变化 --report: 生成打包分析
+yarn build # --watch: 跟踪文件变化 --report: 生成打包分析
 ```
 
 同时会生成[fileName.map](scripts/fileName.map)记录 文件名/chunk 名映射 (公共代码抽到`v.`开头的文件里了)
@@ -78,25 +76,25 @@ yarn run build # --watch: 跟踪文件变化 --report: 生成打包分析
 ### 代码风格检查和修正（提交 Git 时会自动执行）
 
 ```bash
-yarn run lint
+yarn lint
 ```
 
 ### e2e(end-to-end) 测试
 
 ```bash
-yarn run test:e2e
+yarn test:e2e
 ```
 
 ### 单元测试
 
 ```bash
-yarn run test:unit # --watch : 跟踪文件变化
+yarn test:unit # --watch : 跟踪文件变化
 ```
 
 ### 命令帮助
 
 ```bash
-yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help test:e2e
+yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 ```
 
 ## 说明及注意事项
@@ -220,7 +218,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 
 ### 风格建议
 
-推荐使用 [TypeScript](https://www.tslang.cn)
+> 推荐使用 [TypeScript](https://www.tslang.cn)
 
 - CSS Modules class 名使用 `camelCase` (global 可以 kebab-case), 选择器嵌套**不应超过三层**
 - JavaScript 代码风格为 [**JavaScript standard**](https://standardjs.com/rules-zhcn.html)，除了以下区别:
@@ -230,7 +228,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
   - 多行末尾保留逗号
   - 方法名后不要空格
 
-  （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含 Prettier、ESLint 插件相关设置）
+  （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含相关设置）
 
 - 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上** 和 [stylelint](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md) [配置](.stylelintrc.js)
 - 引用 vue 单文件组件**不要加文件扩展名**，有利于重构代码
@@ -474,7 +472,7 @@ yarn run vue-cli-service help # [命令] : 比如 yarn run vue-cli-service help 
 - Prettier - Code formatter: 代码格式化
 - GitLens: Git 工具
 
-推荐工具： [`@vue/cli`](https://cli.vuejs.org/zh/guide)，全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
+> 推荐工具： [`@vue/cli`](https://cli.vuejs.org/zh/guide)，全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
 
 ## 部署（nginx）
 

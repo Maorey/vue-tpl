@@ -16,12 +16,13 @@ const pages = require('./scripts/pages')(isProd) // 自动检测并返回页面�
 let ALIAS = {} // 别名字典
 // 输出图形
 console.log(
-  '\033[34m' +
+  '\033[35m' +
     require('./scripts/figure')[
       isProd
         ? 'd' + Math.ceil(Math.random() * 5)
         : 'p' + Math.ceil(Math.random() * 10)
-    ]
+    ] +
+    '\33[0m'
 )
 
 /// 【配置项】https://cli.vuejs.org/zh/config ///
@@ -91,20 +92,20 @@ module.exports = {
       name: isProd && require('./scripts/rename'),
       cacheGroups: {
         /// 【 js 】 ///
-        // 所有其他依赖的模块
-        dll: {
-          name: 'dll',
-          chunks: 'initial',
-          reuseExistingChunk: true,
-          test: /[\\/]node_modules[\\/]/,
-        },
         // polyfills
         plf: {
           name: 'plf',
           chunks: 'initial',
-          priority: 6,
           reuseExistingChunk: true,
           test: /[\\/]node_modules[\\/]core-js(?:-pure)?[\\/]/,
+        },
+        // 所有其他依赖的模块
+        dll: {
+          name: 'dll',
+          chunks: 'all',
+          priority: 6,
+          reuseExistingChunk: true,
+          test: /[\\/]node_modules[\\/]/,
         },
         // configs (每个页面分开应无必要)
         conf: {

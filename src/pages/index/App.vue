@@ -70,18 +70,18 @@ export default class extends Vue {
 
 <style lang="scss" module>
 .nav {
-  width: 100%;
-  bottom: 5px;
   position: absolute;
-  text-align: center;
+  bottom: 5px;
   box-sizing: border-box;
+  width: 100%;
+  text-align: center;
   background-color: $colorBackGround;
   border: 1px solid $colorHighlight;
 
   > a {
+    display: inline-block;
     margin: 25px;
     color: $colorLightGrey;
-    display: inline-block;
 
     &:hover {
       color: $colorText;
@@ -95,14 +95,14 @@ export default class extends Vue {
 }
 
 .array {
+  position: absolute;
   bottom: 10px;
   width: 100%;
-  position: absolute;
   text-align: center;
 
   > i {
-    padding: 6px;
     display: inline-block;
+    padding: 6px;
     border: solid $colorHighlight;
     border-width: 0 2px 2px 0;
     animation: float 1s infinite ease-out;
@@ -122,7 +122,7 @@ export default class extends Vue {
 
 <style lang="scss">
 /// 全局样式 ///
-@import '~@/scss/reset.scss';
-@import '~@/scss/icons.scss';
-@import '~@/scss/transitions.scss';
+@import '~@/scss/reset';
+@import '~@/scss/icons';
+@import '~@/scss/transitions';
 </style>

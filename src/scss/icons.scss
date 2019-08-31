@@ -19,10 +19,10 @@
 
 // 所有字体图标
 [class*='i-']::before {
-  font-style: normal;
-  font-family: 'antDesign' !important;
+  font-family: 'antDesign';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-style: normal;
 }
 
 .i-check-circle::before {

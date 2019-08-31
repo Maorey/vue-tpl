@@ -23,8 +23,8 @@
 
 .flip-enter,
 .flip-leave-to {
-  opacity: 0;
   transform: translate3d(0, 30%, 0);
+  opacity: 0;
 }
 
 // 左侧滑入滑出
@@ -35,8 +35,8 @@
 
 .slip-enter,
 .slip-leave-to {
-  opacity: 0;
   transform: translate3d(-100%, 0, 0);
+  opacity: 0;
 }
 
 // 右侧滑入滑出
@@ -47,22 +47,22 @@
 
 .slide-enter,
 .slide-leave-to {
-  opacity: 0;
   transform: translate3d(100%, 0, 0);
+  opacity: 0;
 }
 
 // 展开折叠
 .fold-enter-active,
 .fold-leave-active {
-  transition: 0.5s;
   transform-origin: 0 0;
+  transition: 0.5s;
 }
 
 .fold-enter,
 .fold-leave-to {
   height: 0;
-  opacity: 0;
   transform: rotate3d(1, 0, 0, -90deg);
+  opacity: 0;
 }
 
 // 去掉过渡动画

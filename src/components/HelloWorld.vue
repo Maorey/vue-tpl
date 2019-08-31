@@ -143,8 +143,8 @@ export default class extends Vue {
   }
 
   ul {
-    list-style-type: none;
     padding: 0;
+    list-style-type: none;
   }
 
   li {

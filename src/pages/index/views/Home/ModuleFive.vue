@@ -36,9 +36,9 @@ export default class extends Vue {
 
 <style lang="scss" module>
 .wrapper {
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
   padding: 5% 0;
-  box-sizing: border-box;
 }
 </style>

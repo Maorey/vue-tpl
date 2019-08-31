@@ -8,10 +8,10 @@
  */
 
 /// 变量 (私有变量 _Case)///
-@import './varColors.scss'; // 颜色 【colorCase】: colorRed
-@import './varFontSIzes.scss'; // 字号 【同css】: x-smaller、xxx-large
-@import './varZIndexes.scss'; // z-index层级划分 【zCase】: zMessage
-@import './varLayout.scss'; // 固定布局尺寸 【(height|width)Case】: heightHeader、widthLfetColumn
+@import './varColors'; // 颜色 【colorCase】: colorRed
+@import './varFontSIzes'; // 字号 【同css】: x-smaller、xxx-large
+@import './varZIndexes'; // z-index层级划分 【zCase】: zMessage
+@import './varLayout'; // 固定布局尺寸 【(height|width)Case】: heightHeader、widthLfetColumn
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 
@@ -26,12 +26,12 @@
 
 // 在页面居中【需要指定高宽】
 %centerPage {
+  position: absolute;
   top: 0;
-  left: 0;
   right: 0;
   bottom: 0;
+  left: 0;
   margin: auto;
-  position: absolute;
 }
 
 /* ---------------------- 我也是一条分割线 (*❦ω❦) ---------------------- */
@@ -40,12 +40,12 @@
 
 // 多行溢出省略号(-webkit-有效，其它截断) 参数为行数
 @mixin ellipsis($clamp) {
-  // 多行溢出省略号
+  // -webkit-多行溢出省略号
+  -webkit-box-orient: vertical; /* stylelint-disable-line property-no-vendor-prefix */
+  -webkit-line-clamp: $clamp;
+  display: -webkit-box; /* stylelint-disable-line value-no-vendor-prefix */
   overflow: hidden;
   word-break: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: $clamp;
-  -webkit-box-orient: vertical;
 }
 
 /* ---------------------- 我还是一条分割线 ㄟ( ▔, ▔ )ㄏ ---------------------- */

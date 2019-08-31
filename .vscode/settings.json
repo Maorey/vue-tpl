@@ -1,22 +1,20 @@
 {
-  "editor.tabSize": 2, // 一个tab等于2空格
-  "editor.wordWrap": "on", // 自动换行
-  "editor.wrappingIndent": "indent", // 换行缩进
-  "editor.renderIndentGuides": true, // 显示缩进线
+  "editor.tabSize": 2,
+  "editor.wordWrap": "on",
+  "editor.wrappingIndent": "indent",
+  "editor.renderIndentGuides": true,
 
-  "files.trimTrailingWhitespace": true, // 保存时去掉行尾空格
+  "files.trimTrailingWhitespace": true,
 
-  "git.autofetch": true, // git自动拉取
+  "git.autofetch": true,
   "git.enableSmartCommit": true,
   "typescript.tsdk": "node_modules\\typescript\\lib",
 
-  /// 代码风格(prettier插件) ///
+  /// 代码风格 ///
   "prettier.semi": false, // 不要句尾分号
   "prettier.singleQuote": true, // 使用单引号
   "prettier.jsxSingleQuote": true, // jsx(vue jsx tsx mjs)里使用单引号
   "prettier.trailingComma": "es5", // 多行末尾保留逗号
-
-  /// 代码风格(vetur插件) ///
   "vetur.completion.tagCasing": "initial",
   "vetur.format.defaultFormatterOptions": {
     "prettier": {

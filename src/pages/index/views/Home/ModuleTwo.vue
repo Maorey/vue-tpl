@@ -74,10 +74,10 @@ export default class extends Vue {
 
 <style lang="scss" module>
 .wrapper {
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
   padding: 10% 0;
-  box-sizing: border-box;
 
   > div {
     width: 100%;
@@ -86,8 +86,8 @@ export default class extends Vue {
 }
 
 .circle {
+  position: absolute;
   top: 0;
   left: 0;
-  position: absolute;
 }
 </style>

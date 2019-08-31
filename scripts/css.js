@@ -38,7 +38,7 @@ module.exports = (isProd, ALIAS, resource) => {
       // https://github.com/webpack-contrib/sass-loader
       scss: {
         // 全局scss变量(入口覆盖全局或node_modules)
-        data(loaderContext) {
+        prependData(loaderContext) {
           let scss = `@import "~@/${resource}";`
 
           // 别名scss变量 https://webpack.js.org/api/loaders

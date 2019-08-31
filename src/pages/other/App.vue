@@ -149,16 +149,16 @@
 
 <style lang="scss" module>
 .wrapper {
-  text-align: center;
   color: $colorText;
+  text-align: center;
 }
 
 .nav {
   padding: 30px;
 
   a {
-    font-weight: bold;
     color: $colorText;
+    font-weight: bold;
 
     &:global(.router-link-exact-active) {
       color: $colorHighlight;

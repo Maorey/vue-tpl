@@ -11,32 +11,31 @@ $barMinHeight: 5px; // 滚动条最小高度
 // 背景条
 ::-webkit-scrollbar {
   width: $barWidth;
-  transition: 0.3s;
   background: none;
   border-radius: $barRadius;
-
-  &:hover {
-    background: $colorLightGrey;
-  }
+  transition: 0.3s;
+}
+// 拖拽按钮
+::-webkit-scrollbar-thumb {
+  min-width: $barWidth;
+  min-height: $barMinHeight;
+  background: $colorGrey;
+  border-radius: $barRadius;
+  transition: 0.3s;
 }
 // 上下按钮
-/* stylelint-disable-next-line no-descending-specificity */
 ::-webkit-scrollbar-button {
   display: none;
 }
-// 拖拽按钮
-/* stylelint-disable-next-line no-descending-specificity */
-::-webkit-scrollbar-thumb {
-  transition: 0.3s;
-  min-width: $barWidth;
-  min-height: $barMinHeight;
-  border-radius: $barRadius;
-  background: $colorGrey;
 
-  &:hover {
-    background: $colorDeepGrey;
-  }
+::-webkit-scrollbar:hover {
+  background: $colorLightGrey;
 }
+
+::-webkit-scrollbar-thumb:hover {
+  background: $colorDeepGrey;
+}
+
 /// FireFox ///
 // 只有某些版本有效好像
 // $-moz-document url-prefix(http) {
@@ -83,17 +82,17 @@ $barMinHeight: 5px; // 滚动条最小高度
 /// all ///
 * {
   scroll-behavior: smooth; // 平滑滚动
-
-  // FireFox
-  scrollbar-width: thin;
-  scrollbar-color: $colorGrey transparent;
+  scrollbar-arrow-color: $colorDeepGrey; // 三角箭头的颜色
 
   // IE 9及以上（不支持透明度/transparent）
   scrollbar-base-color: $colorLightGrey; // 滚动条的基本颜色
-  scrollbar-face-color: $colorGrey; // 立体滚动条的颜色
-  scrollbar-track-color: $colorLightGrey; // 立体滚动条背景颜色
-  scrollbar-arrow-color: $colorDeepGrey; // 三角箭头的颜色
-  scrollbar-shadow-color: $colorGrey; // 立体滚动条阴影的颜色
-  scrollbar-highlight-color: $colorLightGrey; // 滚动条空白部分的颜色
+  scrollbar-color: $colorGrey transparent;
   scrollbar-darkshadow-color: $colorDeepGrey; // 立体滚动条强阴影的颜色
+  scrollbar-face-color: $colorGrey; // 立体滚动条的颜色
+  scrollbar-highlight-color: $colorLightGrey; // 滚动条空白部分的颜色
+  scrollbar-shadow-color: $colorGrey; // 立体滚动条阴影的颜色
+  scrollbar-track-color: $colorLightGrey; // 立体滚动条背景颜色
+
+  // FireFox
+  scrollbar-width: thin;
 }

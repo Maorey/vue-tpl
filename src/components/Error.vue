@@ -31,28 +31,29 @@ export default class extends Vue {
 
 <style lang="scss" module>
 .wrapper {
+  // height: -webkit-fill-available;
   min-height: 70px;
-  height: -webkit-fill-available;
 }
 
 .error {
-  width: 160px;
-  height: 70px;
-  cursor: pointer;
-  color: $colorText;
-  text-align: center;
 
   @extend %centerPage;
 
+  width: 160px;
+  height: 70px;
+  color: $colorText;
+  text-align: center;
+  cursor: pointer;
+
   // 图标
   i {
-    width: 30px;
-    padding: 5px;
-    margin-bottom: 5px;
-    border-radius: 100%;
-    font-size: $xx-large;
     display: inline-block;
+    width: 30px;
+    margin-bottom: 5px;
+    padding: 5px;
+    font-size: $xxLarge;
     border: 1px solid $colorText;
+    border-radius: 100%;
   }
 }
 </style>

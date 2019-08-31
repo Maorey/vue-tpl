@@ -1,2 +1,6 @@
 # 不执行样式检查文件列表
+dist/
+build/
+public/css/
+*.min.css
 export*.scss

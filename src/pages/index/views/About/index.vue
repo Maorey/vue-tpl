@@ -34,11 +34,11 @@ export default class extends Vue {
 
 <style lang="scss" module>
 .wrapper {
-  padding: 10% 0;
   margin-top: 30vh;
+  padding: 10% 0;
   color: $colorText;
+  font-size: $xxLarge;
   text-align: center;
-  font-size: $xx-large;
   background: url(~@index/assets/bg-grid.jpg);
 }
 </style>

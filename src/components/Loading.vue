@@ -27,15 +27,16 @@
 
 <style lang="scss" module>
 .wrapper {
+  // height: -webkit-fill-available;
   min-height: 70px;
-  height: -webkit-fill-available;
 }
 
 .loading {
-  width: 100px;
-  height: 100%;
 
   @extend %centerPage;
+
+  width: 100px;
+  height: 100%;
 
   circle {
     fill: none;
@@ -46,27 +47,27 @@
     }
 
     &:last-child {
+      animation: dash 2.5s linear infinite;
       stroke: $colorHighlight;
       stroke-linecap: round;
-      animation: dash 2.5s linear infinite;
     }
   }
 }
 // 转圈动画
 @keyframes dash {
   0% {
-    stroke-dashoffset: 0;
     stroke-dasharray: 0, 250%;
+    stroke-dashoffset: 0;
   }
 
   50% {
-    stroke-dashoffset: 0;
     stroke-dasharray: 250%, 250%;
+    stroke-dashoffset: 0;
   }
 
   100% {
-    stroke-dashoffset: -250%;
     stroke-dasharray: 250%, 250%;
+    stroke-dashoffset: -250%;
   }
 }
 </style>
