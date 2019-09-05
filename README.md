@@ -588,6 +588,7 @@ server {
 - Vue 异步组件加载失败重试: 最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)
 - 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快，`<script type="module">` & `<link rel="modulepreload">`)；不支持则加载 Babel 转码后的代码(`<script nomodule>` & `<link rel="preload">`)。但是不知何故未能生效，github 上有一些相关 issue
 - [#714](https://github.com/webpack-contrib/sass-loader/issues/714): 【不再考虑支持】可追踪引用，使在 js 中引用 scss 时可正确<a href="#全局scss">注入 scss 变量</a>
+- scss 模块化: 已出 beta 但生态不完善，[草案](https://github.com/sass/sass/blob/master/accepted/module-system.md)
 - [微服务化](https://github.com/phodal/microfrontends#复合型): 应考虑基于 [Web Components](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components) （[vue 友好](https://cli.vuejs.org/zh/guide/build-targets.html#web-components-组件)，可以兼容其他） 的集成和通信。
 
 ### 其他

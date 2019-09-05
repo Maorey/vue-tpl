@@ -92,7 +92,7 @@
       "vue-cli-service lint --fix",
       "git add"
     ],
-    "*.{vue,scss}": [
+    "*.{vue,scss,css}": [
       "stylelint **/*.vue **/*.scss **/*.css --cache --cache-location node_modules/.cache/stylelint/ --fix",
       "git add"
     ]
