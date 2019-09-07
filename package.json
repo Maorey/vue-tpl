@@ -31,7 +31,7 @@
     "axios": "^0.19.0",
     "core-js": "^3.2.1",
     "crypto-js": "^3.1.9-1",
-    "d3": "^5.11.0",
+    "d3": "^5.12.0",
     "echarts": "^4.2.1",
     "element-ui": "^2.12.0",
     "jsencrypt": "^3.0.0-rc.1",
@@ -52,7 +52,7 @@
     "zrender": "^4.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
+    "@babel/core": "^7.6.0",
     "@types/crypto-js": "^3.1.43",
     "@types/d3": "^5.7.2",
     "@types/echarts": "^4.1.11",

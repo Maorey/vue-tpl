@@ -1,6 +1,5 @@
 /*
- * @Description: 排序 基础类型(数字/字符串):快速排序 非基础类型:归并排序(稳定)
- *  【重要】 排序使用compare时，a的下标一定要小于b
+ * @Description: 数组排序
  * @Author: 毛瑞
  * @Date: 2019-07-19 10:52:16
  */
@@ -9,6 +8,7 @@ import mergeSort from './merge' // 归并排序
 import quickSort from './quick' // 快速排序
 
 /** 排序比较方法
+ * a>b <=> Number(compare(a,b))>0 其他情况说不好:true==1 false==0
  * @param {Any} a 待比较的值之一
  * @param {Any} b 待比较的值之二
  *

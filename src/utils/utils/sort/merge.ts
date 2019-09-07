@@ -19,55 +19,132 @@ let contrast: Compare
  */
 const empty: any = null
 
-// /** 使用插入排序阈值
-//  * @deprecated
-//  */
-// const CUTOFF: number = 8
-// /** 插入排序(稳定)
-//  * @deprecated
-//  * @param {Number} start 数组起始索引（含）
-//  * @param {Number} end 数组结束索引（含）
-//  */
-// function insertSort(start: number, end: number): void {
-//   let temp: any
-//   let current: any
-//   let pointer: number
-//   let anchor: number = start
-//   while (anchor++ < end) {
-//     current = LIST[(pointer = anchor)]
-//     while (
-//       pointer > start &&
-//       Number(contrast((temp = LIST[pointer - 1]), current)) > 0
-//     ) {
-//       LIST[pointer--] = temp
-//     }
-//     pointer < anchor && (LIST[pointer] = current)
-//   }
+/** 插入排序(稳定)
+ * @deprecated 相比merge: 耗时更高，包括设置阈值切换
+ * @param {Number} start 数组起始索引（含）
+ * @param {Number} end 数组结束索引（含）
+ */
+function insertSort(start: number, end: number): void {
+  let temp: any
+  let current: any
+  let pointer: number
+  let anchor: number = start
+  while (anchor++ < end) {
+    current = LIST[(pointer = anchor)]
+    while (
+      pointer > start &&
+      Number(contrast((temp = LIST[pointer - 1]), current)) > 0
+    ) {
+      LIST[pointer--] = temp
+    }
+    pointer < anchor && (LIST[pointer] = current)
+  }
+}
+
+/** 合并原数组上连续的两个有序数组(比如:[1,3,5,7,9,0,2,4,6,8] 借助数组方法)
+ *    相比merge: 耗时5倍左右
+ * @deprecated
+ * @param {Number} left 第一个数组起始索引
+ * @param {Number} middle 第一个数组结束索引
+ * @param {Number} right 第二个数组结束索引
+ */
+function mergeSp(left: number, middle: number, right: number): void {
+  middle++ // 第二个数组起始索引
+  let temp
+  while (left < right) {
+    temp = LIST[middle]
+    LIST.splice(middle++, 1)
+    if (Number(contrast(LIST[left], temp)) > 0) {
+      // j在i前
+      left ? LIST.splice(left - 1, 0, temp) : LIST.unshift(temp)
+    } else {
+      // j在i后 保持相对顺序不变
+      LIST.splice(++left, 0, temp)
+    }
+    left++
+  }
+}
+
+/** 二分合并原数组上连续的两个有序数组(比如:[1,3,5,7,9,0,2,4,6,8] 借助辅助数组)
+ *    相比merge: 耗时2~3倍，设置阈值切换最好也耗时1.5倍
+ * @param {Number} left 第一个数组起始索引
+ * @param {Number} middle 第一个数组结束索引
+ * @param {Number} right 第二个数组结束索引
+ */
+function mergeBinary(left: number, middle: number, right: number): void {
+  const LOW: number = left + 1
+  const leftValue: any = LIST[left]
+  // 辅助数组(slice比较快就不复用数组了)
+  const temp: any[] = LIST.slice(middle + 1, right + 1)
+  let curr: number = temp.length - 1 // 辅助数组结束索引
+  let low: number
+  let mid: number
+  let high: number
+  let current: any
+
+  while (middle >= left && curr >= 0) {
+    current = temp[curr]
+    // 先检查边界情况
+    if (Number(contrast(leftValue, current)) > 0) {
+      while (middle >= left) {
+        LIST[right--] = LIST[middle--]
+      }
+      continue
+    }
+    curr--
+    if (!(Number(contrast(LIST[middle], current)) > 0)) {
+      LIST[right--] = current
+      continue
+    }
+    // 二分查找插入位置
+    low = LOW
+    high = middle - 1
+    while (low <= high) {
+      mid = (low + high) >> 1 // 除以2向下取整
+      if (Number(contrast(LIST[mid], current)) > 0) {
+        high = mid - 1
+      } else {
+        low = mid + 1
+      }
+    }
+    // 插入
+    while (middle >= low) {
+      LIST[right--] = LIST[middle--]
+    }
+    LIST[right--] = current
+  }
+
+  while (curr >= 0) {
+    LIST[right--] = temp[curr--]
+  }
+}
+
+/// 耗时 ///
+// const testArray: number[] = []
+// let last: number = 10000
+// while (last--) {
+//   testArray.push(Math.random() * last)
 // }
 
-// /** 合并原数组上连续的两个有序数组(比如:[1,3,5,7,9,0,2,4,6,8])
-//  *    使用Array.prototype.splice、Array.prototype.unshift 【平均耗时为merge的5倍左右】
-//  * @deprecated
-//  * @param {Number} left 第一个数组起始索引
-//  * @param {Number} middle 第一个数组结束索引
-//  * @param {Number} right 第二个数组结束索引
-//  */
-// function mergeSp(left: number, middle: number, right: number): void {
-//   middle++ // 第二个数组起始索引
-//   let temp
-//   while (left < right) {
-//     temp = LIST[middle]
-//     LIST.splice(middle++, 1)
-//     if (Number(contrast(LIST[left], temp)) > 0) {
-//       // j在i前
-//       left ? LIST.splice(left - 1, 0, temp) : LIST.unshift(temp)
-//     } else {
-//       // j在i后 保持相对顺序不变
-//       LIST.splice(++left, 0, temp)
-//     }
-//     left++
-//   }
-// }
+// console.time('cost')
+// mergeSort(testArray)
+// console.timeEnd('cost')
+// // cost: 21ms
+// console.time('cost')
+// mergeSort(testArray)
+// console.timeEnd('cost')
+// // cost: 10ms
+// console.time('cost')
+// mergeSort(testArray, (a: number, b: number): boolean => a < b)
+// console.timeEnd('cost')
+// // cost: 26ms
+// console.time('cost')
+// mergeSort(testArray, (): boolean => Math.random() > 0.5)
+// console.timeEnd('cost')
+// // cost: 32ms
+
+/* ---------------------- 我是一条分割线 ㄟ( ▔, ▔ )ㄏ ---------------------- */
+
 /** 合并原数组上连续的两个有序数组(比如:[1,3,5,7,9,0,2,4,6,8] 借助辅助数组)
  * @param {Number} left 第一个数组起始索引
  * @param {Number} middle 第一个数组结束索引
@@ -83,7 +160,8 @@ function merge(left: number, middle: number, right: number): void {
   // }
   // if (right > middle) {
   //   LIST[right--] = LIST[middle--] // ↓↓ ...
-  const temp: any[] = LIST.slice(middle + 1, right + 1) // 辅助数组(slice比较快就不复用数组了)
+  // 辅助数组(slice比较快就不复用数组了)
+  const temp: any[] = LIST.slice(middle + 1, right + 1)
   let index: number = temp.length - 1 // 辅助数组结束索引
 
   while (middle >= left && index >= 0) {
@@ -96,6 +174,7 @@ function merge(left: number, middle: number, right: number): void {
     LIST[right--] = temp[index--]
   }
 }
+
 /** 归并排序(稳定 迭代非递归)
  * @test true
  *
