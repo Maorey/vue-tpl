@@ -1,27 +1,22 @@
 {
   "editor.tabSize": 2,
   "editor.wordWrap": "on",
+  // "editor.formatOnSave": true,
   "editor.wrappingIndent": "indent",
+  "editor.detectIndentation": false,
   "editor.renderIndentGuides": true,
-
   "files.trimTrailingWhitespace": true,
-
   "git.autofetch": true,
   "git.enableSmartCommit": true,
   "typescript.tsdk": "node_modules\\typescript\\lib",
-
   /// 代码风格 ///
-  "prettier.semi": false, // 不要句尾分号
-  "prettier.singleQuote": true, // 使用单引号
-  "prettier.jsxSingleQuote": true, // jsx(vue jsx tsx mjs)里使用单引号
-  "prettier.trailingComma": "es5", // 多行末尾保留逗号
   "vetur.completion.tagCasing": "initial",
   "vetur.format.defaultFormatterOptions": {
     "prettier": {
       "semi": false, // 不要句尾分号
       "singleQuote": true, // 使用单引号
-      "jsxSingleQuote": true, // 使用单引号
-      "trailingComma": "es5"
+      "jsxSingleQuote": true, // jsx(vue jsx tsx mjs)里使用单引号
+      "trailingComma": "es5" // 多行末尾保留逗号
     }
   },
   "eslint.autoFixOnSave": true,

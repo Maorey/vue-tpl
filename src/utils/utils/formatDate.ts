@@ -206,7 +206,7 @@ function formatDate(date: Date, format: string = ISO_DATE_FORMAT): string {
       // 根据规则获取值
       switch (item.k) {
         case Reserve.year:
-          // 从末尾开始取指定位数
+        // 从末尾开始取指定位数
           value = String(date.getFullYear()).substring(4 - item.l)
           break
         case Reserve.month:
