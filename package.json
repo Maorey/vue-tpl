@@ -82,7 +82,8 @@
     "ts-jest": "^24.0.2",
     "typescript": "^3.6.3",
     "vue-template-compiler": "^2.6.10",
-    "vue-tsx-support": "^2.3.2"
+    "vue-tsx-support": "^2.3.2",
+    "webpack-remove-strict-mode-plugin": "^1.0.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"

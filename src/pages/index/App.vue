@@ -42,7 +42,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 
-import ROUTER from '@/config/router/index'
+import ROUTER from './config/router'
 
 // 选项顺序: https://cn.vuejs.org/v2/style-guide/#组件-实例的选项的顺序-推荐
 @Component

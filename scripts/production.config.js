@@ -99,4 +99,11 @@ module.exports = config => {
   ])
   // commonJS tree-shaking 耗时且效果微弱
   // config.plugin('common-shake').use(require('webpack-common-shake').Plugin)
+  // 移除 "use strict";
+  config
+    .plugin('remove-use-strict')
+    .use('webpack-remove-strict-mode-plugin', [{
+      // exclude: /a.js/, // 排除的文件
+      extension: ['.*'], // 文件后缀
+    }])
 }

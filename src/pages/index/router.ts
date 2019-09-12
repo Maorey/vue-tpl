@@ -9,7 +9,7 @@ import Router from 'vue-router'
 import { IObject } from '@/types'
 import { getAsync } from '@/utils/highOrder' // 高阶组件工具
 
-import CONFIG from '@/config/router/index'
+import CONFIG from './config/router'
 
 Vue.use(Router) // 全局注册
 

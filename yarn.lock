@@ -12699,6 +12699,11 @@ webpack-merge@^4.2.1, webpack-merge@^4.2.2:
   dependencies:
     lodash "^4.17.15"
 
+webpack-remove-strict-mode-plugin@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/webpack-remove-strict-mode-plugin/-/webpack-remove-strict-mode-plugin-1.0.0.tgz#a247f40da83467dfc5d9b4a069e2b9f32be4eadb"
+  integrity sha512-0ZMVsvfIiTmdPkwxhzwCiqbVaJhtt22Yyhgf9hdQB7/OMkPnU4wXMyUCs7qzLxXLOQ/OXQk3frUAZAhAFcqnSA==
+
 webpack-sources@^1.0.1, webpack-sources@^1.1.0, webpack-sources@^1.4.0, webpack-sources@^1.4.1:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-1.4.3.tgz#eedd8ec0b928fbf1cbfe994e22d2d890f330a933"

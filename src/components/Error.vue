@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { load } from '@/config/message'
+import load from '@/config/message'
 
 @Component
 export default class extends Vue {
