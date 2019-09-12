@@ -21,7 +21,8 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
     - [web 页面](#web%20页面)
     - [工程](#工程)
   - [IDE](#ide)
-- [部署（nginx）](#部署nginx)
+- [浏览器支持](#浏览器支持)
+- [部署](#部署(nginx))
 - [备忘](#备忘)
   - [文档](#文档)
     - [数据可视化](#数据可视化)
@@ -461,7 +462,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 #### 工程
 
-因为模块加载，所以不能预编译依赖库；依赖库的 scss 文件倒是可以用下 cache-loader；暂未找到更多可优化内容(run scripts 略慢 ┐(：´ ゞ｀)┌)
+暂未找到更多可优化内容(虽然`run scripts`略慢 ┐(：´ ゞ｀)┌)
 
 ### IDE
 
@@ -474,7 +475,15 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 > 推荐工具： [`@vue/cli`](https://cli.vuejs.org/zh/guide)，全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
 
-## 部署（nginx）
+## 浏览器支持
+
+支持现代浏览器及 IE10+
+
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
+| :-: | :-: | :-: | :-: |
+| IE10, IE11, Edge | last 2 versions | last 2 versions | last 2 versions |
+
+## 部署(nginx)
 
 简记如下，有待运维大佬进一步优化
 
