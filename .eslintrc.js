@@ -34,17 +34,20 @@ module.exports = {
     }),
 
     /// ESLint https://eslint.org/docs/rules/ ///
-    indent: ["error", 2, { SwitchCase: 1 }], // 缩进
+    indent: ['error', 2, { SwitchCase: 1 }], // 缩进
     semi: ['error', 'never'], // 不要句尾分号
     quotes: ['error', 'single'], // 使用单引号
     'comma-dangle': ['error', 'always-multiline'], // 保留多行末尾逗号
     'space-before-function-paren': ['error', 'never'], // 方法名后不要空格
-    'max-len': ['error', {
-      "code": 100,
-      "tabWidth": 2,
-    }], // 最大列数
-    'max-params': ["error", 7], // function最大参数数
-    'max-statements': ["error", 120], // function最大语句数
+    'max-len': [
+      'error',
+      {
+        code: 100,
+        tabWidth: 2,
+      },
+    ], // 最大列数
+    'max-params': ['error', 7], // function最大参数数
+    'max-statements': ['error', 120], // function最大语句数
 
     /// TSLint https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#supported-rules ///
     '@typescript-eslint/class-name-casing': 'error', // 类名 PascalCase

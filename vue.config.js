@@ -17,11 +17,12 @@ const ALIAS = {} // 别名字典
 // 输出图形
 console.log(
   (isProd ? '\033[32m' : '\033[35m') +
-  require('./scripts/figure')[isProd
-    ? 'd' + Math.ceil(Math.random() * 5)
-    : 'p' + Math.ceil(Math.random() * 10)
-  ] +
-  '\33[0m'
+    require('./scripts/figure')[
+      isProd
+        ? 'd' + Math.ceil(Math.random() * 5)
+        : 'p' + Math.ceil(Math.random() * 10)
+    ] +
+    '\33[0m'
 )
 
 /// 【配置项】https://cli.vuejs.org/zh/config ///
