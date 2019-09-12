@@ -8,8 +8,11 @@ import App from './App'
 import router from './router'
 import store from './store'
 
-new Vue({
-  store,
-  router,
-  render: (h: CreateElement): VNode => h(App),
-}).$mount('#app')
+// 防阻塞页面
+setTimeout(() =>
+  new Vue({
+    store,
+    router,
+    render: (h: CreateElement): VNode => h(App),
+  }).$mount('#app')
+)

@@ -32,8 +32,11 @@ Vue.use(Select)
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 
-new Vue({
-  store,
-  router,
-  render: (h: CreateElement): VNode => h(App),
-}).$mount('#app')
+// 防阻塞页面（defer的脚本已缓存时不会非阻塞执行bug:chromium#717979）
+setTimeout(() =>
+  new Vue({
+    store,
+    router,
+    render: (h: CreateElement): VNode => h(App),
+  }).$mount('#app')
+)
