@@ -63,9 +63,7 @@ export default class extends Vue {
               { name: '戊', value: 5 },
             ],
           })
-        setTimeout(() => {
-          this.get()
-        }, CONFIG.ajax)
+        setTimeout(() => this.get(), CONFIG.ajax)
       })
   }
   /// render ///

@@ -46,6 +46,7 @@ const router = new Router({
 })
 
 /// 导航守卫 ///
+let timer = 0
 const REG_REDIRECT = /\/r\//i
 const PATH_HOME = `/${ROUTE.home.name}`
 const forceUpdate = () => refreshRoute(router.currentRoute.matched)
@@ -56,11 +57,14 @@ router.beforeEach((to, from, next) => {
   if (REG_REDIRECT.test(toFullPath)) {
     toFullPath = toFullPath.replace(REG_REDIRECT, '/')
     toFullPath === from.fullPath ? NProgress.done() : next(toFullPath)
-    return setTimeout(forceUpdate)
+    clearTimeout(timer)
+    timer = setTimeout(forceUpdate)
+    return
   }
   /// 未知路由重定向到首页 ///
   if (!router.resolve(to).route.matched.length) {
-    return next(PATH_HOME)
+    next(PATH_HOME)
+    return
   }
 
   /// 路由权限处理 ///

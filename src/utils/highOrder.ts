@@ -9,40 +9,34 @@ import CONFIG from '@/config'
 import LOADING from '@com/Loading' // 加载中
 import ERROR from '@com/Error' // 加载失败
 
-import Vue, {
-  CreateElement,
-  Component,
-  AsyncComponent,
-  RenderContext,
-} from 'vue'
+import Vue, { Component, AsyncComponent, RenderContext } from 'vue'
 
 /** 组件字典
  */
 interface IDictionary {
   [key: string]: Component
 }
+/** 组件过滤器
+ * @param {RenderContext} context vue渲染上下文
+ * @returns {String} 匹配的组件名
+ */
+type filter = (context: RenderContext) => string
 
 /** 根据is属性选择组件
- * @param {RenderContext} context vue渲染上下文
- *
- * @returns {String} is指定的类型
  */
-function filterByIS(context: RenderContext): string {
-  return (context.data.attrs && context.data.attrs.is) || context.props.is
-}
+const filterByIS: filter = context =>
+  (context.data.attrs && context.data.attrs.is) || context.props.is
+
 /** 获取高阶组件，用于根据type从DIC中选择一个组件【同步】
  * @param {IDictionary} DIC 组件字典对象 { key:string : value:VueComponent }
  * @param {Function} filter 类型筛选器
  *
  * @returns {Component} 一个函数式组件
  */
-function getChooser(
-  DIC: IDictionary,
-  filter: (context: RenderContext) => string = filterByIS
-): Component {
+function getChooser(DIC: IDictionary, filter: filter = filterByIS): Component {
   return {
     functional: true,
-    render(createElement: CreateElement, context: RenderContext) {
+    render(createElement, context) {
       return createElement(DIC[filter(context)], context.data, context.children)
     },
   }
@@ -68,17 +62,26 @@ function getAsync(
   })
 
   const observe = Vue.observable({ c: asyncComponentFactory() })
+  let timer = 0
+  let orginHandler: any
+  const update = function(this: Vue) {
+    // parent.$forceUpdate()
+    observe.c = asyncComponentFactory()
+
+    if (orginHandler) {
+      clearTimeout(timer)
+      timer = setTimeout(() => orginHandler.apply(this, arguments))
+    }
+  }
 
   return {
     functional: true,
-    render(createElement: CreateElement, { data, children }) {
+    render(createElement, { data, children }) {
       // event: $ 用于 hack 加载失败时点击重新加载
       if (data.on ? !data.on.$ : (data.on = {})) {
-        const orginHandler: any = data.on.$
-        data.on.$ = function() {
-          observe.c = asyncComponentFactory()
-          orginHandler && orginHandler.apply(this, arguments)
-          // parent.$forceUpdate() // 无效
+        if (update !== data.on.$) {
+          orginHandler = data.on.$
+          data.on.$ = update
         }
       }
 
