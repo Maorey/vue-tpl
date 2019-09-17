@@ -6,7 +6,7 @@
 <template>
   <body :class="$style.wrapper">
     <div :class="$style.nav">
-      <RouterLink to="/">
+      <RouterLink to="/home">
         Home
       </RouterLink>|
       <RouterLink to="/about">
@@ -143,6 +143,15 @@
         icon="el-icon-delete"
         circle
       />
+    </ElRow>
+    <ElRow>
+      <ElButton
+        type="success"
+        icon="el-icon-refresh"
+        @click="$router.replace('/r' + $route.fullPath)"
+      >
+        刷新
+      </ElButton>
     </ElRow>
   </body>
 </template>

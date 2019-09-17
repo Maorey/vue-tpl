@@ -175,16 +175,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 3. 输出目录为 `dist`, 包含 js/css/img/font/media 等文件夹
 4. 所有 `config` 目录下的内容都会被打包到同一个文件`conf.*.js`(需要保留的注释请使用: `/*! 注释内容 */`)，用于支持直接修改配置而不必重新打包代码
-5. 除了以下样式可以使用全局:
-
-   - 浏览器默认样式重置
-   - `Transition` 动画样式
-   - 字体图标样式
-   - 公共组件默认样式(使支持换肤，使用[BEM](https://en.bem.info)约定[参考链接](https://www.ibm.com/developerworks/cn/web/1512_chengfu_bem/))
-
-   均应使用 [CSSModule](https://vue-loader-v14.vuejs.org/zh-cn/features/css-modules.html)，以更好的模块化和复用、打包样式
-
-6. 测试用例目录层级与文件名应尽量与源码对应
+5. 测试用例目录层级与文件名应尽量与源码对应
 
 > **提示和建议**
 
@@ -209,6 +200,15 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
     // 使用组件
     import BillList from '{path}/BillList'
     ```
+
+- 除了以下样式可以使用全局:
+
+   - 浏览器默认样式重置
+   - `Transition` 动画样式
+   - 字体图标样式
+   - 公共组件默认样式(使支持换肤，使用[BEM](https://en.bem.info)约定[参考链接](https://www.ibm.com/developerworks/cn/web/1512_chengfu_bem/))
+
+   均应使用 [CSSModule](https://vue-loader-v14.vuejs.org/zh-cn/features/css-modules.html)，以更好的模块化和复用、打包样式
 
 - 视图只负责布局及交互(props 传递和事件监听)，包含子组件的可使用**文件夹容器**方式或将子组件存放在对应层级的 `components` 目录下的同名目录(`camelCase`)下
 - 公共组件/逻辑/函数/样式等模块请按照: `模块 -> 视图 -> 页面 -> 项目` 的层级提升, 配合**提前规划**确定初始层级
@@ -326,9 +326,9 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   - `vue`: `TypeScript` & `CSS Module`, `tsx` 文件中使用
   - `js`: `JavaScript` & `CSS Module`, vue 单文件组件中使用
   - `vue`: `JavaScript` & `CSS Module`, `jsx` 文件中使用
-- 提交代码请使用标识: Add/Del/Fix/Mod 等
+- 提交代码请使用标识: Add/Del/Fix/Mod/Feat 等
 
-### 其他建议
+### 其他
 
 - 规范优雅正确适当的各种**注释**，比如方法注释及必要的变量注释：
 
@@ -397,6 +397,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   ```
 
 - [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(方便排查问题和碎文件合并)，比如: index 页面下的 home 视图命名为 `index_home`, 其下的用户视图命名为 `index_home_my`, 用户基础信息命名为 `index_home_my_baseinfo` 。为避免文件名太长，每个层级可以缩写: `iHome`, `ihMy`, `ihmBaseInfo`。
+- 路由请**全部**使用异步组件(`@utils/highOrder getAsync`)，以使路由及其**子(异步)组件**可以局部刷新
 - libs 下的库文件需要按需加载的，应提供引入方法（只会成功加载一次），比如(模块化, 全局的类似):
 
   ```TypeScript

@@ -1,5 +1,5 @@
 <!--
- * @Description: index页布局
+ * @Description: 页面布局
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  -->
@@ -42,7 +42,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 
-import ROUTER from './config/router'
+import { IObject } from '@/types'
+import CONFIG from './config/route'
+const ROUTE = CONFIG as IObject<IObject>
 
 // 选项顺序: https://cn.vuejs.org/v2/style-guide/#组件-实例的选项的顺序-推荐
 @Component
@@ -52,18 +54,18 @@ export default class extends Vue {
 
   // computed
   get LINK() {
-    return [
-      {
-        name: ROUTER.home.title,
-        src: require('@index/assets/home.png'),
-        to: '/' + ROUTER.home.name,
-      },
-      {
-        name: ROUTER.about.title,
-        src: require('@index/assets/about.png'),
-        to: '/' + ROUTER.about.name,
-      },
-    ]
+    const LINK: IObject[] = []
+    let key
+    let temp: IObject
+    for (key in ROUTE) {
+      temp = ROUTE[key]
+      LINK.push({
+        name: temp.title,
+        to: `/${temp.name}`,
+        src: require(`@index/assets/${temp.name}.png`),
+      })
+    }
+    return LINK
   }
 }
 </script>

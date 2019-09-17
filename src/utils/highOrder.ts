@@ -72,9 +72,14 @@ function getAsync(
   return {
     functional: true,
     render(createElement: CreateElement, { data, children }) {
-      // 保留 event: $ 用于 hack 加载失败时点击重新加载
+      // event: $ 用于 hack 加载失败时点击重新加载
       if (data.on ? !data.on.$ : (data.on = {})) {
-        data.on.$ = () => (observe.c = asyncComponentFactory())
+        const orginHandler: any = data.on.$
+        data.on.$ = function() {
+          observe.c = asyncComponentFactory()
+          orginHandler && orginHandler.apply(this, arguments)
+          // parent.$forceUpdate() // 无效
+        }
       }
 
       return createElement(observe.c, data, children)
