@@ -11,7 +11,7 @@ module.exports = {
       'jest-transform-stub',
     '^.+\\.tsx?$': 'ts-jest',
   },
-  transformIgnorePatterns: ['/node_modules/'],
+  transformIgnorePatterns: ['/node_modules/', '/build/'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },

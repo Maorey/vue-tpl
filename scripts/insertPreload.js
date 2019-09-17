@@ -10,6 +10,18 @@
 const PLUGIN_NAME = 'insert-preload' // 插件名
 
 module.exports = class {
+  /**
+   * @param {Object} option 选项
+   *  {
+   *    runtime: 待移除preload的runtime名，falsy: 不移除, true = 'runtime', String: 指定名字
+   *  }
+   */
+  constructor(option = {}) {
+    let runtime = option.runtime
+    runtime === true && (runtime = 'runtime')
+    this._REG_REMOVE = runtime && new RegExp(`(?:[\\/]|^)${runtime}\\..*\\.js$`)
+  }
+
   // https://webpack.docschina.org/api/plugins/
   apply(compiler) {
     // 添加 preload 的资源
@@ -23,9 +35,7 @@ module.exports = class {
     })
   }
 
-  /** 补充缺失的资源
-   * @param {Object} htmlPluginData html-webpack-plugin 插件数据
-   */
+  // 补充缺失的资源
   insert(htmlPluginData) {
     // 标签对象结构: 只需要关心: head 里的 link, body 里的 script
     // {
@@ -48,6 +58,7 @@ module.exports = class {
     const scripts = [] // 待插入脚本
 
     const relStyle = 'stylesheet'
+    const REG_RUNTIME = this._REG_REMOVE
 
     // 找到缺的标签
     // 样式插入位置（最后一个样式/preload标签后）
@@ -74,7 +85,7 @@ module.exports = class {
                 break
               }
             }
-            tmp.href &&
+            if (tmp.href) {
               scripts.push({
                 tagName: 'script',
                 closeTag: true,
@@ -85,6 +96,13 @@ module.exports = class {
                     tmp.rel === 'modulepreload' ? 'module' : 'text/javascript',
                 },
               })
+              // 去掉runtime
+              if (REG_RUNTIME && REG_RUNTIME.test(tmp.href)) {
+                head.splice(index--, 1)
+                len--
+                continue
+              }
+            }
             break
           default:
             // 样式标签 去重

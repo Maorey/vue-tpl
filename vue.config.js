@@ -17,16 +17,16 @@ const ALIAS = {} // 别名字典
 // 输出图形
 // eslint-disable-next-line no-console
 console.log(
-  // eslint-disable-next-line no-octal-escape
-  (isProd ? '\033[32m' : '\033[35m') +
+  '\033[3' + // eslint-disable-line no-octal-escape
+    Math.ceil(Math.random() * 6) +
+    'm' +
     // eslint-disable-next-line standard/computed-property-even-spacing
     require('./scripts/figure')[
       isProd
         ? 'd' + Math.ceil(Math.random() * 5)
         : 'p' + Math.ceil(Math.random() * 10)
     ] +
-    // eslint-disable-next-line no-octal-escape
-    '\33[0m'
+    '\33[0m' // eslint-disable-line no-octal-escape
 )
 
 /// 【配置项】https://cli.vuejs.org/zh/config ///
@@ -58,12 +58,6 @@ module.exports = {
     // config.externals({
     //   global: 'global',
     // })
-
-    /// 插件 ///
-    // 补全html插入资源
-    config
-      .plugin('insert-preload')
-      .use(path.resolve('./scripts/insertPreload.js'))
 
     /// 【不同环境配置】 ///
     require(isProd

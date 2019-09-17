@@ -3,6 +3,9 @@
  * @Author: Maorey
  * @Date: 2019-04-01 13:15:59
  */
+
+const path = require('path')
+
 // const COUNTER = {} // 重命名计数器
 // const REG_GLOBAL_VUE = /^([^\\/]+\.)(vue|tsx|jsx)$/ // 是否无路径vue组件
 
@@ -51,6 +54,8 @@ module.exports = config => {
   //     defaultAttribute: 'defer',
   //   },
   // ])
+  // 补全html插入资源
+  config.plugin('insert-preload').use(path.resolve('scripts/insertPreload.js'))
   // stylelint
   config.plugin('stylelint').use('stylelint-bare-webpack-plugin', [
     {

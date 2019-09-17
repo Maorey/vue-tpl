@@ -4,6 +4,8 @@
  * @Date: 2019-04-01 13:28:06
  */
 
+const path = require('path')
+
 /** 获取配置对象
  * @param {String} name 文件名
  *
@@ -26,7 +28,7 @@ const getLoaderOption = name => ({
 module.exports = config => {
   config.merge({
     // https://webpack.js.org/configuration/other-options/#recordspath
-    recordsPath: require('path').resolve('scripts/records.json'),
+    recordsPath: path.resolve('/records.json'),
   }) // 生成记录
 
   /// 文件名 ///
@@ -68,6 +70,10 @@ module.exports = config => {
   // config
   //   .plugin('hash-module')
   //   .use(require('webpack').HashedModuleIdsPlugin, [{ hashDigestLength: 5 }])
+  // 补全html插入资源
+  config
+    .plugin('insert-preload')
+    .use(path.resolve('scripts/insertPreload.js'), [{ runtime: 'runtime' }])
   // runtime Chunk 内联到html
   config
     .plugin('inline-manifest')
@@ -88,28 +94,6 @@ module.exports = config => {
       extension: ['.*'], // 文件后缀
     },
   ])
-
-  /// 构建优化(vue cli 大法好) ///
-  // 已使用 cache-loader
-  // minimizing 已开启多线程
-  // parallel-webpack或happypack loader不同线程插件不适用
-  /// loader不同线程 【cli已判断cpu核心数开启】 ///
-  // const threadLoader = require('thread-loader')
-  // warm不了,loader从package.json读...
-  // threadLoader.warmup({}, ['eslint-loader', 'sass-loader'])
-  // const threadLoader = 'thread-loader'
-  // // eslint
-  // config.module
-  //   .rule('eslint')
-  //   .oneOf(threadLoader)
-  //   .use(threadLoader)
-  //   .loader(threadLoader)
-  //   .end()
-  //   .oneOf('eslint-loader')
-  //   .use('eslint-loader')
-  //   .after(threadLoader)
-  // // sass
-  // // babel
 
   /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
@@ -289,4 +273,26 @@ module.exports = config => {
       // })(),
     },
   })
+
+  /// 构建优化(vue cli 大法好) ///
+  // 已使用 cache-loader
+  // minimizing 已开启多线程
+  // parallel-webpack或happypack loader不同线程插件不适用
+  /// loader不同线程(cli已判断cpu核心数开启) ///
+  // const threadLoader = require('thread-loader')
+  // warm不了,loader从package.json读...
+  // threadLoader.warmup({}, ['eslint-loader', 'sass-loader'])
+  // const threadLoader = 'thread-loader'
+  // // eslint
+  // config.module
+  //   .rule('eslint')
+  //   .oneOf(threadLoader)
+  //   .use(threadLoader)
+  //   .loader(threadLoader)
+  //   .end()
+  //   .oneOf('eslint-loader')
+  //   .use('eslint-loader')
+  //   .after(threadLoader)
+  // // sass
+  // // babel
 }
