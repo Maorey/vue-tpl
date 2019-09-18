@@ -1714,10 +1714,10 @@
     "@types/d3-voronoi" "*"
     "@types/d3-zoom" "*"
 
-"@types/echarts@^4.1.12":
-  version "4.1.12"
-  resolved "https://registry.yarnpkg.com/@types/echarts/-/echarts-4.1.12.tgz#5d013096301cd696b098f7ff3a1cd96d7ea1a680"
-  integrity sha512-J+hC+Zjo+NAq0Xu9yk4A7WI55W8VOpIyWdMhhzv+w+ZooFuhAt1p2y9T4l2ajWNZBRRmsebRjgX51oddrY/qew==
+"@types/echarts@^4.1.13":
+  version "4.1.13"
+  resolved "https://registry.yarnpkg.com/@types/echarts/-/echarts-4.1.13.tgz#5e1279b722dfec49b8aef5cb678b0ace5bc2d75f"
+  integrity sha512-eimS5NYLnzuJ002rScM4IctFioh3riEo/160KcK911xHnv1dek3pA1nRxrLOfTQQ9kP5o/0LIH6irRK0zQFDpA==
   dependencies:
     "@types/zrender" "*"
 

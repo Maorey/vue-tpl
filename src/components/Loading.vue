@@ -27,16 +27,17 @@
 
 <style lang="scss" module>
 .wrapper {
+  display: flex;
+  height: 100%;
   // height: -webkit-fill-available;
   min-height: 70px;
+  text-align: center;
 }
 
 .loading {
-
-  @extend %centerPage;
-
+  align-self: center;
   width: 100px;
-  height: 100%;
+  margin: auto;
 
   circle {
     fill: none;

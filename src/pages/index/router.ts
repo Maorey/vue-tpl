@@ -49,14 +49,17 @@ const router = new Router({
 let timer = 0
 const REG_REDIRECT = /\/r\//i
 const PATH_HOME = `/${ROUTE.home.name}`
-const forceUpdate = () => refreshRoute(router.currentRoute.matched)
+const forceUpdate = () => {
+  refreshRoute(router.currentRoute.matched)
+  NProgress.done()
+}
 router.beforeEach((to, from, next) => {
   NProgress.start() // 开始进度条
   /// 重定向到并刷新目标路由: this.$router.replace('/r' + this.$route.fullPath) ///
   let toFullPath = to.redirectedFrom || to.fullPath
   if (REG_REDIRECT.test(toFullPath)) {
     toFullPath = toFullPath.replace(REG_REDIRECT, '/')
-    toFullPath === from.fullPath ? NProgress.done() : next(toFullPath)
+    toFullPath === from.fullPath || next(toFullPath)
     clearTimeout(timer)
     timer = setTimeout(forceUpdate)
     return
@@ -77,7 +80,7 @@ router.afterEach((to, from) => {
   let tmp: any
   for (key in ROUTE) {
     tmp = ROUTE[key]
-    if (tmp && tmp.name === name) {
+    if (tmp && name === tmp.name && tmp.title) {
       document.title = tmp.title
       break
     }

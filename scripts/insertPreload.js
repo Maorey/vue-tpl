@@ -1,5 +1,5 @@
 /*
- * @description: 插入 preload 的资源
+ * @description: 插入 preload 的资源(js defer)
  * 依赖:
  *  https://github.com/jantimon/html-webpack-plugin
  *  @vue/preload-webpack-plugin (fork:https://github.com/GoogleChromeLabs/preload-webpack-plugin)
@@ -37,82 +37,72 @@ module.exports = class {
 
   // 补充缺失的资源
   insert(htmlPluginData) {
-    // 标签对象结构: 只需要关心: head 里的 link, body 里的 script
-    // {
-    //   tagName: String,
-    //   attributes: {
-    //     /// link ///
-    //     href: String,
-    //     rel: String, // 只需要关心: stylesheet 用于去重
-    //     as: String, // rel:preload 时存在
-    //     // ...
-
-    //     /// script ///
-    //     src: String,
-    //   },
-    // }
     const head = htmlPluginData.head
     const body = htmlPluginData.body // 考虑只有script
 
     const styles = [] // 待插入样式
     const scripts = [] // 待插入脚本
 
+    const script = 'script'
     const relStyle = 'stylesheet'
     const REG_RUNTIME = this._REG_REMOVE
 
-    // 找到缺的标签
-    // 样式插入位置（最后一个样式/preload标签后）
-    let index = 0
-    for (let len = head.length, tmp; index < len; index++) {
-      tmp = head[index].attributes // 当前属性
+    let el
+    for (el of body) {
+      el.tagName === script && (el.attributes.defer = true)
+    }
+
+    let temp
+    let index = -1
+    let len = head.length
+    while (++index < len) {
+      temp = head[index].attributes // 当前属性
       // preload 只认 as 属性吧
-      if (tmp.as || tmp.rel === relStyle) {
-        switch (tmp.as) {
+      if (temp.as || temp.rel === relStyle) {
+        switch (temp.as) {
           case 'style': // css
             styles.push({
               tagName: 'link',
               attributes: {
                 rel: relStyle,
-                href: tmp.href,
+                href: temp.href,
               },
             })
             break
-          case 'script': // js
+          case script: // js
+            // 去掉runtime
+            if (REG_RUNTIME && REG_RUNTIME.test(temp.href)) {
+              head.splice(index--, 1)
+              len--
+            }
             // 去重
-            for (let el of body) {
-              if (tmp.href === el.attributes.src) {
-                tmp.href = 0
+            for (el of body) {
+              if (temp.href === el.attributes.src) {
+                el = false // 兼职
                 break
               }
             }
-            if (tmp.href) {
+            el === false ||
               scripts.push({
-                tagName: 'script',
+                tagName: script,
                 closeTag: true,
                 attributes: {
                   defer: true,
-                  src: tmp.href,
+                  src: temp.href,
                   type:
-                    tmp.rel === 'modulepreload' ? 'module' : 'text/javascript',
+                    temp.rel === 'modulepreload' ? 'module' : 'text/javascript',
                 },
               })
-              // 去掉runtime
-              if (REG_RUNTIME && REG_RUNTIME.test(tmp.href)) {
-                head.splice(index--, 1)
-                len--
-                continue
-              }
-            }
             break
           default:
             // 样式标签 去重
-            tmp = styles.findIndex(el => el.attributes.href === tmp.href)
-            tmp >= 0 && styles.splice(tmp, 1)
+            temp = styles.findIndex(el => el.attributes.href === temp.href)
+            temp >= 0 && styles.splice(temp, 1)
         }
 
         // 下一个不是样式则把样式放在下一个
-        tmp = (head[index + 1] || {}).attributes || {}
-        if (!(tmp.as || tmp.rel === relStyle)) {
+        temp = (head[index + 1] || {}).attributes || {}
+        if (!(temp.as || temp.rel === relStyle)) {
           ++index
           break
         }

@@ -221,8 +221,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 > 推荐使用 [TypeScript](https://www.tslang.cn)
 
-- CSS Modules class 名使用 `camelCase` (global 可以 kebab-case), 选择器嵌套**不应超过三层**
-- JavaScript 代码风格为 [**JavaScript standard**](https://standardjs.com/rules-zhcn.html)，除了以下区别:
+- JavaScript/TypeScript 代码风格为 [**JavaScript standard**](https://standardjs.com/rules-zhcn.html)，除了以下区别:
 
   - 使用单引号
   - 不要句尾分号
@@ -232,7 +231,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   （.vscode 文件夹为 VSCode 的工作区设置，只在本项目生效，已包含相关设置）
 
 - 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上** 和 [stylelint](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md) [配置](.stylelintrc.js)
-- 引用 vue 单文件组件**不要加文件扩展名**，有利于重构代码
+- 引用 `vue/tsx/ts/js/jsx` **不要加文件扩展名**，有利于重构代码
 - 在`tsx/jsx`中使用全局注册的组件时可以使用`kebab-case`, 否则会在控制台输出错误 ┐(：´ ゞ｀)┌
 
   ```TypeScript
@@ -253,6 +252,9 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   ```
 
 - 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
+- 不要使用 `$` 作为组件事件名，该名字已被[异步组件刷新](src/utils/highOrder.ts)占用
+- 路由请**全部**使用异步组件(`@utils/highOrder getAsync`)，以使路由及其**子(异步)组件**可以局部刷新
+- CSS Modules class 名使用 `camelCase` (global 可以 kebab-case), 选择器嵌套**不应超过三层**
 - <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)(应在 `export*.scss` 中使用); 为保证`ts/js`中引入时 scss 变量注入正确, 应在合适的 scss 文件中引入目标样式源码:
 
   ```scss
@@ -330,7 +332,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 ### 其他
 
-- 规范优雅正确适当的各种**注释**，比如方法注释及必要的变量注释：
+- 正确规范简洁优雅适当的各种**注释**，比如方法注释及必要的变量注释：
 
   ```TypeScript
   /** 二维点
@@ -396,13 +398,12 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   }
   ```
 
-- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(方便排查问题和碎文件合并)，比如: index 页面下的 home 视图命名为 `index_home`, 其下的用户视图命名为 `index_home_my`, 用户基础信息命名为 `index_home_my_baseinfo` 。为避免文件名太长，每个层级可以缩写: `iHome`, `ihMy`, `ihmBaseInfo`。
-- 路由请**全部**使用异步组件(`@utils/highOrder getAsync`)，以使路由及其**子(异步)组件**可以局部刷新
-- libs 下的库文件需要按需加载的，应提供引入方法（只会成功加载一次），比如(模块化, 全局的类似):
+- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(方便排查问题和碎文件合并)，比如: index 页面下的 home 视图命名为 `index_home`, 其下的用户视图命名为 `index_home_my`, 用户基础信息命名为 `index_home_my_baseinfo` 。为避免文件名太长，每个层级可以缩写: `iHome`, `ihMy`, `ihmBaseInfo`
+- libs 下的库文件需要按需加载的，应提供引入方法（只会成功加载一次），比如:
 
   ```TypeScript
   // src/libs/somelib/index.ts
-  /** 异步引入somelib(模块化)及其插件
+  /** 模块化异步引入somelib及其插件（全局类似）
   * @param {Array<String>} plugins 需要加载的somelib插件名列表:
   *
   *   plugin1: 插件1

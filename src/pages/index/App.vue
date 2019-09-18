@@ -132,4 +132,10 @@ export default class extends Vue {
 @import '~@/scss/reset';
 @import '~@/scss/icons';
 @import '~@/scss/transitions';
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
 </style>

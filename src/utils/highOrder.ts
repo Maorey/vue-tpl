@@ -56,34 +56,21 @@ function getAsync(
   const asyncComponentFactory = (): AsyncComponent => () => ({
     error, // 加载失败时
     loading, // 加载时
-    component: promiseFactory() as any,
-
+    component: promiseFactory() as any, // 目标
     timeout: CONFIG.timeout, // 加载超时（默认Infinity）
   })
 
   const observe = Vue.observable({ c: asyncComponentFactory() })
-  let timer = 0
-  let orginHandler: any
-  const update = function(this: Vue) {
-    // parent.$forceUpdate()
+  const update = () => {
     observe.c = asyncComponentFactory()
-
-    if (orginHandler) {
-      clearTimeout(timer)
-      timer = setTimeout(() => orginHandler.apply(this, arguments))
-    }
   }
 
   return {
     functional: true,
     render(createElement, { data, children }) {
-      // event: $ 用于 hack 加载失败时点击重新加载
-      if (data.on ? !data.on.$ : (data.on = {})) {
-        if (update !== data.on.$) {
-          orginHandler = data.on.$
-          data.on.$ = update
-        }
-      }
+      // 保留 event: $ 用于 hack 加载失败时点击重新加载
+      data.on || (data.on = {})
+      data.on.$ = update
 
       return createElement(observe.c, data, children)
     },

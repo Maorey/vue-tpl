@@ -4,28 +4,20 @@
  * @Date: 2019-06-18 16:18:18
  */
 
-// TODO: 环境变量/入口文件 改变热更新
-
-const path = require('path')
-
 const environment = process.env // 环境变量
 const isProd = environment.NODE_ENV === 'production' // 是否生产环境
 
 const pages = require('./scripts/pages')(isProd) // 自动检测并返回页面入口设置
-
 const ALIAS = {} // 别名字典
+
 // 输出图形
+const FIGURE = require('./scripts/figure')
 // eslint-disable-next-line no-console
 console.log(
   '\033[3' + // eslint-disable-line no-octal-escape
     Math.ceil(Math.random() * 6) +
     'm' +
-    // eslint-disable-next-line standard/computed-property-even-spacing
-    require('./scripts/figure')[
-      isProd
-        ? 'd' + Math.ceil(Math.random() * 5)
-        : 'p' + Math.ceil(Math.random() * 10)
-    ] +
+    FIGURE[(Math.random() * FIGURE.length) | 0] +
     '\33[0m' // eslint-disable-line no-octal-escape
 )
 

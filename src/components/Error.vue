@@ -31,25 +31,24 @@ export default class extends Vue {
 
 <style lang="scss" module>
 .wrapper {
+  display: flex;
+  height: 100%;
   // height: -webkit-fill-available;
-  min-height: 70px;
+  min-height: 80px;
+  text-align: center;
 }
 
 .error {
-
-  @extend %centerPage;
-
-  width: 160px;
-  height: 70px;
+  align-self: center;
+  width: 180px;
+  margin: auto;
   color: $colorText;
-  text-align: center;
   cursor: pointer;
 
   // 图标
   i {
     display: inline-block;
     width: 30px;
-    margin-bottom: 5px;
     padding: 5px;
     font-size: $xxLarge;
     border: 1px solid $colorText;
