@@ -4,51 +4,22 @@
  * @Date: 2019-06-18 15:58:46
  */
 import Vue from 'vue'
-import Router from 'vue-router'
+import Router, { RouterOptions } from 'vue-router'
 
-import { IObject } from '@/types'
-import { getAsync } from '@/utils/highOrder' // 高阶组件工具
-
-import CONFIG from './config/route'
-
+import configRoute from './config/route'
 import refreshRoute from '@/utils/refreshRoute'
+
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
 Vue.use(Router) // 全局注册
 
-const ROUTE = CONFIG as IObject
-
-const router = new Router({
-  mode: 'hash',
-  routes: [
-    {
-      path: `/${ROUTE.home.name}`,
-      name: ROUTE.home.name,
-      component: getAsync(() =>
-        import(/* webpackChunkName: "iHome" */ '@index/views/Home')
-      ) as any,
-    },
-    {
-      path: `/${ROUTE.about.name}`,
-      name: ROUTE.about.name,
-      component: getAsync(() =>
-        import(/* webpackChunkName: "iAbout" */ '@index/views/About')
-      ) as any,
-    },
-
-    // 默认重定向到首页去（加上刷新的重定向会无效）
-    // {
-    //   path: '*',
-    //   redirect: `/${ROUTE.home.name}`,
-    // },
-  ],
-})
+const router = new Router(configRoute as RouterOptions)
 
 /// 导航守卫 ///
 let timer = 0
 const REG_REDIRECT = /\/r\//i
-const PATH_HOME = `/${ROUTE.home.name}`
+const PATH_HOME = configRoute.meta.home // 首页
 const forceUpdate = () => {
   refreshRoute(router.currentRoute.matched)
   NProgress.done()
@@ -66,25 +37,17 @@ router.beforeEach((to, from, next) => {
   }
   /// 未知路由重定向到首页 ///
   if (!router.resolve(to).route.matched.length) {
-    next(PATH_HOME)
+    PATH_HOME === from.fullPath ? NProgress.done() : next(PATH_HOME)
     return
   }
 
   /// 路由权限处理 ///
   next() // 不调用则不跳转
 })
+const TITLE_APP = configRoute.meta.title // 标题
 router.afterEach((to, from) => {
   /// 设置页面标题 ///
-  const name: string | undefined = to.name
-  let key: string
-  let tmp: any
-  for (key in ROUTE) {
-    tmp = ROUTE[key]
-    if (tmp && name === tmp.name && tmp.title) {
-      document.title = tmp.title
-      break
-    }
-  }
+  document.title = to.meta.title ? `${to.meta.title} - ${TITLE_APP}` : TITLE_APP
 
   NProgress.done() // 结束进度条
 })

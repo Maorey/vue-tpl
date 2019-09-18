@@ -78,10 +78,12 @@
 <!-- 生产环境容器 body#app / 开发环境容器 body>div#app -->
 <%= isProd ? '<body id="app">' : '<body><div id="app">' %>
 
-<!-- 不支持js脚本提示 -->
-<noscript><strong>您的终端未启用JavaScript，请启用后重试</strong></noscript>
 <!-- 手写页面骨架 -->
-<p style="margin:0;padding-top:40%;text-align:center;color:snow;font-size:x-large">加载中，请稍候...</p>
+<p style="margin: 0; padding-top: 45vh; text-align: center; color: snow; font-size: x-large;">
+  加载中，请稍候...
+  <!-- 不支持js脚本提示 -->
+  <noscript><strong>您的终端未启用JavaScript，请启用后重试</strong></noscript>
+</p>
 
 <!-- 自动插入打包脚本 -->
 <%= isProd ? '</body>' : '</div></body>' %>

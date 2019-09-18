@@ -31,7 +31,10 @@
           :key="item.name"
           :to="item.to"
         >
-          <img :src="item.src">
+          <img
+            :src="item.src"
+            :alt="item.name"
+          >
           <h4>{{ item.name }}</h4>
         </routerLink>
       </div>
@@ -41,12 +44,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { RouteConfig } from 'vue-router'
 
-import { IObject } from '@/types'
-import CONFIG from './config/route'
-const ROUTE = CONFIG as IObject<IObject>
-
-// 选项顺序: https://cn.vuejs.org/v2/style-guide/#组件-实例的选项的顺序-推荐
 @Component
 export default class extends Vue {
   // data()
@@ -54,17 +53,17 @@ export default class extends Vue {
 
   // computed
   get LINK() {
-    const LINK: IObject[] = []
-    let key
-    let temp: IObject
-    for (key in ROUTE) {
-      temp = ROUTE[key]
+    const LINK = []
+
+    const ROUTE = (this.$router as any).options.routes as RouteConfig[]
+    for (let config of ROUTE) {
       LINK.push({
-        name: temp.title,
-        to: `/${temp.name}`,
-        src: require(`@index/assets/${temp.name}.png`),
+        to: config.path, // uri
+        src: config.meta.thumb, // 缩略图
+        name: config.meta.title, // 描述
       })
     }
+
     return LINK
   }
 }
