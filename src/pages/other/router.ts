@@ -26,6 +26,7 @@ const forceUpdate = () => {
 }
 router.beforeEach((to, from, next) => {
   NProgress.start() // 开始进度条
+
   /// 重定向到并刷新目标路由: this.$router.replace('/r' + this.$route.fullPath) ///
   let toFullPath = to.redirectedFrom || to.fullPath
   if (REG_REDIRECT.test(toFullPath)) {

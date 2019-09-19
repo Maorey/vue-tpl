@@ -5,8 +5,9 @@
  */
 import { getAsync } from '@/utils/highOrder' // 高阶组件工具
 
-/*! 【index页路由配置(https://router.vuejs.org/zh/api/#router-构建选项)】 */
 export default {
+  /*! 【index页路由配置(https://router.vuejs.org/zh/api/#router-构建选项)】 */
+
   mode: 'hash',
   meta: {
     /*! 默认页 */ home: '/home',
