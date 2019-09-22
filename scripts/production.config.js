@@ -70,6 +70,12 @@ module.exports = config => {
   // config
   //   .plugin('hash-module')
   //   .use(require('webpack').HashedModuleIdsPlugin, [{ hashDigestLength: 5 }])
+  // 打包主题
+  config
+    .plugin('theme-scss-var')
+    .use(path.resolve('scripts/themeScssVar.js'), [
+      { dir: process.env.THEME_DIR },
+    ])
   // 补全html插入资源
   config
     .plugin('insert-preload')

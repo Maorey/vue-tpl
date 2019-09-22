@@ -5,25 +5,24 @@
  -->
 <template>
   <div :class="$style.wrapper">
-    <svg
-      viewBox="25 25 50 50"
-      :class="$style.loading"
-    >
-      <!-- 背景圈 -->
-      <circle
-        cx="50"
-        cy="50"
-        r="20"
-      />
-      <!-- 前景圈（动画） -->
-      <circle
-        cx="50"
-        cy="50"
-        r="20"
-      />
-    </svg>
-    <!-- 文字 -->
-    <p>{{ msg }}</p>
+    <div>
+      <svg viewBox="25 25 50 50">
+        <!-- 背景圈 -->
+        <circle
+          cx="50"
+          cy="50"
+          r="20"
+        />
+        <!-- 前景圈（动画） -->
+        <circle
+          cx="50"
+          cy="50"
+          r="20"
+        />
+      </svg>
+      <!-- 文字 -->
+      <p>{{ msg }}</p>
+    </div>
   </div>
 </template>
 
@@ -42,16 +41,21 @@ export default class extends Vue {
 <style lang="scss" module>
 .wrapper {
   display: flex;
+  flex-direction: column;
   height: 100%;
   // height: -webkit-fill-available;
   min-height: 70px;
   text-align: center;
-}
 
-.loading {
-  align-self: center;
-  width: 100px;
-  margin: auto;
+  div {
+    align-self: center;
+    margin: auto;
+    color: $colorText;
+  }
+
+  svg {
+    width: 100px;
+  }
 
   circle {
     fill: none;

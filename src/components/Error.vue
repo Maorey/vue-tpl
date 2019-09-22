@@ -5,10 +5,7 @@
  -->
 <template>
   <div :class="$style.wrapper">
-    <div
-      :class="$style.error"
-      @click="$emit('$')"
-    >
+    <div @click="$emit('$')">
       <!-- 图标 -->
       <i class="i-frown-fill" />
       <!-- 文字 -->
@@ -36,15 +33,13 @@ export default class extends Vue {
   // height: -webkit-fill-available;
   min-height: 80px;
   text-align: center;
-}
 
-.error {
-  align-self: center;
-  width: 180px;
-  margin: auto;
-  color: $colorText;
-  cursor: pointer;
-
+  div {
+    align-self: center;
+    margin: auto;
+    color: $colorText;
+    cursor: pointer;
+  }
   // 图标
   i {
     display: inline-block;
