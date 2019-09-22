@@ -4,15 +4,8 @@
  * @Date: 2019-07-06 09:11:16
  */
 
-// ↓ 私有变量(用于导出) ↓
-$_heightHeader: 60;
-$_heightFooter: 60;
-$_widthLfetColumn: 60;
-$_widthRightColumn: 60;
-// ↑ 私有变量(用于导出) ↑
+$heightHeader: 60px; // header高度
+$heightFooter: 60px; // footer高度
 
-$heightHeader: $_heightHeader + px; // header高度
-$heightFooter: $_heightFooter + px; // footer高度
-
-$widthLfetColumn: $_widthLfetColumn + px; // 左边栏宽度
-$widthRightColumn: $_widthRightColumn + px; // 右边栏宽度
+$widthLfetColumn: 300px; // 左边栏宽度
+$widthRightColumn: 300px; // 右边栏宽度

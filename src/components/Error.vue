@@ -12,19 +12,19 @@
       <!-- 图标 -->
       <i class="i-frown-fill" />
       <!-- 文字 -->
-      <p>{{ text }}</p>
+      <p>{{ msg }}</p>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import load from '@/config/message'
+import MSG from '@/config/message'
 
 @Component
 export default class extends Vue {
-  get text() {
-    return load.fail
+  get msg() {
+    return MSG.fail
   }
 }
 </script>

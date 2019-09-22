@@ -193,7 +193,7 @@ const local = {
    *
    * @returns {Object} key对应的值
    */
-  get(key: string): object | undefined {
+  get(key: string): IObject | undefined {
     let item: string | null = STORAGE.getItem(key)
 
     if (item) {
@@ -223,7 +223,7 @@ const local = {
    *
    * @returns {Object} value 存储值
    */
-  set(key: string, value: object, expires?: number): object {
+  set(key: string, value: IObject, expires?: number): IObject {
     let str: string
 
     try {
@@ -247,12 +247,12 @@ const local = {
    *
    * @returns {Object} key对应值
    */
-  remove(key: string): object | undefined {
+  remove(key: string): IObject | undefined {
     // 同时移除timeout
     clearTimeout(timeoutDic[key])
     delete timeoutDic[key]
 
-    const value: object | undefined = this.get(key) // 获取值
+    const value: IObject | undefined = this.get(key) // 获取值
     STORAGE.removeItem(key) // 移除存储
 
     return value

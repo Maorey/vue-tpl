@@ -22,8 +22,22 @@
         r="20"
       />
     </svg>
+    <!-- 文字 -->
+    <p>{{ msg }}</p>
   </div>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+import MSG from '@/config/message'
+
+@Component
+export default class extends Vue {
+  get msg() {
+    return MSG.load
+  }
+}
+</script>
 
 <style lang="scss" module>
 .wrapper {
@@ -49,7 +63,7 @@
 
     &:last-child {
       animation: dash 2.5s linear infinite;
-      stroke: $colorHighlight;
+      stroke: $colorTheme;
       stroke-linecap: round;
     }
   }

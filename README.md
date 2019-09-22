@@ -332,6 +332,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 ### 其他
 
+- 多主题时，为保证共享给js的变量(export*.scss)为当前主题对应值，请通过store管理，所以建议尽量避免使用
 - 正确规范简洁优雅适当的各种**注释**，比如方法注释及必要的变量注释：
 
   ```TypeScript
@@ -476,6 +477,8 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - GitLens: Git 工具
 
 > 推荐工具： [`@vue/cli`](https://cli.vuejs.org/zh/guide)，全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
+
+> 推荐字体: [Cascadia Code](https://github.com/microsoft/cascadia-code)
 
 ## 浏览器支持
 

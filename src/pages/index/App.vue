@@ -77,7 +77,7 @@ export default class extends Vue {
   width: 100%;
   text-align: center;
   background-color: $colorBackGround;
-  border: 1px solid $colorHighlight;
+  border: 1px solid $colorTheme;
 
   > a {
     display: inline-block;
@@ -91,7 +91,7 @@ export default class extends Vue {
     }
 
     &:global(.router-link-active) {
-      border-color: $colorHighlight;
+      border-color: $colorTheme;
     }
 
     > img {
@@ -109,7 +109,7 @@ export default class extends Vue {
   > i {
     display: inline-block;
     padding: 6px;
-    border: solid $colorHighlight;
+    border: solid $colorTheme;
     border-width: 0 2px 2px 0;
     animation: float 1s infinite ease-out;
 
@@ -129,7 +129,7 @@ export default class extends Vue {
 <style lang="scss">
 /// 全局样式 ///
 @import '~@/scss/reset';
-@import '~@/scss/icons';
+@import '~@/scss/icon';
 @import '~@/scss/transitions';
 
 html,

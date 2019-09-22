@@ -6,8 +6,23 @@
 
 // https://www.sass.hk/docs @import
 @import '~normalize.css'; // 浏览器样式重置
-@import './scroll'; // 滚动条样式
+@import './scrollBar'; // 滚动条样式
 
+body {
+  color: $colorText;
+  font-family:
+    'Helvetica Neue',
+    Helvetica,
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    '微软雅黑',
+    Arial,
+    sans-serif;
+  background: $colorBackGround;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 // placeholder 样式
 // input,
 // textarea {

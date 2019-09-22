@@ -6,6 +6,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { IUser } from './modules/user'
+import { IPrefer } from './modules/prefer'
 
 Vue.use(Vuex) // 只能全局注册
 
@@ -13,8 +14,8 @@ Vue.use(Vuex) // 只能全局注册
  */
 interface IRootState {
   user: IUser
+  prefer: IPrefer
 }
 
 // 先声明空 Store 再动态注册
 export default new Vuex.Store<IRootState>({})
-export { IRootState }

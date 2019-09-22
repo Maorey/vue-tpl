@@ -63,22 +63,20 @@
   <!-- 网页图标 -->
   <link rel="shortcut icon" href="<%= BASE_URL %>favicon.ico" />
 
-  <!-- 全局样式（方便手写骨架） -->
-  <style>
-    body {
-      background: #0d1a25;
-      font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  </style>
-
   <!-- 自动插入打包资源 -->
 </head>
 <!-- 生产环境容器 body#app / 开发环境容器 body>div#app -->
 <%= isProd ? '<body id="app">' : '<body><div id="app">' %>
 
 <!-- 手写页面骨架 -->
+<style>
+  body {
+    background: #0d1a25;
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+</style>
 <p style="margin: 0; padding-top: 45vh; text-align: center; color: snow; font-size: x-large;">
   加载中，请稍候...
   <!-- 不支持js脚本提示 -->

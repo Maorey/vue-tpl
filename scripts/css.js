@@ -37,6 +37,9 @@ module.exports = (isProd, ALIAS, resource) => {
       },
       // https://github.com/webpack-contrib/sass-loader
       scss: {
+        sassOptions: {
+          fiber: require('fibers'),
+        },
         // 全局scss变量(入口覆盖全局或node_modules)
         prependData(loaderContext) {
           let scss = `@import "~@/${resource}";`

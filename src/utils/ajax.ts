@@ -17,14 +17,14 @@ clone(AXIOS.defaults, {
   timeout: CONFIG.timeout, // 超时
 
   // 从cookie设置请求头
-  // xsrfCookieName: 'access_token',
-  // xsrfHeaderName: 'access_token',
+  xsrfCookieName: CONFIG.token,
+  xsrfHeaderName: CONFIG.token,
 
   // 允许跨域带cookie
   // 服务端需要设置响应头Allow-Credentials=true Allow-Origin不能为* 还得设置下Allow-Methods
   // withCredentials: true,
 
-  // responseType: 'json', // 响应类型
+  responseType: 'json', // 响应类型
 
   // 请求头
   // headers: {
@@ -128,21 +128,17 @@ function request(
   return requestQueue.set(
     KEY,
     AXIOS.request(config)
-      .then(
-        (res: any): any => {
-          shouldCache && dataStore.set(KEY, res, alive) // 设置缓存
-          requestQueue.remove(KEY) // 移除请求队列
+      .then((res: any): any => {
+        shouldCache && dataStore.set(KEY, res, alive) // 设置缓存
+        requestQueue.remove(KEY) // 移除请求队列
 
-          return res
-        }
-      )
-      .catch(
-        (error: any): any => {
-          requestQueue.remove(KEY) // 移除请求队列
+        return res
+      })
+      .catch((error: any): any => {
+        requestQueue.remove(KEY) // 移除请求队列
 
-          throw error
-        }
-      )
+        throw error
+      })
   )
 }
 /// http 方法 ///

@@ -153,7 +153,7 @@ export default class extends Vue {
   }
 
   a {
-    color: $colorHighlight;
+    color: $colorTheme;
   }
 }
 </style>

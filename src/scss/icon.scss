@@ -7,19 +7,14 @@
 // 查看图标: https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=9402
 // 相对路径会从当前import的文件所在目录算起
 @font-face {
-  font-family: 'antDesign';
-  src: url('~@/scss/font/antDesign.eot');
-  src:
-    url('~@/scss/font/antDesign.eot?#iefix') format('embedded-opentype'),
-    url('~@/scss/font/antDesign.woff2') format('woff2'),
-    url('~@/scss/font/antDesign.woff') format('woff'),
-    url('~@/scss/font/antDesign.ttf') format('truetype'),
-    url('~@/scss/font/antDesign.svg#antDesign') format('svg');
+  font-family: $iconFamily;
+  src: $iconEot;
+  src: $iconSrc;
 }
 
 // 所有字体图标
 [class*='i-']::before {
-  font-family: 'antDesign';
+  font-family: $iconFamily;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-style: normal;

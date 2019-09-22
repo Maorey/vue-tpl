@@ -1,11 +1,13 @@
 {
   "editor.tabSize": 2,
   "editor.wordWrap": "on",
+  "editor.fontLigatures": true,
   "editor.wordWrapColumn": 100,
   // "editor.formatOnSave": true,
   "editor.wrappingIndent": "indent",
   "editor.detectIndentation": false,
   "editor.renderIndentGuides": true,
+  "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace",
 
   "svn.enableProposedApi": "product",
 

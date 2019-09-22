@@ -1,93 +1,90 @@
-/*
- * @Description: 用户状态管理（所有页面通用）
- * @Author: 毛瑞
- * @Date: 2019-06-19 15:16:19
+/* 用户状态管理
  */
 import { VuexModule, Action, Mutation } from 'vuex-module-decorators'
 
 import { get as getCookie, set as setCookie } from '@/utils/cookie'
 import { ILogin, login, logout } from '@/api/user'
 import { local } from '@/utils/storage'
+import CONFIG from '@/config'
 
-/** 本地存储的KEY
- */
-const LOCAL_KEY: string = 'vue_tpl_user'
 /** 本地存储的用户信息
  */
-const USER_INFO: IUser = local.get(LOCAL_KEY) as IUser
-/** 本地存储的token
- */
-const TOKEN: string = getCookie(LOCAL_KEY)
+const USER_INFO = local.get(CONFIG.token) || {}
 
-/** 偏好
+/** 用户信息
  */
-interface IPerfer {
-  skin: string
-  lang: string
+interface IInfo {
+  name: string
+  avatar: string
+  // ***
 }
-/** 用户状态
+/** 用户管理
  */
 interface IUser {
   token: string
-  name: string
-  avatar: string
-  introduction: string
-  roles: string[]
-  prefer?: IPerfer
+  /** 用户信息
+   */
+  info?: IInfo
+  /** 用户菜单访问权限
+   */
+  access?: string[]
 }
 
 /** 用户状态管理
  */
 class User extends VuexModule implements IUser {
-  public token = TOKEN || ''
-  public name = (TOKEN && USER_INFO.name) || ''
-  public avatar = (TOKEN && USER_INFO.avatar) || ''
-  public introduction = (TOKEN && USER_INFO.introduction) || ''
-  public roles: string[] = (TOKEN && USER_INFO.roles) || []
+  /// State & Getter(public) ///
+  token = getCookie(CONFIG.token)
+  info = USER_INFO.info as IInfo | undefined
+  access = USER_INFO.access as string[] | undefined
 
+  /// Mutation 无法调用/commit 必须通过Action ///
+  @Mutation
+  protected TOKEN(token: string) {
+    this.token = token
+    setCookie(CONFIG.token, token, CONFIG.tokenAlive)
+  }
+  @Mutation
+  protected INFO(info?: IInfo) {
+    this.info = USER_INFO.info = info
+  }
+  @Mutation
+  protected ACCESS(access?: string[]) {
+    this.access = USER_INFO.access = access
+  }
+
+  /// Action ///
   /** 登陆
    * @param {ILogin} formData 登陆表单
    */
   @Action
-  public async login(formData: ILogin) {
+  async login(formData: ILogin) {
     const { data } = await login(formData)
-    this.SET_TOKEN(data.token)
-  }
 
+    const context = this.context
+    context.commit('TOKEN', data.token)
+    context.commit('INFO', data.user)
+    context.commit('ACCESS', data.access)
+  }
   /** 注销
    */
   @Action
-  public async logout() {
+  async logout() {
     await logout()
-    this.SET_TOKEN('')
-    this.SET_ROLES([])
+
+    const context = this.context
+    context.commit('TOKEN', '')
+    context.commit('INFO')
+    context.commit('ACCESS')
   }
 
-  @Mutation
-  private SET_TOKEN(token: string) {
-    this.token = token
-    setCookie(LOCAL_KEY, token, 168) // 7天免登陆
-  }
-
-  @Mutation
-  private SET_NAME(name: string) {
-    this.name = name
-  }
-
-  @Mutation
-  private SET_AVATAR(avatar: string) {
-    this.avatar = avatar
-  }
-
-  @Mutation
-  private SET_INTRODUCTION(introduction: string) {
-    this.introduction = introduction
-  }
-
-  @Mutation
-  private SET_ROLES(roles: string[]) {
-    this.roles = roles
-  }
+  // 修改...
 }
+
+/** 关闭窗口前写入本地
+ */
+window.addEventListener('beforeunload', () => {
+  local.set(CONFIG.token, USER_INFO)
+})
 
 export { User as default, IUser }

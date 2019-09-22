@@ -170,7 +170,7 @@
     font-weight: bold;
 
     &:global(.router-link-exact-active) {
-      color: $colorHighlight;
+      color: $colorTheme;
     }
   }
 }

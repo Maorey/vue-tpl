@@ -61,7 +61,7 @@ export default class extends Vue {
 .wrapper {
   position: relative;
   box-sizing: border-box;
-  border: 1px solid $colorHighlight;
+  border: 1px solid $colorTheme;
   border-radius: 3px;
 }
 // 标题
@@ -86,7 +86,7 @@ export default class extends Vue {
     width: 7px;
     height: 10px;
     margin-left: 4px;
-    background: $colorHighlight;
+    background: $colorTheme;
     transform: skew(30deg);
   }
 }
