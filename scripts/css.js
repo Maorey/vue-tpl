@@ -10,7 +10,10 @@ const cache = {}
 const exists = (key, rootDir, fileName) => {
   let result = cache[key]
   if (result === undefined) {
-    result = cache[key] = fs.existsSync(path.join(rootDir, fileName))
+    fileName = path.join(rootDir, fileName)
+    result = cache[key] =
+      fs.existsSync(fileName) ||
+      fs.existsSync(path.join(fileName, 'index.scss'))
     setTimeout(() => (cache[key] = undefined), 20000)
   }
 
@@ -20,9 +23,9 @@ const exists = (key, rootDir, fileName) => {
 /** 获取样式选项
  * @param {Boolean} isProd 是否生产环境
  * @param {Object} ALIAS 别名字典
- * @param {String} resource 全局scss文件相对路径
+ * @param {Object} ENV 环境变量
  */
-module.exports = (isProd, ALIAS, resource) => {
+module.exports = (isProd, ALIAS, ENV) => {
   // https://cli.vuejs.org/zh/config/#css-loaderoptions
   return {
     requireModuleExtension: true,
@@ -37,25 +40,30 @@ module.exports = (isProd, ALIAS, resource) => {
       },
       // https://github.com/webpack-contrib/sass-loader
       scss: {
-        sassOptions: {
-          fiber: require('fibers'),
-        },
-        // 全局scss变量(入口覆盖全局或node_modules)
+        sassOptions: { fiber: require('fibers') },
+        // 全局scss变量(入口覆盖全局 https://webpack.js.org/api/loaders)
         prependData(loaderContext) {
-          let scss = `@import "~@/${resource}";`
+          let content = ''
 
-          // 别名scss变量 https://webpack.js.org/api/loaders
-          let temp
-          let alias
-          for (alias in ALIAS) {
-            temp = ALIAS[alias]
-
-            loaderContext.context.includes(temp) &&
-              exists(alias, temp, resource) &&
-              (scss += `@import "~${alias}/${resource}";`)
+          // 注入scss变量
+          const { THEME_DIR, THEME } = ENV
+          let GLOBAL_SCSS = ENV.GLOBAL_SCSS
+          if (THEME_DIR && THEME && THEME !== 'default') {
+            GLOBAL_SCSS = `${THEME_DIR}/${THEME}`
+          }
+          if (GLOBAL_SCSS) {
+            content = `@import "~@/${GLOBAL_SCSS}";`
+            let temp
+            let alias
+            for (alias in ALIAS) {
+              temp = ALIAS[alias]
+              loaderContext.context.includes(temp) &&
+                exists(alias, temp, GLOBAL_SCSS) &&
+                (content += `@import "~${alias}/${GLOBAL_SCSS}";`)
+            }
           }
 
-          return scss
+          return content
         },
       },
     },

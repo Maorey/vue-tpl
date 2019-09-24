@@ -11,7 +11,7 @@
  *
  * @returns {String} 一个字符
  */
-const getChar = (str, code = 0) => {
+function getChar(str, code = 0) {
   if (typeof str === 'number') {
     code += str
   } else {
@@ -47,14 +47,14 @@ const TRIAL = 8 // 重名重试次数
 /** 获得唯一缩写（耗时线性增涨，特别是在3个字母(140608个唯一值)及之后）
  * @param {Object} DIC 命名字典
  * @param {String} char 缩写
- * @param {String} str: 当前缩写
- * @param {Number} i: 调用次数
+ * @param {String} str 当前缩写
+ * @param {Number} i 调用次数
  *
- * @returns {String} 唯一缩写
+ * @returns {String} DIC里唯一的缩写
  */
-const getUnique = (DIC, char, str = '', i = 0) => {
+function getUnique(DIC, char, str = '', i = 0) {
   const code = str + char // 当前缩写
-  let unique = true // 是否唯一
+  let unique = true
   // 查重
   for (let att in DIC) {
     if (DIC[att] === code) {
@@ -74,6 +74,51 @@ const getUnique = (DIC, char, str = '', i = 0) => {
   return getUnique(DIC, getChar(char, i), str, i) // 尾递归
 }
 
+/** 累加字符串数字和
+ * @param {String|Number} str 待缩写字符串或码值和
+ * @param {Number} code 起始累加数值
+ *
+ * @returns {Number} 字符串数字和
+ */
+function countStr(str, code = 0) {
+  if (typeof str === 'number') {
+    code += str
+  } else {
+    let index = str.length
+    while (index--) {
+      code += index + str.charCodeAt(index)
+    }
+  }
+
+  return code
+}
+/** 获得字符串唯一缩写(转36进制)
+ * @param {Object} DIC 命名字典
+ * @param {String|Number} str 待缩写字符串
+ *
+ * @returns {String} DIC里唯一的缩写
+ */
+function shortStr(DIC, str) {
+  let count
+  if (typeof str === 'number') {
+    count = str
+    str = str.toString(36)
+  } else {
+    count = countStr(str)
+    str = count.toString(36)
+  }
+
+  let key
+  for (key in DIC) {
+    if (DIC[key] === str) {
+      key = 0 // 兼职
+      break
+    }
+  }
+
+  return key !== 0 ? str : shortStr(DIC, ++count)
+}
+
 /** 获取唯一字符串缩写方法
  * @param {Object} DIC 命名字典，用于去重
  * 【优化】 按码值总和区间分成多个字典 暂无必要
@@ -85,9 +130,8 @@ module.exports = (DIC = {}, callback) => name => {
   name = String(name)
 
   let abbreviation = DIC[name]
-
   if (!abbreviation) {
-    abbreviation = DIC[name] = getUnique(DIC, getChar(name))
+    abbreviation = DIC[name] = shortStr(DIC, name)
     callback && callback(name, abbreviation)
   }
 

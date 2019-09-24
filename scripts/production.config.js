@@ -3,35 +3,14 @@
  * @Author: 毛瑞
  * @Date: 2019-04-01 13:28:06
  */
-
 const path = require('path')
+const rename = require('./rename')
 
-/** 获取配置对象
- * @param {String} name 文件名
- *
- * @returns {Object} loader 配置对象
- */
 const getLoaderOption = name => ({
   limit: 4096,
-  fallback: {
-    loader: 'file-loader',
-    options: {
-      name,
-    },
-  },
+  fallback: { loader: 'file-loader', options: { name } },
 })
-
-/** webpack 配置
- * @param {chainWebpack} config 配置对象
- *  https://github.com/neutrinojs/webpack-chain#getting-started
- */
-module.exports = config => {
-  config.merge({
-    // https://webpack.js.org/configuration/other-options/#recordspath
-    recordsPath: path.resolve('/records.json'),
-  }) // 生成记录
-
-  /// 文件名 ///
+function fileName(config) {
   // js chunkFilename只能是String...这个hash就缩不短了啊
   const jsFileName = 'js/[name].[chunkhash:3].js'
   config.output.filename(jsFileName).chunkFilename(jsFileName)
@@ -62,24 +41,21 @@ module.exports = config => {
     .rule('media')
     .use('url-loader')
     .options(getLoaderOption('media/' + FileName))
+}
 
-  /// 插件 ///
+function plugin(config, ENV) {
   // 【更新后已不需要】固定打包文件哈希, 避免相同代码打包出不同哈希（排除 boilerplate(runtime and manifest)等影响）【有点过时，但有效】
   // config.plugin('md5-hash').use('webpack-md5-hash')
   // 或者
   // config
   //   .plugin('hash-module')
   //   .use(require('webpack').HashedModuleIdsPlugin, [{ hashDigestLength: 5 }])
-  // 打包主题
-  config
-    .plugin('theme-scss-var')
-    .use(path.resolve('scripts/themeScssVar.js'), [
-      { dir: process.env.THEME_DIR },
-    ])
-  // 补全html插入资源
+  // 补全html插入资源 & 打包主题
   config
     .plugin('insert-preload')
-    .use(path.resolve('scripts/insertPreload.js'), [{ runtime: 'runtime' }])
+    .use(path.resolve('scripts/insertPreload.js'), [
+      { runtime: 'runtime', env: ENV, hash: rename('chunkHash') },
+    ])
   // runtime Chunk 内联到html
   config
     .plugin('inline-manifest')
@@ -100,6 +76,20 @@ module.exports = config => {
       extension: ['.*'], // 文件后缀
     },
   ])
+}
+
+/** webpack 配置
+ * @param {chainWebpack} config 配置对象
+ *  https://github.com/neutrinojs/webpack-chain#getting-started
+ * @param {Object} ENV 环境变量
+ */
+module.exports = (config, ENV) => {
+  config.merge({
+    // https://webpack.js.org/configuration/other-options/#recordspath
+    recordsPath: path.join(process.cwd(), 'scripts/records.json'),
+  }) // 生成记录
+  fileName(config)
+  plugin(config, ENV)
 
   /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
@@ -130,7 +120,7 @@ module.exports = config => {
 
     automaticNameMaxLength: 15, // 分包文件名自动命名最大长度
     automaticNameDelimiter: '.', // 超过大小, 分包时文件名分隔符
-    name: require('./rename'),
+    name: rename('chunkName'),
     cacheGroups: {
       /// 【 js 】 ///
       // 所有其他依赖的模块

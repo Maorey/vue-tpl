@@ -4,8 +4,8 @@
  * @Date: 2019-06-18 16:18:18
  */
 
-const environment = process.env // 环境变量
-const isProd = environment.NODE_ENV === 'production' // 是否生产环境
+const ENV = process.env // 环境变量
+const isProd = ENV.NODE_ENV === 'production' // 是否生产环境
 
 const pages = require('./scripts/pages')(isProd) // 自动检测并返回页面入口设置
 const ALIAS = {} // 别名字典
@@ -34,10 +34,10 @@ module.exports = {
   pages,
 
   /// 【配置样式】 ///
-  css: require('./scripts/css')(isProd, ALIAS, environment.GLOBAL_SCSS),
+  css: require('./scripts/css')(isProd, ALIAS, ENV),
 
   /// 【开发服务器配置】 ///
-  devServer: require('./scripts/devServer')(environment),
+  devServer: require('./scripts/devServer')(ENV),
 
   /// 【webpack配置】 ///
   // https://github.com/neutrinojs/webpack-chain#getting-started
@@ -54,6 +54,6 @@ module.exports = {
     /// 【不同环境配置】 ///
     require(isProd
       ? './scripts/production.config'
-      : './scripts/development.config')(config)
+      : './scripts/development.config')(config, ENV)
   },
 }

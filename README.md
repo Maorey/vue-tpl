@@ -72,7 +72,7 @@ yarn dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.developmen
 yarn build # --watch: 跟踪文件变化 --report: 生成打包分析
 ```
 
-同时会生成[fileName.map](scripts/fileName.map)记录 文件名/chunk 名映射 (公共代码抽到`v.`开头的文件里了)
+同时会生成[fileName.map](scripts/fileName.map)记录 文件名/chunk 名映射 (公共代码抽到`_`开头的文件里了)
 
 ### 代码风格检查和修正（提交 Git 时会自动执行）
 

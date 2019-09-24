@@ -1,11 +1,11 @@
 {
   "chunkName": {
-    "s": "index",
-    "z": "other",
-    "N": "ihOne",
-    "f": "ihTwo",
-    "A": "ihFive",
-    "R": "ihFour",
-    "c": "ihSix"
+    "f6": "index",
+    "fg": "other",
+    "e5": "ihOne",
+    "et": "ihTwo",
+    "h6": "ihFive",
+    "ho": "ihFour",
+    "en": "ihSix"
   }
 }
