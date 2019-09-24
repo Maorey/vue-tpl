@@ -5,6 +5,7 @@
  */
 const fs = require('fs')
 const path = require('path')
+const loaderUtils = require('loader-utils')
 
 const cache = {}
 const exists = (key, rootDir, fileName) => {
@@ -46,20 +47,16 @@ module.exports = (isProd, ALIAS, ENV) => {
           let content = ''
 
           // 注入scss变量
-          const { THEME_DIR, THEME } = ENV
-          let GLOBAL_SCSS = ENV.GLOBAL_SCSS
-          if (THEME_DIR && THEME && THEME !== 'default') {
-            GLOBAL_SCSS = `${THEME_DIR}/${THEME}`
-          }
-          if (GLOBAL_SCSS) {
-            content = `@import "~@/${GLOBAL_SCSS}";`
+          const vars = loaderUtils.parseQuery(loaderContext.resourceQuery).var
+          if (vars) {
+            content = `@import "~@/${vars}";`
             let temp
             let alias
             for (alias in ALIAS) {
               temp = ALIAS[alias]
               loaderContext.context.includes(temp) &&
-                exists(alias, temp, GLOBAL_SCSS) &&
-                (content += `@import "~${alias}/${GLOBAL_SCSS}";`)
+                exists(alias, temp, vars) &&
+                (content += `@import "~${alias}/${vars}";`)
             }
           }
 

@@ -119,6 +119,23 @@ function shortStr(DIC, str) {
   return key !== 0 ? str : shortStr(DIC, ++count)
 }
 
+const CHAR = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const RADIX = CHAR.length
+/** 数字转RADIX进制字符串
+ * @param {Number} number 10进制数字
+ *
+ * @returns {String} RADIX进制字符串
+ */
+function toRadix(number) {
+  let str = ''
+  do {
+    str = CHAR[number % RADIX] + str
+    number = (number / RADIX) | 0
+  } while (number)
+
+  return str
+}
+
 /** 获取唯一字符串缩写方法
  * @param {Object} DIC 命名字典，用于去重
  * 【优化】 按码值总和区间分成多个字典 暂无必要
@@ -126,14 +143,16 @@ function shortStr(DIC, str) {
  *
  * @returns {String:name => String:shortName} 返回唯一字符串缩写的方法
  */
-module.exports = (DIC = {}, callback) => name => {
-  name = String(name)
+module.exports = function(DIC = {}, callback) {
+  let counter = 0 // 因build有序
 
-  let abbreviation = DIC[name]
-  if (!abbreviation) {
-    abbreviation = DIC[name] = shortStr(DIC, name)
-    callback && callback(name, abbreviation)
+  return name => {
+    let n = DIC[(name = String(name))]
+    if (!n) {
+      n = DIC[name] = toRadix(counter++)
+      callback && callback(name, n)
+    }
+
+    return n
   }
-
-  return abbreviation
 }

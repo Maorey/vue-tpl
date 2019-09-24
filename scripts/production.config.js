@@ -3,6 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-04-01 13:28:06
  */
+const fs = require('fs')
 const path = require('path')
 const rename = require('./rename')
 
@@ -43,7 +44,7 @@ function fileName(config) {
     .options(getLoaderOption('media/' + FileName))
 }
 
-function plugin(config, ENV) {
+function plugin(config, DIR) {
   // 【更新后已不需要】固定打包文件哈希, 避免相同代码打包出不同哈希（排除 boilerplate(runtime and manifest)等影响）【有点过时，但有效】
   // config.plugin('md5-hash').use('webpack-md5-hash')
   // 或者
@@ -53,8 +54,8 @@ function plugin(config, ENV) {
   // 补全html插入资源 & 打包主题
   config
     .plugin('insert-preload')
-    .use(path.resolve('scripts/insertPreload.js'), [
-      { runtime: 'runtime', env: ENV, hash: rename('chunkHash') },
+    .use(path.join(DIR, 'scripts/insertPreload.js'), [
+      { runtime: 'runtime', defer: true },
     ])
   // runtime Chunk 内联到html
   config
@@ -78,18 +79,72 @@ function plugin(config, ENV) {
   ])
 }
 
+function themeLoader(config, ENV, DIR) {
+  const THEME_DIR = ENV.THEME_DIR
+  let themes
+  if (THEME_DIR) {
+    // 多个主题
+    themes = []
+
+    let theme = ENV.THEME
+    defaultPath = ENV.GLOBAL_SCSS
+    defaultPath &&
+      theme &&
+      theme !== 'default' &&
+      themes.push({ name: theme, var: `${THEME_DIR}/${theme}` })
+    themes.push({ name: 'default', var: defaultPath })
+
+    const REG_FILE = /\.[^.]*$/
+    let name
+    for (name of fs.readdirSync(
+      path.join(config.resolve.alias.get('@'), THEME_DIR)
+    )) {
+      name = name.replace(REG_FILE, '') // 去掉文件扩展名(文件夹不能带.)
+      name === theme || themes.push({ name, var: `${THEME_DIR}/${name}` })
+    }
+  }
+
+  if (themes && themes.length) {
+    const loader = path.join(DIR, 'scripts/themeLoader.js')
+    const options = { themes }
+
+    config.module
+      .rule('vue')
+      .use('theme-loader')
+      .loader(loader)
+      .options(options)
+    config.module
+      .rule('js')
+      .use('theme-loader')
+      .loader(loader)
+      .options(options)
+    config.module
+      .rule('ts')
+      .use('theme-loader')
+      .loader(loader)
+      .options(options)
+    config.module
+      .rule('tsx')
+      .use('theme-loader')
+      .loader(loader)
+      .options(options)
+  }
+}
+
 /** webpack 配置
  * @param {chainWebpack} config 配置对象
  *  https://github.com/neutrinojs/webpack-chain#getting-started
  * @param {Object} ENV 环境变量
  */
 module.exports = (config, ENV) => {
+  const DIR = process.cwd()
   config.merge({
     // https://webpack.js.org/configuration/other-options/#recordspath
-    recordsPath: path.join(process.cwd(), 'scripts/records.json'),
+    recordsPath: path.join(DIR, 'scripts/records.json'),
   }) // 生成记录
   fileName(config)
-  plugin(config, ENV)
+  plugin(config, DIR)
+  themeLoader(config, ENV, DIR)
 
   /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
