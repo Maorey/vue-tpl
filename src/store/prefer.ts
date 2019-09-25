@@ -10,17 +10,27 @@ const DEFAULT_SKIN = 'default'
 /** 本地存储的用户信息
  */
 const PREFER = local.get(CONFIG.prefer) || {}
-
 /** 切换皮肤
  * @param {String} skin 皮肤名
  */
-function setSkin(skin?: string) {
+function setSkin(skin: string = DEFAULT_SKIN) {
   let dom: any
   for (dom of document.querySelectorAll('link[title]')) {
     dom.disabled = dom.title !== skin
   }
+  PREFER.skin = skin
 }
-PREFER.skin && setSkin(PREFER.skin)
+/** 关闭窗口前写入本地
+ */
+window.addEventListener('beforeunload', () => {
+  local.set(CONFIG.prefer, PREFER)
+})
+
+setSkin(PREFER.skin) // 初始皮肤
+Object.defineProperty(window, process.env.THEME_FIELD, {
+  get: () => PREFER.skin,
+  set: setSkin,
+}) // 响应式皮肤全局变量
 
 /** 偏好管理
  */
@@ -38,14 +48,11 @@ interface IPrefer {
 /** 偏好管理
  */
 class Prefer extends VuexModule implements IPrefer {
-  skin = (PREFER.skin as string) || DEFAULT_SKIN
   lang = PREFER.lang as string
-
-  @Mutation
-  protected SKIN(skin: string = DEFAULT_SKIN) {
-    setSkin(skin)
-    this.skin = PREFER.skin = skin
+  get skin() {
+    return PREFER.skin as string
   }
+
   @Mutation
   protected LANG(lang: string) {
     this.lang = PREFER.lang = lang
@@ -56,7 +63,7 @@ class Prefer extends VuexModule implements IPrefer {
    */
   @Action
   setSkin(skin: string) {
-    this.context.commit('SKIN', skin)
+    setSkin(skin)
   }
   /** 设置语言
    * @param {String} lang 语言
@@ -66,11 +73,5 @@ class Prefer extends VuexModule implements IPrefer {
     this.context.commit('LANG', lang)
   }
 }
-
-/** 关闭窗口前写入本地
- */
-window.addEventListener('beforeunload', () => {
-  local.set(CONFIG.prefer, PREFER)
-})
 
 export { Prefer as default, IPrefer }

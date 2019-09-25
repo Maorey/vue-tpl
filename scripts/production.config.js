@@ -81,51 +81,65 @@ function plugin(config, DIR) {
 
 function themeLoader(config, ENV, DIR) {
   const THEME_DIR = ENV.THEME_DIR
+  const context = config.resolve.alias.get('@')
   let themes
   if (THEME_DIR) {
     // 多个主题
     themes = []
+    const THEME = ENV.THEME
+    const DEFAULT = 'default'
+    const index = '/index.scss'
+    const themeDir = path.join(context, THEME_DIR)
+    let defaultPath = ENV.GLOBAL_SCSS
+    let file
+    if (
+      fs.existsSync(path.join(context, defaultPath)) ||
+      fs.existsSync(path.join(context, (defaultPath += index)))
+    ) {
+      THEME &&
+        THEME !== DEFAULT &&
+        (fs.existsSync(path.join(themeDir, (file = `${THEME}.scss`))) ||
+          fs.existsSync(path.join(themeDir, (file = THEME + index)))) &&
+        themes.push({ name: THEME, path: `${THEME_DIR}/${file}` })
 
-    let theme = ENV.THEME
-    defaultPath = ENV.GLOBAL_SCSS
-    defaultPath &&
-      theme &&
-      theme !== 'default' &&
-      themes.push({ name: theme, var: `${THEME_DIR}/${theme}` })
-    themes.push({ name: 'default', var: defaultPath })
+      themes.push({ name: DEFAULT, path: (ENV.GLOBAL_SCSS = defaultPath) })
+    }
 
-    const REG_FILE = /\.[^.]*$/
+    const REG_SCSS = /\.scss$/
     let name
-    for (name of fs.readdirSync(
-      path.join(config.resolve.alias.get('@'), THEME_DIR)
-    )) {
-      name = name.replace(REG_FILE, '') // 去掉文件扩展名(文件夹不能带.)
-      name === theme || themes.push({ name, var: `${THEME_DIR}/${name}` })
+    for (file of fs.readdirSync(themeDir, { withFileTypes: true })) {
+      file.isFile()
+        ? THEME === (name = file.name.replace(REG_SCSS, '')) && (file = 0)
+        : (THEME !== (name = file.name) &&
+            fs.existsSync(path.join(themeDir, (file.name += index)))) ||
+          (file = 0)
+      file && themes.push({ name, path: `${THEME_DIR}/${file.name}` })
     }
   }
 
   if (themes && themes.length) {
+    const name = 'theme-loader'
     const loader = path.join(DIR, 'scripts/themeLoader.js')
-    const options = { themes }
+    const options = { themes, context }
 
     config.module
       .rule('vue')
-      .use('theme-loader')
+      .use(name)
       .loader(loader)
       .options(options)
     config.module
       .rule('js')
-      .use('theme-loader')
+      .use(name)
       .loader(loader)
       .options(options)
     config.module
       .rule('ts')
-      .use('theme-loader')
+      .use(name)
       .loader(loader)
       .options(options)
     config.module
       .rule('tsx')
-      .use('theme-loader')
+      .use(name)
       .loader(loader)
       .options(options)
   }

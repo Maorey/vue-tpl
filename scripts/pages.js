@@ -6,8 +6,9 @@
 const fs = require('fs')
 const path = require('path')
 
-const publicDir = path.resolve('./public') // html模板只考虑放在根目录
-const srcDir = path.resolve('./src') // html对应入口代码路径
+const rootDir = process.cwd()
+const publicDir = path.join(rootDir, 'public') // html模板只考虑放在根目录
+const srcDir = path.join(rootDir, 'src') // html对应入口代码路径
 const pagesName = 'pages' // 存放页面代码目录名
 const pagesDir = path.join(srcDir, pagesName) // 存放页面代码目录
 
@@ -38,7 +39,7 @@ const MINIFY = {
  *
  * @returns {String} 改文件夹下存在的文件名（含文件格式后缀）
  */
-const getEntry = (dir, files) => {
+function getEntry(dir, files) {
   let fileName
   for (let entry of files) {
     for (let format of ENTRY_FORMATS) {
@@ -55,7 +56,7 @@ const getEntry = (dir, files) => {
  *
  * @returns {Object} 页面入口配置
  */
-module.exports = isProd => {
+module.exports = function(isProd) {
   const templates = fs.readdirSync(publicDir, { withFileTypes: true })
   const pages = {}
 

@@ -5,20 +5,22 @@
  */
 const fs = require('fs')
 const path = require('path')
-const loaderUtils = require('loader-utils')
 
-const cache = {}
-const exists = (key, rootDir, fileName) => {
-  let result = cache[key]
+const CACHE = {}
+function exists(key, rootDir, fileName) {
+  let result = CACHE[key]
   if (result === undefined) {
     fileName = path.join(rootDir, fileName)
-    result = cache[key] =
-      fs.existsSync(fileName) ||
-      fs.existsSync(path.join(fileName, 'index.scss'))
-    setTimeout(() => (cache[key] = undefined), 20000)
+    result = CACHE[key] = fs.existsSync(fileName)
+    setTimeout(() => (CACHE[key] = undefined), 20000)
   }
 
   return result
+}
+const REG_THEME = /&?theme=(.*?)!(.*?)&?/
+function getTheme(query) {
+  query = REG_THEME.exec(query)
+  return query && (query = { name: query[1], path: query[2] })
 }
 
 /** 获取样式选项
@@ -26,7 +28,25 @@ const exists = (key, rootDir, fileName) => {
  * @param {Object} ALIAS 别名字典
  * @param {Object} ENV 环境变量
  */
-module.exports = (isProd, ALIAS, ENV) => {
+module.exports = function(isProd, ALIAS, ENV) {
+  const context = path.join(process.cwd(), 'src')
+  const THEME_DIR = ENV.THEME_DIR
+  const themeDir = path.join(context, THEME_DIR)
+  const index = '/index.scss'
+  const DEFAULT = 'default'
+  const THEME = ENV.THEME
+
+  let defaultPath = { name: DEFAULT, path: ENV.GLOBAL_SCSS } // 默认全局scss变量
+  let file
+  fs.existsSync(path.join(context, defaultPath.path)) ||
+  fs.existsSync(path.join(context, (defaultPath.path += index)))
+    ? THEME &&
+      THEME !== DEFAULT &&
+      (fs.existsSync(path.join(themeDir, (file = `${THEME}.scss`))) ||
+        fs.existsSync(path.join(themeDir, (file = THEME + index)))) &&
+      (defaultPath = { name: THEME, path: `${THEME_DIR}/${file}` })
+    : (defaultPath = 0)
+
   // https://cli.vuejs.org/zh/config/#css-loaderoptions
   return {
     requireModuleExtension: true,
@@ -47,16 +67,16 @@ module.exports = (isProd, ALIAS, ENV) => {
           let content = ''
 
           // 注入scss变量
-          const vars = loaderUtils.parseQuery(loaderContext.resourceQuery).var
-          if (vars) {
-            content = `@import "~@/${vars}";`
+          let theme = getTheme(loaderContext.resourceQuery) || defaultPath
+          if (theme) {
+            content = `@import "~@/${(theme = theme.path)}";`
             let temp
             let alias
             for (alias in ALIAS) {
               temp = ALIAS[alias]
               loaderContext.context.includes(temp) &&
-                exists(alias, temp, vars) &&
-                (content += `@import "~${alias}/${vars}";`)
+                exists(alias, temp, theme) &&
+                (content += `@import "~${alias}/${theme}";`)
             }
           }
 

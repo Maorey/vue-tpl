@@ -16,11 +16,11 @@ module.exports = (pages, config, ALIAS) => {
     // ts 目录别名
     '@/*': ['src/*'],
   }
-  const CURRENT_DIR = path.resolve()
-  // ALIAS['@'] = path.resolve('src') // 应有序，先目录层级高的
+  const CURRENT_DIR = process.cwd()
+  // ALIAS['@'] = path.join(CURRENT_DIR, 'src') // 应有序，先目录层级高的
 
   let alias = '@com'
-  let folderName = path.resolve('src/components')
+  let folderName = path.join(CURRENT_DIR, 'src/components')
 
   const SUFFIX = '/*'
   const REG_BACKSLASH = /\\/g

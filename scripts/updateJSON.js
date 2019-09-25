@@ -8,8 +8,8 @@ const path = require('path')
 
 const REG_SPLIT = /\.(?!['"])/
 
-module.exports = (fileName, key, value) => {
-  fileName = path.resolve(fileName)
+module.exports = function(fileName, key, value) {
+  fileName = path.join(process.cwd(), fileName)
   key = key.split(REG_SPLIT)
 
   let json
