@@ -3,9 +3,10 @@
  * @Author: 毛瑞
  * @Date: 2019-04-01 13:28:06
  */
-const fs = require('fs')
 const path = require('path')
 const rename = require('./rename')
+
+const RUNTIME_CHUNK = 'runtime'
 
 const getLoaderOption = name => ({
   limit: 4096,
@@ -45,7 +46,8 @@ function fileName(config) {
 }
 
 function plugin(config, DIR) {
-  // 【更新后已不需要】固定打包文件哈希, 避免相同代码打包出不同哈希（排除 boilerplate(runtime and manifest)等影响）【有点过时，但有效】
+  // 【弃 过时但有效】固定打包文件哈希, 避免相同代码打包出不同哈希
+  //  (排除 boilerplate(runtime and manifest)等影响)
   // config.plugin('md5-hash').use('webpack-md5-hash')
   // 或者
   // config
@@ -55,12 +57,12 @@ function plugin(config, DIR) {
   config
     .plugin('insert-preload')
     .use(path.join(DIR, 'scripts/insertPreload.js'), [
-      { runtime: 'runtime', defer: true },
+      { runtime: RUNTIME_CHUNK, defer: true },
     ])
   // runtime Chunk 内联到html
   config
     .plugin('inline-manifest')
-    .use('inline-manifest-webpack-plugin', ['runtime'])
+    .use('inline-manifest-webpack-plugin', [RUNTIME_CHUNK])
   // 文件 gzip 压缩 https://webpack.docschina.org/plugins/compression-webpack-plugin/
   config.plugin('gzip').use('compression-webpack-plugin', [
     {
@@ -79,90 +81,10 @@ function plugin(config, DIR) {
   ])
 }
 
-function themeLoader(config, ENV, DIR) {
-  const THEME_DIR = ENV.THEME_DIR
-  const context = config.resolve.alias.get('@')
-  let themes
-  if (THEME_DIR) {
-    // 多个主题
-    themes = []
-    const THEME = ENV.THEME
-    const DEFAULT = 'default'
-    const index = '/index.scss'
-    const themeDir = path.join(context, THEME_DIR)
-    let defaultPath = ENV.GLOBAL_SCSS
-    let file
-    if (
-      fs.existsSync(path.join(context, defaultPath)) ||
-      fs.existsSync(path.join(context, (defaultPath += index)))
-    ) {
-      THEME &&
-        THEME !== DEFAULT &&
-        (fs.existsSync(path.join(themeDir, (file = `${THEME}.scss`))) ||
-          fs.existsSync(path.join(themeDir, (file = THEME + index)))) &&
-        themes.push({ name: THEME, path: `${THEME_DIR}/${file}` })
-
-      themes.push({ name: DEFAULT, path: (ENV.GLOBAL_SCSS = defaultPath) })
-    }
-
-    const REG_SCSS = /\.scss$/
-    let name
-    for (file of fs.readdirSync(themeDir, { withFileTypes: true })) {
-      file.isFile()
-        ? THEME === (name = file.name.replace(REG_SCSS, '')) && (file = 0)
-        : (THEME !== (name = file.name) &&
-            fs.existsSync(path.join(themeDir, (file.name += index)))) ||
-          (file = 0)
-      file && themes.push({ name, path: `${THEME_DIR}/${file.name}` })
-    }
-  }
-
-  if (themes && themes.length) {
-    const name = 'theme-loader'
-    const loader = path.join(DIR, 'scripts/themeLoader.js')
-    const options = { themes, context }
-
-    config.module
-      .rule('vue')
-      .use(name)
-      .loader(loader)
-      .options(options)
-    config.module
-      .rule('js')
-      .use(name)
-      .loader(loader)
-      .options(options)
-    config.module
-      .rule('ts')
-      .use(name)
-      .loader(loader)
-      .options(options)
-    config.module
-      .rule('tsx')
-      .use(name)
-      .loader(loader)
-      .options(options)
-  }
-}
-
-/** webpack 配置
- * @param {chainWebpack} config 配置对象
- *  https://github.com/neutrinojs/webpack-chain#getting-started
- * @param {Object} ENV 环境变量
- */
-module.exports = (config, ENV) => {
-  const DIR = process.cwd()
-  config.merge({
-    // https://webpack.js.org/configuration/other-options/#recordspath
-    recordsPath: path.join(DIR, 'scripts/records.json'),
-  }) // 生成记录
-  fileName(config)
-  plugin(config, DIR)
-  themeLoader(config, ENV, DIR)
-
-  /// 【优化(optimization)】 ///
+/// 【优化(optimization)】 ///
+function optimization(config) {
   // https://webpack.docschina.org/configuration/optimization 默认就好
-  config.optimization.runtimeChunk({ name: 'runtime' }) // 抽出来内联到html
+  config.optimization.runtimeChunk({ name: RUNTIME_CHUNK }) // 抽出来内联到html
 
   /// 【代码分割(optimization.splitChunks 不能config.merge({}))】 ///
   // https://webpack.docschina.org/plugins/split-chunks-plugin
@@ -296,46 +218,6 @@ module.exports = (config, ENV) => {
         reuseExistingChunk: true,
         test: /[\\/]node_modules[\\/](?:@?luma|math)\.gl[\\/]/,
       },
-
-      /// 【 css 】(多数情况下不需要，webpack 5可以去掉) ///
-      // 提取各入口的 css 到单独文件(还抽了一个空数组的 [entryName].*.*.js 出来???)
-      // ...(() => {
-      //   /** 获取模块是否是指定入口的
-      //    * @param {Object} module webpack module 对象
-      //    * @param {String} name 入口名
-      //    *
-      //    * @returns {Boolean}
-      //    */
-      //   const isBelong = (module, name) =>
-      //     module.name === name ||
-      //     (!!module.issuer && isBelong(module.issuer, name))
-
-      //   const TYPE = 'css/mini-extract'
-
-      //   let css = {}
-      //   let chunkName
-      //   for (let entryName in pages) {
-      //     chunkName = entryName + '_' // 多页时与入口名重了要报错
-
-      //     css[chunkName] = {
-      //       name: chunkName,
-      //       // 异步chunk的css合并可能存在因加载顺序改变导致的样式优先级问题，
-      //       // 但这绝大多数都是异步chunk里存在覆盖全局的样式的全局样式
-      //       // 减少使用全局样式，用好CSSModule可以避免
-      //       chunks: 'async', // 'initial'、'all'
-      //       enforce: true,
-      //       priority: 66,
-      //       // https://github.com/webpack-contrib/mini-css-extract-plugin
-      //       // test: module =>
-      //       //   module.constructor.name === 'CssModule' &&
-      //       //   isBelong(module, entryName),
-      //       test: module =>
-      //         module.type === TYPE && isBelong(module, entryName),
-      //     }
-      //   }
-
-      //   return css
-      // })(),
     },
   })
 
@@ -360,4 +242,21 @@ module.exports = (config, ENV) => {
   //   .after(threadLoader)
   // // sass
   // // babel
+}
+
+/** webpack 配置
+ * @param {chainWebpack} config 配置对象
+ *  https://github.com/neutrinojs/webpack-chain#getting-started
+ */
+module.exports = function(config) {
+  const DIR = process.cwd()
+  config.merge({
+    // https://webpack.js.org/configuration/other-options/#recordspath
+    recordsPath: path.join(DIR, 'scripts/records.json'),
+  })
+  fileName(config)
+  plugin(config, DIR)
+
+  /// 【优化(optimization)】 ///
+  optimization(config)
 }

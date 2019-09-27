@@ -5,7 +5,6 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 21:33:33
  */
-
 import { ASC, Compare } from '.'
 
 /** 数组长度低值:小于低值使用插入排序
@@ -52,7 +51,7 @@ function insertSort(start: number, end: number): void {
  * @param {Number} p2
  */
 function swap(p1: number, p2: number): void {
-  [LIST[p1], LIST[p2]] = [LIST[p2], LIST[p1]]
+  ;[LIST[p1], LIST[p2]] = [LIST[p2], LIST[p1]]
 }
 
 /** 得到数组里 指定3个递增的索引 的中值索引 (最多比较三次,优先中间)
@@ -329,13 +328,18 @@ function quickSort(
 // check(quickSort([4, 4, 4, 4, 4, 4, 3, 2, 1, 0]))
 // check(quickSort([4, 1, 4, 1, 4, 1, 4, 1, 4, 1]))
 // check(quickSort([4, 4, 4, 4, 4, 4, 4, 4, 4, 4]))
-// check(quickSort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+// check(quickSort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0,
+//  0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
 // check(quickSort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
-// check(quickSort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]))
+// check(quickSort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+//  9, 8, 7, 6, 5, 4, 3, 2, 1, 0]))
 // check(quickSort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1]))
-// check(quickSort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
-// check(quickSort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
-// check(quickSort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]))
+// check(quickSort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+//  0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+// check(quickSort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+//  1, 2, 3, 4, 5, 6, 7, 8, 9]))
+// check(quickSort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0,
+//  9, 8, 7, 6, 5, 4, 3, 2, 1, 0]))
 // check(quickSort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1]))
 
 /// 耗时 > 不稳定版 ///

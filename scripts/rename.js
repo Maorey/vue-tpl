@@ -3,7 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2019-07-25 19:31:14
  */
-const path = require('path')
 const updateJSON = require('./updateJSON')
 const shortString = require('./shortString')
 
@@ -14,19 +13,13 @@ const shortString = require('./shortString')
  *
  * @returns {Function} 缩写函数
  */
-module.exports = (des = '', DIC = {}) => {
+module.exports = function(des = '', DIC = {}) {
   let record // 命名缩写记录
   // 字符串缩写函数
   const short = shortString(DIC, (name, n) => {
     if (!record) {
       record = {}
-      setTimeout(() =>
-        updateJSON(
-          path.join(process.cwd(), 'scripts/fileName.map'),
-          des,
-          record
-        )
-      )
+      setTimeout(() => updateJSON('scripts/fileName.map', des, record))
     }
 
     record[n] = name

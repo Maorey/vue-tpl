@@ -22,13 +22,16 @@ interface IDynamic {
  */
 @Module({ dynamic: true, namespaced: true, name: 'dynamic', store })
 class Dynamic extends VuexModule implements IDynamic {
+  /// State & Getter(public) ///
   dynamic = true
 
+  /// Mutation 无法调用/commit 必须通过Action ///
   @Mutation
-  protected SET_DYNAMIC(dynamic: boolean) {
+  private SET_DYNAMIC(dynamic: boolean) {
     this.dynamic = dynamic
   }
 
+  /// Action ///
   /** 设置动态
    * @param {Boolean} dynamic 是否动态
    */

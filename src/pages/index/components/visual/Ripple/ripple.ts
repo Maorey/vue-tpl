@@ -6,7 +6,8 @@ import { Matrix4, radians } from 'math.gl'
 
 import Cube, { SIDE } from './cube'
 
-// Make a cube with 65K instances and attributes to control offset and color of each instance
+// Make a cube with 65K instances and attributes to control
+//  offset and color of each instance
 function pickInstance(
   gl: any,
   pickX: any,

@@ -2,5 +2,6 @@
 dist/
 build/
 public/css/
+src/**/theme/export/
 *.min.css
 export*.scss

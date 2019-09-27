@@ -3,10 +3,10 @@
  * @Author: 毛瑞
  * @Date: 2019-07-12 23:00:41
  */
-
 :export {
+  top: $zTop;
   background: $zBackground;
-  backAnimate: $zBackAnimate;
+  backanimate: $zBackAnimate;
   zero: $zero;
   panel: $zPanel;
   comp: $zComp;
@@ -14,5 +14,4 @@
   fixed: $zFixed;
   dialog: $zDialog;
   message: $zMessage;
-  top: $zTop;
 }

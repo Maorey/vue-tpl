@@ -9,9 +9,11 @@
       "name": "file",
       "cwd": "${workspaceFolder}",
       "program": "${file}",
-      "preLaunchTask": "tsc: watch - .vscode/tsconfig.json", // cn
-      // "preLaunchTask": "tsc: watch - .vscode/tsconfig.json", // en
-      "outFiles": ["${workspaceFolder}/build/**/*.js"]
+      // "preLaunchTask": "tsc: 监视 - .vscode/tsconfig.json", // cn
+      "preLaunchTask": "tsc: watch - .vscode/tsconfig.json", // en
+      "outFiles": [
+        "${workspaceFolder}/build/**/*.js"
+      ]
       // "args": ["--experimental-modules", "--loader", "./loader.mjs"]
     },
     // 调试开发环境脚本
@@ -22,7 +24,10 @@
       // "stopOnEntry": true,
       "cwd": "${workspaceFolder}",
       "program": "${workspaceFolder}/node_modules/@vue/cli-service/bin/vue-cli-service.js",
-      "args": ["serve", "--open"]
+      "args": [
+        "serve",
+        "--open"
+      ]
     },
     // 调试生产环境脚本
     {
@@ -32,7 +37,10 @@
       // "stopOnEntry": true,
       "cwd": "${workspaceFolder}",
       "program": "${workspaceFolder}/node_modules/@vue/cli-service/bin/vue-cli-service.js",
-      "args": ["build", "--report"]
+      "args": [
+        "build",
+        "--report"
+      ]
     }
   ]
 }

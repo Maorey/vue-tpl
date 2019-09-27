@@ -48,16 +48,19 @@ interface IPrefer {
 /** 偏好管理
  */
 class Prefer extends VuexModule implements IPrefer {
+  /// State & Getter(public) ///
   lang = PREFER.lang as string
   get skin() {
     return PREFER.skin as string
   }
 
+  /// Mutation 无法调用/commit 必须通过Action ///
   @Mutation
   protected LANG(lang: string) {
     this.lang = PREFER.lang = lang
   }
 
+  /// Action ///
   /** 设置皮肤
    * @param {String} skin 皮肤名
    */

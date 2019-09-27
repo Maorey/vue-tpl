@@ -7,6 +7,7 @@ import Vue, { CreateElement, VNode } from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import './registerServiceWorker'
 
 /// 全局注册的组件，请尽量不要让这个列表变太长 ///
 import Row from 'element-ui/lib/row'
@@ -18,7 +19,7 @@ import Button from 'element-ui/lib/button'
 import Link from 'element-ui/lib/link'
 import Select from 'element-ui/lib/select'
 
-import './scss/main.scss'
+import './scss/main.scss?'
 
 Vue.use(Row)
 Vue.use(Col)

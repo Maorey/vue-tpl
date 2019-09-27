@@ -19,7 +19,7 @@ class Prefer extends RootPrefer {
 
   /// Mutation 无法调用/commit 必须通过Action ///
   @Mutation
-  protected FOO(foo: string) {
+  private FOO(foo: string) {
     this.foo = foo
   }
 

@@ -11,13 +11,14 @@ const updateJSON = require('./updateJSON')
  * @param {ChainWebpack} config
  * @param {Object} ALIAS 别名字典
  */
-module.exports = (pages, config, ALIAS) => {
+module.exports = function(pages, config, ALIAS) {
   const TS_PATHS = {
     // ts 目录别名
     '@/*': ['src/*'],
   }
   const CURRENT_DIR = process.cwd()
-  // ALIAS['@'] = path.join(CURRENT_DIR, 'src') // 应有序，先目录层级高的
+  // 【应有序，先目录层级高的，scss变量才能正确注入】
+  // ALIAS['@'] = path.join(CURRENT_DIR, 'src')
 
   let alias = '@com'
   let folderName = path.join(CURRENT_DIR, 'src/components')

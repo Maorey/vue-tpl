@@ -31,18 +31,18 @@ const STYLE_INLINE =
   'background:url(https://a.cn/images/a.png?width=10&height=10) 20% center no-repeat;' +
   'border:1px dashed transparent;border-radius:5px;'
 const STYLE_OBJECT = {
-  'float': 'left',
-  'margin': '15px 13px',
-  'width': '100px',
-  'height': '105px',
-  'font': 'italic bold 12px/30px sans-serif',
+  float: 'left',
+  margin: '15px 13px',
+  width: '100px',
+  height: '105px',
+  font: 'italic bold 12px/30px sans-serif',
   'font-family': '"Microsoft Yahei", arial, sans-serif, "Microsoft Yahei"',
   'text-align': 'center',
-  'position': 'relative',
-  'overflow': 'visible',
-  'background':
+  position: 'relative',
+  overflow: 'visible',
+  background:
     'url(https://a.cn/images/a.png?width=10&height=10) 20% center no-repeat',
-  'border': '1px dashed transparent',
+  border: '1px dashed transparent',
   'border-radius': '5px',
 }
 const FILTER = (

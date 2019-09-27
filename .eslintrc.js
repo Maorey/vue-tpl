@@ -19,7 +19,10 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/__tests__/*.{j,t}s?(x)'],
+      files: [
+        '**/__tests__/*.{j,t}s?(x)',
+        '**/tests/unit/**/*.spec.{j,t}s?(x)',
+      ],
       env: {
         jest: true,
       },
@@ -42,8 +45,12 @@ module.exports = {
     'max-len': [
       'error',
       {
-        code: 100,
+        code: 80,
         tabWidth: 2,
+        ignoreUrls: true,
+        ignoreStrings: true,
+        ignoreRegExpLiterals: true,
+        ignoreTemplateLiterals: true,
       },
     ], // 最大列数
     'max-params': ['error', 7], // function最大参数数

@@ -7,6 +7,7 @@ import Vue, { CreateElement, VNode } from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import './registerServiceWorker'
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 

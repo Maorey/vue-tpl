@@ -206,7 +206,7 @@ function formatDate(date: Date, format: string = ISO_DATE_FORMAT): string {
       // 根据规则获取值
       switch (item.k) {
         case Reserve.year:
-        // 从末尾开始取指定位数
+          // 从末尾开始取指定位数
           value = String(date.getFullYear()).substring(4 - item.l)
           break
         case Reserve.month:
@@ -345,7 +345,8 @@ function getDateByString(
     const date = new Date()
 
     isNaN(info[Reserve.year]) || date.setFullYear(info[Reserve.year])
-    isNaN(info[Reserve.month]) || date.setMonth(info[Reserve.month] - 1) // 0~11 ？？？
+    // 0~11 ？？？
+    isNaN(info[Reserve.month]) || date.setMonth(info[Reserve.month] - 1)
     isNaN(info[Reserve.day]) || date.setDate(info[Reserve.day])
     isNaN(info[Reserve.Hour])
       ? isNaN(info[Reserve.hour]) ||

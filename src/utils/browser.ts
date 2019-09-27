@@ -3,7 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2018-12-29 11:32:52
  */
-
 const userAgent = navigator.userAgent.toLowerCase()
 const REG_VERSION = '.([\\d.]+)'
 const BROWSERS = [

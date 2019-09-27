@@ -337,14 +337,14 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   ```html
   <script>
     import $style from './foo.module.scss' // $style是一个方法 调用获取当前主题对应值 放computed
-    import './bar.scss?theme=default'
+    import './bar.scss?theme=' // 基础样式 不视作主题样式
   </script>
   <style lang="scss" module>
   .foo {
     color: $red;
   }
   </style>
-  <style lang="scss" module theme="theme=dark!scss/dark.scss">
+  <style lang="scss" module theme="theme=dark|scss/dark.scss">
   /* 已处理computed $style注入 */
   .foo {
     color: $red;

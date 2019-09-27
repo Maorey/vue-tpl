@@ -6,7 +6,7 @@
  */
 module.exports = {
   // https://cli.vuejs.org/zh/config/#babel
-  presets: ['@vue/app'],
+  presets: ['@vue/cli-plugin-babel/preset'],
   // plugins: [
   // 'transform-decorators', // https://babeljs.io/docs/en/babel-plugin-proposal-decorators
   // ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true }],

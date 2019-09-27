@@ -180,11 +180,13 @@ function objectToStyle(
 
   // return styleObj
   //   ? JSON.stringify(styleObj).replace(
-  //       // 真难写【呃，fontFamily: '"Microsoft Yahei", arial, sans-serif, "Microsoft Yahei"'有问题】
+  // 真难写【呃，fontFamily: '"Microsoft Yahei", arial,
+  //  sans-serif, "Microsoft Yahei"'有问题】
   //       /{?"(.*?)":"?(.*?)("(?=,|}))?[,}]/g,
   //       // Number('') === Number(' ') === 0
   //       // 纯数字（除0）加上px单位
-  //       (match, $1, $2) => dealKey($1) + ':' + $2 + (Number($2) ? 'px;' : ';')
+  //       (match, $1, $2) =>
+  //         dealKey($1) + ':' + $2 + (Number($2) ? 'px;' : ';')
   //     )
   //   : ''
   // return styleObj

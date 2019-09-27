@@ -33,6 +33,15 @@ test('sort', () => {
 
   expect(pass).toBe(true)
 
-  expect(sort(['l', 'k', 'j', 'h', 'g', 'f', 'd', 's', 'a']))
-    .toEqual(['a', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 's'])
+  expect(sort(['l', 'k', 'j', 'h', 'g', 'f', 'd', 's', 'a'])).toEqual([
+    'a',
+    'd',
+    'f',
+    'g',
+    'h',
+    'j',
+    'k',
+    'l',
+    's',
+  ])
 })

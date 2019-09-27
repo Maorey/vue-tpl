@@ -8,19 +8,19 @@ const TARGET = 'PROXY_TARGET'
 const REG_PROXY = /^BASE_URL(\d*)$/
 /** 获取开发服务器代理设置
  *
- * @param {Object} environment 环境变量
+ * @param {Object} ENV 环境变量
  */
-module.exports = environment => {
+module.exports = function(ENV) {
   let proxy
 
   let tmp
-  for (let key in environment) {
+  for (let key in ENV) {
     tmp = REG_PROXY.exec(key)
     if (tmp) {
-      key = environment[key]
+      key = ENV[key]
       proxy || (proxy = {})
       proxy[key] = {
-        target: environment[TARGET + tmp[1]],
+        target: ENV[TARGET + tmp[1]],
         changeOrigin: true,
         pathRewrite: url => url.replace(new RegExp(`^/${key}(/.*)?$`), '$1'),
       }
@@ -28,8 +28,8 @@ module.exports = environment => {
   }
 
   return {
-    host: environment.DEV_SERVER_HOST,
-    port: environment.DEV_SERVER_PORT,
+    host: ENV.DEV_SERVER_HOST,
+    port: ENV.DEV_SERVER_PORT,
     overlay: { errors: true }, // lint
     proxy,
   }

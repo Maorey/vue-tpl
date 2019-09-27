@@ -71,7 +71,8 @@ export default class extends Vue {
         ? Math.random() * 2000
         : cameraZ + Math.random() * 1000 + 2000
 
-      // Calculate star positions with radial random coordinate so no star hits the camera.
+      // Calculate star positions with radial random coordinate so
+      //  no star hits the camera.
       const deg = Math.random() * Math.PI * 2
       const distance = Math.random() * 50 + 1
       star.x = Math.cos(deg) * distance
@@ -85,7 +86,8 @@ export default class extends Vue {
 
     // Listen for animate update
     app.ticker.add((delta: any) => {
-      // Simple easing. This should be changed to proper easing function when used for real.
+      // Simple easing. This should be changed to proper
+      //  easing function when used for real.
       speed += (warpSpeed - speed) / 20
       cameraZ += delta * 10 * (speed + baseSpeed)
       for (let i = 0; i < starAmount; i++) {
@@ -111,9 +113,11 @@ export default class extends Vue {
         )
         const distanceScale = Math.max(0, (2000 - z) / 2000)
         star.sprite.scale.x = distanceScale * starBaseSize
-        // Star is looking towards center so that y axis is towards center.
+        // Star is looking towards center so that y axis is
+        //  towards center.
         // Scale the star depending on how fast we are moving,
-        // what the stretchfactor is and depending on how far away it is from the center.
+        // what the stretchfactor is and depending on how
+        //  far away it is from the center.
         star.sprite.scale.y =
           distanceScale * starBaseSize +
           (distanceScale * speed * starStretch * distanceCenter) /

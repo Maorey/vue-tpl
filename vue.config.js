@@ -3,7 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  */
-
 const ENV = process.env // 环境变量
 const isProd = ENV.NODE_ENV === 'production' // 是否生产环境
 
@@ -54,6 +53,6 @@ module.exports = {
     /// 【不同环境配置】 ///
     require(isProd
       ? './scripts/production.config'
-      : './scripts/development.config')(config, ENV)
+      : './scripts/development.config')(config)
   },
 }

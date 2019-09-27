@@ -3,13 +3,18 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 16:10:48
  */
-
 import sort from './utils/sort'
 import clone from './utils/clone'
 import formatNumber from './utils/formatNumber'
 import formatDate, { getDateByString } from './utils/formatDate'
 import { toRGB, isTransparent, fitColor, reverseColor } from './utils/color'
 import { getOffset, getInfoByHtml, escapeHTML, HtmlInfo } from './utils/dom'
+import {
+  getStyleByName,
+  styleToObject,
+  objectToStyle,
+  updateStyle,
+} from './utils/style'
 import {
   camelToKebab,
   camelToUpper,
@@ -18,12 +23,6 @@ import {
   upperToCamel,
   UpperTokebab,
 } from './utils/case'
-import {
-  getStyleByName,
-  styleToObject,
-  objectToStyle,
-  updateStyle,
-} from './utils/style'
 
 export {
   sort,

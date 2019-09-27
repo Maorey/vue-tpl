@@ -138,22 +138,18 @@ function fitColor(
   ratio: number = 0.25,
   opacity?: number | null | Alpha
 ): string {
-  return toRGB(
-    color,
-    opacity,
-    (rgb: number[]): void => {
-      let value: number
-      let i: number = 3
-      while (i--) {
-        value = rgb[i]
-        rgb[i] =
-          value +
-          (value > 88
-            ? -Math.floor(value * ratio) // 加深
-            : Math.floor((255 - value) * ratio)) // 变浅
-      }
+  return toRGB(color, opacity, (rgb: number[]): void => {
+    let value: number
+    let i: number = 3
+    while (i--) {
+      value = rgb[i]
+      rgb[i] =
+        value +
+        (value > 88
+          ? -Math.floor(value * ratio) // 加深
+          : Math.floor((255 - value) * ratio)) // 变浅
     }
-  )
+  })
 }
 
 const FILLER_REVERSE = (rgb: number[]): void => {

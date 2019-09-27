@@ -81,7 +81,7 @@ class Memory {
             pool.splice(index, 1)
             break
           default:
-            (tmp as IPool).c++ // 计数
+            ;(tmp as IPool).c++ // 计数
         }
 
         return tmp.v // 返回值

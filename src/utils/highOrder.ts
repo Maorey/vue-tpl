@@ -3,7 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:32:33
  */
-
 import CONFIG from '@/config'
 
 import LOADING from '@com/Loading' // 加载中
@@ -169,7 +168,8 @@ export default Chooser // 异步加载的时候必须是default
 <script lang="ts">
 @Component({
   components: {
-    AsyncComponent: getAsync(/* webpackChunkName: "ocChooser" * / () => import('Chooser')),
+    AsyncComponent:
+      getAsync(/* webpackChunkName: "ocChooser" * / () => import('Chooser')),
   },
 })
 export default class extends Vue {
