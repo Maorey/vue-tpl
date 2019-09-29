@@ -72,7 +72,7 @@ yarn dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.developmen
 yarn build # --watch: 跟踪文件变化 --report: 生成打包分析
 ```
 
-同时会生成[fileName.map](scripts/fileName.map)记录 文件名/chunk 名映射 (公共代码抽到`.`开头的文件里了)
+同时会生成[fileName.map](build/fileName.map)记录 文件名/chunk 名映射 (公共代码抽到`.`开头的文件里了)
 
 ### 代码风格检查和修正(提交 Git 时会自动执行)
 
@@ -125,7 +125,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 ├── tests # 测试用例目录
 │   │── e2e # e2e 测试: https://nightwatchjs.org
 │   └── unit # unit 测试: https://jestjs.io/docs/zh-Hans/getting-started.html
-├── scripts # 脚本
+├── build # 项目工具类脚本
 ├── .env、.env.* # 环境变量设置
 ├── tsconfig.json # typeScript 配置: https://www.tslang.cn/docs/handbook/tsconfig-json.html
 └── vue.config.js # 工程(vue cli)配置入口

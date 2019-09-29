@@ -7,7 +7,7 @@
     "allowJs": true,
     "sourceMap": true,
     "jsx": "preserve",
-    "outDir": "build",
+    "outDir": "compile",
     "target": "esnext",
     "module": "esnext",
     "diagnostics": true,

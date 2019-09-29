@@ -6,7 +6,7 @@
 const updateJSON = require('./updateJSON')
 const shortString = require('./shortString')
 
-/** 重命名 vender chunks (命名映射:scripts/fileName.map)
+/** 重命名 vender chunks (命名映射:build/fileName.map)
  *    vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
  * @param {String} des 缩写描述
  * @param {Object} DIC 缩写字典 eg: { index: 'i' }
@@ -19,13 +19,13 @@ module.exports = function(des = '', DIC = {}) {
   const short = shortString(DIC, (name, n) => {
     if (!record) {
       record = {}
-      setTimeout(() => updateJSON('scripts/fileName.map', des, record))
+      setTimeout(() => updateJSON('build/fileName.map', des, record))
     }
 
     record[n] = name
   })
 
-  /** 重命名 vender chunks (命名映射:scripts/fileName.map)
+  /** 重命名 vender chunks (命名映射:build/fileName.map)
    *    vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
    * @param {WebpackModule} module webpack模块
    */

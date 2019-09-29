@@ -19,7 +19,7 @@ import Button from 'element-ui/lib/button'
 import Link from 'element-ui/lib/link'
 import Select from 'element-ui/lib/select'
 
-import './scss/main.scss?'
+import './scss/main.scss'
 
 Vue.use(Row)
 Vue.use(Col)

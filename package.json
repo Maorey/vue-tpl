@@ -51,7 +51,7 @@
     "vuex-class": "^0.3.2",
     "vuex-module-decorators": "^0.10.1",
     "zdog": "^1.1.0",
-    "zrender": "^4.1.0"
+    "zrender": "^4.1.1"
   },
   "devDependencies": {
     "@types/crypto-js": "^3.1.43",

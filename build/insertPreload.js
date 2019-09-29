@@ -7,7 +7,7 @@
  * @Date: 2019-01-17 11:42:24
  */
 
-const PLUGIN_NAME = 'insert-preload' // 插件名
+const PLUGIN_NAME = 'insert-preload'
 
 /** 插入 preload 的资源插件
  */
@@ -15,7 +15,8 @@ module.exports = class {
   /**
    * @param {Object} option 选项
    *  {
-   *    runtime:String 待移除preload的runtime名，falsy: 不移除, true = 'runtime', String: 指定名字
+   *    runtime:String 待移除preload的runtime名
+   *      falsy: 不移除, true = 'runtime', String: 指定名字
    *    defer:Boolean 脚本是否defer 默认true
    *    async:Boolean 脚本是否async 默认false (和defer只能有一个)
    *  }

@@ -1,6 +1,6 @@
 # 不执行样式检查文件列表
 dist/
-build/
+compile/
 public/css/
 src/**/theme/export/
 *.min.css

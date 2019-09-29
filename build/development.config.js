@@ -54,7 +54,7 @@ module.exports = function(config) {
   // 补全html插入资源
   config
     .plugin('insert-preload')
-    .use(require('path').join(process.cwd(), 'scripts/insertPreload.js'))
+    .use(require('path').join(process.cwd(), 'build/insertPreload.js'))
   // stylelint
   config.plugin('stylelint').use('stylelint-bare-webpack-plugin', [
     {

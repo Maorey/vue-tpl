@@ -5,6 +5,7 @@
  */
 const path = require('path')
 const rename = require('./rename')
+const themeLoader = require('./themeLoader.js')
 
 const RUNTIME_CHUNK = 'runtime'
 
@@ -53,10 +54,12 @@ function plugin(config, DIR) {
   // config
   //   .plugin('hash-module')
   //   .use(require('webpack').HashedModuleIdsPlugin, [{ hashDigestLength: 5 }])
-  // 补全html插入资源 & 打包主题
+  // 多主题
+  config.plugin('theme-loader').use(themeLoader.plugin)
+  // 补全html插入资源
   config
     .plugin('insert-preload')
-    .use(path.join(DIR, 'scripts/insertPreload.js'), [
+    .use(path.join(DIR, 'build/insertPreload.js'), [
       { runtime: RUNTIME_CHUNK, defer: true },
     ])
   // runtime Chunk 内联到html
@@ -246,14 +249,38 @@ function optimization(config) {
 
 /** webpack 配置
  * @param {chainWebpack} config 配置对象
+ * @param {Object} ENV 环境变量
  *  https://github.com/neutrinojs/webpack-chain#getting-started
  */
-module.exports = function(config) {
+module.exports = function(config, ENV) {
   const DIR = process.cwd()
   config.merge({
     // https://webpack.js.org/configuration/other-options/#recordspath
-    recordsPath: path.join(DIR, 'scripts/records.json'),
+    recordsPath: path.join(DIR, 'build/records.json'),
   })
+  // 打包多主题
+  if (themeLoader.init(ENV).THEMES) {
+    const name = 'theme-loader'
+    const loader = path.join(DIR, 'build/themeLoader.js')
+    config.module
+      .rule('vue')
+      .use(name)
+      .loader(loader)
+      .before('vue-loader')
+    config.module
+      .rule('js')
+      .use(name)
+      .loader(loader)
+    config.module
+      .rule('ts')
+      .use(name)
+      .loader(loader)
+    config.module
+      .rule('tsx')
+      .use(name)
+      .loader(loader)
+  }
+
   fileName(config)
   plugin(config, DIR)
 

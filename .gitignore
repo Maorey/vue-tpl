@@ -2,11 +2,10 @@
 .DS_Store
 node_modules
 /dist
-/build
+/compile
 
 # 测试
 /tests/e2e/reports/
-selenium-debug.log
 
 # 本地环境变量
 .env.local

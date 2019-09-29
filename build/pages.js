@@ -28,7 +28,8 @@ const MINIFY = {
   removeComments: true, // 移除注释
   collapseWhitespace: true, // 去多余空格
   removeAttributeQuotes: true, // 去属性括号
-  collapseBooleanAttributes: true, // 去Boolean属性 比如: checked="checked" => checked
+  // 去Boolean属性 比如: checked="checked" => checked
+  collapseBooleanAttributes: true,
   removeScriptTypeAttributes: true, // 去脚本类型属性
 }
 

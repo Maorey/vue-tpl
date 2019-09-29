@@ -13498,7 +13498,12 @@ zdog@^1.1.0:
   resolved "https://registry.yarnpkg.com/zdog/-/zdog-1.1.0.tgz#88b60a73e5c8a11fcf0c29d28c0339553ffe9566"
   integrity sha512-PlgvESx/LKMnHbfRdGvpXn/QpoDK6jmO4HyxtydIXcMYt6qr1DMwNsiqJIiU1ibryKEnlFl/JyNrNe9Tk0+Y9w==
 
-zrender@4.1.0, zrender@^4.1.0:
+zrender@4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/zrender/-/zrender-4.1.0.tgz#866ab97d0744c473d9b314ac5a89e7207c140608"
   integrity sha512-PkWDpBSRIZAKyBBSkizWCP5/bIL5s/+W+FM/AwkivN4m4QCVH04PS0nJmBB/E6CnUNQv9ZPfIV4tthg1qEP1gg==
+
+zrender@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/zrender/-/zrender-4.1.1.tgz#201e58a55cf1a7e973e1dbad3c15596ef8779f54"
+  integrity sha512-epy1rl82dP/JKxhZl+JRfwcZjobKOoynxBzvBZJBPjmDMAxBE4grLjDryx8BHkHlKyWsUkis4XEL2wN61w5l4w==

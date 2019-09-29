@@ -6,11 +6,11 @@
 const ENV = process.env // 环境变量
 const isProd = ENV.NODE_ENV === 'production' // 是否生产环境
 
-const pages = require('./scripts/pages')(isProd) // 自动检测并返回页面入口设置
+const pages = require('./build/pages')(isProd) // 自动检测并返回页面入口设置
 const ALIAS = {} // 别名字典
 
 // 输出图形
-const FIGURE = require('./scripts/figure')
+const FIGURE = require('./build/figure')
 // eslint-disable-next-line no-console
 console.log(
   '\033[3' + // eslint-disable-line no-octal-escape
@@ -33,16 +33,16 @@ module.exports = {
   pages,
 
   /// 【配置样式】 ///
-  css: require('./scripts/css')(isProd, ALIAS, ENV),
+  css: require('./build/css')(isProd, ALIAS, ENV),
 
   /// 【开发服务器配置】 ///
-  devServer: require('./scripts/devServer')(ENV),
+  devServer: require('./build/devServer')(ENV),
 
   /// 【webpack配置】 ///
   // https://github.com/neutrinojs/webpack-chain#getting-started
   chainWebpack(config) {
     /// 【设置目录别名 已有: @ => src 】 ///
-    require('./scripts/alias')(pages, config, ALIAS)
+    require('./build/alias')(pages, config, ALIAS)
 
     /// 不处理的依赖库 ///
     // 在html模板引入了会创建全局变量的js后可以设置以在src中使用这个全局变量
@@ -52,7 +52,7 @@ module.exports = {
 
     /// 【不同环境配置】 ///
     require(isProd
-      ? './scripts/production.config'
-      : './scripts/development.config')(config)
+      ? './build/production.config'
+      : './build/development.config')(config, ENV)
   },
 }
