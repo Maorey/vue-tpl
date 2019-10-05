@@ -17,7 +17,7 @@ type Compare = (a: any, b: any) => number | boolean | null | undefined
 
 /** 升序
  */
-const ASC: Compare = (a: any, b: any): any => a > b
+const ASC: Compare = (a: any, b: any) => a > b
 // const ASC: Compare = (a: any, b: any): 0 | boolean => (a === b ? 0 : a > b)
 
 /** 目标值是否基础类型
@@ -25,7 +25,7 @@ const ASC: Compare = (a: any, b: any): any => a > b
  *
  * @returns {Boolean} 是否基础类型
  */
-function isBaseType(value: any): boolean {
+function isBaseType(value: any) {
   return (
     value === null ||
     value === undefined ||
@@ -47,12 +47,12 @@ function isBaseType(value: any): boolean {
  *
  * @returns {Array} 原数组
  */
-function sort(
-  array: any[],
+function sort<T>(
+  array: T[],
   compare: Compare = ASC,
   start?: number,
   end?: number
-): any[] {
+): T[] {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)
 

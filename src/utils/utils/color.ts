@@ -28,7 +28,7 @@ const REG_RGB = /rgba?\s*\(\s*(\d+\s*,\s*\d+\s*,\s*\d+)\s*,?\s*(\d+\.?\d+?)?\s*\
  * parseInt(string, radix)
  * Number.prototype.toString(radix) 数字toString可以设置进制,默认10
  */
-const PARSEINT = (str: string): number => parseInt(str)
+const PARSEINT = (str: string) => parseInt(str)
 /** 颜色转rgb(a)
  * @test true
  *
@@ -43,7 +43,7 @@ function toRGB(
   color: string,
   opacity?: number | null | Alpha,
   filter?: Filter
-): string {
+) {
   color = color.trim()
   // 非字符串或空字符串返回空字符串
   if (!color) {
@@ -54,7 +54,7 @@ function toRGB(
   color === 'transparent' && (color = 'rgba(0,0,0,0)')
 
   let rgb: number[] // rgb色值数组
-  let alpha: number = NaN // 透明度
+  let alpha = NaN // 透明度
   let tmp: any // 临时变量
 
   /// hex3/hex颜色处理 ///
@@ -115,7 +115,7 @@ function toRGB(
  *
  * @returns {Boolean}
  */
-function isTransparent(color: string): boolean {
+function isTransparent(color: string) {
   let transparent = true
 
   toRGB(color, (alpha: number) => {
@@ -137,10 +137,10 @@ function fitColor(
   color: string,
   ratio: number = 0.25,
   opacity?: number | null | Alpha
-): string {
-  return toRGB(color, opacity, (rgb: number[]): void => {
+) {
+  return toRGB(color, opacity, (rgb: number[]) => {
     let value: number
-    let i: number = 3
+    let i = 3
     while (i--) {
       value = rgb[i]
       rgb[i] =
@@ -152,8 +152,8 @@ function fitColor(
   })
 }
 
-const FILLER_REVERSE = (rgb: number[]): void => {
-  let i: number = 3
+const FILLER_REVERSE = (rgb: number[]) => {
+  let i = 3
   while (i--) {
     rgb[i] = 255 - rgb[i]
   }
@@ -171,7 +171,7 @@ function reverseColor(
   color: string,
   filter: Filter = FILLER_REVERSE,
   opacity?: number | null | Alpha
-): string {
+) {
   return toRGB(color, opacity, filter)
 }
 

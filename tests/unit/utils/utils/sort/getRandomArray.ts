@@ -1,7 +1,7 @@
 /** 获取随机数组
  * @param {number} arrayLength 随机数组长度
  */
-function getRandomArray(arrayLength: number = 10000): number[] {
+function getRandomArray(arrayLength = 10000) {
   const testArray: number[] = []
 
   while (arrayLength--) {

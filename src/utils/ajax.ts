@@ -50,7 +50,7 @@ const dataStore = new Memory(CONFIG.apiMaxCache, CONFIG.apiCacheAlive)
  *
  * @returns {String} 字符串
  */
-function toString(value: any): string {
+function toString(value: any) {
   switch (typeof value) {
     case 'object':
       return JSON.stringify(value)
@@ -63,22 +63,20 @@ function toString(value: any): string {
  * @param {String} url 资源地址
  * @param {Object<any>} params 查询参数
  */
-function getKEY(url: string, params?: IObject): string {
-  const part: string[] = url.split('?') // 提取查询参数
+function getKEY(url: string, params?: IObject) {
+  const part = url.split('?') // 提取查询参数
   // 处理查询参数
-  let query: string = part[1]
-
+  let query = part[1]
   query &&
     (params = clone(
       JSON.parse(`{${query.replace(/&/g, ',').replace(/=/g, ':')}}`),
       params
     ))
-
   query = '.'
+
   // 按key升序排列 拼接字符
   if (params) {
-    let key: string
-    for (key of sort(Object.keys(params))) {
+    for (let key of sort(Object.keys(params))) {
       query += `${key}.${toString(params[key])}.`
     }
   }
@@ -115,7 +113,7 @@ function request(
   if (cache) {
     return cache
   }
-  const shouldCache: boolean = !config.noCache && config.method === 'get'
+  const shouldCache = !config.noCache && config.method === 'get'
   // 使用缓存的get请求
   if (shouldCache) {
     cache = dataStore.get(KEY)
@@ -123,18 +121,18 @@ function request(
       return Promise.resolve(cache)
     }
   }
-  const alive: number = Number(config.alive) || 0
+  const alive = Number(config.alive) || 0
 
   return requestQueue.set(
     KEY,
     AXIOS.request(config)
-      .then((res: any): any => {
+      .then((res: any) => {
         shouldCache && dataStore.set(KEY, res, alive) // 设置缓存
         requestQueue.remove(KEY) // 移除请求队列
 
         return res
       })
-      .catch((error: any): any => {
+      .catch((error: any) => {
         requestQueue.remove(KEY) // 移除请求队列
 
         throw error

@@ -13,8 +13,8 @@
  * @param {String} val 值
  * @param {Number} expires 过期时间（小时）
  */
-function set(key: string, val: string, expires?: number): void {
-  let str: string = encodeURIComponent(key) + '=' + encodeURIComponent(val)
+function set(key: string, val: string, expires?: number) {
+  let str = encodeURIComponent(key) + '=' + encodeURIComponent(val)
 
   if (expires) {
     // 过期时间
@@ -28,11 +28,11 @@ function set(key: string, val: string, expires?: number): void {
 }
 
 // 这点内存可以花
-const REG_REPLACE: RegExp = /[-.+*]/g
-const REG_REPLACE_STRING: string = '\\$&'
+const REG_REPLACE = /[-.+*]/g
+const REG_REPLACE_STRING = '\\$&'
 
-const REG_GET_BEFORE: string = '(?:(?:^|.*;)\\s*'
-const REG_GET_AFTER: string = '\\s*\\=\\s*([^;]*).*$)|^.*$'
+const REG_GET_BEFORE = '(?:(?:^|.*;)\\s*'
+const REG_GET_AFTER = '\\s*\\=\\s*([^;]*).*$)|^.*$'
 /** 获取指定key的cookie
  * @test true
  *
@@ -40,7 +40,7 @@ const REG_GET_AFTER: string = '\\s*\\=\\s*([^;]*).*$)|^.*$'
  *
  * @returns {String} 值
  */
-function get(key: string): string {
+function get(key: string) {
   return decodeURIComponent(
     document.cookie.replace(
       new RegExp(
@@ -53,8 +53,8 @@ function get(key: string): string {
   )
 }
 
-const REG_HAS_BEFORE: string = '(?:^|;\\s*)'
-const REG_HAS_AFTER: string = '\\s*\\='
+const REG_HAS_BEFORE = '(?:^|;\\s*)'
+const REG_HAS_AFTER = '\\s*\\='
 /** 是否包含指定键的cookie
  * @test true
  *
@@ -62,7 +62,7 @@ const REG_HAS_AFTER: string = '\\s*\\='
  *
  * @returns {Boolean}
  */
-function has(key: string): boolean {
+function has(key: string) {
   return new RegExp(
     REG_HAS_BEFORE +
       encodeURIComponent(key).replace(REG_REPLACE, REG_REPLACE_STRING) +
@@ -81,7 +81,7 @@ interface IEntry {
   v: string
 }
 function stringToEntry(str: string): IEntry {
-  const strSplit: string[] = str.split('=')
+  const strSplit = str.split('=')
 
   return {
     k: decodeURIComponent(strSplit[0].trim()),
@@ -103,7 +103,7 @@ const EXPIRED = '=;expires=Thu, 01 Jan 1970 00:00:00 GMT'
  *
  * @param {String} key 键
  */
-function remove(key: string): void {
+function remove(key: string) {
   document.cookie = encodeURIComponent(key) + EXPIRED
 }
 

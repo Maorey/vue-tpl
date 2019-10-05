@@ -7,17 +7,27 @@ import { Memory, IPool } from '@/utils/storage'
 import { IObject } from '@/types'
 
 /** 保留字枚举, 如下(允许使用转义字符\来输出保留字):
- * y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
- * M: 一到二位，表示月 MM: 始终两位数字 比如7月 => 07 (MM) 7 (M)
- * d: 一到二位，表示日
- * w：一到二位，表示周，比如 w=周四 ww=星期四
  *
- * h：一到二位，表示12小时制的小时
- * H：一到二位，表示24小时制的小时
- * t：一到二位，表示上午或下午 t=下 tt=下午
- * m：一到二位，表示分钟
- * s：一到二位，表示秒钟
- * n: 一到三位，表示毫秒数
+ *  y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
+ *
+ *  M: 一到二位，表示月 MM: 始终两位数字 比如7月 => 07 (MM) 7 (M)
+ *
+ *  d: 一到二位，表示日
+ *
+ *  w: 一到二位，表示周，比如 w=周四 ww=星期四
+ *
+ *  h: 一到二位，表示12小时制的小时
+ *
+ *  H: 一到二位，表示24小时制的小时
+ *
+ *  t: 一到二位，表示上午或下午 t=下 tt=下午
+ *
+ *  m: 一到二位，表示分钟
+ *
+ *  s: 一到二位，表示秒钟
+ *
+ *  n: 一到三位，表示毫秒数
+ *
  */
 const enum Reserve {
   // 年月日星期
@@ -52,7 +62,7 @@ const RESERVED =
  *
  * @returns {Number}
  */
-const getReserveMaxRepeat = (char: any): number => {
+const getReserveMaxRepeat = (char: any) => {
   switch (char) {
     case Reserve.year:
       return 4
@@ -92,10 +102,10 @@ interface IResult {
 
 /** 正则表达式保留字
  */
-const RESERVE_REG: string = '`|{}[]()*?+.^$!'
+const RESERVE_REG = '`|{}[]()*?+.^$!'
 /** 转义字符
  */
-const ESCAPE: string = '\\'
+const ESCAPE = '\\'
 /** 格式处理结果缓存
  */
 const CACHE = new Memory()
@@ -110,14 +120,14 @@ function getFormat(format: string): IResult {
     return result
   }
 
-  const LENGTH: number = format.length
+  const LENGTH = format.length
   const group: IGroup[] = []
   let reserveRepeat: number
   let reserveMaxRepeat: number
-  let regString: string = ''
+  let regString = ''
   let currentChar: string
   let nextChar: string
-  let index: number = 0
+  let index = 0
   while (index < LENGTH) {
     currentChar = format[index]
 
@@ -164,7 +174,7 @@ function getFormat(format: string): IResult {
   })
 }
 
-const ISO_DATE_FORMAT: string = 'yyyy-MM-ddTHH:mm:ss.nnnZ'
+const ISO_DATE_FORMAT = 'yyyy-MM-ddTHH:mm:ss.nnnZ'
 getFormat(ISO_DATE_FORMAT) // warm 下
 
 const REG_NUM_REG = /\(\\d\{\d(,\d)?\}\)/g
@@ -177,24 +187,33 @@ const REG_RESERVE = new RegExp(
  *
  * @param {Date} date 日期对象
  * @param {String} format 格式，保留字如下
- * y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
- * M: 一到二位，表示月 MM: 始终两位数字 比如7月 => 07 (MM) 7 (M)
- * d: 一到二位，表示日
- * w：一到二位，表示周，比如 w=周四 ww=星期四
  *
- * h：一到二位，表示12小时制的小时
- * H：一到二位，表示24小时制的小时
- * t：一到二位，表示上午或下午 t=下 tt=下午
- * m：一到二位，表示分钟
- * s：一到二位，表示秒钟
- * n: 一到三位，表示毫秒数
+ *  y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
+ *
+ *  M: 一到二位，表示月 MM: 始终两位数字 比如7月 => 07 (MM) 7 (M)
+ *
+ *  d: 一到二位，表示日
+ *
+ *  w: 一到二位，表示周，比如 w=周四 ww=星期四
+ *
+ *  h: 一到二位，表示12小时制的小时
+ *
+ *  H: 一到二位，表示24小时制的小时
+ *
+ *  t: 一到二位，表示上午或下午 t=下 tt=下午
+ *
+ *  m: 一到二位，表示分钟
+ *
+ *  s: 一到二位，表示秒钟
+ *
+ *  n: 一到三位，表示毫秒数
  *
  * @returns {String} 格式化的日期字符串
  */
-function formatDate(date: Date, format: string = ISO_DATE_FORMAT): string {
+function formatDate(date: Date, format = ISO_DATE_FORMAT) {
   const { t, g } = getFormat(format)
 
-  let index: number = 0
+  let index = 0
   let item: IGroup
 
   // 正则规则的(\d{1,2}) 换成对应内容（再把保留字转回来）
@@ -295,24 +314,33 @@ const REPLACE_NOON = (match: string, slot: string) =>
  *
  * @param {String} dateString 日期字符串
  * @param {String} format 格式，保留字如下
- * y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
- * M: 一到二位，表示月 MM: 始终两位数字 比如7月 => 07 (MM) 7 (M)
- * d: 一到二位，表示日
- * w：一到二位，表示周，比如 w=周四 ww=星期四
  *
- * h：一到二位，表示12小时制的小时
- * H：一到二位，表示24小时制的小时
- * t：一到二位，表示上午或下午 t=下 tt=下午
- * m：一到二位，表示分钟
- * s：一到二位，表示秒钟
- * n: 一到三位，表示毫秒数
+ *  y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
+ *
+ *  M: 一到二位，表示月 MM: 始终两位数字 比如7月 => 07 (MM) 7 (M)
+ *
+ *  d: 一到二位，表示日
+ *
+ *  w: 一到二位，表示周，比如 w=周四 ww=星期四
+ *
+ *  h: 一到二位，表示12小时制的小时
+ *
+ *  H: 一到二位，表示24小时制的小时
+ *
+ *  t: 一到二位，表示上午或下午 t=下 tt=下午
+ *
+ *  m: 一到二位，表示分钟
+ *
+ *  s: 一到二位，表示秒钟
+ *
+ *  n: 一到三位，表示毫秒数
  *
  * @returns {Date} Date对象
  */
 function getDateByString(
   dateString: string,
   format: string | IResult = ISO_DATE_FORMAT,
-  tryHistory: boolean = true
+  tryHistory = true
 ): Date | void {
   const { r, g } = typeof format === 'string' ? getFormat(format) : format
 
@@ -326,10 +354,10 @@ function getDateByString(
     .replace(r, (...args) => {
       info || (info = {})
 
-      const length: number = g.length
+      const length = g.length
 
       let key: string
-      let i: number = 0
+      let i = 0
       while (i < length) {
         key = g[i].k
         info[key] = Math.max(info[key] || 0, parseInt(args[i + 1]))
@@ -341,7 +369,7 @@ function getDateByString(
     })
 
   if (info) {
-    // Date构造方法参数列表：年月日时分秒毫秒，有undefined报Invalid Date，就不会忽略一下？
+    // Date构造方法参数列表: 年月日时分秒毫秒，有undefined报Invalid Date，就不会忽略一下？
     const date = new Date()
 
     isNaN(info[Reserve.year]) || date.setFullYear(info[Reserve.year])
@@ -360,8 +388,7 @@ function getDateByString(
     return date
   } else if (tryHistory) {
     // 从记录中尝试
-    let item: IPool
-    for (item of CACHE.pool) {
+    for (let item of CACHE.pool) {
       const result = getDateByString(dateString, item.v, false)
       if (result) {
         return result

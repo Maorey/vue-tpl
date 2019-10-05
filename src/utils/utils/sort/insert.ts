@@ -15,20 +15,20 @@ import { ASC, Compare } from './'
  *
  * @returns {Array} 原数组
  */
-function insertSort(
-  array: any[],
+function insertSort<T>(
+  array: T[],
   compare: Compare = ASC,
   start?: number,
   end?: number
-): any[] {
+): T[] {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)
 
   if (start < end) {
-    let temp: any
-    let current: any
+    let temp: T
+    let current: T
     let pointer: number
-    let anchor: number = start
+    let anchor = start
     while (anchor++ < end) {
       current = array[(pointer = anchor)]
       while (
@@ -46,7 +46,7 @@ function insertSort(
 
 /// 耗时 ///
 // const testArray: number[] = []
-// let last: number = 10000
+// let last = 10000
 // while (last--) {
 //   testArray.push(Math.random() * last)
 // }
@@ -60,11 +60,11 @@ function insertSort(
 // console.timeEnd('cost')
 // // cost: 2ms
 // console.time('cost')
-// insertSort(testArray, (a: number, b: number): boolean => a < b)
+// insertSort(testArray, (a: number, b: number) => a < b)
 // console.timeEnd('cost')
 // // cost: 780ms ┐(：´ゞ｀)┌
 // console.time('cost')
-// insertSort(testArray, (): boolean => Math.random() > 0.5)
+// insertSort(testArray, () => Math.random() > 0.5)
 // console.timeEnd('cost')
 // // cost: 6ms 不够乱
 
@@ -80,16 +80,16 @@ function insertSort(
  *
  * @returns {Number} end应插入位置
  */
-function findByBinary(
-  array: any[],
+function findByBinary<T>(
+  array: T[],
   compare: Compare = ASC,
   start?: number,
   end?: number
-): number {
+) {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)
 
-  const current: any = array[end]
+  const current = array[end]
   // 先检查边界情况
   if (Number(compare(array[start], current)) > 0) {
     return start
@@ -99,8 +99,8 @@ function findByBinary(
   }
   // 二分查找插入位置
   let mid: number
-  let high: number = end - 2
-  let low: number = start + 1
+  let high = end - 2
+  let low = start + 1
   while (low <= high) {
     mid = (low + high) >> 1 // 除2向下取整
     if (Number(compare(array[mid], current)) > 0) {
@@ -122,9 +122,9 @@ function findByBinary(
  *
  * @returns {Array} 原数组
  */
-function bubble(array: any[], a: number, b: number): any[] {
+function bubble<T>(array: T[], a: number, b: number): T[] {
   if (b > a) {
-    const current: any = array[b]
+    const current = array[b]
 
     while (b > a) {
       array[b] = array[--b]
@@ -145,20 +145,20 @@ function bubble(array: any[], a: number, b: number): any[] {
  *
  * @returns {Array} 原数组
  */
-function insertSortBinary(
-  array: any[],
+function insertSortBinary<T>(
+  array: T[],
   compare: Compare = ASC,
   start?: number,
   end?: number
-): any[] {
+): T[] {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)
 
   let low: number
   let mid: number
   let high: number
-  let current: any
-  let curr: number = start
+  let curr = start
+  let current: T
   while (curr++ < end) {
     current = array[curr]
     // 先检查边界情况
@@ -193,7 +193,7 @@ function insertSortBinary(
 
 /// 耗时 ///
 // const testArray: number[] = []
-// let last: number = 10000
+// let last = 10000
 // while (last--) {
 //   testArray.push(Math.random() * last)
 // }
@@ -207,11 +207,11 @@ function insertSortBinary(
 // console.timeEnd('cost')
 // // cost: 3.5ms
 // console.time('cost')
-// insertSortBinary(testArray, (a: number, b: number): boolean => a < b)
+// insertSortBinary(testArray, (a: number, b: number) => a < b)
 // console.timeEnd('cost')
 // // cost: 62ms
 // console.time('cost')
-// insertSortBinary(testArray, (): boolean => Math.random() > 0.5)
+// insertSortBinary(testArray, () => Math.random() > 0.5)
 // console.timeEnd('cost')
 // // cost: 31ms 不够乱
 

@@ -28,7 +28,7 @@ interface IPool extends IKeyVal {
 class Memory {
   /** 存储池
    */
-  public pool: IPool[]
+  pool: IPool[]
   /** 最大缓存数量，默认30
    */
   protected max: number
@@ -45,7 +45,7 @@ class Memory {
    *
    * @returns {Object} Memory实例
    */
-  constructor(max: number = 30, alive: number = 0) {
+  constructor(max = 30, alive = 0) {
     this.max = max
     this.alive = alive
 
@@ -63,12 +63,12 @@ class Memory {
    *
    * @returns {Any} 见option
    */
-  public get(key: any, option?: number, pool?: IPool[] | IKeyVal[]): any {
+  get(key: any, option?: number, pool?: IPool[] | IKeyVal[]) {
     pool || (pool = this.pool)
 
     // 从后往前找
     let tmp: IPool | IKeyVal
-    let index: number = pool.length
+    let index = pool.length
     while (index--) {
       tmp = pool[index]
 
@@ -96,11 +96,11 @@ class Memory {
    *
    * @returns {Any} val 存储值
    */
-  public set(key: any, value: any, expires?: number): any {
+  set(key: any, value: any, expires?: number) {
     expires === undefined && (expires = this.alive)
     clearTimeout(this.get(key, 1, this.out)) // 先清除该key的timeout
 
-    const tmp: any = this.get(key, 0) // 获取{key, val}
+    const tmp = this.get(key, 0) // 获取{key, val}
     if (tmp) {
       // 更新值
       tmp.v = value
@@ -124,7 +124,7 @@ class Memory {
    *
    * @returns {Any} key对应的val
    */
-  public remove(key: any): any {
+  remove(key: any) {
     clearTimeout(this.get(key, 1, this.out)) // 同时移除timeout队列
 
     return this.get(key, 1)
@@ -132,10 +132,9 @@ class Memory {
 
   /** 清空存储
    */
-  public clear(): void {
+  clear() {
     // 清空timeout队列
-    let item: IKeyVal
-    for (item of this.out) {
+    for (let item of this.out) {
       clearTimeout(item.v)
     }
 
@@ -144,18 +143,14 @@ class Memory {
   }
 
   // 去掉使用次数最低的
-  private elim(): void {
-    const pool: IPool[] = this.pool
+  private elim() {
+    const pool = this.pool
 
-    let index: number = 0 // 待移除项下标
-    let item: IPool = pool[0] // 待移除项
+    let index = 0 // 待移除项下标
+    let item = pool[0] // 待移除项
 
     // 只从前一半里找
-    for (
-      let i: number = 1, LEN: number = pool.length / 2, count: number = item.c;
-      i < LEN;
-      i++
-    ) {
+    for (let i = 1, LEN = pool.length / 2, count = item.c; i < LEN; i++) {
       if (!count) {
         // 使用次数为0(没有get过)
         break
@@ -176,10 +171,10 @@ class Memory {
 
 /** 本地存储
  */
-const STORAGE: Storage = window.localStorage
+const STORAGE = window.localStorage
 /** 提取时间戳
  */
-const REG_TIMESPAN: RegExp = /^(\d+)(.*)$/
+const REG_TIMESPAN = /^(\d+)(.*)$/
 /** timeout字典
  */
 let timeoutDic: IObject<number> = {}
@@ -194,10 +189,10 @@ const local = {
    * @returns {Object} key对应的值
    */
   get(key: string): IObject | undefined {
-    let item: string | null = STORAGE.getItem(key)
+    let item = STORAGE.getItem(key)
 
     if (item) {
-      const execArray: string[] | null = REG_TIMESPAN.exec(item) // 提取数据
+      const execArray = REG_TIMESPAN.exec(item) // 提取数据
 
       if (execArray) {
         if (Date.now() > parseInt(execArray[1])) {
@@ -252,17 +247,16 @@ const local = {
     clearTimeout(timeoutDic[key])
     delete timeoutDic[key]
 
-    const value: IObject | undefined = this.get(key) // 获取值
+    const value = this.get(key) // 获取值
     STORAGE.removeItem(key) // 移除存储
 
     return value
   },
   /** 清空存储
    */
-  clear(): void {
+  clear() {
     // 清空timeout
-    let key: string
-    for (key in timeoutDic) {
+    for (let key in timeoutDic) {
       clearTimeout(timeoutDic[key])
     }
 

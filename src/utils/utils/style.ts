@@ -14,10 +14,8 @@ const TAIL_STRING = '\\s*:\\s*(.*?)\\s*;'
  *
  * @returns {String}
  */
-function getValue(style: string, name: string): string {
-  const result: string[] | null = new RegExp(
-    PREV_STRING + name + TAIL_STRING
-  ).exec(style)
+function getValue(style: string, name: string) {
+  const result = new RegExp(PREV_STRING + name + TAIL_STRING).exec(style)
 
   return result ? result[1] : ''
 }
@@ -30,7 +28,7 @@ function getValue(style: string, name: string): string {
  *
  * @returns {String}
  */
-function getStyleByName(style: string | IObject<string>, name: string): string {
+function getStyleByName(style: string | IObject<string>, name: string) {
   if (style && name) {
     const kebabName = camelToKebab(name)
 
@@ -111,7 +109,7 @@ function styleToObject(
   // const quot = /"+/g // 转义双引号
 
   /// RegExp.exec【更快】 ///
-  let json: string = '{'
+  let json = '{'
   let temp: [string, string] | string | boolean | void
   let result: string[] | null
   // 不这么写不能得到下一次匹配...
@@ -173,7 +171,7 @@ function objectToStyle(
     value: string,
     styleObject?: IObject<string>
   ) => [string, string] | string | boolean | void
-): string {
+) {
   if (typeof styleObj === 'string') {
     return styleObj // 原样返回
   }
@@ -202,11 +200,10 @@ function objectToStyle(
   //   : ''
 
   /// 结果字符串短的时候，还是字符串拼接最快 ///
-  let css: string = ''
-  let key: string
+  let css = ''
   let value: string
   let temp: [string, string] | string | boolean | void
-  for (key in styleObj) {
+  for (let key in styleObj) {
     value = styleObj[key]
     key = camelToKebab(key)
 
@@ -256,7 +253,7 @@ function updateStyle(
     current?: IObject<string>,
     target?: IObject<string>
   ) => [string, string] | string | boolean | void
-): string {
+) {
   if (!current) {
     // 当前为空
     return objectToStyle(target, filter) || ''
@@ -264,10 +261,9 @@ function updateStyle(
     current = styleToObject(current) as IObject<string>
     target = styleToObject(target) as IObject<string>
 
-    let key: string
     let value: string
     let temp: [string, string] | string | boolean | void
-    for (key in target) {
+    for (let key in target) {
       value = target[key]
 
       if (filter) {

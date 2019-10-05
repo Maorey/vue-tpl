@@ -10,12 +10,9 @@
  *
  * @returns {Number|{ top: number; left: number } } 见flag
  */
-function getOffset(
-  dom: any,
-  flag?: boolean
-): number | { top: number; left: number } {
-  let top: number = 0
-  let left: number = 0
+function getOffset(dom: any, flag?: boolean) {
+  let top = 0
+  let left = 0
 
   do {
     flag || (left += dom.offsetLeft)
@@ -60,22 +57,22 @@ class HtmlInfo extends Array<ITag> {
    * @returns {ITag|void} 标签信息|undefined
    */
   public get(
-    tagName: string = '',
-    attributeName: string = '',
-    value: string = '',
+    tagName = '',
+    attributeName = '',
+    value = '',
     compare: (
       item: ITag,
       tagName: string,
       attributeName: string,
       value: string
     ) => boolean | void = IS_EQUAL
-  ): ITag | void {
+  ) {
     tagName = tagName.trim()
     attributeName = attributeName.trim()
     value = value.trim()
 
     let item: ITag
-    let i: number = this.length
+    let i = this.length
     while (i--) {
       item = this[i]
       if (compare(item, tagName, attributeName, value)) {
@@ -185,9 +182,9 @@ function getInfoByHtml(html: string): HtmlInfo {
   return htmlInfo
 }
 
-const REG_TAGS: RegExp = /<\/?\s*(\w+).*?\/?>/gi
+const REG_TAGS = /<\/?\s*(\w+).*?\/?>/gi
 // 标签黑名单
-const TAGS: string[] = ['html', 'head', 'meta', 'body', 'link', 'script']
+const TAGS = ['html', 'head', 'meta', 'body', 'link', 'script']
 const REPLACE_TAG = (match: string, tag: string) =>
   TAGS.includes(tag.toLowerCase())
     ? `&lt;${match.substring(1, match.length - 1)}&gt;`
@@ -198,7 +195,7 @@ const REPLACE_TAG = (match: string, tag: string) =>
  *
  * @param {String} html
  */
-function escapeHTML(html: string): string {
+function escapeHTML(html: string) {
   html = html.trim()
   if (!html) {
     return html

@@ -30,7 +30,7 @@ module.exports = function(des = '', DIC = {}) {
    * @param {WebpackModule} module webpack模块
    */
   return module => {
-    let name = '.' // 前缀
+    let name = '_' // 前缀
     for (let chunk of module.chunksIterable) {
       name += short(chunk.name)
     }

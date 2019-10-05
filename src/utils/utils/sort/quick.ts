@@ -8,7 +8,7 @@ import { ASC, Compare } from '.'
 
 /** 使用插入排序阈值
  */
-const LOW: number = 6
+const LOW = 6
 
 // 将这些变量放入执行上下文
 /** 待排序数组
@@ -26,11 +26,11 @@ const empty: any = null
  * @param {Number} start 数组起始索引（含）
  * @param {Number} end 数组结束索引（含）
  */
-function insertSort(start: number, end: number): void {
-  let temp: any
-  let current: any
+function insertSort(start: number, end: number) {
+  let temp
+  let current
   let pointer: number
-  let anchor: number = start
+  let anchor = start
   while (anchor++ < end) {
     current = LIST[(pointer = anchor)]
     while (
@@ -47,7 +47,7 @@ function insertSort(start: number, end: number): void {
  * @param {Number} p1
  * @param {Number} p2
  */
-function swap(p1: number, p2: number): void {
+function swap(p1: number, p2: number) {
   ;[LIST[p1], LIST[p2]] = [LIST[p2], LIST[p1]]
 }
 
@@ -57,8 +57,8 @@ function swap(p1: number, p2: number): void {
  *
  * @returns {Any} 基准
  */
-function findPivot(start: number, end: number): any {
-  const pivot: number = (start + end) >> 1
+function findPivot(start: number, end: number) {
+  const pivot = (start + end) >> 1
 
   contrast(LIST[start], LIST[pivot]) && swap(start, pivot)
   contrast(LIST[start], LIST[end]) && swap(start, end)
@@ -73,13 +73,13 @@ function findPivot(start: number, end: number): any {
  * @param {Number} start 数组起始索引（含）
  * @param {Number} end 数组结束索引（含）
  */
-function partition(start: number, end: number): void {
+function partition(start: number, end: number) {
   if (end - start < LOW) {
     insertSort(start, end)
   } else {
-    const pivot: any = findPivot(start, end)
-    let left: number = start + 1
-    let right: number = end - 2
+    const pivot = findPivot(start, end)
+    let left = start + 1
+    let right = end - 2
 
     while (true) {
       // 从左边开始找到第一个比pivot大的
@@ -116,12 +116,12 @@ function partition(start: number, end: number): void {
  *
  * @returns {Array} LIST 排序后的原数组
  */
-function quickSort(
-  array: any[],
+function quickSort<T>(
+  array: T[],
   compare: Compare = ASC,
   start?: number,
   end?: number
-): any[] {
+): T[] {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)
 
@@ -139,7 +139,7 @@ function quickSort(
 
 /// 耗时 ///
 // const testArray: number[] = []
-// let last: number = 10000
+// let last = 10000
 // while (last--) {
 //   testArray.push(Math.random() * last)
 // }
@@ -153,11 +153,11 @@ function quickSort(
 // console.timeEnd('cost')
 // // cost: 0.5ms
 // console.time('cost')
-// quickSort(testArray, (a: number, b: number): boolean => a < b)
+// quickSort(testArray, (a: number, b: number) => a < b)
 // console.timeEnd('cost')
 // // cost: 25ms
 // console.time('cost')
-// quickSort(testArray, (): boolean => Math.random() > 0.5)
+// quickSort(testArray, () => Math.random() > 0.5)
 // console.timeEnd('cost')
 // // cost: 6ms
 

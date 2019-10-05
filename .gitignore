@@ -5,7 +5,8 @@ node_modules
 /compile
 
 # 测试
-/tests/e2e/reports/
+/tests/e2e/videos/
+/tests/e2e/screenshots/
 
 # 本地环境变量
 .env.local

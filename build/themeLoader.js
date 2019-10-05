@@ -12,9 +12,10 @@ const INDEX = '/index.scss'
 const REG_EXTENSION = /\.scss$/
 const REG_INDEX = /\/index\.scss$/
 const REG_SCSS = /\/[^/]+\.scss$/
+const REG_LANG = /(?:^\??|&)lang=([^&]*)/
 const REG_THEME = /(?:^\??|&)theme=([^|&]*)\|?([^&]*)/
-// eslint-disable-next-line max-len
-const REG_IMPORT = /(?:[\s\n;]|^)import[\s\n]+(?:([\w\W]*?)[\s\n]+from[\s\n]+)?['"][\w\W]*\.(scss|vue)\?[\w\W]*?(?:(?:lang=|theme=)([^&]*))?[\w\W]*?['"]/g
+// require不管了
+const REG_IMPORT = /(?:^|\n)import[\s\n]+(?:([\w\W]*?)[\s\n]+from[\s\n]+)?['"][\w\W]*?\.(scss|vue)(\?[\w\W]*?)?['"]/g
 
 const PLUGIN_NAME = 'theme-loader'
 
@@ -35,8 +36,7 @@ function exists(rootDir, fileName) {
 }
 function hasPath(path) {
   if (THEMES) {
-    let temp
-    for (temp in THEMES) {
+    for (let temp in THEMES) {
       if (path === THEMES[temp]) {
         return true
       }
@@ -69,9 +69,8 @@ function init(ENV = process.env) {
       // 构建多主题
       THEMES = {}
       THEMES[THEME.name] = THEME.path
-      let file
       let name
-      for (file of fs.readdirSync(THEME_DIR, { withFileTypes: true })) {
+      for (let file of fs.readdirSync(THEME_DIR, { withFileTypes: true })) {
         file.isFile()
           ? THEME_NAME === (name = file.name.replace(REG_EXTENSION, '')) &&
             (file = 0)
@@ -91,11 +90,10 @@ function getThemeByQuery(temp) {
     let theme = temp && { name: temp[1], path: temp[2] }
     if (theme) {
       // 指定主题
-      theme.name &&
-        ((temp = THEMES && THEMES[theme.name]) || (theme.name = THEME.name))
-      hasPath(theme.path) ||
-        exists(THEME_DIR, theme.path) ||
-        (theme.path = temp || THEME.path)
+      theme.path &&
+        (hasPath(theme.path) ||
+          exists(THEME_DIR, theme.path) ||
+          (theme.path = THEME.path))
     } else {
       // 默认主题
       theme = THEME
@@ -107,15 +105,25 @@ function getThemeByQuery(temp) {
 // 多主题loader 从js源码处理多主题样式
 module.exports = function(source) {
   init()
+  typeof source === 'string' || (source = source.toString())
   this.callback(
     null,
-    (typeof source === 'string' ? source : source.toString()).replace(
-      REG_IMPORT,
-      (match, variable, search) => {
+    THEMES
+      ? source.replace(REG_IMPORT, (match, variable, type, query) => {
         // 处理多主题
+        const lang = REG_LANG.exec(query)
+        if (type === 'vue' && (!lang || lang[1] !== 'scss')) {
+          return match
+        }
+        const theme = REG_THEME.exec(query)
+        if (!theme || !theme[1]) {
+          // 注入主题
+
+          return match
+        }
         return match
-      }
-    )
+      })
+      : source // 单主题
   )
 }
 // 插件: 不同theme到不同chunk (顺便合并下小文件？)

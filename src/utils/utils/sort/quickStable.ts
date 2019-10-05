@@ -9,10 +9,10 @@ import { ASC, Compare } from '.'
 
 /** 数组长度低值:小于低值使用插入排序
  */
-const LOW: number = 6
+const LOW = 6
 /** 数组长度高值 划分时:介于低值高值左中右3数取中值,大于高值左中右各3个数取中值(9数取中)
  */
-const HIGH: number = 40
+const HIGH = 40
 // 将这些变量放入执行上下文
 /** 待排序数组
  */
@@ -29,11 +29,11 @@ const empty: any = null
  * @param {Number} start 数组起始索引（含）
  * @param {Number} end 数组结束索引（含）
  */
-function insertSort(start: number, end: number): void {
-  let temp: any
-  let current: any
+function insertSort(start: number, end: number) {
+  let temp
+  let current
   let pointer: number
-  let anchor: number = start
+  let anchor = start
   while (anchor++ < end) {
     current = LIST[(pointer = anchor)]
     while (
@@ -50,7 +50,7 @@ function insertSort(start: number, end: number): void {
  * @param {Number} p1
  * @param {Number} p2
  */
-function swap(p1: number, p2: number): void {
+function swap(p1: number, p2: number) {
   ;[LIST[p1], LIST[p2]] = [LIST[p2], LIST[p1]]
 }
 
@@ -61,18 +61,18 @@ function swap(p1: number, p2: number): void {
  *
  * @returns {Number} 中值索引
  */
-function mid3(a: number, b: number, c: number): number {
+function mid3(a: number, b: number, c: number) {
   /// ↓【所有情况】↓ ///
   // /// 至少两个相等 ///
-  // const ab: any = contrast(LIST[a], LIST[b])
+  // const ab = contrast(LIST[a], LIST[b])
   // if (ab === 0) {
   //   return b
   // }
-  // const bc: any = contrast(LIST[b], LIST[c])
+  // const bc = contrast(LIST[b], LIST[c])
   // if (bc === 0) {
   //   return b
   // }
-  // const ac: any = contrast(LIST[a], LIST[c])
+  // const ac = contrast(LIST[a], LIST[c])
   // if (ac === 0) {
   //   return b
   // }
@@ -91,12 +91,12 @@ function mid3(a: number, b: number, c: number): number {
   /// ↑【所有情况】↑ ///
 
   // 减少比较，尽早返回
-  let ab: any = contrast(LIST[a], LIST[b]) // (兼职:ac)
+  let ab = contrast(LIST[a], LIST[b]) // (兼职:ac)
   if (ab === 0) {
     return b
   }
 
-  let bc: any = contrast(LIST[b], LIST[c])
+  let bc = contrast(LIST[b], LIST[c])
   if (bc === 0) {
     return b
   }
@@ -138,7 +138,7 @@ function mid3(a: number, b: number, c: number): number {
  *
  * @returns {Array} 原数组
  */
-function partition(start: number, end: number): void {
+function partition(start: number, end: number) {
   let result: any = end - start // (打杂)
   if (result < LOW) {
     // 使用插入排序
@@ -147,7 +147,7 @@ function partition(start: number, end: number): void {
   }
   /// 选择基准 ///
   // 9 -> 4, 10 -> 4
-  let pivot: number = start + (result++ >> 1)
+  let pivot = start + (result++ >> 1)
   if (result > HIGH) {
     result = result >> 3
     pivot = mid3(
@@ -159,11 +159,11 @@ function partition(start: number, end: number): void {
     pivot = mid3(start, pivot, end)
   }
   /// 划分数组 |=pivotValue|<pivotValue|pivotValue|>pivotValue|=pivotValue| ///
-  const pivotValue: any = LIST[pivot]
-  let left: number = pivot === start ? start + 1 : start // 左扫描索引
-  let right: number = pivot === end ? end - 1 : end // 右扫描索引
-  let leftEqual: number = left // 左侧相等值<=left(不含)
-  let rightEqual: number = right // 右侧相等值>=right(不含)
+  const pivotValue = LIST[pivot]
+  let left = pivot === start ? start + 1 : start // 左扫描索引
+  let right = pivot === end ? end - 1 : end // 右扫描索引
+  let leftEqual = left // 左侧相等值<=left(不含)
+  let rightEqual = right // 右侧相等值>=right(不含)
   let leftHit: boolean // 左侧是否找到
   let rightHit: boolean // 右侧是否找到
   while (true) {
@@ -267,12 +267,12 @@ function partition(start: number, end: number): void {
  *
  * @returns {Array} 原数组
  */
-function quickSort(
-  array: any[],
+function quickSort<T>(
+  array: T[],
   compare: Compare = ASC,
   start?: number,
   end?: number
-): any[] {
+): T[] {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)
 
@@ -288,10 +288,10 @@ function quickSort(
   return array
 }
 
-// let id: number = 0
-// function check(array: number[]): void {
+// let id = 0
+// function check(array: number[]) {
 //   id++
-//   for (let i: number = 1, len = array.length; i < len; i++) {
+//   for (let i = 1, len = array.length; i < len; i++) {
 //     if (array[i] < array[i - 1]) {
 //       console.log('failed: ', id)
 //       console.log(array)
@@ -344,7 +344,7 @@ function quickSort(
 
 /// 耗时 > 不稳定版 ///
 // const testArray: number[] = []
-// let last: number = 10000
+// let last = 10000
 // while (last--) {
 //   testArray.push(Math.random() * last)
 // }
@@ -358,11 +358,11 @@ function quickSort(
 // console.timeEnd('cost')
 // // cost: ?ms
 // console.time('cost')
-// quickSort(testArray, (a: number, b: number): boolean => a < b)
+// quickSort(testArray, (a: number, b: number) => a < b)
 // console.timeEnd('cost')
 // // cost: ?ms
 // console.time('cost')
-// quickSort(testArray, (): boolean => Math.random() > 0.5)
+// quickSort(testArray, () => Math.random() > 0.5)
 // console.timeEnd('cost')
 // // cost: ?ms
 

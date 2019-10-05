@@ -44,6 +44,13 @@ module.exports = {
     /// 【设置目录别名 已有: @ => src 】 ///
     require('./build/alias')(pages, config, ALIAS)
 
+    /// 环境变量 ///
+    const env = {}
+    for (let att in ENV) {
+      env['process.env.' + att] = JSON.stringify(ENV[att])
+    }
+    config.plugin('define').use(require('webpack').DefinePlugin, [env])
+
     /// 不处理的依赖库 ///
     // 在html模板引入了会创建全局变量的js后可以设置以在src中使用这个全局变量
     // config.externals({

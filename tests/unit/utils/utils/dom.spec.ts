@@ -5,7 +5,7 @@
  */
 import { getInfoByHtml, escapeHTML } from '@/utils/utils/dom'
 
-const HTML: string = `
+const HTML = `
 <article class="post-content toc-container">
   <h4 class="post-title">标题</h4>
   <img src="https://image.com/a.png?w=1&h=1">

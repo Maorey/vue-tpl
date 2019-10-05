@@ -5,7 +5,7 @@
  */
 import { Memory, local } from '@/utils/storage'
 
-const notExits: string = 'notExits'
+const notExits = 'notExits'
 
 const memory = new Memory()
 const testKey = 'test'
@@ -29,7 +29,7 @@ test('Memory api', () => {
   expect(memory.pool.length).toBe(0)
 })
 test('Memory not expired', (done: () => void) => {
-  memory.set(testKey, testValue, 2)
+  memory.set(testKey, testValue, 4)
 
   setTimeout(() => {
     expect(memory.get(testKey)).toBe(testValue)
@@ -37,12 +37,12 @@ test('Memory not expired', (done: () => void) => {
   })
 })
 test('Memory expired', (done: () => void) => {
-  memory.set(testKey1, testValue1, 2)
+  memory.set(testKey1, testValue1, 4)
 
   setTimeout(() => {
     expect(memory.get(testKey)).toBe(undefined)
     done()
-  }, 2)
+  }, 4)
 })
 
 test('local api', () => {
@@ -62,7 +62,7 @@ test('local api', () => {
   expect(local.get(testKey1)).toBe(undefined)
 })
 test('local not expired', (done: () => void) => {
-  local.set(testKey, testValue, 2)
+  local.set(testKey, testValue, 4)
 
   setTimeout(() => {
     expect(local.get(testKey)).toEqual(testValue)
@@ -71,10 +71,10 @@ test('local not expired', (done: () => void) => {
 })
 
 test('local expired', (done: () => void) => {
-  local.set(testKey1, testValue1, 2)
+  local.set(testKey1, testValue1, 4)
 
   setTimeout(() => {
     expect(local.get(testKey)).toBe(undefined)
     done()
-  }, 2)
+  }, 4)
 })

@@ -47,8 +47,8 @@ function extend(
   filter?: Filter,
   deep?: number
 ): any | any[] {
-  let currentValue: any
-  let targetValue: any
+  let currentValue
+  let targetValue
 
   let tmp: any
   let key: string
@@ -89,14 +89,14 @@ function clone(...args: any[]): any {
   let filter: Filter | undefined
   typeof args[0] === 'function' && (filter = args.shift())
 
-  let argsLength: number = args.length
+  let argsLength = args.length
 
   // 找到待克隆的对象/数组 / 第一个待扩展的对象/数组 / 下一个待扩展的对象/数组
-  let current: any
-  let target: any
-  let next: any
-  let tmp: any
-  let index: number = 0
+  let current
+  let target
+  let next
+  let tmp
+  let index = 0
   while (index < argsLength) {
     tmp = args[index]
     if (typeof tmp === 'object') {

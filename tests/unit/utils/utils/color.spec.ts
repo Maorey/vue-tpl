@@ -14,8 +14,8 @@ const HEX2 = '#aabbccdd'
 const RGB2 = 'rgba(170,187,204,0.86)'
 const RGB2_REVERSE = 'rgba(85,68,51,0.86)'
 
-const REVERSE_FILLER = (rgb: number[]): void => {
-  let i: number = 3
+const REVERSE_FILLER = (rgb: number[]) => {
+  let i = 3
   while (i--) {
     rgb[i] = 255 - rgb[i]
   }

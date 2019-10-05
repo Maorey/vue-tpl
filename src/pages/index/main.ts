@@ -7,6 +7,7 @@ import Vue, { CreateElement, VNode } from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import prefer from './store/modules/prefer'
 import './registerServiceWorker'
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
@@ -23,6 +24,9 @@ setTimeout(() =>
   new Vue({
     store,
     router,
+    created() {
+      prefer.setSkin() // 初始化皮肤
+    },
     render: (h: CreateElement): VNode => h(App),
   }).$mount('#app')
 )

@@ -21,7 +21,9 @@ module.exports = function(isProd, ALIAS, ENV) {
       css: {
         modules: {
           // https://github.com/webpack/loader-utils#interpolatename
-          localIdentName: isProd ? '[hash:5]' : '[folder]__[name]_[local]',
+          localIdentName: isProd
+            ? '[hash:3]'
+            : '[folder]__[name]_[local]-[emoji]$',
         },
         localsConvention: 'camelCaseOnly', // 只允许驼峰class名
       },
@@ -37,8 +39,7 @@ module.exports = function(isProd, ALIAS, ENV) {
           if (THEME) {
             content = `@import "~@/${THEME.path}";`
             let temp
-            let alias
-            for (alias in ALIAS) {
+            for (let alias in ALIAS) {
               temp = ALIAS[alias]
               loaderContext.context.includes(temp) &&
                 (temp = themeLoader.exists(temp, THEME.path)) &&

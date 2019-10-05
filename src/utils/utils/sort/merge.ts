@@ -23,11 +23,11 @@ const empty: any = null
  * @param {Number} start 数组起始索引（含）
  * @param {Number} end 数组结束索引（含）
  */
-function insertSort(start: number, end: number): void {
-  let temp: any
-  let current: any
+function insertSort(start: number, end: number) {
+  let temp
+  let current
   let pointer: number
-  let anchor: number = start
+  let anchor = start
   while (anchor++ < end) {
     current = LIST[(pointer = anchor)]
     while (
@@ -47,7 +47,7 @@ function insertSort(start: number, end: number): void {
  * @param {Number} middle 第一个数组结束索引
  * @param {Number} right 第二个数组结束索引
  */
-function mergeSp(left: number, middle: number, right: number): void {
+function mergeSp(left: number, middle: number, right: number) {
   middle++ // 第二个数组起始索引
   let temp
   while (left < right) {
@@ -70,16 +70,16 @@ function mergeSp(left: number, middle: number, right: number): void {
  * @param {Number} middle 第一个数组结束索引
  * @param {Number} right 第二个数组结束索引
  */
-function mergeBinary(left: number, middle: number, right: number): void {
-  const LOW: number = left + 1
-  const leftValue: any = LIST[left]
+function mergeBinary(left: number, middle: number, right: number) {
+  const LOW = left + 1
+  const leftValue = LIST[left]
   // 辅助数组(slice比较快就不复用数组了)
-  const temp: any[] = LIST.slice(middle + 1, right + 1)
-  let curr: number = temp.length - 1 // 辅助数组结束索引
+  const temp = LIST.slice(middle + 1, right + 1)
+  let curr = temp.length - 1 // 辅助数组结束索引
   let low: number
   let mid: number
   let high: number
-  let current: any
+  let current
 
   while (middle >= left && curr >= 0) {
     current = temp[curr]
@@ -120,7 +120,7 @@ function mergeBinary(left: number, middle: number, right: number): void {
 
 /// 耗时 ///
 // const testArray: number[] = []
-// let last: number = 10000
+// let last = 10000
 // while (last--) {
 //   testArray.push(Math.random() * last)
 // }
@@ -134,11 +134,11 @@ function mergeBinary(left: number, middle: number, right: number): void {
 // console.timeEnd('cost')
 // // cost: 10ms
 // console.time('cost')
-// mergeSort(testArray, (a: number, b: number): boolean => a < b)
+// mergeSort(testArray, (a: number, b: number) => a < b)
 // console.timeEnd('cost')
 // // cost: 26ms
 // console.time('cost')
-// mergeSort(testArray, (): boolean => Math.random() > 0.5)
+// mergeSort(testArray, () => Math.random() > 0.5)
 // console.timeEnd('cost')
 // // cost: 32ms
 
@@ -149,7 +149,7 @@ function mergeBinary(left: number, middle: number, right: number): void {
  * @param {Number} middle 第一个数组结束索引
  * @param {Number} right 第二个数组结束索引
  */
-function merge(left: number, middle: number, right: number): void {
+function merge(left: number, middle: number, right: number) {
   // // 尽量减小辅助数组大小【耗时会略增加，为啥】
   // while (right > middle) {
   //   if (Number(contrast(LIST[middle], LIST[right])) > 0) {
@@ -160,8 +160,8 @@ function merge(left: number, middle: number, right: number): void {
   // if (right > middle) {
   //   LIST[right--] = LIST[middle--] // ↓↓ ...
   // 辅助数组(slice比较快就不复用数组了)
-  const temp: any[] = LIST.slice(middle + 1, right + 1)
-  let index: number = temp.length - 1 // 辅助数组结束索引
+  const temp = LIST.slice(middle + 1, right + 1)
+  let index = temp.length - 1 // 辅助数组结束索引
 
   while (middle >= left && index >= 0) {
     LIST[right--] =
@@ -184,12 +184,12 @@ function merge(left: number, middle: number, right: number): void {
  *
  * @returns {Array} 原数组
  */
-function mergeSort(
-  array: any[],
+function mergeSort<T>(
+  array: T[],
   compare: Compare = ASC,
   start?: number,
   end?: number
-): any[] {
+): T[] {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)
 
@@ -202,7 +202,7 @@ function mergeSort(
     let middle: number
     let right: number
 
-    let size: number = 1 // 子数组的大小 【那么2/4/8...归并就是最高效的了】
+    let size = 1 // 子数组的大小 【那么2/4/8...归并就是最高效的了】
     do {
       left = start
       while ((middle = left + size - 1) < end) {
@@ -232,7 +232,7 @@ function mergeSort(
 
 /// 耗时 ///
 // const testArray: number[] = []
-// let last: number = 10000
+// let last = 10000
 // while (last--) {
 //   testArray.push(Math.random() * last)
 // }
@@ -246,11 +246,11 @@ function mergeSort(
 // console.timeEnd('cost')
 // // cost: 3.5ms
 // console.time('cost')
-// mergeSort(testArray, (a: number, b: number): boolean => a < b)
+// mergeSort(testArray, (a: number, b: number) => a < b)
 // console.timeEnd('cost')
 // // cost: 14ms
 // console.time('cost')
-// mergeSort(testArray, (): boolean => Math.random() > 0.5)
+// mergeSort(testArray, () => Math.random() > 0.5)
 // console.timeEnd('cost')
 // // cost: 12ms
 

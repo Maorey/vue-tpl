@@ -7,7 +7,7 @@
 /** 匹配大写字母
  */
 const REG_UPPER = /([A-Z])/g
-const REPLACE_C2K = (match: string): string => '-' + match.toLowerCase()
+const REPLACE_C2K = (match: string) => '-' + match.toLowerCase()
 /** camelCase 转 kebab-case，如: camelCase -> camel-case
  * @test true
  *
@@ -15,13 +15,13 @@ const REPLACE_C2K = (match: string): string => '-' + match.toLowerCase()
  *
  * @returns {String}
  */
-function camelToKebab(str: string): string {
+function camelToKebab(str: string) {
   return str.replace(REG_UPPER, REPLACE_C2K)
 }
 
 /** 返回大写的第二个匹配字符
  */
-const REPLACE_2U = (match: string): string => match[1].toUpperCase()
+const REPLACE_2U = (match: string) => match[1].toUpperCase()
 /** 匹配短横小写字母
  */
 const REG_KEBAB = /-([a-z])/g
@@ -33,7 +33,7 @@ const REG_KEBAB = /-([a-z])/g
  *
  * @returns {String}
  */
-function kebabToCamel(str: string): string {
+function kebabToCamel(str: string) {
   return str.replace(REG_KEBAB, REPLACE_2U)
 }
 
@@ -44,7 +44,7 @@ function kebabToCamel(str: string): string {
  *
  * @returns {String}
  */
-function camelToUpper(str: string): string {
+function camelToUpper(str: string) {
   return str.replace(REG_UPPER, '_$1').toUpperCase()
 }
 
@@ -56,7 +56,7 @@ const REG_LOWER = /_([a-z])/g
  *
  * @returns {String}
  */
-function upperToCamel(str: string): string {
+function upperToCamel(str: string) {
   return str.toLowerCase().replace(REG_LOWER, REPLACE_2U)
 }
 
@@ -67,7 +67,7 @@ function upperToCamel(str: string): string {
  *
  * @returns {String}
  */
-function kebabToUpper(str: string): string {
+function kebabToUpper(str: string) {
   return str.replace(REG_KEBAB, '_$1').toUpperCase()
 }
 
@@ -78,7 +78,7 @@ function kebabToUpper(str: string): string {
  *
  * @returns {String}
  */
-function UpperTokebab(str: string): string {
+function UpperTokebab(str: string) {
   return str.toLowerCase().replace(REG_LOWER, '-$1')
 }
 

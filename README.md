@@ -72,7 +72,7 @@ yarn dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.developmen
 yarn build # --watch: 跟踪文件变化 --report: 生成打包分析
 ```
 
-同时会生成[fileName.map](build/fileName.map)记录 文件名/chunk 名映射 (公共代码抽到`.`开头的文件里了)
+同时会生成[fileName.map](build/fileName.map)记录 文件名/chunk 名映射 (公共代码抽到`_`开头的文件里了)
 
 ### 代码风格检查和修正(提交 Git 时会自动执行)
 
@@ -103,16 +103,16 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 ### 目录结构
 
 ```bash
-├── public # 静态文件目录, 除特殊文件(比如 html 模板)外**直接复制到输出目录下**
+├── public # 静态文件目录, 除特殊文件(比如 html 模板)外, 直接复制到输出目录下
 ├── src # 源码目录
-│   │── api # 分模块存放与各个 api 进行交互的函数
-│   │   └── config # api 相关配置, 比如接口字典、响应数据字典等
+│   │── api # http通信
+│   │   └── config # api 相关配置, 比如接口字典
 │   │── assets # 静态资源文件目录, 使用到的会被解析处理(比如图片可能转成base64写入css/js或复制到输出目录)
-│   │── components # 项目组件
+│   │── components # 组件目录
 │   │── config # 配置目录
 │   │── lang # 多语言目录
 │   │── libs # 存储不(能)通过 npm 管理的第三方或项目 js/css 库
-│   │── scss # scss/scss、CSSModule 文件
+│   │── scss # .scss/.module.scss 文件
 │   │── router # 路由设置
 │   │── store # 状态管理
 │   │   └── modules # 各模块状态管理
@@ -123,10 +123,10 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 │   │── html模板名 # 【可选】存放页面代码目录
 │   └── (html模板名/main/index/entry/app/page).(ts|tsx|js|jsx) # 默认入口文件
 ├── tests # 测试用例目录
-│   │── e2e # e2e 测试: https://nightwatchjs.org
-│   └── unit # unit 测试: https://jestjs.io/docs/zh-Hans/getting-started.html
+│   │── e2e # e2e 测试(cypress): https://www.cypress.io
+│   └── unit # unit 测试(jest): https://jestjs.io
 ├── build # 项目工具类脚本
-├── .env、.env.* # 环境变量设置
+├── cypress.json # cypress 配置: https://docs.cypress.io/guides/references/configuration.html
 ├── tsconfig.json # typeScript 配置: https://www.tslang.cn/docs/handbook/tsconfig-json.html
 └── vue.config.js # 工程(vue cli)配置入口
 ```
@@ -208,7 +208,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   - 字体图标样式
   - 公共组件默认样式(使支持换肤, 使用[BEM](https://en.bem.info)约定[参考链接](https://www.ibm.com/developerworks/cn/web/1512_chengfu_bem/))
 
-  均应使用 [CSSModule](https://vue-loader-v14.vuejs.org/zh-cn/features/css-modules.html), 以更好的模块化和复用、打包样式
+  均应使用 [CSSModule](https://vue-loader-v14.vuejs.org/zh-cn/features/css-modules.html)(开发环境class名:`[folder]__[name]_[local]-[emoji]$`), 以更好的模块化和复用、打包样式
 
 - 视图只负责布局及交互(props 传递和事件监听), 包含子组件的可使用**文件夹容器**方式或将子组件存放在对应层级的 `components` 目录下的同名目录(`camelCase`)下
 - 公共组件/逻辑/函数/样式等模块请按照: `模块 -> 视图 -> 页面 -> 项目` 的层级提升, 配合**提前规划**确定初始层级
@@ -627,5 +627,4 @@ server {
 ### 其他
 
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
-- [#149](https://github.com/webpack/loader-utils/issues/149): 开发环境 class 名加个 emoji 更好区分是否全局样式
 - TODO: 多主题方案 module(含共享变量) & normal (chunk and alternate stylesheet) (其实要是不异步加载 css, 没那么复杂) 先支持异步的再说 直接正则修改原始代码 没法 AST 的吧

@@ -20,13 +20,13 @@ interface INumberUnit {
 
 /** 匹配后面有三个数字的数字
  */
-const REG_NUMBER: RegExp = /(\d)(?=(\d{3})+$)/g
+const REG_NUMBER = /(\d)(?=(\d{3})+$)/g
 
 /** 格式化数字 每三位数字增加个逗号 （小数点后的除外）
  * @test true
  *
  * @param {Number|String} num
- * @param {Number} digit Number:保留小数位数
+ * @param {Number} digit Number:保留小数位数 other: unit
  * @param {String|INumberUnit} unit String 单位 默认按万计算
  *
  * @returns {String} 格式化后的数字
@@ -35,20 +35,20 @@ function formatNumber(
   num: string | number,
   digit?: any,
   unit?: string | INumberUnit
-): string {
+) {
   !unit && typeof digit !== 'number' && (unit = digit)
 
-  const numSplit: string[] = String(num || 0).split('.')
-  let decimal: string = numSplit[1] || '' // 小数部分
+  const numSplit = String(num || 0).split('.')
+  let decimal = numSplit[1] || '' // 小数部分
   num = numSplit[0] // 整数部分
 
   // 处理单位
   if (typeof unit === 'object') {
-    const len: number = num.length
-    const limit: number = unit.limit || unit.len
+    const len = num.length
+    const limit = unit.limit || unit.len
 
     if (limit && len > limit) {
-      const index: number = len - unit.len
+      const index = len - unit.len
       decimal = num.slice(index) + decimal
       num = num.slice(0, index)
       unit = unit.unit

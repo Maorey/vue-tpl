@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { get } from '@/utils/ajax'
-import API from '@index/api'
+import API from '@index/api/config'
 import CONFIG from '@index/config'
 import ChartLine from '@indexCom/charts/Line'
 

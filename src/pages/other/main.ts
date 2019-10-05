@@ -7,6 +7,7 @@ import Vue, { CreateElement, VNode } from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import prefer from './store/modules/prefer'
 import './registerServiceWorker'
 
 /// 全局注册的组件，请尽量不要让这个列表变太长 ///
@@ -45,6 +46,9 @@ setTimeout(() =>
   new Vue({
     store,
     router,
+    created() {
+      prefer.setSkin() // 初始化皮肤
+    },
     render: (h: CreateElement): VNode => h(App),
   }).$mount('#app')
 )
