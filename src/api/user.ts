@@ -18,7 +18,7 @@ let publicKey: string
  *
  * @returns {Promise}
  */
-function getVerify(): Promise<any> {
+function getVerify() {
   return get(API.verify).then((res: any) => {
     publicKey = res.sign
     return res
@@ -38,7 +38,7 @@ interface ILogin {
  *
  * @returns {Promise}
  */
-function login(formData: ILogin): Promise<any> {
+function login(formData: ILogin) {
   const rsa = new Jsencrypt()
   rsa.setPublicKey(publicKey)
   const password = rsa.encrypt(formData.password.trim())
@@ -57,7 +57,7 @@ function login(formData: ILogin): Promise<any> {
  *
  * @returns {Promise}
  */
-function logout(): Promise<any> {
+function logout() {
   return get(API.logout)
 }
 

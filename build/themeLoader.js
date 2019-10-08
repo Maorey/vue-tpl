@@ -15,7 +15,7 @@ const REG_SCSS = /\/[^/]+\.scss$/
 const REG_LANG = /(?:^\??|&)lang=([^&]*)/
 const REG_THEME = /(?:^\??|&)theme=([^|&]*)\|?([^&]*)/
 // require不管了
-const REG_IMPORT = /(?:^|\n)import[\s\n]+(?:([\w\W]*?)[\s\n]+from[\s\n]+)?['"][\w\W]*?\.(scss|vue)(\?[\w\W]*?)?['"]/g
+const REG_IMPORT = /(?:^|\n)import[\s\n]+(?:([\w\W]*?)[\s\n]+from[\s\n]+)?['"]([\w\W]*?)\.(scss|vue)(\?[\w\W]*?)?['"]/g
 
 const PLUGIN_NAME = 'theme-loader'
 
@@ -105,25 +105,54 @@ function getThemeByQuery(temp) {
 // 多主题loader 从js源码处理多主题样式
 module.exports = function(source) {
   init()
-  typeof source === 'string' || (source = source.toString())
+  if (!THEMES) {
+    this.callback(null, source)
+    return
+  }
+  const info = {} // 收集的样式注入信息
+  const PREFIX = '$_STYLE'
+  let counter = 0
+  let lastImport = 0
+  source = (typeof source === 'string' ? source : source.toString()).replace(
+    REG_IMPORT,
+    (match, variable, name, type, query, index) => {
+      // 处理多主题
+      const lang = REG_LANG.exec(query)
+      if (type === 'vue' && (!lang || lang[1] !== 'scss')) {
+        return match
+      }
+      const theme = REG_THEME.exec(query)
+      if (!theme || !theme[1]) {
+        // 注入主题
+        const dir = { type }
+        match = ''
+        for (let theme in THEMES) {
+          match += `import ${(dir[theme] =
+            PREFIX +
+            counter++)} from "${name}.${type}?${query}&theme=${theme}"\n`
+        }
+        info[variable] = dir
+        lastImport = Math.max(lastImport, index + match.length)
+        return match
+      }
+      return match
+    }
+  )
+
   this.callback(
     null,
-    THEMES
-      ? source.replace(REG_IMPORT, (match, variable, type, query) => {
-        // 处理多主题
-        const lang = REG_LANG.exec(query)
-        if (type === 'vue' && (!lang || lang[1] !== 'scss')) {
-          return match
+    'import $_SKIN from "@/utils/skin' +
+      source.substring(0, lastImport) +
+      (() => {
+        let variables = ''
+        for (let vars in info) {
+          variables += `const ${vars} = () => ${JSON.stringify(
+            info[vars]
+          )}[$_SKIN.value]\n`
         }
-        const theme = REG_THEME.exec(query)
-        if (!theme || !theme[1]) {
-          // 注入主题
-
-          return match
-        }
-        return match
-      })
-      : source // 单主题
+        return variables
+      })() +
+      source.substring(lastImport)
   )
 }
 // 插件: 不同theme到不同chunk (顺便合并下小文件？)
@@ -134,7 +163,7 @@ module.exports.plugin = class {
   // https://webpack.docschina.org/api/plugins/
   apply(compiler) {
     compiler.hooks.compilation.tap(PLUGIN_NAME, compilation =>
-      compilation.hooks.optimizeChunkModules.tap(
+      compilation.hooks.optimizeChunkAssets.tapAsync(
         PLUGIN_NAME,
         (chunks, modules) => {
           // 不同theme到不同chunk

@@ -7,6 +7,7 @@
 // 背景条
 ::-webkit-scrollbar {
   width: $scrollBarWidth;
+  height: $scrollBarWidth;
   background: none;
   border-radius: $scrollBarRadius;
   transition: 0.3s;

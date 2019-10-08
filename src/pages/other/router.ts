@@ -3,11 +3,11 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  */
-import Vue from 'vue'
-import Router, { RouterOptions } from 'vue-router'
-
 import configRoute from './config/route'
 import refreshRoute from '@/utils/refreshRoute'
+
+import Vue from 'vue'
+import Router, { RouterOptions } from 'vue-router'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'

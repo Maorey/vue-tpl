@@ -3,11 +3,11 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  */
-import Vue from 'vue'
-import Router, { RouterOptions } from 'vue-router'
-
 import configRoute from './config/route'
 import refreshRoute from '@/utils/refreshRoute'
+
+import Vue from 'vue'
+import Router, { RouterOptions } from 'vue-router'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -43,6 +43,26 @@ router.beforeEach((to, from, next) => {
   }
 
   /// 路由权限处理 ///
+  // const access = storeUser.access
+  // if (!access) {
+  //   location.href = PATH_LOGIN // 没有登陆
+  //   return
+  // }
+  // for (let path of access) {
+  //   if (path === toFullPath) {
+  //     // 匹配具体路径
+  //     next()
+  //     return
+  //   }
+  //   for (let record of to.matched) {
+  //     if (path === record.path) {
+  //       // 匹配路径规则 比如: /home/:id
+  //       next()
+  //       return
+  //     }
+  //   }
+  // }
+  // NProgress.done() // 没有访问权限则不跳转
   next() // 不调用则不跳转
 })
 const TITLE_APP = configRoute.meta.title // 标题

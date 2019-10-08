@@ -78,12 +78,12 @@ declare module '*.json' {
 //   export = content
 // }
 
-declare module 'element-ui/lib/*' {
-  import Vue, { PluginFunction, PluginObject } from 'vue'
+// declare module 'element-ui/lib/*' {
+//   import Vue, { PluginFunction, PluginObject } from 'vue'
 
-  const plugin: PluginObject<Vue> | PluginFunction<Vue>
-  export default plugin
-}
+//   const plugin: PluginObject<Vue> | PluginFunction<Vue>
+//   export default plugin
+// }
 
 /// hack 放最后 ///
 // declare module 'zrender/lib/*'
