@@ -36,7 +36,7 @@ export default class extends Vue {
 .wrapper {
   margin-top: 30vh;
   padding: 10% 0;
-  color: $colorText;
+  color: $colorTextCommon;
   font-size: $xxLarge;
   text-align: center;
   background: url(~@index/assets/bg-grid.jpg);

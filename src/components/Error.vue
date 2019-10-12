@@ -37,7 +37,7 @@ export default class extends Vue {
   div {
     align-self: center;
     margin: auto;
-    color: $colorText;
+    color: $colorTextCommon;
     cursor: pointer;
   }
   // 图标
@@ -46,8 +46,8 @@ export default class extends Vue {
     width: 30px;
     padding: 5px;
     font-size: $xxLarge;
-    border: 1px solid $colorText;
-    border-radius: 100%;
+    border: $borderBase;
+    border-radius: $borderRadiusCircle;
   }
 }
 </style>

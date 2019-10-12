@@ -50,7 +50,7 @@ export default class extends Vue {
   div {
     align-self: center;
     margin: auto;
-    color: $colorText;
+    color: $colorTextCommon;
   }
 
   svg {
@@ -62,7 +62,7 @@ export default class extends Vue {
     stroke-width: 2;
 
     &:first-child {
-      stroke: $colorDark;
+      stroke: $colorTextMain;
     }
 
     &:last-child {

@@ -27,7 +27,7 @@ export default class extends Vue {
 <style lang="scss" module>
 .wrapper {
   margin-top: 15px;
-  color: $colorText;
+  color: $colorTextCommon;
   font-size: $large;
   text-align: center;
 }

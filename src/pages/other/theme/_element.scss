@@ -15,4 +15,60 @@ $--index-top: $zFixed;
 $--index-popper: $zTop;
 
 /// 颜色 ///
-$--color-primary: teal; // 主题色
+// 【主题色】
+$--color-primary: $colorTheme;
+$--color-primary-light-1: $colorTheme1;
+$--color-primary-light-2: $colorTheme2;
+$--color-primary-light-3: $colorTheme3;
+$--color-primary-light-4: $colorTheme4;
+$--color-primary-light-5: $colorTheme5;
+$--color-primary-light-6: $colorTheme6;
+$--color-primary-light-7: $colorTheme7;
+$--color-primary-light-8: $colorTheme8;
+$--color-primary-light-9: $colorTheme9;
+
+// 【辅助色】
+$--color-success: $colorSuccess;
+$--color-success-light: $colorSuccess1;
+$--color-success-lighter: $colorSuccess2;
+
+$--color-warning: $colorWarn;
+$--color-warning-light: $colorWarn1;
+$--color-warning-lighter: $colorWarn2;
+
+$--color-danger: $colorDanger;
+$--color-danger-light: $colorDanger1;
+$--color-danger-lighter: $colorDanger2;
+
+$--color-info: $colorInfo;
+$--color-info-light: $colorInfo1;
+$--color-info-lighter: $colorInfo2;
+
+// 【中性色】
+$--color-text-primary: $colorTextMain;
+$--color-text-regular: $colorTextCommon;
+$--color-text-secondary: $colorTextMinor;
+$--color-text-placeholder: $colorTextHolder;
+
+$--border-color-base: $colorBorderLv1;
+$--border-color-light: $colorBorderLv2;
+$--border-color-lighter: $colorBorderLv3;
+$--border-color-extra-light: $colorBorderLv4;
+
+$--color-black: $colorBlank;
+$--color-white: $colorWhite;
+
+$--background-color-base: $colorBackGround;
+
+/// 边框 ///
+$--border-width-base: $borderSolidWidth;
+$--border-base: $borderBase;
+
+$--border-radius-zero: $borderRadius0;
+$--border-radius-base: $borderRadiusBase;
+$--border-radius-small: $borderRadiusSmall;
+$--border-radius-circle: $borderRadiusCircle;
+
+$--box-shadow-base: $shadowBase;
+$--box-shadow-dark: $shadowDark;
+$--box-shadow-light: $shadowLight;

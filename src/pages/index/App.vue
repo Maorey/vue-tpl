@@ -77,16 +77,16 @@ export default class extends Vue {
   width: 100%;
   text-align: center;
   background-color: $colorBackGround;
-  border: 1px solid $colorTheme;
+  border: $borderSolidWidth solid $colorTheme;
 
   > a {
     display: inline-block;
     margin: 25px;
-    color: $colorLightGrey;
-    border: 1px solid #0000;
+    color: $colorTextCommon;
+    border: $borderSolidWidth solid $colorTransparent;
 
     &:hover {
-      color: $colorText;
+      color: $colorTextMain;
       text-decoration: none;
     }
 

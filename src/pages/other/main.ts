@@ -11,26 +11,39 @@ import prefer from './store/modules/prefer'
 import './registerServiceWorker'
 
 /// 全局注册的组件，请尽量不要让这个列表变太长 ///
+// 布局
 import Row from 'element-ui/lib/row'
 import Col from 'element-ui/lib/col'
 import Container from 'element-ui/lib/container'
 import Aside from 'element-ui/lib/aside'
 import Main from 'element-ui/lib/main'
+// 基础
 import Button from 'element-ui/lib/button'
 import Link from 'element-ui/lib/link'
-import Select from 'element-ui/lib/select'
+// 提示
+import Tooltip from 'element-ui/lib/tooltip'
+import Popover from 'element-ui/lib/popover'
+import Message from 'element-ui/lib/message'
+import MessageBox from 'element-ui/lib/message-box'
+import Notification from 'element-ui/lib/notification'
 
-import './scss/main.scss'
+import './scss/main.scss' // 全局样式
 
+// 布局
 Vue.use(Row)
 Vue.use(Col)
 Vue.use(Container)
 Vue.use(Aside)
 Vue.use(Main)
-
+// 基础
 Vue.use(Button)
 Vue.use(Link)
-Vue.use(Select)
+// 提示
+Vue.use(Tooltip)
+Vue.use(Popover)
+Vue.component(Message.name, Message)
+Vue.component(MessageBox.name, MessageBox)
+Vue.component(Notification.name, Notification)
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 

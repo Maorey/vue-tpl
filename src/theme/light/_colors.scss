@@ -4,15 +4,49 @@
  * @Date: 2019-07-06 08:30:59
  */
 /// 常用颜色 ///
-$colorTheme: #2588df; // 主题色
-$colorDark: #333;
-$colorDeepGrey: #666;
-$colorGrey: #777;
-$colorLightGrey: #999;
-$colorWhite: #fff;
+// 【主题色】
+$colorTheme: #409eff;
+$colorTheme1: #53a8ff;
+$colorTheme2: #66b1ff;
+$colorTheme3: #79bbff;
+$colorTheme4: #8cc5ff;
+$colorTheme5: #a0cfff;
+$colorTheme6: #b3d8ff;
+$colorTheme7: #c6e2ff;
+$colorTheme8: #d9ecff;
+$colorTheme9: #ecf5ff;
+
+// 【辅助色】
+$colorSuccess: #67c23a;
+$colorSuccess1: #e1f3d8;
+$colorSuccess2: #f0f9eb;
+
+$colorWarn: #e6a23c;
+$colorWarn1: #faecd8;
+$colorWarn2: #fdf6ec;
+
+$colorDanger: #f56c6c;
+$colorDanger1: #fde2e2;
+$colorDanger2: #fef0f0;
+
+$colorInfo: #909399;
+$colorInfo1: #e9e9eb;
+$colorInfo2: #f4f4f5;
+
+// 【中性色】
+$colorTextMain: #303133; // 主要文字
+$colorTextCommon: #606266; // 常规文字
+$colorTextMinor: #909399; // 次要文字
+$colorTextHolder: #c0c4cc; // 占位文字
+
+$colorBorderLv1: #dcdfe6; // 一级边框
+$colorBorderLv2: #e4e7ed; // 二级边框
+$colorBorderLv3: #ebeef5; // 三级边框
+$colorBorderLv4: #f2f6fc; // 四级边框
+
+$colorBlank: #000; // 黑色
+$colorWhite: #fff; // 白色
+$colorTransparent: #0000; // 透明
 
 /// 背景色 ///
 $colorBackGround: #0d1a25;
-
-/// 文本 ///
-$colorText: #cfcfcf;

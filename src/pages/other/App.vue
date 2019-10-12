@@ -158,7 +158,7 @@
 
 <style lang="scss" module>
 .wrapper {
-  color: $colorText;
+  color: $colorTextCommon;
   text-align: center;
 }
 
@@ -166,7 +166,7 @@
   padding: 30px;
 
   a {
-    color: $colorText;
+    color: $colorTextCommon;
     font-weight: bold;
 
     &:global(.router-link-exact-active) {

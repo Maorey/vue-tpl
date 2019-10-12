@@ -61,15 +61,15 @@ export default class extends Vue {
 .wrapper {
   position: relative;
   box-sizing: border-box;
-  border: 1px solid $colorTheme;
-  border-radius: 3px;
+  border: $borderSolidWidth solid $colorTheme;
+  border-radius: $borderRadiusBase;
 }
 // 标题
 .title {
 
   @extend %ellipsis;
 
-  color: $colorText;
+  color: $colorTextCommon;
 }
 
 .text {
@@ -92,7 +92,6 @@ export default class extends Vue {
 }
 // 四个角
 .border {
-  $radius: 3px; // 圆角
   $offset: -1px; // 偏移
   $lineWidth: 2px; // 线宽
 
@@ -100,34 +99,34 @@ export default class extends Vue {
   display: block;
   width: 10px;
   height: 10px;
-  border: solid $colorText;
+  border: solid $colorBorderLv1;
 
   &.leftTop {
     top: $offset;
     left: $offset;
     border-width: $lineWidth 0 0 $lineWidth;
-    border-top-left-radius: $radius;
+    border-top-left-radius: $borderRadiusBase;
   }
 
   &.rightTop {
     top: $offset;
     right: $offset;
     border-width: $lineWidth $lineWidth 0 0;
-    border-top-right-radius: $radius;
+    border-top-right-radius: $borderRadiusBase;
   }
 
   &.leftBottom {
     bottom: $offset;
     left: $offset;
     border-width: 0 0 $lineWidth $lineWidth;
-    border-bottom-left-radius: $radius;
+    border-bottom-left-radius: $borderRadiusBase;
   }
 
   &.rightBottom {
     right: $offset;
     bottom: $offset;
     border-width: 0 $lineWidth $lineWidth 0;
-    border-bottom-right-radius: $radius;
+    border-bottom-right-radius: $borderRadiusBase;
   }
 }
 </style>

@@ -8,6 +8,7 @@
  */
 /// 变量 (私有变量 _+camelCase)///
 @import './colors'; // 颜色 【colorCase】: colorRed
+@import './border'; // 边框 【(border|shadow)Case】: borderSolidWidth
 @import './fontSIzes'; // 字号 【cssCase】: xSmaller、xxxLarge
 @import './zIndexes'; // z-index层级划分 【zCase】: zMessage
 @import './layout'; // 固定布局尺寸 【(height|width)Case】: heightHeader、widthLfetColumn
