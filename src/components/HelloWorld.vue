@@ -42,10 +42,10 @@
       </li>
       <li>
         <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-e2e-nightwatch"
+          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-e2e-cypress"
           target="_blank"
           rel="noopener"
-        >e2e-nightwatch</a>
+        >e2e-cypress</a>
       </li>
     </ul>
     <h3>Essential Links</h3>

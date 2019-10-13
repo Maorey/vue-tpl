@@ -332,20 +332,81 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 ### 其他
 
-- 关于多主题方案, 本模板采用的是 `<link rel="alternate stylesheet">`[方案](https://developer.mozilla.org/en-US/docs/Web/CSS/Alternative_style_sheets), 基于`scss`全局变量注入进行多个主题的构建, 优点是整套 css 切换(包括异步)浏览器原生支持并且无缝流畅切换. 通过环境变量[.env](.env)进行配置, 在`import/require` **scss** 文件时可以指定主题和使用的 scss 变量(指定后不生成其他主题的), 查询参数
+- 关于多主题方案, 本模板采用的是 `<link rel="alternate stylesheet">`[方案](https://developer.mozilla.org/en-US/docs/Web/CSS/Alternative_style_sheets), 基于`scss`全局变量注入进行多个主题的构建, 优点是支持异步, 浏览器原生支持并且无缝流畅切换. 通过环境变量[.env](.env)进行配置, 在`import` **scss** 文件时可以指定主题和使用的 scss 变量(指定后不生成其他主题的)
 
   ```html
   <script>
-    import $style from './foo.module.scss' // $style是一个方法 调用获取当前主题对应值 放computed
-    import './bar.scss?theme=' // 基础样式 不视作主题样式
+    /// 基础样式 ///
+    import './scss/a.scss?theme='
+    // 指定scss变量文件相对路径(别名、别名/主题文件夹)
+    import './scss/b.scss?theme=|foo.scss'
+
+    /// 主题样式 ///
+    import './scss/c.scss'
+    import $styleD from './scss/d.module.scss'
+
+    /// 指定各主题下的样式 ///
+    import './scss/e.scss?theme=dark'
+    import './scss/f.scss?theme=light'
+
+    // CSS Module
+    import SKIN from '@/utils/skin'
+    import $styleDark from './scss/g.module.scss?theme=dark|foo.scss'
+    import $styleLight from './scss/g.module.scss?theme=light|bar.scss'
+
+    // see: https://github.com/kaorun343/vue-property-decorator
+    import { Component, Vue } from 'vue-property-decorator'
+
+    // const UPPER_CASE:string|number|any[] // 常量
+    // const camelCase:any // 单例
+    // function utils() {} // 函数(无副作用)
+
+    /// name,components,directives,filters,extends,mixins ///
+    @Component
+    export default class extends Vue {
+      /// model (@Model) ///
+      /// props (@Prop) ///
+      /// data (private name: string = '响应式属性' // 除了undefined都会响应式) ///
+      /// private instance attributes (private name?: string // 非响应式属性) ///
+      /// computed (get name() { return this.name } set name()... ///
+      private get $styleD() {
+        return $styleD
+      }
+
+      private get $styleF() {
+        switch(SKIN.value) {
+          case 'dark':
+            return $styleDark
+          default:
+            return $styleLight
+        }
+      }
+      /// watch (@Watch) ///
+      /// LifeCycle (beforeCreate/created/.../destroyed) ///
+      /// methods (private/public) ///
+      /// render ///
+    }
   </script>
+
+  <!-- 主题样式 CSS Module or not -->
   <style lang="scss" module>
   .foo {
     color: $red;
   }
   </style>
-  <style lang="scss" module theme="theme=dark|scss/dark.scss">
-  /* 已处理computed $style注入 */
+  <!-- 基础样式样式 -->
+  <style lang="scss" module theme="theme=|foo.scss">
+  .bar {
+    color: $red;
+  }
+  </style>
+  <!-- 指定各主题下的样式【不支持CSS Module】 -->
+  <style lang="scss" theme="dark">
+  .foo {
+    color: $red;
+  }
+  </style>
+  <style lang="scss" theme="light">
   .foo {
     color: $red;
   }

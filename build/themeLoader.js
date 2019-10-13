@@ -6,9 +6,11 @@
 const fs = require('fs')
 const path = require('path')
 
-const CACHE_EXISTS = {}
+const PLUGIN_NAME = 'theme-loader'
+
 const EXTENSION = '.scss'
 const INDEX = '/index.scss'
+
 const REG_EXTENSION = /\.scss$/
 const REG_INDEX = /\/index\.scss$/
 const REG_SCSS = /\/[^/]+\.scss$/
@@ -17,12 +19,22 @@ const REG_THEME = /(?:^\??|&)theme=([^|&]*)\|?([^&]*)/
 // require不管了
 const REG_IMPORT = /(?:^|\n)import[\s\n]+(?:([\w\W]*?)[\s\n]+from[\s\n]+)?['"]([\w\W]*?)\.(scss|vue)(\?[\w\W]*?)?['"]/g
 
-const PLUGIN_NAME = 'theme-loader'
+const CACHE_EXISTS = {}
+const DIR_SRC = path.join(process.cwd(), 'src')
 
-let THEME
-let THEMES
-let THEME_DIR
 let CACHE_INIT
+/** 默认主题 { name, path }
+ */
+let THEME
+/** 所有主题 { [name]: path }
+ */
+let THEMES
+/** 主题文件夹相对路径
+ */
+let R_THEME
+/** 根主题文件夹局对路径
+ */
+let DIR_THEME
 
 function exists(rootDir, fileName) {
   fileName = path.join(rootDir, fileName || '')
@@ -48,36 +60,36 @@ function init(ENV = process.env) {
   if (CACHE_INIT) {
     return CACHE_INIT
   }
-  const THEME_DIR_PATH = ENV.THEME_DIR
-  THEME_DIR = path.join(path.join(process.cwd(), 'src'), THEME_DIR_PATH)
+  R_THEME = ENV.THEME_DIR
+  DIR_THEME = path.join(DIR_SRC, R_THEME)
 
-  if (THEME_DIR) {
+  if (DIR_THEME) {
     const THEME_NAME = ENV.THEME
     THEME = THEME_NAME &&
-      (exists(THEME_DIR, (THEME = THEME_NAME + EXTENSION)) ||
-        exists(THEME_DIR, (THEME = THEME_NAME + INDEX))) && {
+      (exists(DIR_THEME, (THEME = THEME_NAME + EXTENSION)) ||
+        exists(DIR_THEME, (THEME = THEME_NAME + INDEX))) && {
       name: THEME_NAME,
-      path: `${THEME_DIR_PATH}/${THEME}`,
+      path: `${R_THEME}/${THEME}`,
     }
     if (!THEME) {
       // 单主题
-      THEME = (exists(THEME_DIR + (THEME = EXTENSION)) ||
-        exists(THEME_DIR + (THEME = INDEX))) && {
-        path: THEME_DIR + THEME,
+      THEME = (exists(DIR_THEME + (THEME = EXTENSION)) ||
+        exists(DIR_THEME + (THEME = INDEX))) && {
+        path: `${R_THEME}/${THEME}`,
       }
     } else {
       // 构建多主题
       THEMES = {}
       THEMES[THEME.name] = THEME.path
       let name
-      for (let file of fs.readdirSync(THEME_DIR, { withFileTypes: true })) {
+      for (let file of fs.readdirSync(DIR_THEME, { withFileTypes: true })) {
         file.isFile()
           ? THEME_NAME === (name = file.name.replace(REG_EXTENSION, '')) &&
             (file = 0)
           : (THEME_NAME !== (name = file.name) &&
-              exists(THEME_DIR, (file.name += INDEX))) ||
+              exists(DIR_THEME, (file.name += INDEX))) ||
             (file = 0)
-        file && (THEMES[name] = `${THEME_DIR_PATH}/${file.name}`)
+        file && (THEMES[name] = `${R_THEME}/${file.name}`)
       }
     }
   }
@@ -92,7 +104,9 @@ function getThemeByQuery(temp) {
       // 指定主题
       theme.path &&
         (hasPath(theme.path) ||
-          exists(THEME_DIR, theme.path) ||
+          exists(DIR_SRC, theme.path) ||
+          (exists(DIR_THEME, theme.path) &&
+            (theme.path = `${R_THEME}/${theme.path}`)) ||
           (theme.path = THEME.path))
     } else {
       // 默认主题
@@ -114,46 +128,52 @@ module.exports = function(source) {
   // const PREFIX = '$_STYLE'
   // let counter = 0
   // let lastImport = 0
+  // let more = 0
   // source = (typeof source === 'string' ? source : source.toString()).replace(
   //   REG_IMPORT,
   //   (match, variable, name, type, query, index) => {
   //     // 处理多主题
-  //     const lang = REG_LANG.exec(query)
-  //     if (type === 'vue' && (!lang || lang[1] !== 'scss')) {
+  //     let temp = REG_LANG.exec(query)
+  //     if (type === 'vue' && (!temp || temp[1] !== 'scss')) {
   //       return match
   //     }
-  //     const theme = REG_THEME.exec(query)
-  //     if (!theme || !theme[1]) {
+
+  //     temp = REG_THEME.exec(query)
+  //     if (!temp) {
   //       // 注入主题
-  //       const dir = { type }
-  //       match = ''
-  //       for (let theme in THEMES) {
-  //         match += `import ${(dir[theme] =
-  //           PREFIX +
-  //           counter++)} from "${name}.${type}?${query}&theme=${theme}"\n`
+  //       let len = match.length
+  //       let strObj = '{'
+  //       let vars
+
+  //       match = '\n'
+  //       for (temp in THEMES) {
+  //         vars = PREFIX + counter++
+  //         match += `import ${vars} from "${name}.${type +
+  //           query}&theme=${temp}"\n`
+  //         strObj += `"${temp}":${vars},`
   //       }
-  //       info[variable] = dir
-  //       lastImport = Math.max(lastImport, index + match.length)
+  //       info[variable] = strObj + '}'
+  //       more += match.length - len
+  //       lastImport = index + len + more
   //       return match
   //     }
+
   //     return match
   //   }
   // )
 
+  // let variables = ''
+  // if (lastImport) {
+  //   variables = '\nimport $_getCSSModule from "@/utils/getCSSModule"'
+  //   for (let vars in info) {
+  //     variables += `\nconst ${vars} = $_getCSSModule(${info[vars]})`
+  //   }
+  //   variables += '\n'
+  // }
+
   // this.callback(
-  //   null,
-  //   'import $_SKIN from "@/utils/skin' +
-  //     source.substring(0, lastImport) +
-  //     (() => {
-  //       let variables = ''
-  //       for (let vars in info) {
-  //         variables += `const ${vars} = () => ${JSON.stringify(
-  //           info[vars]
-  //         )}[$_SKIN.value]\n`
-  //       }
-  //       return variables
-  //     })() +
-  //     source.substring(lastImport)
+  // null,
+  // source.substring(0, lastImport) + variables + source.substring(lastImport)
   // )
 }
 // 插件: 不同theme到不同chunk (顺便合并下小文件？)

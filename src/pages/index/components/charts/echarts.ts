@@ -6,6 +6,8 @@
 import { ECharts } from 'echarts' // 类型申明 ┐(：´ゞ｀)┌
 import echarts from 'echarts/lib/echarts'
 
+// import SKIN from '@/utils/skin' // 随皮肤改变...
+
 /// 注册主题 ///
 echarts.registerTheme('tpl', {
   // 自带主题 light 的颜色, 定制主题: https://echarts.baidu.com/theme-builder/

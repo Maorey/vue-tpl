@@ -5,7 +5,6 @@
  */
 const path = require('path')
 const rename = require('./rename')
-const themeLoader = require('./themeLoader.js')
 
 const RUNTIME_CHUNK = 'runtime'
 
@@ -54,8 +53,6 @@ function plugin(config, DIR) {
   // config
   //   .plugin('hash-module')
   //   .use(require('webpack').HashedModuleIdsPlugin, [{ hashDigestLength: 5 }])
-  // 多主题
-  config.plugin('theme-loader').use(themeLoader.plugin)
   // 补全html插入资源
   config
     .plugin('insert-preload')
@@ -84,8 +81,44 @@ function plugin(config, DIR) {
   ])
 }
 
-/// 【优化(optimization)】 ///
-function optimization(config) {
+/** webpack 配置
+ * @param {chainWebpack} config 配置对象
+ * @param {Object} ENV 环境变量
+ *  https://github.com/neutrinojs/webpack-chain#getting-started
+ */
+module.exports = function(config) {
+  const DIR = process.cwd()
+  config.merge({
+    // https://webpack.js.org/configuration/other-options/#recordspath
+    recordsPath: path.join(DIR, 'build/records.json'),
+  })
+
+  fileName(config)
+  plugin(config, DIR)
+
+  /// 构建优化(vue cli 大法好) ///
+  // 已使用 cache-loader
+  // minimizing 已开启多线程
+  // parallel-webpack或happypack loader不同线程插件不适用
+  /// loader不同线程(cli已判断cpu核心数开启) ///
+  // const threadLoader = require('thread-loader')
+  // warm不了,loader从package.json读...
+  // threadLoader.warmup({}, ['eslint-loader', 'sass-loader'])
+  // const threadLoader = 'thread-loader'
+  // // eslint
+  // config.module
+  //   .rule('eslint')
+  //   .oneOf(threadLoader)
+  //   .use(threadLoader)
+  //   .loader(threadLoader)
+  //   .end()
+  //   .oneOf('eslint-loader')
+  //   .use('eslint-loader')
+  //   .after(threadLoader)
+  // // sass
+  // // babel
+
+  /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
   config.optimization.runtimeChunk({ name: RUNTIME_CHUNK }) // 抽出来内联到html
 
@@ -223,67 +256,4 @@ function optimization(config) {
       },
     },
   })
-
-  /// 构建优化(vue cli 大法好) ///
-  // 已使用 cache-loader
-  // minimizing 已开启多线程
-  // parallel-webpack或happypack loader不同线程插件不适用
-  /// loader不同线程(cli已判断cpu核心数开启) ///
-  // const threadLoader = require('thread-loader')
-  // warm不了,loader从package.json读...
-  // threadLoader.warmup({}, ['eslint-loader', 'sass-loader'])
-  // const threadLoader = 'thread-loader'
-  // // eslint
-  // config.module
-  //   .rule('eslint')
-  //   .oneOf(threadLoader)
-  //   .use(threadLoader)
-  //   .loader(threadLoader)
-  //   .end()
-  //   .oneOf('eslint-loader')
-  //   .use('eslint-loader')
-  //   .after(threadLoader)
-  // // sass
-  // // babel
-}
-
-/** webpack 配置
- * @param {chainWebpack} config 配置对象
- * @param {Object} ENV 环境变量
- *  https://github.com/neutrinojs/webpack-chain#getting-started
- */
-module.exports = function(config, ENV) {
-  const DIR = process.cwd()
-  config.merge({
-    // https://webpack.js.org/configuration/other-options/#recordspath
-    recordsPath: path.join(DIR, 'build/records.json'),
-  })
-  // 打包多主题
-  if (themeLoader.init(ENV).THEMES) {
-    const name = 'theme-loader'
-    const loader = path.join(DIR, 'build/themeLoader.js')
-    config.module
-      .rule('vue')
-      .use(name)
-      .loader(loader)
-      .before('vue-loader')
-    config.module
-      .rule('js')
-      .use(name)
-      .loader(loader)
-    config.module
-      .rule('ts')
-      .use(name)
-      .loader(loader)
-    config.module
-      .rule('tsx')
-      .use(name)
-      .loader(loader)
-  }
-
-  fileName(config)
-  plugin(config, DIR)
-
-  /// 【优化(optimization)】 ///
-  optimization(config)
 }
