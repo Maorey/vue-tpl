@@ -281,5 +281,18 @@
     "byName": {},
     "bySource": {},
     "usedIds": []
-  }
+  },
+  "mini-css-extract-plugin node_modules/css-loader/dist/cjs.js??ref--8-oneOf-0-1!node_modules/vue-loader/lib/loaders/stylePostLoader.js!node_modules/postcss-loader/src/index.js??ref--8-oneOf-0-2!node_modules/sass-loader/dist/cjs.js??ref--8-oneOf-0-3!node_modules/cache-loader/dist/cjs.js??ref--0-0!build/themeLoader.js!node_modules/vue-loader/lib/index.js??vue-loader-options!src/pages/index/views/About.vue?vue&type=style&index=0&lang=scss&module=true&": [
+    {
+      "modules": {
+        "byIdentifier": {},
+        "usedIds": {}
+      },
+      "chunks": {
+        "byName": {},
+        "bySource": {},
+        "usedIds": []
+      }
+    }
+  ]
 }

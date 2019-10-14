@@ -5,13 +5,9 @@
  */
 const ENV = process.env // 环境变量
 const isProd = ENV.NODE_ENV === 'production' // 是否生产环境
-
 const pages = require('./build/pages')(isProd) // 自动检测并返回页面入口设置
-const THEME_LOADER = require('path').resolve('./build/themeLoader.js')
-const themeLoader = require(THEME_LOADER)
 
 const ALIAS = {} // 别名字典
-
 // 输出图形
 const FIGURE = require('./build/figure')
 // eslint-disable-next-line no-console
@@ -53,28 +49,6 @@ module.exports = {
       env['process.env.' + att] = JSON.stringify(ENV[att])
     }
     config.plugin('define').use(require('webpack').DefinePlugin, [env])
-    /// 多主题 ///
-    config.plugin('theme-loader').use(themeLoader.plugin)
-    if (themeLoader.init(ENV).THEMES) {
-      const name = 'theme-loader'
-      config.module
-        .rule('vue')
-        .use(name)
-        .loader(THEME_LOADER)
-        .before('vue-loader')
-      config.module
-        .rule('js')
-        .use(name)
-        .loader(THEME_LOADER)
-      config.module
-        .rule('ts')
-        .use(name)
-        .loader(THEME_LOADER)
-      config.module
-        .rule('tsx')
-        .use(name)
-        .loader(THEME_LOADER)
-    }
 
     /// 不处理的依赖库 ///
     // 在html模板引入了会创建全局变量的js后可以设置以在src中使用这个全局变量
@@ -85,6 +59,6 @@ module.exports = {
     /// 【不同环境配置】 ///
     require(isProd
       ? './build/production.config'
-      : './build/development.config')(config)
+      : './build/development.config')(config, ENV)
   },
 }

@@ -60,7 +60,7 @@ export default class extends Vue {
       LINK.push({
         to: config.path, // uri
         src: config.meta.thumb, // 缩略图
-        name: config.meta.title, // 描述
+        name: config.meta.name, // 描述
       })
     }
 

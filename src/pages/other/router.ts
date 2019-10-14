@@ -45,10 +45,10 @@ router.beforeEach((to, from, next) => {
   /// 路由权限处理 ///
   next() // 不调用则不跳转
 })
-const TITLE_APP = configRoute.meta.title // 标题
+const TITLE_APP = configRoute.meta.name // 标题
 router.afterEach((to, from) => {
   /// 设置页面标题 ///
-  document.title = to.meta.title ? `${to.meta.title} - ${TITLE_APP}` : TITLE_APP
+  document.title = to.meta.name ? `${to.meta.name} - ${TITLE_APP}` : TITLE_APP
 
   NProgress.done() // 结束进度条
 })

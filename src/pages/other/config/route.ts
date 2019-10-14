@@ -18,7 +18,7 @@ export default {
     /*! 标题 */
     /** 标题
      */
-    title: 'vue-tpl',
+    name: 'vue-tpl',
   },
   routes: [
     {
@@ -26,7 +26,7 @@ export default {
 
       path: '/home',
       meta: {
-        title: '首页',
+        name: '首页',
       },
       component: getAsync(() =>
         import(/* webpackChunkName: "oHome" */ '@other/views/Home')
@@ -37,7 +37,7 @@ export default {
 
       path: '/about',
       meta: {
-        title: '关于',
+        name: '关于',
       },
       component: getAsync(() =>
         import(/* webpackChunkName: "oAbout" */ '@other/views/About')

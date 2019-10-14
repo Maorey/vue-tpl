@@ -5,7 +5,7 @@
  */
 
 const TARGET = 'PROXY_TARGET'
-const REG_PROXY = /^BASE_URL(\d*)$/
+const REG_PROXY = /^BASE_PATH(\d*)$/
 /** 获取开发服务器代理设置
  *
  * @param {Object} ENV 环境变量

@@ -43,12 +43,12 @@ router.beforeEach((to, from, next) => {
   }
 
   /// 路由权限处理 ///
-  // const access = storeUser.access
-  // if (!access) {
+  // const menu = storeUser.menu
+  // if (!menu) {
   //   location.href = PATH_LOGIN // 没有登陆
   //   return
   // }
-  // for (let path of access) {
+  // for (let path of menu) {
   //   if (path === toFullPath) {
   //     // 匹配具体路径
   //     next()
@@ -65,10 +65,10 @@ router.beforeEach((to, from, next) => {
   // NProgress.done() // 没有访问权限则不跳转
   next() // 不调用则不跳转
 })
-const TITLE_APP = configRoute.meta.title // 标题
+const TITLE_APP = configRoute.meta.name // 标题
 router.afterEach((to, from) => {
   /// 设置页面标题 ///
-  document.title = to.meta.title ? `${to.meta.title} - ${TITLE_APP}` : TITLE_APP
+  document.title = to.meta.name ? `${to.meta.name} - ${TITLE_APP}` : TITLE_APP
 
   NProgress.done() // 结束进度条
 })

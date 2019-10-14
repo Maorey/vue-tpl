@@ -175,9 +175,6 @@ const STORAGE = window.localStorage
 /** 提取时间戳
  */
 const REG_TIMESPAN = /^(\d+)(.*)$/
-/** timeout字典
- */
-let timeoutDic: IObject<number> = {}
 /** 本地存储 (localStorage 单例)
  * @test true
  *
@@ -214,7 +211,7 @@ const local = {
   /** 设置值
    * @param {String} key 存储键
    * @param {Object} value 存储值
-   * @param {Number} expires 过期时间(ms)
+   * @param {Number|undefined} expires 过期时间(ms) undefined: 更新
    *
    * @returns {Object} value 存储值
    */
@@ -226,12 +223,11 @@ const local = {
     } catch (e) {
       throw e
     }
-
-    clearTimeout(timeoutDic[key]) // 先清除该key的timeout
-    if (expires) {
-      str = Date.now() + expires + str // 加时间戳
-      timeoutDic[key] = setTimeout(() => this.remove(key), expires)
-    }
+    // 加时间戳
+    expires === undefined
+      ? (str =
+          (REG_TIMESPAN.exec(STORAGE.getItem(key) || '') || [])[1] || '' + str)
+      : expires && (str = Date.now() + expires + str)
 
     STORAGE.setItem(key, str) // 存储
 
@@ -243,10 +239,6 @@ const local = {
    * @returns {Object} key对应值
    */
   remove(key: string): IObject | undefined {
-    // 同时移除timeout
-    clearTimeout(timeoutDic[key])
-    delete timeoutDic[key]
-
     const value = this.get(key) // 获取值
     STORAGE.removeItem(key) // 移除存储
 
@@ -255,12 +247,6 @@ const local = {
   /** 清空存储
    */
   clear() {
-    // 清空timeout
-    for (let key in timeoutDic) {
-      clearTimeout(timeoutDic[key])
-    }
-
-    timeoutDic = {}
     STORAGE.clear()
   },
 }

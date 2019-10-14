@@ -6,10 +6,9 @@
 import AXIOS from 'axios'
 
 import CONFIG from '@/config'
+import { IObject } from '@/types'
 import { clone, sort } from '@/utils'
 import { Memory } from '@/utils/storage'
-
-import { IObject } from '@/types'
 
 // 默认请求配置 https://github.com/axios/axios#config-defaults
 clone(AXIOS.defaults, {
@@ -17,8 +16,8 @@ clone(AXIOS.defaults, {
   timeout: CONFIG.timeout, // 超时
 
   // 从cookie设置请求头
-  xsrfCookieName: CONFIG.token,
-  xsrfHeaderName: CONFIG.token,
+  // xsrfCookieName: CONFIG.token,
+  // xsrfHeaderName: CONFIG.token,
 
   // 允许跨域带cookie
   // 服务端需要设置响应头Allow-Credentials=true Allow-Origin不能为* 还得设置下Allow-Methods
@@ -84,6 +83,12 @@ function getKEY(url: string, params?: IObject) {
   return part[0] + query
 }
 
+// 带上特定查询字段（用于微服务调试指定目标机器）
+const SEARCH_FIELD = process.env.SEARCH_FIELD
+const SEARCH = (new RegExp(`[?&]${SEARCH_FIELD}=([^&]*)`).exec(
+  location.search.replace(/\/$/, '')
+) || [])[1]
+
 /** 发起请求
  * @param {String} url 请求地址
  * @param {String} method http方法
@@ -113,7 +118,10 @@ function request(
   if (cache) {
     return cache
   }
-  const shouldCache = !config.noCache && config.method === 'get'
+
+  SEARCH && ((config.params || (config.params = {}))[SEARCH_FIELD] = SEARCH)
+  const shouldCache = !SEARCH && !config.noCache && config.method === 'get'
+  const alive: number = config.alive
   // 使用缓存的get请求
   if (shouldCache) {
     cache = dataStore.get(KEY)
@@ -121,7 +129,6 @@ function request(
       return Promise.resolve(cache)
     }
   }
-  const alive = Number(config.alive) || 0
 
   return requestQueue.set(
     KEY,
@@ -129,7 +136,7 @@ function request(
       .then((res: any) => {
         shouldCache && dataStore.set(KEY, res, alive) // 设置缓存
         requestQueue.remove(KEY) // 移除请求队列
-
+        /// 响应拦截 ///
         return res
       })
       .catch((error: any) => {
@@ -193,4 +200,9 @@ function del(url: string, params?: IObject, config?: IObject): Promise<any> {
   return request(url, 'delete', params, null, config)
 }
 
-export { get, put, post, del }
+/** 全局请求头配置【只用于携带token等】
+ */
+let HEADERS = AXIOS.defaults.headers || (AXIOS.defaults.headers = {})
+HEADERS = HEADERS.common || (HEADERS.common = {})
+
+export { get, put, post, del, HEADERS as default }

@@ -4,8 +4,6 @@
  * @Date: 2019-04-01 13:28:06
  */
 const path = require('path')
-const rename = require('./rename')
-
 const RUNTIME_CHUNK = 'runtime'
 
 const getLoaderOption = name => ({
@@ -86,37 +84,38 @@ function plugin(config, DIR) {
  * @param {Object} ENV 环境变量
  *  https://github.com/neutrinojs/webpack-chain#getting-started
  */
-module.exports = function(config) {
+module.exports = function(config, ENV) {
   const DIR = process.cwd()
   config.merge({
     // https://webpack.js.org/configuration/other-options/#recordspath
     recordsPath: path.join(DIR, 'build/records.json'),
   })
-
+  /// 多主题 ///
+  const name = 'theme-loader'
+  const themeLoader = require('./themeLoader')
+  config.plugin(name).use(themeLoader.plugin)
+  if (themeLoader.init(ENV).THEMES) {
+    const loader = path.join(DIR, 'build/themeLoader.js')
+    config.module
+      .rule('vue')
+      .use(name)
+      .loader(loader)
+      .before('vue-loader')
+    config.module
+      .rule('js')
+      .use(name)
+      .loader(loader)
+    config.module
+      .rule('ts')
+      .use(name)
+      .loader(loader)
+    config.module
+      .rule('tsx')
+      .use(name)
+      .loader(loader)
+  }
   fileName(config)
   plugin(config, DIR)
-
-  /// 构建优化(vue cli 大法好) ///
-  // 已使用 cache-loader
-  // minimizing 已开启多线程
-  // parallel-webpack或happypack loader不同线程插件不适用
-  /// loader不同线程(cli已判断cpu核心数开启) ///
-  // const threadLoader = require('thread-loader')
-  // warm不了,loader从package.json读...
-  // threadLoader.warmup({}, ['eslint-loader', 'sass-loader'])
-  // const threadLoader = 'thread-loader'
-  // // eslint
-  // config.module
-  //   .rule('eslint')
-  //   .oneOf(threadLoader)
-  //   .use(threadLoader)
-  //   .loader(threadLoader)
-  //   .end()
-  //   .oneOf('eslint-loader')
-  //   .use('eslint-loader')
-  //   .after(threadLoader)
-  // // sass
-  // // babel
 
   /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
@@ -147,7 +146,7 @@ module.exports = function(config) {
 
     automaticNameMaxLength: 15, // 分包文件名自动命名最大长度
     automaticNameDelimiter: '.', // 超过大小, 分包时文件名分隔符
-    name: rename('chunkName'),
+    name: require('./rename')('chunkName'),
     cacheGroups: {
       /// 【 js 】 ///
       // 所有其他依赖的模块
@@ -256,4 +255,26 @@ module.exports = function(config) {
       },
     },
   })
+
+  /// 构建优化(vue cli 大法好) ///
+  // 已使用 cache-loader
+  // minimizing 已开启多线程
+  // parallel-webpack或happypack loader不同线程插件不适用
+  /// loader不同线程(cli已判断cpu核心数开启) ///
+  // const threadLoader = require('thread-loader')
+  // warm不了,loader从package.json读...
+  // threadLoader.warmup({}, ['eslint-loader', 'sass-loader'])
+  // const threadLoader = 'thread-loader'
+  // // eslint
+  // config.module
+  //   .rule('eslint')
+  //   .oneOf(threadLoader)
+  //   .use(threadLoader)
+  //   .loader(threadLoader)
+  //   .end()
+  //   .oneOf('eslint-loader')
+  //   .use('eslint-loader')
+  //   .after(threadLoader)
+  // // sass
+  // // babel
 }

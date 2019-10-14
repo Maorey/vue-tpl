@@ -20,6 +20,7 @@ import Main from 'element-ui/lib/main'
 // 基础
 import Button from 'element-ui/lib/button'
 import Link from 'element-ui/lib/link'
+import Loading from 'element-ui/lib/loading'
 // 提示
 import Tooltip from 'element-ui/lib/tooltip'
 import Popover from 'element-ui/lib/popover'
@@ -38,12 +39,17 @@ Vue.use(Main)
 // 基础
 Vue.use(Button)
 Vue.use(Link)
+Vue.use(Loading.directive)
+Vue.prototype.$loading = Loading.service
 // 提示
 Vue.use(Tooltip)
 Vue.use(Popover)
-Vue.component(Message.name, Message)
-Vue.component(MessageBox.name, MessageBox)
-Vue.component(Notification.name, Notification)
+Vue.prototype.$msgbox = MessageBox
+Vue.prototype.$alert = MessageBox.alert
+Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$prompt = MessageBox.prompt
+Vue.prototype.$notify = Notification
+Vue.prototype.$message = Message
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 

@@ -6,10 +6,10 @@
 import { getAsync } from '@/utils/highOrder' // 高阶组件工具
 
 // import CONFIG from '@/config'
-// import { get } from '@/utils/cookie' // 先执行一次 未登录尽快跳转
+// import { local } from '@/utils/storage' // 先执行一次 未登录尽快跳转
 
 // // 初始执行一次检查登陆
-// if (!get(CONFIG.token)) {
+// if (!local.get(CONFIG.token)) {
 //   // 跳转到登陆页
 //   try {
 //     window.stop() // 停止加载资源
@@ -24,7 +24,7 @@ export default {
   mode: 'hash',
   meta: {
     /*! 默认页 */ home: '/home',
-    /*! 标题 */ title: 'vue-tpl',
+    /*! 标题 */ name: 'vue-tpl',
   },
   routes: [
     {
@@ -32,7 +32,7 @@ export default {
 
       path: '/home',
       meta: {
-        title: '首页',
+        name: '首页',
         thumb: require('@index/assets/home.png'),
       },
       component: getAsync(() =>
@@ -44,7 +44,7 @@ export default {
 
       path: '/about',
       meta: {
-        title: '关于',
+        name: '关于',
         thumb: require('@index/assets/about.png'),
       },
       component: getAsync(() =>

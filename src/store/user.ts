@@ -2,7 +2,6 @@
  */
 import { VuexModule, Action, Mutation } from 'vuex-module-decorators'
 
-import { get as getCookie, set as setCookie } from '@/utils/cookie'
 import { ILogin, login, logout } from '@/api/user'
 import { local } from '@/utils/storage'
 import CONFIG from '@/config'
@@ -21,36 +20,29 @@ interface IInfo {
 /** 用户管理
  */
 interface IUser {
-  token: string
   /** 用户信息
    */
   info?: IInfo
   /** 用户菜单访问权限
    */
-  access?: string[]
+  menu?: string[]
 }
 
 /** 用户状态管理
  */
 class User extends VuexModule implements IUser {
   /// State & Getter(public) ///
-  token = getCookie(CONFIG.token)
   info = USER_INFO.info as IInfo | undefined
-  access = USER_INFO.access as string[] | undefined
+  menu = USER_INFO.menu as string[] | undefined
 
   /// Mutation 无法调用/commit 必须通过Action ///
-  @Mutation
-  protected TOKEN(token: string) {
-    this.token = token
-    setCookie(CONFIG.token, token, CONFIG.tokenAlive)
-  }
   @Mutation
   protected INFO(info?: IInfo) {
     this.info = USER_INFO.info = info
   }
   @Mutation
-  protected ACCESS(access?: string[]) {
-    this.access = USER_INFO.access = access
+  protected MENU(menu?: string[]) {
+    this.menu = USER_INFO.menu = menu
   }
 
   /// Action ///
@@ -62,9 +54,9 @@ class User extends VuexModule implements IUser {
     const { data } = await login(formData)
 
     const context = this.context
-    context.commit('TOKEN', data.token)
-    context.commit('INFO', data.user)
-    context.commit('ACCESS', data.access)
+    context.commit('INFO', data.info)
+    context.commit('MENU', data.menu)
+    USER_INFO.token = data.token
   }
   /** 注销
    */
@@ -73,9 +65,9 @@ class User extends VuexModule implements IUser {
     await logout()
 
     const context = this.context
-    context.commit('TOKEN', '')
     context.commit('INFO')
-    context.commit('ACCESS')
+    context.commit('MENU')
+    USER_INFO.token = ''
   }
 
   // 修改...

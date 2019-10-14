@@ -27,7 +27,7 @@ Object.defineProperty(state, 'value', {
     // 通知订阅者
     for (let callback of subscribes) {
       callback(skin)
-      ;(callback as any).$ && unSubscribe(callback)
+      ;(callback as any).$ && off(callback)
     }
   },
 })
@@ -40,7 +40,7 @@ Object.defineProperty(state, 'value', {
  * @param {Boolean} once 是否只订阅一次
  * @param {Boolean} immediate 是否马上执行
  */
-function subscribe(callback: callback, once?: boolean, immediate?: boolean) {
+function on(callback: callback, once?: boolean, immediate?: boolean) {
   ;(callback as any).$ = once
   subscribes.add(callback)
   immediate && callback(theme)
@@ -48,9 +48,9 @@ function subscribe(callback: callback, once?: boolean, immediate?: boolean) {
 /** 取消订阅
  * @param {Function} callback 回调函数
  */
-function unSubscribe(callback: callback) {
+function off(callback: callback) {
   subscribes.delete(callback)
 }
 
 export default state as { value: string }
-export { subscribe, unSubscribe }
+export { on, off }
