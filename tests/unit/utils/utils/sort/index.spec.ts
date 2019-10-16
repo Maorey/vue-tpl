@@ -7,41 +7,43 @@
 import sort from '@/utils/utils/sort'
 import getRandomArray from './getRandomArray'
 
-test('sort', () => {
-  let arrayLength = 10000
-  const testArray = getRandomArray(arrayLength--)
+describe('@/utils/utils/sort: 排序', () => {
+  it('sort', () => {
+    let arrayLength = 10000
+    const testArray = getRandomArray(arrayLength--)
 
-  let pass = true
+    let pass = true
 
-  sort(testArray)
-  for (let i = 0; i < arrayLength; i++) {
-    if (testArray[i + 1] < testArray[i]) {
-      pass = false
-      break
-    }
-  }
-
-  if (pass) {
-    sort(testArray, (a, b) => a < b)
+    sort(testArray)
     for (let i = 0; i < arrayLength; i++) {
-      if (testArray[i + 1] > testArray[i]) {
+      if (testArray[i + 1] < testArray[i]) {
         pass = false
         break
       }
     }
-  }
 
-  expect(pass).toBe(true)
+    if (pass) {
+      sort(testArray, (a, b) => a < b)
+      for (let i = 0; i < arrayLength; i++) {
+        if (testArray[i + 1] > testArray[i]) {
+          pass = false
+          break
+        }
+      }
+    }
 
-  expect(sort(['l', 'k', 'j', 'h', 'g', 'f', 'd', 's', 'a'])).toEqual([
-    'a',
-    'd',
-    'f',
-    'g',
-    'h',
-    'j',
-    'k',
-    'l',
-    's',
-  ])
+    expect(pass).toBe(true)
+
+    expect(sort(['l', 'k', 'j', 'h', 'g', 'f', 'd', 's', 'a'])).toEqual([
+      'a',
+      'd',
+      'f',
+      'g',
+      'h',
+      'j',
+      'k',
+      'l',
+      's',
+    ])
+  })
 })

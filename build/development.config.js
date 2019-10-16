@@ -56,7 +56,7 @@ module.exports = function(config) {
     .plugin('insert-preload')
     .use(require('path').join(process.cwd(), 'build/insertPreload.js'))
   // stylelint
-  config.plugin('stylelint').use('stylelint-bare-webpack-plugin', [
+  config.plugin('stylelint').use('stylelint-webpack-plugin', [
     {
       fix: true,
       cache: true,

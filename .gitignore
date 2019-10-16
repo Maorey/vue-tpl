@@ -5,6 +5,7 @@ node_modules
 /compile
 
 # 测试
+/coverage
 /tests/e2e/videos/
 /tests/e2e/screenshots/
 
