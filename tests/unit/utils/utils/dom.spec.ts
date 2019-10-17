@@ -5,7 +5,8 @@
  */
 import { getInfoByHtml, escapeHTML } from '@/utils/utils/dom'
 
-const HTML = `
+describe('@/utils/utils/dom: 和dom结构相关的工具', () => {
+  const HTML = `
 <article class="post-content toc-container">
   <h4 class="post-title">标题</h4>
   <img src="https://image.com/a.png?w=1&h=1">
@@ -15,21 +16,22 @@ const HTML = `
 </article>
 `
 
-test('escapeHTML', () => {
-  expect(escapeHTML(HTML)).toBe(
-    `<article class="post-content toc-container">
+  it('escapeHTML 过滤XSS', () => {
+    expect(escapeHTML(HTML)).toBe(
+      `<article class="post-content toc-container">
   <h4 class="post-title">标题</h4>
   <img src="https://image.com/a.png?w=1&h=1">
   &lt;script type="TypeScript"&gt;
   // do someThing
   &lt;/script&gt;
 </article>`
-  )
-})
+    )
+  })
 
-test('getInfoByHtml', () => {
-  expect(getInfoByHtml(HTML).get('script', 'type', 'TypeScript')).toEqual({
-    tagName: 'script',
-    type: 'TypeScript',
+  it('getInfoByHtml 解析html字符串', () => {
+    expect(getInfoByHtml(HTML).get('script', 'type', 'TypeScript')).toEqual({
+      tagName: 'script',
+      type: 'TypeScript',
+    })
   })
 })

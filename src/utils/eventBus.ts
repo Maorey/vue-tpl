@@ -12,6 +12,8 @@ const BUS = new Vue()
 type Handler = (...args: any[]) => any
 
 /** 监听事件
+ * @test true
+ *
  * @param {String} eventName 事件名
  * @param {String|Handler} nameSpace:String 命名空间 handler:Handler 事件处理函数
  * @param {Handler} handler 事件处理函数
@@ -34,6 +36,8 @@ function on(
 }
 
 /** 单次监听事件
+ * @test true
+ *
  * @param {String} eventName 事件名
  * @param {String|Handler} nameSpace:String 命名空间 handler:Handler 事件处理函数
  * @param {Handler} handler 事件处理函数
@@ -47,6 +51,8 @@ function once(
 }
 
 /** 取消监听事件
+ * @test true
+ *
  * 如果没有提供事件，则移除所有的事件监听器
  * 如果只提供了事件，则移除该事件所有的监听器
  * 如果同时提供了事件与回调，则只移除这个回调的监听器
@@ -74,6 +80,8 @@ function off(
 }
 
 /** 触发事件
+ * @test true
+ *
  * @param {String} eventKey 事件 (= 命名空间.事件名)
  * @param {...Any} args 事件参数列表
  */

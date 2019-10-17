@@ -12,6 +12,8 @@
 //   })
 // })
 
-test('example', () => {
-  expect(1 + 1).toBe(2)
+describe('示例', () => {
+  it('1+1是否为2', () => {
+    expect(1 + 1).toBe(2)
+  })
 })

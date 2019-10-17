@@ -6,29 +6,31 @@
 import mergeSort from '@/utils/utils/sort/merge'
 import getRandomArray from './getRandomArray'
 
-test('mergeSort', () => {
-  let arrayLength = 10000
-  const testArray = getRandomArray(arrayLength--)
+describe('@/utils/utils/sort/merge: 归并排序', () => {
+  it('mergeSort', () => {
+    let arrayLength = 10000
+    const testArray = getRandomArray(arrayLength--)
 
-  let pass = true
+    let pass = true
 
-  mergeSort(testArray)
-  for (let i = 0; i < arrayLength; i++) {
-    if (testArray[i + 1] < testArray[i]) {
-      pass = false
-      break
-    }
-  }
-
-  if (pass) {
-    mergeSort(testArray, (a, b) => a < b)
+    mergeSort(testArray)
     for (let i = 0; i < arrayLength; i++) {
-      if (testArray[i + 1] > testArray[i]) {
+      if (testArray[i + 1] < testArray[i]) {
         pass = false
         break
       }
     }
-  }
 
-  expect(pass).toBe(true)
+    if (pass) {
+      mergeSort(testArray, (a, b) => a < b)
+      for (let i = 0; i < arrayLength; i++) {
+        if (testArray[i + 1] > testArray[i]) {
+          pass = false
+          break
+        }
+      }
+    }
+
+    expect(pass).toBe(true)
+  })
 })
