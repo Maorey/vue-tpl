@@ -5,19 +5,6 @@
  */
 import { getAsync } from '@/utils/highOrder' // 高阶组件工具
 
-// import CONFIG from '@/config'
-// import { local } from '@/utils/storage' // 先执行一次 未登录尽快跳转
-
-// // 初始执行一次检查登陆
-// if (!local.get(CONFIG.token)) {
-//   // 跳转到登陆页
-//   try {
-//     window.stop() // 停止加载资源
-//   } catch (error) {}
-//   location.href = ROUTE.meta.login
-//   throw new Error() // 阻止后续代码执行
-// }
-
 export default {
   /*! 【index页路由配置(https://router.vuejs.org/zh/api/#router-构建选项)】↓ */
 
