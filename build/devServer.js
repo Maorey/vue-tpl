@@ -28,6 +28,8 @@ module.exports = function(ENV) {
   }
 
   return {
+    hot: true,
+    hotOnly: true,
     host: ENV.DEV_SERVER_HOST,
     port: ENV.DEV_SERVER_PORT,
     overlay: { errors: true }, // lint

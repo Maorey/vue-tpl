@@ -174,7 +174,7 @@ class Memory {
 const STORAGE = window.localStorage
 /** 提取时间戳
  */
-const REG_TIMESPAN = /^(\d+)(.*)$/
+const REG_TIMESPAN = /^(\d+)([^\d][\d\D]*)$/
 /** 本地存储 (localStorage 单例)
  * @test true
  *
@@ -203,9 +203,7 @@ const local = {
 
       try {
         return JSON.parse(item)
-      } catch (e) {
-        throw e
-      }
+      } catch (e) {}
     }
   },
   /** 设置值
@@ -215,13 +213,13 @@ const local = {
    *
    * @returns {Object} value 存储值
    */
-  set(key: string, value: IObject, expires?: number): IObject {
+  set(key: string, value: IObject, expires?: number) {
     let str: string
 
     try {
       str = JSON.stringify(value)
     } catch (e) {
-      throw e
+      return
     }
     // 加时间戳
     expires === undefined
