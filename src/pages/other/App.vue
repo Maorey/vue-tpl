@@ -16,8 +16,12 @@
     <Transition
       appear
       name="fade"
+      mode="out-in"
     >
-      <KeepAlive>
+      <KeepAlive
+        :max="9"
+        :exclude="$route.meta.$.e"
+      >
         <RouterView />
       </KeepAlive>
     </Transition>

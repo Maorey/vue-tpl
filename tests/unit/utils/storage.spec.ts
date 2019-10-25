@@ -58,7 +58,7 @@ describe('@/utils/storage: 存储', () => {
     expect(local.get(notExits)).toBe(undefined)
   })
   it('本地存储 local.remove: 移除', () => {
-    expect(local.remove(testKey)).toEqual(testValue)
+    expect(local.remove(testKey)).toEqual(undefined)
     expect(local.get(testKey)).toBe(undefined)
   })
   it('本地存储 local.clear: 清空', () => {

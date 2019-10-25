@@ -382,7 +382,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
         }
       }
       /// watch (@Watch) ///
-      /// LifeCycle (beforeCreate/created/.../destroyed) ///
+      /// LifeCycle (private beforeCreate/created/.../destroyed) ///
       /// methods (private/public) ///
       /// render ///
     }
@@ -687,5 +687,5 @@ server {
 
 ### 其他
 
-- 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [vue cli 4.0](https://github.com/vuejs/vue-cli/projects/7) 正式版 & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
+- 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
 - TODO: 多主题方案 module(含共享变量) & normal (chunk and alternate stylesheet) (其实要是不异步加载 css, 没那么复杂) 先支持异步的再说 直接正则修改原始代码 没法 AST 的吧

@@ -3,8 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2019-06-04 16:07:30
  */
-import { IObject } from '@/types'
-
 interface IKeyVal {
   /** 键
    */
@@ -113,7 +111,9 @@ class Memory {
     expires &&
       this.out.push({
         k: key,
-        v: setTimeout(() => this.remove(key), expires),
+        v: setTimeout(() => {
+          this.remove(key)
+        }, expires),
       })
 
     return value
@@ -175,6 +175,8 @@ const STORAGE = window.localStorage
 /** 提取时间戳
  */
 const REG_TIMESPAN = /^(\d+)([^\d][\d\D]*)$/
+const ALIVE = 100 * 1000 // 防可能的内存溢出
+let CACHE: IObject<{ k?: number; v?: any; e?: number | null } | 0> = {}
 /** 本地存储 (localStorage 单例)
  * @test true
  *
@@ -186,23 +188,40 @@ const local = {
    * @returns {Object} key对应的值
    */
   get(key: string): IObject | undefined {
-    let item = STORAGE.getItem(key)
-
+    let item: IObject | string | null | 0 = CACHE[key]
     if (item) {
-      const execArray = REG_TIMESPAN.exec(item) // 提取数据
+      if (item.e && Date.now() > item.e) {
+        // 过期
+        STORAGE.removeItem(key)
+        clearTimeout(item.k)
+        CACHE[key] = 0
+        return
+      }
+      return item.v
+    }
+
+    if ((item = STORAGE.getItem(key))) {
+      let execArray: string[] | null | number = REG_TIMESPAN.exec(item) // 提取数据
 
       if (execArray) {
-        if (Date.now() > parseInt(execArray[1])) {
+        item = execArray[2]
+        if (Date.now() > (execArray = parseInt(execArray[1]))) {
           // 过期
           STORAGE.removeItem(key)
           return
         }
-
-        item = execArray[2]
       }
 
       try {
-        return JSON.parse(item)
+        item = JSON.parse(item) as IObject
+        CACHE[key] = {
+          v: item,
+          e: execArray,
+          k: setTimeout(() => {
+            CACHE[key] = 0
+          }, ALIVE),
+        }
+        return item
       } catch (e) {}
     }
   },
@@ -215,36 +234,50 @@ const local = {
    */
   set(key: string, value: IObject, expires?: number) {
     let str: string
-
     try {
       str = JSON.stringify(value)
     } catch (e) {
       return
     }
     // 加时间戳
+    let temp = (CACHE[key] = CACHE[key] || {})
     expires === undefined
       ? (str =
-          (REG_TIMESPAN.exec(STORAGE.getItem(key) || '') || [])[1] || '' + str)
-      : expires && (str = Date.now() + expires + str)
+          (temp.e ||
+            (temp.e = parseInt(
+              (REG_TIMESPAN.exec(STORAGE.getItem(key) || '') || [])[1]
+            )) ||
+            '') + str)
+      : expires && (str = (temp.e = Date.now() + expires) + str)
 
-    STORAGE.setItem(key, str) // 存储
+    clearTimeout(temp.k)
+    temp.v = value
+    temp.k = setTimeout(() => {
+      CACHE[key] = 0
+    }, ALIVE)
+
+    STORAGE.setItem(key, str)
 
     return value
   },
   /** 移除值
    * @param {String} key 存储键
-   *
-   * @returns {Object} key对应值
    */
-  remove(key: string): IObject | undefined {
-    const value = this.get(key) // 获取值
-    STORAGE.removeItem(key) // 移除存储
-
-    return value
+  remove(key: string) {
+    const temp = CACHE[key]
+    temp && clearTimeout(temp.k)
+    CACHE[key] = 0
+    STORAGE.removeItem(key)
   },
   /** 清空存储
    */
   clear() {
+    let temp: string | IObject | 0
+    for (temp in CACHE) {
+      temp = CACHE[temp]
+      temp && clearTimeout(temp.k)
+    }
+    CACHE = {}
     STORAGE.clear()
   },
 }

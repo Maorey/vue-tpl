@@ -26,7 +26,7 @@ export default class extends Vue {
   /// private instance attributes (private name?: string // 非响应式属性) ///
   /// computed (get name() { return this.name } set name()... ///
   /// watch (@Watch) ///
-  /// LifeCycle (beforeCreate/created/.../destroyed) ///
+  /// LifeCycle (private beforeCreate/created/.../destroyed) ///
   private mounted() {
     const canvas = this.$el as HTMLCanvasElement
     const width = (canvas.width = canvas.clientWidth)

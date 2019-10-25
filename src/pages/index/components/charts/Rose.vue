@@ -39,7 +39,7 @@ export default class extends Vue {
   private onDataChange(data?: EChartOption.SeriesPie) {
     this.init()
   }
-  /// LifeCycle (beforeCreate/created/.../destroyed) ///
+  /// LifeCycle (private beforeCreate/created/.../destroyed) ///
   private mounted() {
     this.init()
   }

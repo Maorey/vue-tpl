@@ -3,7 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 16:50:15
  */
-import { IObject } from '@/types'
 import { camelToKebab } from '@/utils'
 
 const PREV_STRING = ';\\s*'

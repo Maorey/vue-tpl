@@ -6,7 +6,6 @@
 import AXIOS from 'axios'
 
 import CONFIG from '@/config'
-import { IObject } from '@/types'
 import { clone, sort } from '@/utils'
 import { Memory } from '@/utils/storage'
 
@@ -84,10 +83,16 @@ function getKEY(url: string, params?: IObject) {
 }
 
 // 带上特定查询字段（用于微服务调试指定目标机器）
-const SEARCH_FIELD = process.env.SEARCH_FIELD
-const SEARCH = (new RegExp(`[?&]${SEARCH_FIELD}=([^&]*)`).exec(
-  location.search.replace(/\/$/, '')
-) || [])[1]
+let SEARCH: IObject | undefined
+location.search
+  .replace(/\/$/, '')
+  .replace(
+    new RegExp(`[?&](${process.env.SEARCH_FIELD})=([^&]*)`, 'g'),
+    (match, field, value) => {
+      value && ((SEARCH || (SEARCH = {}))[field] = value)
+      return match
+    }
+  )
 
 /** 发起请求
  * @param {String} url 请求地址
@@ -119,8 +124,10 @@ function request(
     return cache
   }
 
-  SEARCH && ((config.params || (config.params = {}))[SEARCH_FIELD] = SEARCH)
-  const shouldCache = !SEARCH && !config.noCache && config.method === 'get'
+  const shouldCache =
+    !(SEARCH && Object.assign(config.params || (config.params = {}), SEARCH)) &&
+    !config.noCache &&
+    config.method === 'get'
   const alive: number = config.alive
   // 使用缓存的get请求
   if (shouldCache) {

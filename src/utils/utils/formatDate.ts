@@ -4,7 +4,6 @@
  * @Date: 2019-06-27 12:58:37
  */
 import { Memory, IPool } from '@/utils/storage'
-import { IObject } from '@/types'
 
 /** 保留字枚举, 如下(允许使用转义字符\来输出保留字):
  *

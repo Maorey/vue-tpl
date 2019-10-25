@@ -39,6 +39,7 @@ function forceEmitRecursion(vm: Vue, deep = 0) {
 function refreshRoute(matched: RouteRecord[]) {
   for (let record of matched) {
     for (let key in record.instances) {
+      // v-if hack 会丢失所有缓存
       // forceUpdateRecursion(record.instances[key])
       forceEmitRecursion(record.instances[key])
     }

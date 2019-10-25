@@ -92,3 +92,9 @@ declare module '*.json' {
 // declare module 'math.gl'
 // declare module '@luma.gl/addons'
 declare module '*'
+
+/** 任意对象
+ */
+declare interface IObject<T = any> {
+  [key: string]: T
+}

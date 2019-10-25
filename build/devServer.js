@@ -27,12 +27,18 @@ module.exports = function(ENV) {
     }
   }
 
+  let host = ENV.DEV_SERVER_HOST
+  if (!host) {
+    try {
+      const network = require('os').networkInterfaces()
+      host = network[Object.keys(network)[0]][1].address
+    } catch (e) {}
+  }
+
   return {
-    hot: true,
-    hotOnly: true,
-    host: ENV.DEV_SERVER_HOST,
+    proxy,
+    host: host || '0.0.0.0',
     port: ENV.DEV_SERVER_PORT,
     overlay: { errors: true }, // lint
-    proxy,
   }
 }

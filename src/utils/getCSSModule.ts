@@ -1,6 +1,5 @@
 // 获取响应式CSS Module对象(Vue)
 import Vue from 'vue'
-import { IObject } from '@/types'
 import SKIN, { on } from './skin'
 
 /** 获取响应式CSS Module对象(根据皮肤改变)

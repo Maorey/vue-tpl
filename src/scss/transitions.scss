@@ -7,7 +7,7 @@
 /// 淡入淡出 fade ///
 .fade-enter-active,
 .fade-leave-active {
-  transition: 0.3s;
+  transition: 0.2s;
 }
 
 .fade-enter,
@@ -18,7 +18,7 @@
 // 上浮淡入/下沉淡出 flip
 .flip-enter-active,
 .flip-leave-active {
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .flip-enter,
@@ -30,7 +30,7 @@
 // 左侧滑入滑出
 .slip-enter-active,
 .slip-leave-active {
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .slip-enter,
@@ -42,7 +42,7 @@
 // 右侧滑入滑出
 .slide-enter-active,
 .slide-leave-active {
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .slide-enter,
@@ -55,7 +55,7 @@
 .fold-enter-active,
 .fold-leave-active {
   transform-origin: 0 0;
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .fold-enter,
