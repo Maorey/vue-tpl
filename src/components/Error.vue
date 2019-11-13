@@ -29,6 +29,7 @@ export default class extends Vue {
 <style lang="scss" module>
 .wrapper {
   display: flex;
+  box-sizing: border-box;
   height: 100%;
   // height: -webkit-fill-available;
   min-height: 80px;

@@ -23,7 +23,7 @@ export default {
         thumb: require('@index/assets/home.png'),
       },
       component: getAsync(() =>
-        import(/* webpackChunkName: "iHome" */ '@index/views/Home')
+        import(/* webpackChunkName: "iHome" */ '@index/views/Home'),
       ),
     },
     {
@@ -35,7 +35,7 @@ export default {
         thumb: require('@index/assets/about.png'),
       },
       component: getAsync(() =>
-        import(/* webpackChunkName: "iAbout" */ '@index/views/About')
+        import(/* webpackChunkName: "iAbout" */ '@index/views/About'),
       ),
     },
   ],

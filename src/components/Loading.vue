@@ -42,6 +42,7 @@ export default class extends Vue {
 .wrapper {
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   height: 100%;
   // height: -webkit-fill-available;
   min-height: 70px;

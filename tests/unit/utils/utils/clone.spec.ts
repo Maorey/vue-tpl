@@ -28,10 +28,10 @@ describe('@/utils/utils/clone: 深克隆/扩展 对象/数组(无其他原型和
           currentValue?: any, // 当前值
           currentObject?: any[] | object, // 当前对象
           targetObject?: any[] | object, // 目标对象
-          args?: any[] // 当前函数参数列表（注意递归）
+          args?: any[], // 当前函数参数列表（注意递归）
         ) => (key === 'd' || key === 'e') && { jump: true },
-        testObject
-      )
+        testObject,
+      ),
     ).toEqual({ a: 0, b: 'a', c: null })
 
     expect(
@@ -46,8 +46,8 @@ describe('@/utils/utils/clone: 深克隆/扩展 对象/数组(无其他原型和
           f: { a: 12 },
           g: ['i', 'j'],
         },
-        null
-      )
+        null,
+      ),
     ).toEqual({
       a: 9,
       b: 'a',

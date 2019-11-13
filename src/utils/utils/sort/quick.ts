@@ -120,7 +120,7 @@ function quickSort<T>(
   array: T[],
   compare: Compare = ASC,
   start?: number,
-  end?: number
+  end?: number,
 ): T[] {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)

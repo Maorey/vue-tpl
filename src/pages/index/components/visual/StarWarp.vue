@@ -109,7 +109,7 @@ export default class extends Vue {
         const dxCenter = star.sprite.x - app.renderer.screen.width / 2
         const dyCenter = star.sprite.y - app.renderer.screen.height / 2
         const distanceCenter = Math.sqrt(
-          dxCenter * dxCenter + dyCenter + dyCenter
+          dxCenter * dxCenter + dyCenter + dyCenter,
         )
         const distanceScale = Math.max(0, (2000 - z) / 2000)
         star.sprite.scale.x = distanceScale * starBaseSize

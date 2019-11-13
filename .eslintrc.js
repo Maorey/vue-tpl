@@ -60,15 +60,13 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': ['error', 'always'], // 接口I开头
 
     /// Vue https://eslint.vuejs.org/rules/ ///
-    // [1]: 文档有写，但是插件还没实现
-    // [2]: 不支持TypeScript
     'vue/component-name-in-template-casing': 'error',
-    // 'vue/no-deprecated-scope-attribute': 'error', // [1]
+    'vue/no-deprecated-scope-attribute': 'error',
     'vue/match-component-file-name': 'error',
     'vue/no-use-v-if-with-v-for': 'error',
-    // 'vue/require-direct-export': 'error', // [2]
-    // 'vue/valid-v-slot': 'error', // [1]
-    // 'vue/v-slot-style': ['error', 'shorthand'], // [1]
+    // 'vue/require-direct-export': 'error', // 不支持class语法
+    'vue/valid-v-slot': 'error',
+    'vue/v-slot-style': ['error', 'shorthand'],
     'vue/no-v-html': 'warn',
     'vue/eqeqeq': 'error',
   },

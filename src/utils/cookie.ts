@@ -46,10 +46,10 @@ function get(key: string) {
       new RegExp(
         REG_GET_BEFORE +
           encodeURIComponent(key).replace(REG_REPLACE, REG_REPLACE_STRING) +
-          REG_GET_AFTER
+          REG_GET_AFTER,
       ),
-      '$1'
-    )
+      '$1',
+    ),
   )
 }
 
@@ -66,7 +66,7 @@ function has(key: string) {
   return new RegExp(
     REG_HAS_BEFORE +
       encodeURIComponent(key).replace(REG_REPLACE, REG_REPLACE_STRING) +
-      REG_HAS_AFTER
+      REG_HAS_AFTER,
   ).test(document.cookie)
 }
 

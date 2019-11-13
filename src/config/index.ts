@@ -6,10 +6,10 @@
 export default {
   /*! 【全局配置↓】 */
 
-  /*! 请求接口基础路径 */
-  /** 请求接口基础路径
+  /*! 请求接口基础路径(hash路由建议相对路径, 比如'api') */
+  /** 请求接口基础路径(hash路由建议相对路径, 比如'api')
    */
-  baseUrl: '/api',
+  baseUrl: process.env.BASE_PATH,
 
   /*! 接口请求超时 */
   /** 接口请求超时

@@ -28,5 +28,5 @@ setTimeout(() =>
       prefer.setSkin() // 初始化皮肤
     },
     render: (h: CreateElement): VNode => h(App),
-  }).$mount('#app')
+  }).$mount('#app'),
 )

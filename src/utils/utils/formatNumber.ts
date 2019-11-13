@@ -34,7 +34,7 @@ const REG_NUMBER = /(\d)(?=(\d{3})+$)/g
 function formatNumber(
   num: string | number,
   digit?: any,
-  unit?: string | INumberUnit
+  unit?: string | INumberUnit,
 ) {
   !unit && typeof digit !== 'number' && (unit = digit)
 

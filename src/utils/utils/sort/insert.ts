@@ -19,7 +19,7 @@ function insertSort<T>(
   array: T[],
   compare: Compare = ASC,
   start?: number,
-  end?: number
+  end?: number,
 ): T[] {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)
@@ -84,7 +84,7 @@ function findByBinary<T>(
   array: T[],
   compare: Compare = ASC,
   start?: number,
-  end?: number
+  end?: number,
 ) {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)
@@ -149,7 +149,7 @@ function insertSortBinary<T>(
   array: T[],
   compare: Compare = ASC,
   start?: number,
-  end?: number
+  end?: number,
 ): T[] {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)

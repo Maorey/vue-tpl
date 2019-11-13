@@ -22,7 +22,7 @@ module.exports = function(isProd, ALIAS, ENV) {
         modules: {
           // https://github.com/webpack/loader-utils#interpolatename
           localIdentName: isProd
-            ? '[hash:3]'
+            ? '[contenthash:5]'
             : '[folder]__[name]_[local]-[emoji]$',
         },
         localsConvention: 'camelCaseOnly', // 只允许驼峰class名

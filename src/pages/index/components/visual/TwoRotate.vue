@@ -56,7 +56,7 @@ BokehShapeProto.renderCanvasDot = function(ctx: CanvasRenderingContext2D) {
 
 BokehShapeProto.renderPath = function(
   ctx: CanvasRenderingContext2D,
-  renderer: any
+  renderer: any,
 ) {
   this.updateBokeh()
   // set opacity
@@ -507,7 +507,7 @@ export default class extends Vue {
 
     for (let i = 0; i < featherPartCount; i++) {
       const curve = Math.cos(
-        ((i / featherPartCount) * TAU * 3) / 4 + (TAU * 1) / 4
+        ((i / featherPartCount) * TAU * 3) / 4 + (TAU * 1) / 4,
       )
       const x = 4 - curve * 2
       const y0 = sector / 2

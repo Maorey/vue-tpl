@@ -16,11 +16,62 @@
 @import '~element-ui/packages/theme-chalk/src/main';
 // 基础
 @import '~element-ui/packages/theme-chalk/src/button';
+@import '~element-ui/packages/theme-chalk/src/button-group';
 @import '~element-ui/packages/theme-chalk/src/link';
 @import '~element-ui/packages/theme-chalk/src/loading';
+@import '~element-ui/packages/theme-chalk/src/divider';
+@import '~element-ui/packages/theme-chalk/src/Card';
+// 弹窗&表单
+@import '~element-ui/packages/theme-chalk/src/dialog';
+@import '~element-ui/packages/theme-chalk/src/form';
+@import '~element-ui/packages/theme-chalk/src/form-item';
+@import '~element-ui/packages/theme-chalk/src/input';
+@import '~element-ui/packages/theme-chalk/src/autocomplete';
+@import '~element-ui/packages/theme-chalk/src/select';
+@import '~element-ui/packages/theme-chalk/src/option';
+@import '~element-ui/packages/theme-chalk/src/option-group';
 // 提示
 @import '~element-ui/packages/theme-chalk/src/tooltip';
 @import '~element-ui/packages/theme-chalk/src/popover';
 @import '~element-ui/packages/theme-chalk/src/message';
 @import '~element-ui/packages/theme-chalk/src/message-box';
 @import '~element-ui/packages/theme-chalk/src/notification';
+// 滚动面板【隐藏组件】
+@import '~element-ui/packages/theme-chalk/src/scrollbar';
+
+/// 【覆盖element-ui样式】 ///
+// 滚动条
+.el-scrollbar > .el-scrollbar__bar {
+  opacity: 1;
+  transition: 0.3s;
+
+  &.is-vertical {
+    width: $scrollBarSize;
+
+    > .el-scrollbar__thumb {
+      min-height: $scrollBarMinSize;
+      background: $colorScrollBarThumb;
+      border-radius: $scrollBarRadius;
+      transition: 0.3s;
+    }
+  }
+
+  &.is-horizontal {
+    height: $scrollBarSize;
+
+    > .el-scrollbar__thumb {
+      min-width: $scrollBarMinSize;
+      background: $colorScrollBarThumb;
+      border-radius: $scrollBarRadius;
+      transition: 0.3s;
+    }
+  }
+
+  > .el-scrollbar__thumb:hover {
+    background: $colorScrollBarThumbHover;
+  }
+
+  &:hover {
+    background: $colorScrollBarHover;
+  }
+}

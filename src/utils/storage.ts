@@ -245,7 +245,7 @@ const local = {
       ? (str =
           (temp.e ||
             (temp.e = parseInt(
-              (REG_TIMESPAN.exec(STORAGE.getItem(key) || '') || [])[1]
+              (REG_TIMESPAN.exec(STORAGE.getItem(key) || '') || [])[1],
             )) ||
             '') + str)
       : expires && (str = (temp.e = Date.now() + expires) + str)

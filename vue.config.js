@@ -16,7 +16,7 @@ console.log(
     Math.ceil(Math.random() * 6) +
     'm' +
     FIGURE[(Math.random() * FIGURE.length) | 0] +
-    '\33[0m' // eslint-disable-line no-octal-escape
+    '\33[0m', // eslint-disable-line no-octal-escape
 )
 
 /// 【配置项】https://cli.vuejs.org/zh/config ///

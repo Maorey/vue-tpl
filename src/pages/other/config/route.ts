@@ -29,7 +29,7 @@ export default {
         name: '首页',
       },
       component: getAsync(() =>
-        import(/* webpackChunkName: "oHome" */ '@other/views/Home')
+        import(/* webpackChunkName: "oHome" */ '@other/views/Home'),
       ),
     },
     {
@@ -40,7 +40,7 @@ export default {
         name: '关于',
       },
       component: getAsync(() =>
-        import(/* webpackChunkName: "oAbout" */ '@other/views/About')
+        import(/* webpackChunkName: "oAbout" */ '@other/views/About'),
       ),
     },
   ],

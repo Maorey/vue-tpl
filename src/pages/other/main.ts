@@ -19,14 +19,28 @@ import Aside from 'element-ui/lib/aside'
 import Main from 'element-ui/lib/main'
 // 基础
 import Button from 'element-ui/lib/button'
+import ButtonGroup from 'element-ui/lib/button-group'
 import Link from 'element-ui/lib/link'
 import Loading from 'element-ui/lib/loading'
+import Divider from 'element-ui/lib/divider'
+import Card from 'element-ui/lib/card'
+// 弹窗&表单
+import Dialog from 'element-ui/lib/dialog'
+import Form from 'element-ui/lib/form'
+import FormItem from 'element-ui/lib/form-item'
+import Input from 'element-ui/lib/input'
+import Autocomplete from 'element-ui/lib/autocomplete'
+import Select from 'element-ui/lib/select'
+import Option from 'element-ui/lib/option'
+import OptionGroup from 'element-ui/lib/option-group'
 // 提示
 import Tooltip from 'element-ui/lib/tooltip'
 import Popover from 'element-ui/lib/popover'
 import Message from 'element-ui/lib/message'
 import MessageBox from 'element-ui/lib/message-box'
 import Notification from 'element-ui/lib/notification'
+// 滚动面板【隐藏组件】
+import Scrollbar from 'element-ui/lib/scrollbar'
 
 import './scss/main.scss' // 全局样式
 
@@ -38,9 +52,21 @@ Vue.use(Aside)
 Vue.use(Main)
 // 基础
 Vue.use(Button)
+Vue.use(ButtonGroup)
 Vue.use(Link)
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service
+Vue.use(Divider)
+Vue.use(Card)
+// 弹窗&表单
+Vue.use(Dialog)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(Input)
+Vue.use(Autocomplete)
+Vue.use(Select)
+Vue.use(Option)
+Vue.use(OptionGroup)
 // 提示
 Vue.use(Tooltip)
 Vue.use(Popover)
@@ -50,6 +76,16 @@ Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$prompt = MessageBox.prompt
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
+// 滚动面板
+Vue.use(Scrollbar)
+// hack: 不出现滚动条时不显示(虽然本身没created钩子)
+const fun = Scrollbar.components.Bar.created
+Scrollbar.components.Bar.created = function() {
+  fun && fun.apply(this, arguments)
+  this.$watch('size', function(this: any, size: string) {
+    this.$el.style.display = size && size !== '0' ? '' : 'none'
+  })
+}
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 
@@ -69,5 +105,5 @@ setTimeout(() =>
       prefer.setSkin() // 初始化皮肤
     },
     render: (h: CreateElement): VNode => h(App),
-  }).$mount('#app')
+  }).$mount('#app'),
 )

@@ -153,7 +153,7 @@ function partition(start: number, end: number) {
     pivot = mid3(
       mid3(start, start + result, start + (result << 1)),
       mid3(pivot - result, pivot, pivot + result),
-      mid3(end - (result << 1), end - result, end)
+      mid3(end - (result << 1), end - result, end),
     )
   } else {
     pivot = mid3(start, pivot, end)
@@ -271,7 +271,7 @@ function quickSort<T>(
   array: T[],
   compare: Compare = ASC,
   start?: number,
-  end?: number
+  end?: number,
 ): T[] {
   start === undefined && (start = 0)
   end === undefined && (end = array.length - 1)

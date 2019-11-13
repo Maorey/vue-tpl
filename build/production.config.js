@@ -119,7 +119,7 @@ module.exports = function(config, ENV) {
 
   /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
-  config.optimization.runtimeChunk({ name: RUNTIME_CHUNK }) // 抽出来内联到html
+  config.optimization.runtimeChunk({ name: RUNTIME_CHUNK })
 
   /// 【代码分割(optimization.splitChunks 不能config.merge({}))】 ///
   // https://webpack.docschina.org/plugins/split-chunks-plugin

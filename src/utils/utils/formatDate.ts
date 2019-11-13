@@ -179,7 +179,7 @@ getFormat(ISO_DATE_FORMAT) // warm 下
 const REG_NUM_REG = /\(\\d\{\d(,\d)?\}\)/g
 const REG_RESERVE = new RegExp(
   `\\\\([${RESERVE_REG.replace(']', '\\]\\\\')}])`,
-  'g'
+  'g',
 )
 /** 获得指定格式的日期字符串
  * @test true
@@ -339,7 +339,7 @@ const REPLACE_NOON = (match: string, slot: string) =>
 function getDateByString(
   dateString: string,
   format: string | IResult = ISO_DATE_FORMAT,
-  tryHistory = true
+  tryHistory = true,
 ): Date | void {
   const { r, g } = typeof format === 'string' ? getFormat(format) : format
 

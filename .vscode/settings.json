@@ -1,36 +1,28 @@
 {
   "editor.tabSize": 2,
   "editor.wordWrap": "on",
-  "editor.fontLigatures": true,
   "editor.wordWrapColumn": 80,
-  // "editor.formatOnSave": true,
+  "editor.fontLigatures": true,
   "editor.wrappingIndent": "indent",
   "editor.detectIndentation": false,
   "editor.renderIndentGuides": true,
-  "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace",
+  "editor.fontFamily": "'Fira Code Retina', 'Cascadia Code', Consolas, 'Courier New', monospace",
+
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
 
   "svn.enableProposedApi": "product",
 
   "files.trimTrailingWhitespace": true,
 
-  "git.autofetch": true,
-  "git.enableSmartCommit": true,
-
-  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "typescript.tsdk": "./node_modules/typescript/lib",
   /// 代码风格 ///
-  "prettier.semi": false, // 不要句尾分号
-  "prettier.printWidth ": 80, // 最大列数
-  "prettier.singleQuote": true, // 使用单引号
-  "prettier.jsxSingleQuote": true, // jsx(vue jsx tsx mjs)里使用单引号
-  "prettier.trailingComma": "es5", // 多行末尾保留逗号
-
   "vetur.completion.tagCasing": "initial",
   "vetur.format.defaultFormatterOptions": {
     "prettier": {
-      "semi": false,
-      "singleQuote": true,
-      "jsxSingleQuote": true,
-      "trailingComma": "es5"
+      "semi": false, // 不要句尾分号
+      "singleQuote": true, // 使用单引号
+      "trailingComma": "es5", // 多行末尾保留逗号
     }
   },
 
@@ -63,7 +55,7 @@
   ],
   // 格式化程序
   "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -75,6 +67,15 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
 }

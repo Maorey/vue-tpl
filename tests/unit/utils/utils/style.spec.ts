@@ -48,7 +48,7 @@ border-radius: 5px;`
   }
   const FILTER = (
     key: string,
-    value: string
+    value: string,
   ): [string, string] | string | boolean | void => {
     switch (key) {
       case 'float':
@@ -70,14 +70,14 @@ border-radius: 5px;`
 
   it('getStyleByName: 从CSS样式名获取CSS样式值', () => {
     expect(getStyleByName(STYLE, 'font')).toBe(
-      'italic bold 12px/30px sans-serif'
+      'italic bold 12px/30px sans-serif',
     )
     expect(getStyleByName(STYLE, 'font-family')).toBe(
-      '"Microsoft Yahei", arial, sans-serif, "Microsoft Yahei"'
+      '"Microsoft Yahei", arial, sans-serif, "Microsoft Yahei"',
     )
     expect(getStyleByName(STYLE, 'textAlign')).toBe('center')
     expect(getStyleByName(STYLE, 'background')).toBe(
-      'url(https://a.cn/images/a.png?width=10&height=10) 20% center no-repeat'
+      'url(https://a.cn/images/a.png?width=10&height=10) 20% center no-repeat',
     )
   })
 
@@ -86,7 +86,7 @@ border-radius: 5px;`
     expect(styleToObject(STYLE, true)).toEqual(JSON.stringify(STYLE_OBJECT))
     expect(styleToObject(STYLE, FILTER)).toEqual(FILTERD_STYLE_OBJECT)
     expect(styleToObject(STYLE, FILTER, true)).toBe(
-      JSON.stringify(FILTERD_STYLE_OBJECT)
+      JSON.stringify(FILTERD_STYLE_OBJECT),
     )
   })
 
@@ -103,12 +103,12 @@ border-radius: 5px;`
     expect(updateStyle(FILTERD_STYLE, TARGET_STYLE)).toBe(UPDATED_STYLE)
     expect(updateStyle(FILTERD_STYLE_OBJECT, TARGET_STYLE)).toBe(UPDATED_STYLE)
     expect(updateStyle(FILTERD_STYLE_OBJECT, TARGET_STYLE_OBJECT)).toBe(
-      UPDATED_STYLE
+      UPDATED_STYLE,
     )
 
     expect(updateStyle('', STYLE_OBJECT, FILTER)).toBe(FILTERD_STYLE)
     expect(updateStyle(TARGET_STYLE_OBJECT, STYLE, FILTER)).toBe(
-      'overflow:visible;float_:left_;position:absolute;'
+      'overflow:visible;float_:left_;position:absolute;',
     )
   })
 })

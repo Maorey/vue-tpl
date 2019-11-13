@@ -6,16 +6,16 @@
 /// chrome ///
 // 背景条
 ::-webkit-scrollbar {
-  width: $scrollBarWidth;
-  height: $scrollBarWidth;
+  width: $scrollBarSize;
+  height: $scrollBarSize;
   background: none;
   border-radius: $scrollBarRadius;
   transition: 0.3s;
 }
 // 拖拽按钮
 ::-webkit-scrollbar-thumb {
-  min-width: $scrollBarWidth;
-  min-height: $scrollBarMinHeight;
+  min-width: $scrollBarMinSize;
+  min-height: $scrollBarMinSize;
   background: $colorScrollBarThumb;
   border-radius: $scrollBarRadius;
   transition: 0.3s;
@@ -67,12 +67,12 @@
 
 //   // 纵向滚动条宽度
 //   scrollbar[orient='vertical'] {
-//     width: $scrollBarWidth !important;
+//     width: $scrollBarSize !important;
 //   }
 
 //   // 横向滚动条高度
 //   scrollbar[orient='horizontal'] {
-//     height: $scrollBarWidth !important;
+//     height: $scrollBarSize !important;
 //   }
 // }
 

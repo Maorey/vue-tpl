@@ -1,8 +1,8 @@
 /** 滚动条
 */
-$scrollBarWidth: 5px; // 滚动条宽度
-$scrollBarRadius: 5px; // 滚动条圆角
-$scrollBarMinHeight: 5px; // 滚动条最小高度
+$scrollBarSize: 4px; // 滚动条宽高
+$scrollBarRadius: 4px; // 滚动条圆角
+$scrollBarMinSize: 15px; // 滚动条最小宽高
 
 $colorScrollBarThumb: $colorTheme3; // 滚动条滑块颜色
 $colorScrollBarHover: $colorTheme5; // 滚动条颜色

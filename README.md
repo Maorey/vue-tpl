@@ -558,7 +558,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 > 推荐工具: [`@vue/cli`](https://cli.vuejs.org/zh/guide), 全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
 
-> 推荐字体: [Cascadia Code](https://github.com/microsoft/cascadia-code)
+> 推荐字体: [FiraCode](https://github.com/tonsky/FiraCode)
 
 ## 浏览器支持
 

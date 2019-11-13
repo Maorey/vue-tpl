@@ -23,7 +23,7 @@ function on(
   eventName: string,
   nameSpace: string | Handler,
   handler?: Handler,
-  isOnce?: boolean
+  isOnce?: boolean,
 ) {
   // 参数处理
   if (typeof nameSpace === 'string') {
@@ -45,7 +45,7 @@ function on(
 function once(
   eventName: string,
   nameSpace: string | Handler,
-  handler?: Handler
+  handler?: Handler,
 ) {
   on(eventName, nameSpace, handler, true)
 }
@@ -63,7 +63,7 @@ function once(
 function off(
   eventName?: string,
   nameSpace?: string | Handler,
-  handler?: Handler
+  handler?: Handler,
 ) {
   if (eventName === undefined) {
     BUS.$off() // 注销全部事件

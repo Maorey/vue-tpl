@@ -68,7 +68,7 @@ function getKEY(url: string, params?: IObject) {
   query &&
     (params = clone(
       JSON.parse(`{${query.replace(/&/g, ',').replace(/=/g, ':')}}`),
-      params
+      params,
     ))
   query = '.'
 
@@ -91,7 +91,7 @@ location.search
     (match, field, value) => {
       value && ((SEARCH || (SEARCH = {}))[field] = value)
       return match
-    }
+    },
   )
 
 /** 发起请求
@@ -99,7 +99,7 @@ location.search
  * @param {String} method http方法
  * @param {Object} params 查询参数
  * @param {Object} data 请求数据
- * @param {Object} config 请求配置
+ * @param {Object} config 请求配置【添加到响应的meta字段】
  *
  * @returns {Promise} 响应
  */
@@ -108,9 +108,8 @@ function request(
   method: string,
   params?: IObject,
   data?: any,
-  config?: IObject
+  config: IObject = {},
 ): Promise<any> {
-  config = { ...config }
   config.url = url
   config.method = method
   data && (config.data = data)
@@ -128,29 +127,32 @@ function request(
     !(SEARCH && Object.assign(config.params || (config.params = {}), SEARCH)) &&
     !config.noCache &&
     config.method === 'get'
-  const alive: number = config.alive
   // 使用缓存的get请求
   if (shouldCache) {
     cache = dataStore.get(KEY)
     if (cache) {
       return Promise.resolve(cache)
     }
+  } else {
+    dataStore.remove(KEY)
   }
 
   return requestQueue.set(
     KEY,
     AXIOS.request(config)
       .then((res: any) => {
-        shouldCache && dataStore.set(KEY, res, alive) // 设置缓存
+        res.meta = config
+        shouldCache && dataStore.set(KEY, res, config.alive) // 设置缓存
         requestQueue.remove(KEY) // 移除请求队列
         /// 响应拦截 ///
         return res
       })
       .catch((error: any) => {
+        error.meta = config
         requestQueue.remove(KEY) // 移除请求队列
-
+        /// 错误拦截 ///
         throw error
-      })
+      }),
   )
 }
 /// http 方法 ///
@@ -176,7 +178,7 @@ function put(
   url: string,
   data: any,
   params?: IObject,
-  config?: IObject
+  config?: IObject,
 ): Promise<any> {
   return request(url, 'put', params, data, config)
 }
@@ -192,7 +194,7 @@ function post(
   url: string,
   data: any,
   params?: IObject,
-  config?: IObject
+  config?: IObject,
 ): Promise<any> {
   return request(url, 'post', params, data, config)
 }

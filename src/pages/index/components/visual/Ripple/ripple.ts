@@ -13,7 +13,7 @@ function pickInstance(
   pickX: any,
   pickY: any,
   model: any,
-  framebuffer: any
+  framebuffer: any,
 ) {
   framebuffer.clear({ color: true, depth: true })
   // Render picking colors
