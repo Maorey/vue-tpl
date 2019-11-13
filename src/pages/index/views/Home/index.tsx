@@ -15,6 +15,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import $style from './index.module.scss'
 
 // 异步组件
+/* eslint-disable comma-dangle */
 const ModuleOne = getAsync(() =>
   import(/* webpackChunkName: "ihOne" */ './ModuleOne'),
 ) as any
