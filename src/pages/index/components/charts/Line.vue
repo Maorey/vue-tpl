@@ -33,7 +33,7 @@ export default class extends Vue {
 
   /// watch ///
   @Watch('data')
-  private onDataChange(data?: EChartOption.SeriesLine[]) {
+  private onDataChange(/* data?: EChartOption.SeriesLine[] */) {
     this.init()
   }
 

@@ -36,7 +36,7 @@ export default class extends Vue {
   /// computed (get name() { return this.name } set name()... ///
   /// watch (@Watch) ///
   @Watch('data')
-  private onDataChange(data?: EChartOption.SeriesPie) {
+  private onDataChange(/* data?: EChartOption.SeriesPie */) {
     this.init()
   }
   /// LifeCycle (private beforeCreate/created/.../destroyed) ///

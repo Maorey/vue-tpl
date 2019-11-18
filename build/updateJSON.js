@@ -43,7 +43,7 @@ module.exports = function(fileName, key, value) {
     fs.writeFile(
       fileName,
       JSON.stringify(json, null, 2),
-      error => error && console.error(`写入${fileName}失败`, error)
+      error => error && console.error(`写入${fileName}失败`, error),
     )
   }
 }

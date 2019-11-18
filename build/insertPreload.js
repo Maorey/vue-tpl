@@ -39,8 +39,8 @@ module.exports = class {
         compilation.hooks.htmlWebpackPluginAlterAssetTags &&
         compilation.hooks.htmlWebpackPluginAlterAssetTags.tap(
           PLUGIN_NAME,
-          htmlPluginData => this.insert(htmlPluginData)
-        )
+          htmlPluginData => this.insert(htmlPluginData),
+        ),
     )
     // 不能这么加loader
     // const REG_EXCLUDE = /[\\/]node_modules[\\/]/

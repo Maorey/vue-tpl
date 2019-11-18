@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import userState from '@index/store/modules/user'
+// import userState from '@index/store/modules/user'
 
 import { Component, Vue } from 'vue-property-decorator'
 

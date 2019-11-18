@@ -15,34 +15,34 @@ import { ASC, Compare } from './'
  *
  * @returns {Array} 原数组
  */
-function insertSort<T>(
-  array: T[],
-  compare: Compare = ASC,
-  start?: number,
-  end?: number,
-): T[] {
-  start === undefined && (start = 0)
-  end === undefined && (end = array.length - 1)
+// function insertSort<T>(
+//   array: T[],
+//   compare: Compare = ASC,
+//   start?: number,
+//   end?: number,
+// ): T[] {
+//   start === undefined && (start = 0)
+//   end === undefined && (end = array.length - 1)
 
-  if (start < end) {
-    let temp: T
-    let current: T
-    let pointer: number
-    let anchor = start
-    while (anchor++ < end) {
-      current = array[(pointer = anchor)]
-      while (
-        pointer > start &&
-        Number(compare((temp = array[pointer - 1]), current)) > 0
-      ) {
-        array[pointer--] = temp
-      }
-      pointer < anchor && (array[pointer] = current)
-    }
-  }
+//   if (start < end) {
+//     let temp: T
+//     let current: T
+//     let pointer: number
+//     let anchor = start
+//     while (anchor++ < end) {
+//       current = array[(pointer = anchor)]
+//       while (
+//         pointer > start &&
+//         Number(compare((temp = array[pointer - 1]), current)) > 0
+//       ) {
+//         array[pointer--] = temp
+//       }
+//       pointer < anchor && (array[pointer] = current)
+//     }
+//   }
 
-  return array
-}
+//   return array
+// }
 
 /// 耗时 ///
 // const testArray: number[] = []

@@ -4,7 +4,7 @@
  * @Date: 2019-07-19 10:52:16
  */
 import mergeSort from './merge' // 归并排序
-import quickSort from './quick' // 快速排序
+// import quickSort from './quick' // 快速排序
 
 /** 排序比较方法
  * a>b <=> Number(compare(a,b))>0 其他情况说不好:true==1 false==0
@@ -25,16 +25,16 @@ const ASC: Compare = (a: any, b: any) => a > b
  *
  * @returns {Boolean} 是否基础类型
  */
-function isBaseType(value: any) {
-  return (
-    value === null ||
-    value === undefined ||
-    value.constructor === Number ||
-    value.constructor === String ||
-    value.constructor === Boolean
-    // typeof value === 'symbol' // 不能类型转换和比较大小（只能 === 或 == ）
-  )
-}
+// function isBaseType(value: any) {
+//   return (
+//     value === null ||
+//     value === undefined ||
+//     value.constructor === Number ||
+//     value.constructor === String ||
+//     value.constructor === Boolean
+//     // typeof value === 'symbol' // 不能类型转换和比较大小（只能 === 或 == ）
+//   )
+// }
 
 /** 排序 基础类型(数字/字符串):快速排序 非基础类型:归并排序(稳定)
  *    尝试各种组合后还是归并最快
@@ -47,24 +47,24 @@ function isBaseType(value: any) {
  *
  * @returns {Array} 原数组
  */
-function sort<T>(
-  array: T[],
-  compare: Compare = ASC,
-  start?: number,
-  end?: number,
-): T[] {
-  start === undefined && (start = 0)
-  end === undefined && (end = array.length - 1)
+// function sort<T>(
+//   array: T[],
+//   compare: Compare = ASC,
+//   start?: number,
+//   end?: number,
+// ): T[] {
+//   start === undefined && (start = 0)
+//   end === undefined && (end = array.length - 1)
 
-  if (end > start) {
-    if (isBaseType(array[start]) && isBaseType(array[end])) {
-      // 不可变类型
-      return quickSort(array, compare, start, end)
-    }
-    return mergeSort(array, compare, start, end)
-  }
+//   if (end > start) {
+//     if (isBaseType(array[start]) && isBaseType(array[end])) {
+//       // 不可变类型
+//       return quickSort(array, compare, start, end)
+//     }
+//     return mergeSort(array, compare, start, end)
+//   }
 
-  return array
-}
+//   return array
+// }
 
 export { mergeSort as default, ASC, Compare }

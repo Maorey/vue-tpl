@@ -16,7 +16,6 @@ import { Component, Vue } from 'vue-property-decorator'
 import {
   PerspectiveCamera,
   Scene,
-  Color,
   Fog,
   Clock,
   HemisphereLight,

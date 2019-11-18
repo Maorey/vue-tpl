@@ -12,15 +12,15 @@ const DEEP_RECURSION = 5
 /** 强制更新vue组件及其子组件
  * @param {Vue} vm Vue组件实例
  */
-function forceUpdateRecursion(vm: Vue, deep = 0) {
-  if (deep++ > DEEP_RECURSION) {
-    return
-  }
-  vm.$forceUpdate() // 更新自身
-  for (let child of vm.$children) {
-    forceUpdateRecursion(child, deep) // 更新后代
-  }
-}
+// function forceUpdateRecursion(vm: Vue, deep = 0) {
+//   if (deep++ > DEEP_RECURSION) {
+//     return
+//   }
+//   vm.$forceUpdate() // 更新自身
+//   for (let child of vm.$children) {
+//     forceUpdateRecursion(child, deep) // 更新后代
+//   }
+// }
 /** 强制更新vue异步组件及其子(异步)组件
  * @param {Vue} vm Vue组件实例
  */

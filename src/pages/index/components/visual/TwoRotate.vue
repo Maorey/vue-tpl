@@ -20,9 +20,9 @@ import Group from 'zdog/js/group'
 import Anchor from 'zdog/js/anchor'
 import Ellipse from 'zdog/js/ellipse'
 
-Zdog.CanvasRenderer = CanvasRenderer // 设置渲染器
-
 // see: https://codepen.io/desandro/pen/RQeYYp
+/* eslint-disable no-new */
+Zdog.CanvasRenderer = CanvasRenderer // 设置渲染器
 
 const BokehShape = Shape.subclass({
   bokehSize: 5,
@@ -71,7 +71,6 @@ BokehShapeProto.renderPath = function(
 }
 
 const TAU = Zdog.TAU // 2*Math.PI
-let empty: any
 
 function makeMadeline(isGood: boolean, colors: any, options: any) {
   const rotor = new Anchor(options)
@@ -121,7 +120,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
     const eyeX = 3.5 * xSide
 
     // eye
-    empty = new Ellipse({
+    new Ellipse({
       width: 0.75,
       height: 1.5,
       addTo: eyeGroup,
@@ -132,7 +131,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
     })
 
     // eye brow
-    empty = new Ellipse({
+    new Ellipse({
       addTo: eyeGroup,
       height: 3,
       width: 1.2,
@@ -149,7 +148,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
   createEye(1)
 
   // hair ball
-  empty = new Shape({
+  new Shape({
     path: [{ x: -1 }, { x: 1 }, { z: -4 }],
     addTo: head,
     translate: { y: -4, z: -1 },
@@ -158,7 +157,15 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
   })
 
   const bang = new Shape({
-    path: [{}, { arc: [{ z: 4, y: 4 }, { z: 0, y: 8 }] }],
+    path: [
+      {},
+      {
+        arc: [
+          { z: 4, y: 4 },
+          { z: 0, y: 8 },
+        ],
+      },
+    ],
     addTo: head,
     translate: { x: 2, y: -7.5, z: 6 },
     rotate: { x: 0.5, z: -0.5 },
@@ -190,7 +197,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
   })
 
   // hair cover
-  empty = new Shape({
+  new Shape({
     path: [{ x: -3 }, { x: 3 }],
     addTo: head,
     stroke: 7,
@@ -203,7 +210,13 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
   const trailLock = new Shape({
     path: [
       { y: -4, z: 0 },
-      { bezier: [{ y: -10, z: -14 }, { y: 0, z: -16 }, { y: 0, z: -26 }] },
+      {
+        bezier: [
+          { y: -10, z: -14 },
+          { y: 0, z: -16 },
+          { y: 0, z: -26 },
+        ],
+      },
     ],
     addTo: head,
     translate: { z: -4, y: 0 },
@@ -258,7 +271,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
     color: colors.parkaDark,
   })
   // waist
-  empty = new Ellipse({
+  new Ellipse({
     width: 10,
     height: 8,
     addTo: body,
@@ -273,7 +286,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
   const createArm = (xSide: number) => {
     const isLeft = xSide === 1
     // shoulder ball
-    empty = new Shape({
+    new Shape({
       addTo: body,
       stroke: 6,
       translate: { x: 6 * xSide, y: -5, z: -1 },
@@ -319,7 +332,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
     })
 
     // hand
-    empty = new Shape({
+    new Shape({
       addTo: elbowJoint,
       translate: { y: 9, z: -1 },
       stroke: 8,
@@ -337,7 +350,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
       color: colors.tight,
     })
 
-    const shin = new Shape({
+    new Shape({
       path: [{ y: 0 }, { y: 8 }],
       addTo: thigh,
       stroke: 6,
@@ -350,7 +363,7 @@ function makeMadeline(isGood: boolean, colors: any, options: any) {
   createArm(1)
 
   // butt
-  empty = new Shape({
+  new Shape({
     path: [{ x: -3 }, { x: 3 }],
     visible: false,
     addTo: body,
@@ -376,11 +389,21 @@ function makeBird(options: any) {
   })
 
   // bird body
-  empty = new Shape({
+  new Shape({
     path: [
       { x: -3, y: 0 },
-      { arc: [{ x: -2, y: 1.5 }, { x: 0, y: 1.5 }] },
-      { arc: [{ x: 2, y: 1.5 }, { x: 2, y: 0 }] },
+      {
+        arc: [
+          { x: -2, y: 1.5 },
+          { x: 0, y: 1.5 },
+        ],
+      },
+      {
+        arc: [
+          { x: 2, y: 1.5 },
+          { x: 2, y: 0 },
+        ],
+      },
     ],
     addTo: bird,
     translate: { x: 0.5 },
@@ -390,7 +413,7 @@ function makeBird(options: any) {
   })
 
   // bird head
-  empty = new Shape({
+  new Shape({
     translate: { x: 4, y: -1 },
     addTo: bird,
     stroke: 4,
@@ -398,8 +421,12 @@ function makeBird(options: any) {
   })
 
   // beak
-  empty = new Shape({
-    path: [{ x: 0, y: -1 }, { x: 3, y: 0 }, { x: 0, y: 1 }],
+  new Shape({
+    path: [
+      { x: 0, y: -1 },
+      { x: 3, y: 0 },
+      { x: 0, y: 1 },
+    ],
     addTo: bird,
     translate: { x: 5, y: -1 },
     stroke: 1,
@@ -408,8 +435,12 @@ function makeBird(options: any) {
   })
 
   // tail feather
-  empty = new Shape({
-    path: [{ x: -3, z: -2 }, { x: 0, z: 0 }, { x: -3, z: 2 }],
+  new Shape({
+    path: [
+      { x: -3, z: -2 },
+      { x: 0, z: 0 },
+      { x: -3, z: 2 },
+    ],
     addTo: bird,
     translate: { x: -4, y: 0 },
     stroke: 2,
@@ -421,7 +452,12 @@ function makeBird(options: any) {
     path: [
       { x: 3, y: 0 },
       { x: -1, y: -9 },
-      { arc: [{ x: -5, y: -4 }, { x: -3, y: 0 }] },
+      {
+        arc: [
+          { x: -5, y: -4 },
+          { x: -3, y: 0 },
+        ],
+      },
     ],
     addTo: bird,
     translate: { z: -1.5 },
@@ -450,9 +486,8 @@ export default class extends Vue {
   /// LifeCycle (private beforeCreate/created/.../destroyed) ///
   private mounted() {
     const canvas = this.$el as HTMLCanvasElement
-    const context = canvas.getContext('2d')
-    const width = (canvas.width = canvas.clientWidth)
-    const height = (canvas.height = canvas.clientHeight)
+    canvas.width = canvas.clientWidth
+    canvas.height = canvas.clientHeight
 
     let isSpinning: boolean = true
 
@@ -559,7 +594,7 @@ export default class extends Vue {
 
       const y0 = 32
       const y1 = y0 + 2 + Math.random() * 24
-      empty = new BokehShape({
+      new BokehShape({
         path: [{ y: y0 }, { y: y1 }],
         addTo: zRotor,
         rotate: { x: ((Math.random() * 2 - 1) * TAU) / 8 },
@@ -578,7 +613,7 @@ export default class extends Vue {
         rotate: { y: (TAU / dotCount) * i },
       })
 
-      empty = new BokehShape({
+      new BokehShape({
         path: [{ z: 40 * (1 - Math.random() * Math.random()) + 32 }],
         addTo: yRotor,
         rotate: { x: ((Math.random() * 2 - 1) * TAU * 3) / 16 },

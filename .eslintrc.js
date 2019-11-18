@@ -13,6 +13,7 @@ module.exports = {
     '@vue/standard',
     '@vue/typescript',
   ],
+  plugins: ['@typescript-eslint'],
   parserOptions: {
     parser: '@typescript-eslint/parser',
   },
@@ -56,6 +57,8 @@ module.exports = {
     'max-statements': ['error', 120], // function最大语句数
 
     /// TSLint https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#supported-rules ///
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/class-name-casing': 'error', // 类名 PascalCase
     '@typescript-eslint/interface-name-prefix': ['error', 'always'], // 接口I开头
 

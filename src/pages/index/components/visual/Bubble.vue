@@ -69,7 +69,7 @@ export default class extends Vue {
         context.save()
         context.translate(halfWidth, halfHeight)
 
-        nodes.forEach((node, i) => {
+        nodes.forEach((node) => {
           context.beginPath()
           context.moveTo(node.x + node.r, node.y)
           context.arc(node.x, node.y, node.r, 0, tau)

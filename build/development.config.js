@@ -16,7 +16,7 @@ module.exports = function(config) {
   // 反正<template><style>也不能调试不是）(TypeScript 有 sourceMap)
   config.devtool('eval')
   config.output.devtoolModuleFilenameTemplate(
-    'webpack://[namespace]/[resource-path]'
+    'webpack://[namespace]/[resource-path]',
   )
   /// 避免同名.vue文件sourceMap冲突 ///
   // https://webpack.js.org/configuration/output/#outputdevtoolmodulefilenametemplate

@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-31 15:13:54
  */
-import { ECharts } from 'echarts' // 类型申明 ┐(：´ゞ｀)┌
+// import { ECharts } from 'echarts' // 类型申明 ┐(：´ゞ｀)┌
 import echarts from 'echarts/lib/echarts'
 
 // import SKIN from '@/utils/skin' // 随皮肤改变...

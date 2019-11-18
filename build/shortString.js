@@ -11,24 +11,24 @@
  *
  * @returns {String} 一个字符
  */
-function getChar(str, code = 0) {
-  if (typeof str === 'number') {
-    code += str
-  } else {
-    let index = str.length
-    while (index--) {
-      code += index + str.charCodeAt(index)
-    }
-  }
+// function getChar(str, code = 0) {
+//   if (typeof str === 'number') {
+//     code += str
+//   } else {
+//     let index = str.length
+//     while (index--) {
+//       code += index + str.charCodeAt(index)
+//     }
+//   }
 
-  do {
-    code = (code + 61) % 123
-  } while (code < 65)
+//   do {
+//     code = (code + 61) % 123
+//   } while (code < 65)
 
-  code > 90 && code < 97 && (code += code < 94 ? -3 : 3)
+//   code > 90 && code < 97 && (code += code < 94 ? -3 : 3)
 
-  return String.fromCharCode(code)
-}
+//   return String.fromCharCode(code)
+// }
 
 /** 获取随机字符串
  * @param {Number} len 字符串长度 默认3个(52*52*52=140608 个唯一值)
@@ -43,7 +43,7 @@ function getChar(str, code = 0) {
 //   return str
 // }
 
-const TRIAL = 8 // 重名重试次数
+// const TRIAL = 8 // 重名重试次数
 /** 获得唯一缩写（耗时线性增涨，特别是在3个字母(140608个唯一值)及之后）
  * @param {Object} DIC 命名字典
  * @param {String} char 缩写
@@ -52,27 +52,27 @@ const TRIAL = 8 // 重名重试次数
  *
  * @returns {String} DIC里唯一的缩写
  */
-function getUnique(DIC, char, str = '', i = 0) {
-  const code = str + char // 当前缩写
-  let unique = true
-  // 查重
-  for (let att in DIC) {
-    if (DIC[att] === code) {
-      unique = false
-      if (++i > TRIAL) {
-        str += char
-        i = 0
-      }
-      break
-    }
-  }
+// function getUnique(DIC, char, str = '', i = 0) {
+//   const code = str + char // 当前缩写
+//   let unique = true
+//   // 查重
+//   for (let att in DIC) {
+//     if (DIC[att] === code) {
+//       unique = false
+//       if (++i > TRIAL) {
+//         str += char
+//         i = 0
+//       }
+//       break
+//     }
+//   }
 
-  if (unique) {
-    return code
-  }
+//   if (unique) {
+//     return code
+//   }
 
-  return getUnique(DIC, getChar(char, i), str, i) // 尾递归
-}
+//   return getUnique(DIC, getChar(char, i), str, i) // 尾递归
+// }
 
 /** 累加字符串数字和
  * @param {String|Number} str 待缩写字符串或码值和
@@ -80,46 +80,46 @@ function getUnique(DIC, char, str = '', i = 0) {
  *
  * @returns {Number} 字符串数字和
  */
-function countStr(str, code = 0) {
-  if (typeof str === 'number') {
-    code += str
-  } else {
-    let index = str.length
-    while (index--) {
-      code += index + str.charCodeAt(index)
-    }
-  }
+// function countStr(str, code = 0) {
+//   if (typeof str === 'number') {
+//     code += str
+//   } else {
+//     let index = str.length
+//     while (index--) {
+//       code += index + str.charCodeAt(index)
+//     }
+//   }
 
-  return code
-}
+//   return code
+// }
 /** 获得字符串唯一缩写(转36进制)
  * @param {Object} DIC 命名字典
  * @param {String|Number} str 待缩写字符串
  *
  * @returns {String} DIC里唯一的缩写
  */
-function shortStr(DIC, str) {
-  let count
-  if (typeof str === 'number') {
-    count = str
-    str = str.toString(36)
-  } else {
-    count = countStr(str)
-    str = count.toString(36)
-  }
+// function shortStr(DIC, str) {
+//   let count
+//   if (typeof str === 'number') {
+//     count = str
+//     str = str.toString(36)
+//   } else {
+//     count = countStr(str)
+//     str = count.toString(36)
+//   }
 
-  let key
-  for (key in DIC) {
-    if (DIC[key] === str) {
-      key = 0 // 兼职
-      break
-    }
-  }
+//   let key
+//   for (key in DIC) {
+//     if (DIC[key] === str) {
+//       key = 0 // 兼职
+//       break
+//     }
+//   }
 
-  return key !== 0 ? str : shortStr(DIC, ++count)
-}
+//   return key !== 0 ? str : shortStr(DIC, ++count)
+// }
 
-const CHAR = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const CHAR = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
 const RADIX = CHAR.length
 /** 数字转RADIX进制字符串
  * @param {Number} number 10进制数字

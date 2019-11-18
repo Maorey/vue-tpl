@@ -23,22 +23,22 @@ const empty: any = null
  * @param {Number} start 数组起始索引（含）
  * @param {Number} end 数组结束索引（含）
  */
-function insertSort(start: number, end: number) {
-  let temp
-  let current
-  let pointer: number
-  let anchor = start
-  while (anchor++ < end) {
-    current = LIST[(pointer = anchor)]
-    while (
-      pointer > start &&
-      Number(contrast((temp = LIST[pointer - 1]), current)) > 0
-    ) {
-      LIST[pointer--] = temp
-    }
-    pointer < anchor && (LIST[pointer] = current)
-  }
-}
+// function insertSort(start: number, end: number) {
+//   let temp
+//   let current
+//   let pointer: number
+//   let anchor = start
+//   while (anchor++ < end) {
+//     current = LIST[(pointer = anchor)]
+//     while (
+//       pointer > start &&
+//       Number(contrast((temp = LIST[pointer - 1]), current)) > 0
+//     ) {
+//       LIST[pointer--] = temp
+//     }
+//     pointer < anchor && (LIST[pointer] = current)
+//   }
+// }
 
 /** 合并原数组上连续的两个有序数组(比如:[1,3,5,7,9,0,2,4,6,8] 借助数组方法)
  *    相比merge: 耗时5倍左右
@@ -47,22 +47,22 @@ function insertSort(start: number, end: number) {
  * @param {Number} middle 第一个数组结束索引
  * @param {Number} right 第二个数组结束索引
  */
-function mergeSp(left: number, middle: number, right: number) {
-  middle++ // 第二个数组起始索引
-  let temp
-  while (left < right) {
-    temp = LIST[middle]
-    LIST.splice(middle++, 1)
-    if (Number(contrast(LIST[left], temp)) > 0) {
-      // j在i前
-      left ? LIST.splice(left - 1, 0, temp) : LIST.unshift(temp)
-    } else {
-      // j在i后 保持相对顺序不变
-      LIST.splice(++left, 0, temp)
-    }
-    left++
-  }
-}
+// function mergeSp(left: number, middle: number, right: number) {
+//   middle++ // 第二个数组起始索引
+//   let temp
+//   while (left < right) {
+//     temp = LIST[middle]
+//     LIST.splice(middle++, 1)
+//     if (Number(contrast(LIST[left], temp)) > 0) {
+//       // j在i前
+//       left ? LIST.splice(left - 1, 0, temp) : LIST.unshift(temp)
+//     } else {
+//       // j在i后 保持相对顺序不变
+//       LIST.splice(++left, 0, temp)
+//     }
+//     left++
+//   }
+// }
 
 /** 二分合并原数组上连续的两个有序数组(比如:[1,3,5,7,9,0,2,4,6,8] 借助辅助数组)
  *    相比merge: 耗时2~3倍，设置阈值切换最好也耗时1.5倍
@@ -70,53 +70,53 @@ function mergeSp(left: number, middle: number, right: number) {
  * @param {Number} middle 第一个数组结束索引
  * @param {Number} right 第二个数组结束索引
  */
-function mergeBinary(left: number, middle: number, right: number) {
-  const LOW = left + 1
-  const leftValue = LIST[left]
-  // 辅助数组(slice比较快就不复用数组了)
-  const temp = LIST.slice(middle + 1, right + 1)
-  let curr = temp.length - 1 // 辅助数组结束索引
-  let low: number
-  let mid: number
-  let high: number
-  let current
+// function mergeBinary(left: number, middle: number, right: number) {
+//   const LOW = left + 1
+//   const leftValue = LIST[left]
+//   // 辅助数组(slice比较快就不复用数组了)
+//   const temp = LIST.slice(middle + 1, right + 1)
+//   let curr = temp.length - 1 // 辅助数组结束索引
+//   let low: number
+//   let mid: number
+//   let high: number
+//   let current
 
-  while (middle >= left && curr >= 0) {
-    current = temp[curr]
-    // 先检查边界情况
-    if (Number(contrast(leftValue, current)) > 0) {
-      while (middle >= left) {
-        LIST[right--] = LIST[middle--]
-      }
-      continue
-    }
-    curr--
-    if (!(Number(contrast(LIST[middle], current)) > 0)) {
-      LIST[right--] = current
-      continue
-    }
-    // 二分查找插入位置
-    low = LOW
-    high = middle - 1
-    while (low <= high) {
-      mid = (low + high) >> 1 // 除以2向下取整
-      if (Number(contrast(LIST[mid], current)) > 0) {
-        high = mid - 1
-      } else {
-        low = mid + 1
-      }
-    }
-    // 插入
-    while (middle >= low) {
-      LIST[right--] = LIST[middle--]
-    }
-    LIST[right--] = current
-  }
+//   while (middle >= left && curr >= 0) {
+//     current = temp[curr]
+//     // 先检查边界情况
+//     if (Number(contrast(leftValue, current)) > 0) {
+//       while (middle >= left) {
+//         LIST[right--] = LIST[middle--]
+//       }
+//       continue
+//     }
+//     curr--
+//     if (!(Number(contrast(LIST[middle], current)) > 0)) {
+//       LIST[right--] = current
+//       continue
+//     }
+//     // 二分查找插入位置
+//     low = LOW
+//     high = middle - 1
+//     while (low <= high) {
+//       mid = (low + high) >> 1 // 除以2向下取整
+//       if (Number(contrast(LIST[mid], current)) > 0) {
+//         high = mid - 1
+//       } else {
+//         low = mid + 1
+//       }
+//     }
+//     // 插入
+//     while (middle >= low) {
+//       LIST[right--] = LIST[middle--]
+//     }
+//     LIST[right--] = current
+//   }
 
-  while (curr >= 0) {
-    LIST[right--] = temp[curr--]
-  }
-}
+//   while (curr >= 0) {
+//     LIST[right--] = temp[curr--]
+//   }
+// }
 
 /// 耗时 ///
 // const testArray: number[] = []
