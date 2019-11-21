@@ -85,6 +85,8 @@ declare module '*.json' {
 //   export default plugin
 // }
 
+declare module 'jsencrypt'
+
 /// hack 放最后 ///
 // declare module 'zrender/lib/*'
 // declare module 'zdog/js/*'
@@ -97,4 +99,5 @@ declare module '*'
  */
 declare interface IObject<T = any> {
   [key: string]: T
+  [key: number]: T
 }

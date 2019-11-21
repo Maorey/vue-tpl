@@ -64,6 +64,8 @@ function plugin(config, DIR) {
   // 文件 gzip 压缩 https://webpack.docschina.org/plugins/compression-webpack-plugin/
   config.plugin('gzip').use('compression-webpack-plugin', [
     {
+      cache: true,
+      exclude: /conf\..+\.js/, // 配置文件不压缩
       threshold: 10240, // 启用压缩的最小文件大小 10k
       minRatio: 0.7, // 最小压缩率
     },
@@ -127,22 +129,23 @@ module.exports = function(config, ENV) {
     chunks: 'all', // 包含所有类型包（同步&异步 用insert-preload补齐依赖）
 
     // 分割优先级: maxInitialRequest/maxAsyncRequests < maxSize < minSize
-    minSize: 134144, // 最小分包大小
+    minSize: 62464, // 最小分包大小
     // webpack 5
     // minSize: {
-    //   javascript: 134144, // 131k
-    //   style: 216064, // 211k
+    //   javascript: 62464, // 61k
+    //   style: 103424, // 101k
     // },
     maxSize: 320512, // 最大分包大小（超过后尝试分出大于minSize的包）
     // maxSize: {
     //   javascript: 320512, // 313k
     //   style: 398336, // 389k
     // },
+    // maxInitialSize: 216064, // 最大初始加载大小 211k
     // 超过maxSize分割命名 true:hash(长度8，不造哪儿改)[默认] false:路径
     // hidePathInfo: true, // 也没个文件名配置啊...
     minChunks: 3, // 某个chunk被超过该数量的chunk依赖时才拆分出来
     maxAsyncRequests: 6, // 最大异步代码请求数【http <= 1.1 浏览器同域名并发请求上限: 6】
-    maxInitialRequests: 3, // 最大初始化时异步代码请求数
+    maxInitialRequests: 6, // 最大初始化时异步代码请求数
 
     automaticNameMaxLength: 15, // 分包文件名自动命名最大长度
     automaticNameDelimiter: '.', // 超过大小, 分包时文件名分隔符
@@ -179,15 +182,23 @@ module.exports = function(config, ENV) {
       //   chunks: 'all',
       //   enforce: true,
       //   priority: 668,
-      //   test: /[\\/]?.+\.json(?:[^\w].*)?$/,
+      //   test: /[\\/]?.+\.json(?:[^\w].*)?$/, // 或者 type: 'json'
       // },
-      // vue全搜集 (vue/vuex/vue-router...)
-      vue: {
-        name: 'vue',
+      // vue
+      v: {
+        name: 'v',
+        chunks: 'all',
+        enforce: true,
+        priority: 66,
+        test: /[\\/]node_modules[\\/]vue[\\/]/,
+      },
+      // vue全家桶全搜集 (vuex/vue-router...)
+      vf: {
+        name: 'vf',
         chunks: 'all',
         priority: 66,
         reuseExistingChunk: true,
-        test: /[\\/]node_modules[\\/]vue.*[\\/]/,
+        test: /[\\/]node_modules[\\/]vue.+[\\/]/,
       },
       // elementUI (建议按需引入)
       eui: {

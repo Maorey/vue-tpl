@@ -31,14 +31,14 @@ module.exports = function(des = '', DIC = {}) {
    */
   return module => {
     let name = '_' // 前缀
-    for (let chunk of module.chunksIterable) {
+    for (const chunk of module.chunksIterable) {
       name += short(chunk.name)
     }
 
     // 又过时
     // module.forEachChunk(chunk => (name += short(chunk.name)))
     // 过时
-    // for (let item of module.chunks) {
+    // for (const chunk of module.chunks) {
     //   name += short(chunk.name)
     // }
 

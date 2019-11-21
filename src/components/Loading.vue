@@ -63,7 +63,7 @@ export default class extends Vue {
     stroke-width: 2;
 
     &:first-child {
-      stroke: $colorTextMain;
+      stroke: $colorTheme6;
     }
 
     &:last-child {

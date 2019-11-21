@@ -11,17 +11,25 @@ import configRoute from './config/route'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
-// hack 刷新路由(/权限控制)
+const META = configRoute.meta
+let PAGE_HOME: string | undefined
+META.home && (PAGE_HOME = META.home)
+/// 路由元数据 ///
 ;(function hack(list?: RouteConfig[]) {
   if (!list || !list.length) {
     return
   }
-  for (let config of list) {
-    config.meta || (config.meta = {})
-    config.meta.$ = Vue.observable({ e: null }) // hack 刷新路由
-    hack(config.children)
+  let route
+  let meta
+  for (route of list) {
+    PAGE_HOME || (PAGE_HOME = route.path) // 首页默认第一个路由
+    meta = route.meta || (route.meta = {})
+    meta._ = true // 有权访问
+    meta.$ = Vue.observable({ e: null }) // hack 刷新路由
+    hack(route.children)
   }
 })(configRoute.routes as RouteConfig[])
+
 const router = new Router(configRoute as RouterOptions)
 
 /// 路由局部刷新 ///
@@ -48,14 +56,13 @@ function refreshRoute(matched: RouteRecord[], meta: { e: any }) {
     for (temp in record.instances) {
       ;(temp = record.instances[temp].$vnode.componentOptions) &&
         (temp = (temp.Ctor as any).options) &&
-        (meta.e = temp.name = '' + counter++)
+        (meta.e = temp.name = 'r' + counter++)
     }
   }
 }
 
 /// 导航守卫 ///
 const REG_REDIRECT = /\/r\//
-const PATH_HOME = configRoute.meta.home
 router.beforeEach((to, from, next) => {
   NProgress.start() // 开始进度条
 
@@ -79,20 +86,21 @@ router.beforeEach((to, from, next) => {
           return
         }
       }
-    } else if (PATH_HOME !== fromPath) {
-      next(PATH_HOME)
+    } else if (fromPath !== PAGE_HOME) {
+      next(PAGE_HOME)
     }
     NProgress.done()
     return
   }
 
-  /// 路由权限处理 ///
-  next()
+  /// 跳转 ///
+  to.meta._ ? next() : fromMatched.length ? NProgress.done() : next(PAGE_HOME)
 })
-const TITLE_APP = configRoute.meta.name // 标题
 router.afterEach(to => {
   /// 设置页面标题 ///
-  document.title = to.meta.name ? `${to.meta.name} - ${TITLE_APP}` : TITLE_APP
+  let title = META.name || ''
+  title = to.meta.name ? to.meta.name + (title && ' - ' + title) : title
+  title && (document.title = title)
 
   NProgress.done() // 结束进度条
 })

@@ -74,7 +74,7 @@ function getKEY(url: string, params?: IObject) {
 
   // 按key升序排列 拼接字符
   if (params) {
-    for (let key of sort(Object.keys(params))) {
+    for (const key of sort(Object.keys(params))) {
       query += `${key}.${toString(params[key])}.`
     }
   }
@@ -147,11 +147,11 @@ function request(
         /// 响应拦截 ///
         return res
       })
-      .catch((error: any) => {
-        error.meta = config
+      .catch((res: any) => {
+        res.meta = config
         requestQueue.remove(KEY) // 移除请求队列
         /// 错误拦截 ///
-        throw error
+        throw res
       }),
   )
 }

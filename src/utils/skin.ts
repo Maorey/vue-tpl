@@ -20,12 +20,12 @@ Object.defineProperty(state, 'value', {
     if (skin === theme) {
       return
     }
-    for (let dom of document.querySelectorAll<HTMLLinkElement>('link[title]')) {
+    for (const dom of document.querySelectorAll<HTMLLinkElement>('link[title]')) {
       dom.disabled = dom.title !== skin
     }
     theme = skin
     // 通知订阅者
-    for (let callback of subscribes) {
+    for (const callback of subscribes) {
       callback(skin)
       ;(callback as any).$ && off(callback)
     }

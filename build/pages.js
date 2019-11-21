@@ -42,8 +42,8 @@ const MINIFY = {
  */
 function getEntry(dir, files) {
   let fileName
-  for (let entry of files) {
-    for (let format of ENTRY_FORMATS) {
+  for (const entry of files) {
+    for (const format of ENTRY_FORMATS) {
       fileName = entry + format
       if (fs.existsSync(path.join(dir, fileName))) {
         return fileName
@@ -66,7 +66,7 @@ module.exports = function(isProd) {
   let entryNames
   let entryName
   const uesd = { undefined: true } // 已经被使用的入口
-  for (let dirent of templates) {
+  for (const dirent of templates) {
     if (dirent.isFile() && dirent.name.match(REG_TEMPLATE)) {
       isEmpty = false
 

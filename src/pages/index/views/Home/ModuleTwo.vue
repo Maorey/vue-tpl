@@ -11,8 +11,7 @@
 </template>
 
 <script lang="ts">
-import { get } from '@/utils/ajax'
-import API from '@index/api/config'
+import { pie } from '@index/api/charts'
 import CONFIG from '@index/config'
 import ChartRose from '@indexCom/charts/Rose'
 import MoveCircle from '@indexCom/visual/Circle'
@@ -43,7 +42,7 @@ export default class extends Vue {
   }
   /// methods (private/public) ///
   private get() {
-    get(API.chartPie)
+    pie()
       .then((data: any) => {
         data &&
           data.success &&

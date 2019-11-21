@@ -17,7 +17,7 @@ const DEEP_RECURSION = 5
 //     return
 //   }
 //   vm.$forceUpdate() // 更新自身
-//   for (let child of vm.$children) {
+//   for (const child of vm.$children) {
 //     forceUpdateRecursion(child, deep) // 更新后代
 //   }
 // }
@@ -29,7 +29,7 @@ function forceEmitRecursion(vm: Vue, deep = 0) {
     return
   }
   vm.$emit('$') // 更新自身
-  for (let child of vm.$children) {
+  for (const child of vm.$children) {
     forceEmitRecursion(child, deep) // 更新后代
   }
 }
@@ -37,8 +37,8 @@ function forceEmitRecursion(vm: Vue, deep = 0) {
  * @param {RouteRecord[]} matched 当前匹配的路由列表
  */
 function refreshRoute(matched: RouteRecord[]) {
-  for (let record of matched) {
-    for (let key in record.instances) {
+  for (const record of matched) {
+    for (const key in record.instances) {
       // v-if hack 会丢失所有缓存
       // forceUpdateRecursion(record.instances[key])
       forceEmitRecursion(record.instances[key])

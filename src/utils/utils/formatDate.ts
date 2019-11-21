@@ -387,7 +387,7 @@ function getDateByString(
     return date
   } else if (tryHistory) {
     // 从记录中尝试
-    for (let item of CACHE.pool) {
+    for (const item of CACHE.pool) {
       const result = getDateByString(dateString, item.v, false)
       if (result) {
         return result

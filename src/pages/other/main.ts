@@ -3,11 +3,11 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  */
+import Vue from 'vue'
 import router from './router'
 import store from './store'
-import Vue, { CreateElement, VNode } from 'vue'
 import App from './App'
-import prefer from './store/modules/prefer'
+// import prefer from './store/modules/prefer'
 import './registerServiceWorker'
 
 /// 全局注册的组件，请尽量不要让这个列表变太长 ///
@@ -97,13 +97,23 @@ Scrollbar.components.Bar.created = function() {
 // }
 
 // 防阻塞页面（defer的脚本已缓存时不会非阻塞执行bug:chromium#717979）
-setTimeout(() =>
-  new Vue({
-    store,
-    router,
-    created() {
-      prefer.setSkin() // 初始化皮肤
-    },
-    render: (h: CreateElement): VNode => h(App),
-  }).$mount('#app'),
-)
+setTimeout(() => {
+  // new Vue({
+  //   store,
+  //   router,
+  //   created() {
+  //     prefer.setSkin() // 设置皮肤
+  //   },
+  //   render: (h: CreateElement) => h(App),
+  // }).$mount('#app')
+  // hacky: 省root组件
+  App.store = store
+  App.router = router
+  // 设置皮肤
+  // const created = App.created
+  // App.created = function() {
+  //   created && created.apply(this, arguments)
+  //   prefer.setSkin()
+  // }
+  new Vue(App).$mount('#app')
+})

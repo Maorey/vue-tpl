@@ -328,7 +328,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   - `vue`: `TypeScript` & `CSS Module`, `tsx` 文件中使用
   - `js`: `JavaScript` & `CSS Module`, vue 单文件组件中使用
   - `vue`: `JavaScript` & `CSS Module`, `jsx` 文件中使用
-- 提交代码请使用标识: Add/Del/Fix/Mod/Feat 等
+- 请[规范](https://github.com/vuejs/vue/blob/dev/.github/COMMIT_CONVENTION.md)提交消息
 
 ### 其他
 
@@ -572,21 +572,17 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 简记如下, 有待运维大佬进一步优化
 
-1. url 重写兼容旧版
-2. 反向代理, 绕过同源策略限制(api/图片等资源跨域等)
-3. 添加请求头字段 `access_token` 使后台能读到该字段(nginx 的 http 或 server 节点下需要添加配置`underscores_in_headers on; # 允许带下划线的请求头`)
-4. 开启 `gzip` 压缩, 并重用已有 gz 文件 `gzip_static on;`
-5. 缓存静态资源(html 可减小缓存时间)
+- url 重写兼容旧版
+- 反向代理, 绕过同源策略限制(api/图片等资源跨域等)
+- 添加请求头字段 `access_token` 使后台能读到该字段(nginx 的 http 或 server 节点下需要添加配置`underscores_in_headers on; # 允许带下划线的请求头`)
+- 开启 `gzip` 压缩, 并重用已有 gz 文件 `gzip_static on;`
+- 缓存静态资源(html 可减小缓存时间)
 
 配置示例(`{value}` 换成对应值):
 
 ```bash
-server {
-  listen       {port};
-  server_name  {domain};
-
-  underscores_in_headers on; # 允许带下划线的请求头
-
+http {
+  #underscores_in_headers on; # 允许带下划线的请求头
   # 开启gZip
   gzip on;
   gzip_vary on;
@@ -595,45 +591,57 @@ server {
   gzip_comp_level 3;
   gzip_min_length 3k;
   gzip_buffers 32 16k;
-  # gzip_http_version 1.0;
   gzip_types application/xml application/json application/ld+json application/rss+xml application/atom+xml application/xhtml+xml application/font-woff application/x-font-ttf application/x-javascript application/javascript application/x-httpd-php application/x-font-woff application/vnd.geo+json application/octet-stream application/manifest+json application/vnd.ms-fontobject application/x-web-app-manifest+json font/opentype text/vtt text/css text/plain text/vcard text/javascript text/x-component text/cache-manifest text/vnd.rim.location.xloc text/x-cross-domain-policy image/svg+xml;
 
-  # 部署在根目录 直接访问域名
-  location / {
-    # rewrite ^/app/(?:path|path-alias)/(.*)$ /app/$1 last; # 兼容某些路由
-    proxy_set_header access_token ''; # 添加允许的请求头
+  # http跳转到https
+  server {
+    #server_name  xxx;
+    listen       80;
+    listen       [::]:80;
 
-    # 设置静态资源缓存(文件名带内容哈希)
-    if ($uri ~ .*\.(?:js|css|jpg|jpeg|gif|png|ico|gz|svg|svgz|ttf|eot|mp4)$) {
+    return 301 https://$host$request_uri; # 得用 $host,不造为啥 $server_name 不行
+  }
+  # https + http2
+  server {
+    #server_name  xxx;
+    listen       443 ssl http2;
+    listen       [::]:443 ssl http2;
+
+    ssl_certificate      xxx.crt; # 证书
+    ssl_certificate_key  xxx.key; # 私匙
+    ssl_session_cache    shared:SSL:5m; # 共享会话缓存大小
+    ssl_session_timeout  15m; # 会话超时时间
+    #ssl_protocols        TLSv1 TLSv1.1 TLSv1.2;
+    #ssl_ciphers          HIGH:!aNULL:!MD5; # 定义算法
+    #ssl_prefer_server_ciphers  on; # 优先采取服务器算法
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always; # HSTS策略
+    add_header X-Frame-Options DENY; # 减少点击劫持
+    add_header X-Content-Type-Options nosniff; # 禁止服务器自动解析资源类型
+    add_header X-Xss-Protection 1; # 防XSS攻擊
+
+    location / {
+      #rewrite ^/(?:path|path-alias)/(.*)$ /$1 last; # 兼容某些路由
+      # 设置静态资源缓存(文件名带内容哈希)
+      if ($uri ~ .*\.(?:js|css|jpg|jpeg|gif|png|ico|gz|svg|svgz|ttf|eot|mp4)$) {
         expires 7d; # 7天
-    }
-    # html(文件名不变)
-    if ($uri ~ .*\.(?:htm|html)$) {
+      }
+      # html(文件名不变)
+      if ($uri ~ .*\.(?:htm|html)$) {
         expires 25m; # 25分钟
         #add_header Cache-Control private,no-store,no-cache,must-revalidate,proxy-revalidate;
+      }
+
+      index index.html;
+      alias xxx/;
+      try_files $uri $uri/ /;
+    }
+    location /api {
+      proxy_pass https?://xxx:xxx/xxx;
+      # 缓存策略...
     }
 
-    index index.html;
-    try_files $uri $uri.html $uri/  /; # 使支持history路由
-    root {path};
   }
-
-  # 部署在其他目录 访问域名/目录
-  location /app {
-    # 略
-
-    index index.html;
-    try_files $uri $uri.html $uri/ /app/;
-    alias {path};
-  }
-
-
-  # 接口代理
-  location /api/ {
-    proxy_pass http://{ip}:{port}/{path}/;
-    # 缓存策略...
-  }
-
 }
 ```
 

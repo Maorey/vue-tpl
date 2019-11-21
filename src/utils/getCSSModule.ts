@@ -9,7 +9,7 @@ import SKIN, { on } from './skin'
  */
 function getCSSModule(dic: IObject<IObject<string>>) {
   const obj = Vue.observable({ ...dic[SKIN.value] })
-  on(skin => {
+  on((skin: string) => {
     Object.assign(obj, dic[skin])
   })
   return obj

@@ -11,8 +11,7 @@
 </template>
 
 <script lang="ts">
-import { get } from '@/utils/ajax'
-import API from '@index/api/config'
+import { line } from '@index/api/charts'
 import CONFIG from '@index/config'
 import ChartLine from '@indexCom/charts/Line'
 
@@ -42,7 +41,7 @@ export default class extends Vue {
   }
   /// methods (private/public) ///
   private get() {
-    get(API.chartLine)
+    line()
       .then((data: any) => {
         data &&
           data.success &&

@@ -39,7 +39,7 @@ module.exports = function(isProd, ALIAS, ENV) {
           if (THEME) {
             content = `@import "~@/${THEME.path}";`
             let temp
-            for (let alias in ALIAS) {
+            for (const alias in ALIAS) {
               temp = ALIAS[alias]
               loaderContext.context.includes(temp) &&
                 (temp = themeLoader.exists(temp, THEME.path)) &&

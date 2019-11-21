@@ -5,9 +5,9 @@
  */
 import router from './router'
 import store from './store'
-import Vue, { CreateElement, VNode } from 'vue'
+import Vue from 'vue'
 import App from './App'
-import prefer from './store/modules/prefer'
+// import prefer from './store/modules/prefer'
 import './registerServiceWorker'
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
@@ -20,13 +20,24 @@ import './registerServiceWorker'
 // }
 
 // 防阻塞页面（defer的脚本已缓存时不会非阻塞执行bug:chromium#717979）
-setTimeout(() =>
-  new Vue({
-    store,
-    router,
-    created() {
-      prefer.setSkin() // 初始化皮肤
-    },
-    render: (h: CreateElement): VNode => h(App),
-  }).$mount('#app'),
-)
+setTimeout(() => {
+  // new Vue({
+  //   store,
+  //   router,
+  //   created() {
+  //     prefer.setSkin() // 初始化皮肤
+  //   },
+  //   render: (h: CreateElement): VNode => h(App),
+  // }).$mount('#app')
+  // hacky: 省root组件
+  const options = App.options
+  options.store = store
+  options.router = router
+  // 设置皮肤
+  // const created = options.created
+  // options.created = function() {
+  //   created && created.apply(this, arguments)
+  //   prefer.setSkin()
+  // }
+  new Vue(App).$mount('#app')
+})

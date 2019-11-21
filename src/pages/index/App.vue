@@ -60,7 +60,7 @@ export default class extends Vue {
     const LINK = []
 
     const ROUTE = (this.$router as any).options.routes as RouteConfig[]
-    for (let config of ROUTE) {
+    for (const config of ROUTE) {
       LINK.push({
         to: config.path, // uri
         src: config.meta.thumb, // 缩略图

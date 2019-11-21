@@ -56,7 +56,7 @@
 //   const code = str + char // 当前缩写
 //   let unique = true
 //   // 查重
-//   for (let att in DIC) {
+//   for (const att in DIC) {
 //     if (DIC[att] === code) {
 //       unique = false
 //       if (++i > TRIAL) {

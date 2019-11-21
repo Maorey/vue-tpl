@@ -37,7 +37,7 @@ module.exports = function(pages, config, ALIAS) {
   setAlias()
 
   let tmp
-  for (let entryName in pages) {
+  for (const entryName in pages) {
     tmp = pages[entryName]
     if (tmp.alias) {
       alias = '@' + entryName

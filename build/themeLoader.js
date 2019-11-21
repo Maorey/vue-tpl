@@ -48,7 +48,7 @@ function exists(rootDir, fileName) {
 }
 function hasPath(path) {
   if (THEMES) {
-    for (let temp in THEMES) {
+    for (const temp in THEMES) {
       if (path === THEMES[temp]) {
         return true
       }
@@ -165,7 +165,7 @@ module.exports = function(source) {
   // let variables = ''
   // if (lastImport) {
   //   variables = '\nimport $_getCSSModule from "@/utils/getCSSModule"'
-  //   for (let vars in info) {
+  //   for (const vars in info) {
   //     variables += `\nconst ${vars} = $_getCSSModule(${info[vars]})`
   //   }
   //   variables += '\n'

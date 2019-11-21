@@ -134,7 +134,7 @@ class Memory {
    */
   clear() {
     // 清空timeout队列
-    for (let item of this.out) {
+    for (const item of this.out) {
       clearTimeout(item.v)
     }
 

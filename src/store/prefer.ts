@@ -26,8 +26,8 @@ interface IPrefer {
  */
 class Prefer extends VuexModule implements IPrefer {
   /// State & Getter(public) ///
-  lang = PREFER.lang as string
-  skin = (SKIN.value = PREFER.skin) as string
+  lang = (PREFER.lang || 'zh') as string
+  skin = (SKIN.value = PREFER.skin || process.env.THEME) as string
 
   /// Mutation 无法调用/commit 必须通过Action ///
   @Mutation
@@ -44,14 +44,14 @@ class Prefer extends VuexModule implements IPrefer {
    * @param {String} skin 皮肤名
    */
   @Action
-  setSkin(skin?: string) {
+  setSkin(skin: string = process.env.THEME) {
     this.context.commit('SKIN', skin)
   }
   /** 设置语言
    * @param {String} lang 语言
    */
   @Action
-  setLang(lang: string) {
+  setLang(lang: string = 'zh') {
     this.context.commit('LANG', lang)
   }
 }
