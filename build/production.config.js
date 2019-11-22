@@ -93,29 +93,29 @@ module.exports = function(config, ENV) {
     recordsPath: path.join(DIR, 'build/records.json'),
   })
   /// 多主题 ///
-  const name = 'theme-loader'
-  const themeLoader = require('./themeLoader')
-  config.plugin(name).use(themeLoader.plugin)
-  if (themeLoader.init(ENV).THEMES) {
-    const loader = path.join(DIR, 'build/themeLoader.js')
-    config.module
-      .rule('vue')
-      .use(name)
-      .loader(loader)
-      .before('vue-loader')
-    config.module
-      .rule('js')
-      .use(name)
-      .loader(loader)
-    config.module
-      .rule('ts')
-      .use(name)
-      .loader(loader)
-    config.module
-      .rule('tsx')
-      .use(name)
-      .loader(loader)
-  }
+  // const name = 'theme-loader'
+  // const themeLoader = require('./themeLoader')
+  // config.plugin(name).use(themeLoader.plugin)
+  // if (themeLoader.init(ENV).THEMES) {
+  //   const loader = path.join(DIR, 'build/themeLoader.js')
+  //   config.module
+  //     .rule('vue')
+  //     .use(name)
+  //     .loader(loader)
+  //     .before('vue-loader')
+  //   config.module
+  //     .rule('js')
+  //     .use(name)
+  //     .loader(loader)
+  //   config.module
+  //     .rule('ts')
+  //     .use(name)
+  //     .loader(loader)
+  //   config.module
+  //     .rule('tsx')
+  //     .use(name)
+  //     .loader(loader)
+  // }
   fileName(config)
   plugin(config, DIR)
 
