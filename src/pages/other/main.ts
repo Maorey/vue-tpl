@@ -78,10 +78,10 @@ Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
 // 滚动面板
 Vue.use(Scrollbar)
-// hack: 不出现滚动条时不显示(虽然本身没created钩子)
-const fun = Scrollbar.components.Bar.created
+// hack: 不出现滚动条时不显示
+const created = Scrollbar.components.Bar.created
 Scrollbar.components.Bar.created = function() {
-  fun && fun.apply(this, arguments)
+  created && created.apply(this, arguments)
   this.$watch('size', function(this: any, size: string) {
     this.$el.style.display = size && size !== '0' ? '' : 'none'
   })
@@ -107,8 +107,9 @@ setTimeout(() => {
   //   render: (h: CreateElement) => h(App),
   // }).$mount('#app')
   // hacky: 省root组件
-  App.store = store
-  App.router = router
+  const options = App.options || App
+  options.store = store
+  options.router = router
   // 设置皮肤
   // const created = App.created
   // App.created = function() {

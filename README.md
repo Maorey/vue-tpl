@@ -394,7 +394,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
     color: $red;
   }
   </style>
-  <!-- 基础样式样式 -->
+  <!-- 基础样式 -->
   <style lang="scss" module theme="theme=|foo.scss">
   .bar {
     color: $red;

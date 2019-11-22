@@ -30,7 +30,7 @@ setTimeout(() => {
   //   render: (h: CreateElement): VNode => h(App),
   // }).$mount('#app')
   // hacky: 省root组件
-  const options = App.options
+  const options = App.options || App
   options.store = store
   options.router = router
   // 设置皮肤

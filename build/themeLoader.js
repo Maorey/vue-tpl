@@ -17,7 +17,7 @@ const REG_SCSS = /\/[^/]+\.scss$/
 const REG_LANG = /(?:^\??|&)lang=([^&]*)/
 const REG_THEME = /(?:^\??|&)theme=([^|&]*)\|?([^&]*)/
 // require不管了
-const REG_IMPORT = /(?:^|\n)import[\s\n]+(?:([\w\W]*?)[\s\n]+from[\s\n]+)?['"]([\w\W]*?)\.(scss|vue)(\?[\w\W]*?)?['"]/g
+const REG_IMPORT = /(?:^|\n)import[\s\n]+([^'"]+?)[\s\n]+from[\s\n]+['"]([^'"]+?)\.(scss|vue)(\?[^'"]+?)?['"]/g
 
 const CACHE_EXISTS = {}
 const DIR_SRC = path.join(process.cwd(), 'src')
@@ -102,12 +102,12 @@ function getThemeByQuery(temp) {
     let theme = temp && { name: temp[1], path: temp[2] }
     if (theme) {
       // 指定主题
-      theme.path &&
+      ;(theme.path &&
         (hasPath(theme.path) ||
           exists(DIR_SRC, theme.path) ||
           (exists(DIR_THEME, theme.path) &&
-            (theme.path = `${R_THEME}/${theme.path}`)) ||
-          (theme.path = THEME.path))
+            (theme.path = `${R_THEME}/${theme.path}`)))) ||
+        (theme.path = THEMES[theme.name] || THEME.path)
     } else {
       // 默认主题
       theme = THEME
@@ -118,80 +118,81 @@ function getThemeByQuery(temp) {
 
 // 多主题loader 从js源码处理多主题样式
 module.exports = function(source) {
-  this.callback(null, source)
-  // init()
-  // if (!THEMES) {
-  //   this.callback(null, source)
-  //   return
-  // }
-  // const info = {} // 收集的样式注入信息
-  // const PREFIX = '$_STYLE'
-  // let counter = 0
-  // let lastImport = 0
-  // let more = 0
-  // source = (typeof source === 'string' ? source : source.toString()).replace(
-  //   REG_IMPORT,
-  //   (match, variable, name, type, query, index) => {
-  //     // 处理多主题
-  //     let temp = REG_LANG.exec(query)
-  //     if (type === 'vue' && (!temp || temp[1] !== 'scss')) {
-  //       return match
-  //     }
+  init()
+  if (!THEMES) {
+    this.callback(null, source)
+    return
+  }
+  const info = {} // 收集的样式注入信息
+  const PREFIX = '$_STYLE'
+  let counter = 0
+  let lastImport = 0
+  let more = 0
+  source = (typeof source === 'string' ? source : source.toString()).replace(
+    REG_IMPORT,
+    (match, variable, name, type, query = '?', index) => {
+      // 处理多主题
+      let temp = REG_LANG.exec(query)
+      if (type === 'vue' && (!temp || temp[1] !== 'scss')) {
+        return match
+      }
+      if (
+        (type === 'scss' || type === 'vue') &&
+        !(temp = REG_THEME.exec(query))
+      ) {
+        // 注入主题
+        let len = match.length
+        let strObj = '{'
+        let vars
 
-  //     temp = REG_THEME.exec(query)
-  //     if (!temp) {
-  //       // 注入主题
-  //       let len = match.length
-  //       let strObj = '{'
-  //       let vars
+        match = '\n'
+        for (temp in THEMES) {
+          vars = PREFIX + counter++
+          match += `import ${vars} from "${name}.${type +
+            query}&theme=${temp}"\n`
+          strObj += `"${temp}":${vars},`
+        }
+        info[variable] = strObj + '}'
+        more += match.length - len
+        lastImport = index + len + more
+        return match
+      }
 
-  //       match = '\n'
-  //       for (temp in THEMES) {
-  //         vars = PREFIX + counter++
-  //         match += `import ${vars} from "${name}.${type +
-  //           query}&theme=${temp}"\n`
-  //         strObj += `"${temp}":${vars},`
-  //       }
-  //       info[variable] = strObj + '}'
-  //       more += match.length - len
-  //       lastImport = index + len + more
-  //       return match
-  //     }
+      return match
+    },
+  )
 
-  //     return match
-  //   }
-  // )
+  let variables = ''
+  if (lastImport) {
+    variables = '\nimport $_getCSSModule from "@/utils/getCSSModule"'
+    for (const vars in info) {
+      variables += `\nconst ${vars} = $_getCSSModule(${info[vars]})`
+    }
+    variables += '\n'
+  }
 
-  // let variables = ''
-  // if (lastImport) {
-  //   variables = '\nimport $_getCSSModule from "@/utils/getCSSModule"'
-  //   for (const vars in info) {
-  //     variables += `\nconst ${vars} = $_getCSSModule(${info[vars]})`
-  //   }
-  //   variables += '\n'
-  // }
-
-  // this.callback(
-  // null,
-  // source.substring(0, lastImport) + variables + source.substring(lastImport)
-  // )
+  this.callback(
+    null,
+    source.substring(0, lastImport) + variables + source.substring(lastImport),
+  )
 }
 // 插件: 不同theme到不同chunk (顺便合并下小文件？)
+// hack mini-css-extract-plugin
 module.exports.plugin = class {
   constructor() {
     init()
   }
   // https://webpack.docschina.org/api/plugins/
   apply(compiler) {
-    // compiler.hooks.compilation.tap(PLUGIN_NAME, compilation =>
-    //   compilation.hooks.optimizeChunkAssets.tapAsync(
-    //     PLUGIN_NAME,
-    //     (chunks, callback) => {
-    //       // 不同theme到不同chunk
-    //       callback()
-    //     }
-    //   )
-    // )
+    compiler.hooks.compilation.tap(PLUGIN_NAME, compilation =>
+      compilation.hooks.optimizeChunkAssets.tapAsync(
+        PLUGIN_NAME,
+        (chunks, callback) => {
+          // 不同theme到不同chunk
+          callback()
+        },
+      ),
+    )
   }
 }
 
