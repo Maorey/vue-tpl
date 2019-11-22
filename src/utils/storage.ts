@@ -240,7 +240,7 @@ const local = {
       return
     }
     // 加时间戳
-    let temp = (CACHE[key] = CACHE[key] || {})
+    const temp = (CACHE[key] = CACHE[key] || {})
     expires === undefined
       ? (str =
           (temp.e ||

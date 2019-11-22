@@ -40,6 +40,7 @@ class User extends VuexModule implements IUser {
   protected INFO(info?: IInfo) {
     this.info = USER_INFO.info = info
   }
+
   @Mutation
   protected MENU(menu?: string[]) {
     this.menu = USER_INFO.menu = menu
@@ -58,6 +59,7 @@ class User extends VuexModule implements IUser {
     context.commit('MENU', data.menu)
     USER_INFO.token = data.token
   }
+
   /** 注销
    */
   @Action

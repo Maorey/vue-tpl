@@ -13,7 +13,7 @@ const DEFAULT = process.env.THEME
  */
 let theme = DEFAULT
 
-let state = {}
+const state = {}
 Object.defineProperty(state, 'value', {
   get: () => theme,
   set(skin = DEFAULT) {

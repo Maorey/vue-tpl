@@ -34,6 +34,7 @@ class Prefer extends VuexModule implements IPrefer {
   protected LANG(lang: string) {
     this.lang = PREFER.lang = lang
   }
+
   @Mutation
   protected SKIN(skin: string) {
     this.skin = PREFER.skin = SKIN.value = skin
@@ -47,6 +48,7 @@ class Prefer extends VuexModule implements IPrefer {
   setSkin(skin: string = process.env.THEME) {
     this.context.commit('SKIN', skin)
   }
+
   /** 设置语言
    * @param {String} lang 语言
    */

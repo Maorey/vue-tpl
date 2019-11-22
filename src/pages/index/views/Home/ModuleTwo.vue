@@ -40,6 +40,7 @@ export default class extends Vue {
   private created() {
     this.get()
   }
+
   /// methods (private/public) ///
   private get() {
     pie()

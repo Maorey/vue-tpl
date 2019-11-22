@@ -4,7 +4,6 @@
  * @Date: 2019-04-01 13:28:06
  */
 const path = require('path')
-const RUNTIME_CHUNK = 'runtime'
 
 const getLoaderOption = name => ({
   limit: 4096,
@@ -43,7 +42,7 @@ function fileName(config) {
     .options(getLoaderOption('media/' + FileName))
 }
 
-function plugin(config, DIR) {
+function plugin(config, DIR, pages) {
   // 【弃 过时但有效】固定打包文件哈希, 避免相同代码打包出不同哈希
   //  (排除 boilerplate(runtime and manifest)等影响)
   // config.plugin('md5-hash').use('webpack-md5-hash')
@@ -55,12 +54,17 @@ function plugin(config, DIR) {
   config
     .plugin('insert-preload')
     .use(path.join(DIR, 'build/insertPreload.js'), [
-      { runtime: RUNTIME_CHUNK, defer: true },
+      {
+        runtime: (() => {
+          const RUNTIMES = []
+          for (const entry in pages) {
+            RUNTIMES.push(entry + '_')
+          }
+          return RUNTIMES
+        })(),
+        defer: true,
+      },
     ])
-  // runtime Chunk 内联到html
-  config
-    .plugin('inline-manifest')
-    .use('inline-manifest-webpack-plugin', [RUNTIME_CHUNK])
   // 文件 gzip 压缩 https://webpack.docschina.org/plugins/compression-webpack-plugin/
   config.plugin('gzip').use('compression-webpack-plugin', [
     {
@@ -84,9 +88,10 @@ function plugin(config, DIR) {
 /** webpack 配置
  * @param {chainWebpack} config 配置对象
  * @param {Object} ENV 环境变量
+ * @param {Object} pages 入口
  *  https://github.com/neutrinojs/webpack-chain#getting-started
  */
-module.exports = function(config, ENV) {
+module.exports = function(config, ENV, pages) {
   const DIR = process.cwd()
   config.merge({
     // https://webpack.js.org/configuration/other-options/#recordspath
@@ -117,11 +122,11 @@ module.exports = function(config, ENV) {
   //     .loader(loader)
   // }
   fileName(config)
-  plugin(config, DIR)
+  plugin(config, DIR, pages)
 
   /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
-  config.optimization.runtimeChunk({ name: RUNTIME_CHUNK })
+  config.optimization.runtimeChunk({ name: o => o.name + '_' })
 
   /// 【代码分割(optimization.splitChunks 不能config.merge({}))】 ///
   // https://webpack.docschina.org/plugins/split-chunks-plugin
@@ -168,14 +173,37 @@ module.exports = function(config, ENV) {
         reuseExistingChunk: true,
         test: /[\\/]node_modules[\\/]core-js(?:-pure)?[\\/]/,
       },
-      // configs (每个页面分开应无必要)
+      // configs
       conf: {
         name: 'conf',
         chunks: 'all',
         enforce: true, // 确保会创建这个chunk (否则可能会根据splitChunks选项被合并/拆分)
-        priority: 666,
-        test: /[\\/]config[\\/]/,
+        priority: 66,
+        test: /src[\\/](?:[^\\/]+[\\/])*config[\\/]/,
       },
+      // 各入口的配置文件
+      ...(() => {
+        const group = {}
+        const prefix = 'conf.'
+        const REG = /[\\/]/g
+        const STR = '[\\\\/]'
+        const STR_ = '[^\\\\/]'
+        const REG_SUB = /[^\\/]+$/
+        let name
+        let entry
+        for (name in pages) {
+          entry = pages[name].entry.replace(REG_SUB, '').replace(REG, STR)
+          name = prefix + name
+          group[name] = {
+            name,
+            chunks: 'all',
+            enforce: true,
+            priority: 666,
+            test: new RegExp(`${entry}(?:${STR_}+${STR})*config${STR}`),
+          }
+        }
+        return group
+      })(),
       // json文件 (-> json.*.*.js)
       // json: {
       //   name: 'json',
@@ -184,21 +212,13 @@ module.exports = function(config, ENV) {
       //   priority: 668,
       //   test: /[\\/]?.+\.json(?:[^\w].*)?$/, // 或者 type: 'json'
       // },
-      // vue
-      v: {
-        name: 'v',
-        chunks: 'all',
-        enforce: true,
-        priority: 66,
-        test: /[\\/]node_modules[\\/]vue[\\/]/,
-      },
-      // vue全家桶全搜集 (vuex/vue-router...)
-      vf: {
-        name: 'vf',
+      // vue全搜集 (vue/vuex/vue-router...)
+      vue: {
+        name: 'vue',
         chunks: 'all',
         priority: 66,
         reuseExistingChunk: true,
-        test: /[\\/]node_modules[\\/]vue.+[\\/]/,
+        test: /[\\/]node_modules[\\/]vue.*[\\/]/,
       },
       // elementUI (建议按需引入)
       eui: {
@@ -207,14 +227,6 @@ module.exports = function(config, ENV) {
         priority: 66,
         reuseExistingChunk: true,
         test: /[\\/]node_modules[\\/]element-ui[\\/]/,
-      },
-      // d3.js
-      d3: {
-        name: 'd3',
-        chunks: 'all',
-        priority: 66,
-        reuseExistingChunk: true,
-        test: /[\\/]node_modules[\\/]d3[\\/]/,
       },
       // zrender (二维绘图引擎)
       zrd: {
@@ -231,6 +243,14 @@ module.exports = function(config, ENV) {
         priority: 66,
         reuseExistingChunk: true,
         test: /[\\/]node_modules[\\/]echarts[\\/]/,
+      },
+      // d3.js
+      d3: {
+        name: 'd3',
+        chunks: 'all',
+        priority: 66,
+        reuseExistingChunk: true,
+        test: /[\\/]node_modules[\\/]d3[\\/]/,
       },
       // zdog
       zdg: {

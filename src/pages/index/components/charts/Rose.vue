@@ -39,13 +39,16 @@ export default class extends Vue {
   private onDataChange(/* data?: EChartOption.SeriesPie */) {
     this.init()
   }
+
   /// LifeCycle (private beforeCreate/created/.../destroyed) ///
   private mounted() {
     this.init()
   }
+
   private destroyed() {
     this.clear()
   }
+
   /// methods (private/public) ///
   private init() {
     this.clear()
@@ -91,6 +94,7 @@ export default class extends Vue {
       this.interval = setInterval(() => this.refresh(), INTERVAL)
     }
   }
+
   private clear() {
     clearInterval(this.interval)
   }

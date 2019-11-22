@@ -54,26 +54,18 @@ export default class extends Vue {
       return
     }
 
-    let camera: PerspectiveCamera
-    let scene: Scene
-    let renderer: WebGLRenderer
-    let clock: Clock
-    let group: Group
-    let composer1: EffectComposer
-    let composer2: EffectComposer
-
     // init
-    camera = new PerspectiveCamera(
+    const camera: PerspectiveCamera = new PerspectiveCamera(
       45,
       (canvas.offsetWidth * 0.5) / canvas.offsetHeight,
       1,
       2000,
     )
     camera.position.z = 500
-    scene = new Scene()
+    const scene: Scene = new Scene()
     scene.background = null
     scene.fog = new Fog(0x666666, 100, 1500)
-    clock = new Clock()
+    const clock: Clock = new Clock()
 
     const hemiLight = new HemisphereLight(0xffffff, 0x444444)
     hemiLight.position.set(0, 1000, 0)
@@ -82,7 +74,7 @@ export default class extends Vue {
     dirLight.position.set(-3000, 1000, -1000)
     scene.add(dirLight)
 
-    group = new Group()
+    const group: Group = new Group()
     const geometry = new IcosahedronBufferGeometry(10, 2)
     const material = new MeshStandardMaterial({
       color: 0xee0808,
@@ -98,7 +90,7 @@ export default class extends Vue {
     }
     scene.add(group)
 
-    renderer = new WebGLRenderer({
+    const renderer: WebGLRenderer = new WebGLRenderer({
       canvas,
       context: canvas.getContext(
         WEBGL.isWebGL2Available() ? 'webgl2' : 'webgl',
@@ -112,7 +104,7 @@ export default class extends Vue {
     const renderPass = new RenderPass(scene, camera)
     const copyPass = new ShaderPass(CopyShader)
 
-    composer1 = new EffectComposer(
+    const composer1: EffectComposer = new EffectComposer(
       renderer,
       new WebGLMultisampleRenderTarget(size.width, size.height, {
         format: RGBAFormat,
@@ -122,7 +114,7 @@ export default class extends Vue {
     composer1.addPass(renderPass)
     composer1.addPass(copyPass)
 
-    composer2 = new EffectComposer(renderer)
+    const composer2: EffectComposer = new EffectComposer(renderer)
     composer2.addPass(renderPass)
     composer2.addPass(copyPass)
 

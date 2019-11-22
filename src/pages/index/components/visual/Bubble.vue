@@ -86,6 +86,7 @@ export default class extends Vue {
     offset.top += halfHeight
     this.offset = offset
   }
+
   /// methods (private/public) ///
   private move(event: MouseEvent) {
     const root = this.root as SimulationNodeDatum

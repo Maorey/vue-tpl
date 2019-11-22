@@ -59,6 +59,6 @@ module.exports = {
     /// 【不同环境配置】 ///
     require(isProd
       ? './build/production.config'
-      : './build/development.config')(config, ENV)
+      : './build/development.config')(config, ENV, pages)
   },
 }

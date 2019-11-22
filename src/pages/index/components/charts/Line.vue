@@ -41,6 +41,7 @@ export default class extends Vue {
   private mounted() {
     this.init()
   }
+
   private destroyed() {
     this.clear()
   }
@@ -157,6 +158,7 @@ export default class extends Vue {
       this.interval = setInterval(() => this.refresh(), INTERVAL)
     }
   }
+
   private clear() {
     clearInterval(this.interval)
   }

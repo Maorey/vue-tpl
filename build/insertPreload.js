@@ -3,11 +3,45 @@
  * 依赖:
  *  https://github.com/jantimon/html-webpack-plugin
  *  @vue/preload-webpack-plugin (fork:https://github.com/GoogleChromeLabs/preload-webpack-plugin)
+ * 合并: https://github.com/szrenwei/inline-manifest-webpack-plugin
  * @Author: Maorey
  * @Date: 2019-01-17 11:42:24
  */
+const sourceMappingURL = require('source-map-url')
 
 const PLUGIN_NAME = 'insert-preload'
+
+function getAssetName(chunks, reg) {
+  const match = []
+  for (let chunk of chunks) {
+    reg.test(chunk.name) &&
+      match.push({ name: chunk.name, file: chunk.files[0] })
+  }
+  return match
+}
+function inlineWhenMatched(compilation, scripts, manifestAssetNames) {
+  return scripts.map(script => {
+    if (script.tagName === 'script') {
+      const src = script.attributes.src
+      for (let item of manifestAssetNames) {
+        if (src.indexOf(item.file) >= 0) {
+          return {
+            tagName: 'script',
+            closeTag: true,
+            attributes: {
+              type: 'text/javascript',
+            },
+            innerHTML: sourceMappingURL.removeFrom(
+              compilation.assets[item.file].source(),
+            ),
+          }
+        }
+      }
+    }
+
+    return script
+  })
+}
 
 /** 插入 preload 的资源插件
  */
@@ -15,16 +49,33 @@ module.exports = class {
   /**
    * @param {Object} option 选项
    *  {
-   *    runtime:String 待移除preload的runtime名
-   *      falsy: 不移除, true = 'runtime', String: 指定名字
+   *    runtime:String|Array<String>|RegExp 内联runtime
    *    defer:Boolean 脚本是否defer 默认true
    *    async:Boolean 脚本是否async 默认false (和defer只能有一个)
    *  }
    */
   constructor(option = {}) {
     let runtime = option.runtime
-    runtime === true && (runtime = 'runtime')
-    this._REG_REMOVE = runtime && new RegExp(`(?:[\\/]|^)${runtime}\\..*\\.js$`)
+    if (runtime) {
+      if (typeof runtime.test === 'function') {
+        this._REG_RUNTIME = runtime
+      } else {
+        typeof runtime === 'string' && (runtime = [runtime])
+        for (let i = 0; i < runtime.length; i++) {
+          runtime[i] = new RegExp(runtime[i])
+        }
+        this._REG_RUNTIME = {
+          test(str) {
+            for (let reg of runtime) {
+              if (reg.test(str)) {
+                return true
+              }
+            }
+            return false
+          },
+        }
+      }
+    }
     this._SA =
       option.defer === false ? option.async === true && 'async' : 'defer'
   }
@@ -42,6 +93,75 @@ module.exports = class {
           htmlPluginData => this.insert(htmlPluginData),
         ),
     )
+    // inline-manifest
+    const REG_RUNTIME = this._REG_RUNTIME
+    if (REG_RUNTIME) {
+      compiler.hooks.emit.tap(PLUGIN_NAME, compilation => {
+        for (let item of getAssetName(compilation.chunks, REG_RUNTIME)) {
+          delete compilation.assets[item.file]
+        }
+      })
+      compiler.hooks.compilation.tap(PLUGIN_NAME, compilation => {
+        compilation.hooks.htmlWebpackPluginAlterAssetTags.tapAsync(
+          PLUGIN_NAME,
+          (data, cb) => {
+            const manifestAssetNames = getAssetName(
+              compilation.chunks,
+              REG_RUNTIME,
+            )
+
+            manifestAssetNames.length &&
+              ['head', 'body'].forEach(section => {
+                data[section] = inlineWhenMatched(
+                  compilation,
+                  data[section],
+                  manifestAssetNames,
+                )
+              })
+
+            cb(null, data)
+          },
+        )
+
+        compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tapAsync(
+          PLUGIN_NAME,
+          (htmlPluginData, cb) => {
+            const runtime = []
+            const assets = htmlPluginData.assets
+            const manifestAssetNames = getAssetName(
+              compilation.chunks,
+              REG_RUNTIME,
+            )
+
+            if (
+              manifestAssetNames.length &&
+              htmlPluginData.plugin.options.inject === false
+            ) {
+              for (let item of manifestAssetNames) {
+                runtime.push('<script>')
+                runtime.push(
+                  sourceMappingURL.removeFrom(
+                    compilation.assets[item.file].source(),
+                  ),
+                )
+                runtime.push('</script>')
+
+                const runtimeIndex = assets.js.indexOf(
+                  assets.publicPath + item.file,
+                )
+                if (runtimeIndex >= 0) {
+                  assets.js.splice(runtimeIndex, 1)
+                  delete assets.chunks[item.name]
+                }
+              }
+            }
+
+            assets.runtime = runtime.join('')
+            cb(null, htmlPluginData)
+          },
+        )
+      })
+    }
     // 不能这么加loader
     // const REG_EXCLUDE = /[\\/]node_modules[\\/]/
     // const REG_INCLUDE = /\.(?:ts|vue|tsx|js|jsx)$/
@@ -67,7 +187,7 @@ module.exports = class {
 
     const script = 'script'
     const relStyle = 'stylesheet'
-    const REG_RUNTIME = this._REG_REMOVE
+    const REG_RUNTIME = this._REG_RUNTIME
 
     const SCRIPT_ATTRIBUTE = this._SA
     let el
