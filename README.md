@@ -106,7 +106,6 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 ├── public # 静态文件目录, 除特殊文件(比如 html 模板)外, 直接复制到输出目录下
 ├── src # 源码目录
 │   │── api # http通信
-│   │   └── config # api 相关配置, 比如接口字典
 │   │── assets # 静态资源文件目录, 使用到的会被解析处理(比如图片可能转成base64写入css/js或复制到输出目录)
 │   │── components # 组件目录
 │   │── config # 配置目录
@@ -174,7 +173,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
    ```
 
 3. 输出目录为 `dist`, 包含 js/css/img/font/media 等文件夹
-4. 所有 `config` 目录下的内容都会被打包到同一个文件`conf.*.js`(需要保留的注释请使用: `/*! 注释内容 */`), 用于支持直接修改配置而不必重新打包代码
+4. `config` 目录下的所有内容都会被内联到对应`html`中(需要保留的注释请使用: `/*! 注释内容 */`), 用于支持直接修改配置而不必重新打包代码
 5. 测试用例目录层级与文件名应尽量与源码对应
 
 > **提示和建议**
@@ -255,7 +254,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 不要使用 `$` 作为组件事件名, 该名字已被[异步组件刷新](src/utils/highOrder.ts)占用
 - 路由请**全部**使用异步组件(`@utils/highOrder getAsync`), 以使路由及其**子(异步)组件**可以局部刷新
 - CSS Modules class 名使用 `camelCase` (global 可以 kebab-case), 选择器嵌套**不应超过三层**
-- <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)(应在 `export*.scss` 中使用); 为保证`ts/js`中引入时 scss 变量注入正确, 应在合适的 scss 文件中引入目标样式源码:
+- <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)(应在 `export` 目录下或 `export*.scss` 中使用); 为保证`ts/js`中引入时 scss 变量注入正确(使用缓存会导致无法对相同文件多次注入变量，不用缓存显然不合理), 应在合适的 scss 文件中引入目标样式源码:
 
   ```scss
   // el.scss
@@ -324,10 +323,10 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   ```
 
 - 尽量使用项目代码模板, 现有模板有(VSCode 输入左侧字符, [其他 IDE](.vscode/vue.code-snippets)):
-  - `ts`: `TypeScript` & `CSS Module`, vue 单文件组件中使用
-  - `vue`: `TypeScript` & `CSS Module`, `tsx` 文件中使用
-  - `js`: `JavaScript` & `CSS Module`, vue 单文件组件中使用
-  - `vue`: `JavaScript` & `CSS Module`, `jsx` 文件中使用
+  - `ts`: `TypeScript`, `vue` 文件中使用
+  - `vue`: `TypeScript`, `tsx` 文件中使用
+  - `js`: `JavaScript`, `vue` 文件中使用
+  - `vue`: `JavaScript`, `jsx` 文件中使用
 - 请[规范](https://github.com/vuejs/vue/blob/dev/.github/COMMIT_CONVENTION.md)提交消息
 
 ### 其他
@@ -335,7 +334,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 关于多主题方案, 本模板采用的是 `<link rel="alternate stylesheet">`[方案](https://developer.mozilla.org/en-US/docs/Web/CSS/Alternative_style_sheets), 基于`scss`全局变量注入进行多个主题的构建, 优点是支持异步, 浏览器原生支持并且无缝流畅切换. 通过环境变量[.env](.env)进行配置, 在`import` **scss** 文件时可以指定主题和使用的 scss 变量(指定后不生成其他主题的)
 
   ```html
-  <script>
+  <script lang="ts">
     /// 基础样式 ///
     import './scss/a.scss?theme='
     // 指定scss变量文件相对路径(别名、别名/主题文件夹)
@@ -574,16 +573,15 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 - url 重写兼容旧版
 - 反向代理, 绕过同源策略限制(api/图片等资源跨域等)
-- 添加请求头字段 `access_token` 使后台能读到该字段(nginx 的 http 或 server 节点下需要添加配置`underscores_in_headers on; # 允许带下划线的请求头`)
-- 开启 `gzip` 压缩, 并重用已有 gz 文件 `gzip_static on;`
-- 缓存静态资源(html 可减小缓存时间)
+- 开启 `gzip` 压缩, 并重用已有 `gz` 文件 `gzip_static on;`
+- 缓存静态资源(html 可减少缓存时间)
 
-配置示例(`{value}` 换成对应值):
+配置示例(`xxx` 换成对应值):
 
 ```bash
 http {
   #underscores_in_headers on; # 允许带下划线的请求头
-  # 开启gZip
+  # 开启gZip(图片除外)
   gzip on;
   gzip_vary on;
   gzip_static on;
@@ -634,7 +632,7 @@ http {
 
       index index.html;
       alias xxx/;
-      try_files $uri $uri/ /;
+      try_files $uri $uri.html $uri/ /;
     }
     location /api {
       proxy_pass https?://xxx:xxx/xxx;

@@ -9,38 +9,62 @@
  */
 const sourceMappingURL = require('source-map-url')
 
-const PLUGIN_NAME = 'insert-preload'
+const PLUGIN1 = 'insert-preload'
+const PLUGIN2 = 'inline-manifest'
 
 function getAssetName(chunks, reg) {
   const match = []
-  for (let chunk of chunks) {
+  for (const chunk of chunks) {
     reg.test(chunk.name) &&
       match.push({ name: chunk.name, file: chunk.files[0] })
   }
   return match
 }
-function inlineWhenMatched(compilation, scripts, manifestAssetNames) {
-  return scripts.map(script => {
+function inlineWhenMatched(compilation, scripts, manifestAssetNames, MERGE) {
+  const result = []
+  let inline
+  let script
+  let item
+  let src
+  for (script of scripts) {
     if (script.tagName === 'script') {
-      const src = script.attributes.src
-      for (let item of manifestAssetNames) {
+      src = script.attributes.src
+      for (item of manifestAssetNames) {
         if (src.indexOf(item.file) >= 0) {
-          return {
-            tagName: 'script',
-            closeTag: true,
-            attributes: {
-              type: 'text/javascript',
-            },
-            innerHTML: sourceMappingURL.removeFrom(
-              compilation.assets[item.file].source(),
-            ),
+          src = sourceMappingURL.removeFrom(
+            compilation.assets[item.file].source(),
+          )
+          if (MERGE) {
+            if (inline) {
+              inline.innerHTML += src
+            } else {
+              inline = {
+                tagName: 'script',
+                closeTag: true,
+                attributes: {
+                  type: 'text/javascript',
+                },
+                innerHTML: src,
+              }
+            }
+          } else {
+            delete script.attributes.src
+            script.innerHTML = src
+            result.push(script)
           }
+          item = 0
+          break
         }
       }
+      if (!item) {
+        continue
+      }
     }
+    result.push(script)
+  }
+  inline && result.push(inline)
 
-    return script
-  })
+  return result
 }
 
 /** 插入 preload 的资源插件
@@ -55,6 +79,7 @@ module.exports = class {
    *  }
    */
   constructor(option = {}) {
+    /// 内联runtime ///
     let runtime = option.runtime
     if (runtime) {
       if (typeof runtime.test === 'function') {
@@ -62,11 +87,11 @@ module.exports = class {
       } else {
         typeof runtime === 'string' && (runtime = [runtime])
         for (let i = 0; i < runtime.length; i++) {
-          runtime[i] = new RegExp(runtime[i])
+          runtime[i] = new RegExp('(?<![^\\\\/])' + runtime[i])
         }
         this._REG_RUNTIME = {
           test(str) {
-            for (let reg of runtime) {
+            for (const reg of runtime) {
               if (reg.test(str)) {
                 return true
               }
@@ -76,105 +101,95 @@ module.exports = class {
         }
       }
     }
+    /// 脚本属性 ///
     this._SA =
       option.defer === false ? option.async === true && 'async' : 'defer'
   }
 
   // https://webpack.docschina.org/api/plugins/
   apply(compiler) {
-    // 添加 preload 的资源
-    compiler.hooks.compilation.tap(
-      PLUGIN_NAME,
-      compilation =>
-        // html-webpack-plugin 钩子
-        compilation.hooks.htmlWebpackPluginAlterAssetTags &&
+    /// insert-preload ///
+    compiler.hooks.compilation.tap(PLUGIN1, compilation => {
+      // html-webpack-plugin 钩子
+      compilation.hooks.htmlWebpackPluginAlterAssetTags &&
         compilation.hooks.htmlWebpackPluginAlterAssetTags.tap(
-          PLUGIN_NAME,
+          PLUGIN1,
           htmlPluginData => this.insert(htmlPluginData),
-        ),
-    )
-    // inline-manifest
+        )
+    })
+    /// inline-manifest ///
     const REG_RUNTIME = this._REG_RUNTIME
     if (REG_RUNTIME) {
-      compiler.hooks.emit.tap(PLUGIN_NAME, compilation => {
-        for (let item of getAssetName(compilation.chunks, REG_RUNTIME)) {
+      const MERGE = this._SA
+      compiler.hooks.emit.tap(PLUGIN2, compilation => {
+        for (const item of getAssetName(compilation.chunks, REG_RUNTIME)) {
           delete compilation.assets[item.file]
         }
       })
-      compiler.hooks.compilation.tap(PLUGIN_NAME, compilation => {
-        compilation.hooks.htmlWebpackPluginAlterAssetTags.tapAsync(
-          PLUGIN_NAME,
-          (data, cb) => {
-            const manifestAssetNames = getAssetName(
-              compilation.chunks,
-              REG_RUNTIME,
-            )
+      compiler.hooks.compilation.tap(PLUGIN2, compilation => {
+        compilation.hooks.htmlWebpackPluginAlterAssetTags &&
+          compilation.hooks.htmlWebpackPluginAlterAssetTags.tapAsync(
+            PLUGIN2,
+            (data, cb) => {
+              const manifestAssetNames = getAssetName(
+                compilation.chunks,
+                REG_RUNTIME,
+              )
 
-            manifestAssetNames.length &&
-              ['head', 'body'].forEach(section => {
-                data[section] = inlineWhenMatched(
-                  compilation,
-                  data[section],
-                  manifestAssetNames,
-                )
-              })
-
-            cb(null, data)
-          },
-        )
-
-        compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tapAsync(
-          PLUGIN_NAME,
-          (htmlPluginData, cb) => {
-            const runtime = []
-            const assets = htmlPluginData.assets
-            const manifestAssetNames = getAssetName(
-              compilation.chunks,
-              REG_RUNTIME,
-            )
-
-            if (
               manifestAssetNames.length &&
-              htmlPluginData.plugin.options.inject === false
-            ) {
-              for (let item of manifestAssetNames) {
-                runtime.push('<script>')
-                runtime.push(
-                  sourceMappingURL.removeFrom(
-                    compilation.assets[item.file].source(),
-                  ),
-                )
-                runtime.push('</script>')
+                ['head', 'body'].forEach(section => {
+                  data[section] = inlineWhenMatched(
+                    compilation,
+                    data[section],
+                    manifestAssetNames,
+                    MERGE,
+                  )
+                })
 
-                const runtimeIndex = assets.js.indexOf(
-                  assets.publicPath + item.file,
-                )
-                if (runtimeIndex >= 0) {
-                  assets.js.splice(runtimeIndex, 1)
-                  delete assets.chunks[item.name]
+              cb(null, data)
+            },
+          )
+
+        compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration &&
+          compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tapAsync(
+            PLUGIN2,
+            (htmlPluginData, cb) => {
+              const runtime = []
+              const assets = htmlPluginData.assets
+              const manifestAssetNames = getAssetName(
+                compilation.chunks,
+                REG_RUNTIME,
+              )
+
+              if (
+                manifestAssetNames.length &&
+                htmlPluginData.plugin.options.inject === false
+              ) {
+                for (const item of manifestAssetNames) {
+                  runtime.push('<script>')
+                  runtime.push(
+                    sourceMappingURL.removeFrom(
+                      compilation.assets[item.file].source(),
+                    ),
+                  )
+                  runtime.push('</script>')
+
+                  const runtimeIndex = assets.js.indexOf(
+                    assets.publicPath + item.file,
+                  )
+                  if (runtimeIndex >= 0) {
+                    assets.js.splice(runtimeIndex, 1)
+                    delete assets.chunks[item.name]
+                  }
                 }
               }
-            }
 
-            assets.runtime = runtime.join('')
-            cb(null, htmlPluginData)
-          },
-        )
+              assets.runtime = runtime.join('')
+              cb(null, htmlPluginData)
+            },
+          )
       })
     }
-    // 不能这么加loader
-    // const REG_EXCLUDE = /[\\/]node_modules[\\/]/
-    // const REG_INCLUDE = /\.(?:ts|vue|tsx|js|jsx)$/
-    // compiler.hooks.thisCompilation.tap(PLUGIN_NAME, compilation =>
-    //   compilation.hooks.buildModule.tap(
-    //     PLUGIN_NAME,
-    //     module =>
-    //       THEMES &&
-    //       !REG_EXCLUDE.test(module.rawRequest) &&
-    //       REG_INCLUDE.test(module.rawRequest) &&
-    //       module.loaders.push(themeLoader)
-    //   )
-    // )
   }
 
   // 补充缺失的资源

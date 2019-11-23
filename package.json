@@ -2,7 +2,7 @@
   "type": "commonjs",
   "name": "vue-tpl",
   "author": "毛瑞 <Maorey@Foxmail.com>",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "license": "MIT",
   "keywords": [

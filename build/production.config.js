@@ -42,7 +42,7 @@ function fileName(config) {
     .options(getLoaderOption('media/' + FileName))
 }
 
-function plugin(config, DIR, pages) {
+function plugin(config, DIR) {
   // 【弃 过时但有效】固定打包文件哈希, 避免相同代码打包出不同哈希
   //  (排除 boilerplate(runtime and manifest)等影响)
   // config.plugin('md5-hash').use('webpack-md5-hash')
@@ -55,13 +55,7 @@ function plugin(config, DIR, pages) {
     .plugin('insert-preload')
     .use(path.join(DIR, 'build/insertPreload.js'), [
       {
-        runtime: (() => {
-          const RUNTIMES = []
-          for (const entry in pages) {
-            RUNTIMES.push(entry + '_')
-          }
-          return RUNTIMES
-        })(),
+        runtime: ['c_', 'r_'],
         defer: true,
       },
     ])
@@ -69,7 +63,7 @@ function plugin(config, DIR, pages) {
   config.plugin('gzip').use('compression-webpack-plugin', [
     {
       cache: true,
-      exclude: /conf\..+\.js/, // 配置文件不压缩
+      exclude: /.+\.html$/, // html文件不压缩(图片也不会被压缩)
       threshold: 10240, // 启用压缩的最小文件大小 10k
       minRatio: 0.7, // 最小压缩率
     },
@@ -126,7 +120,8 @@ module.exports = function(config, ENV, pages) {
 
   /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
-  config.optimization.runtimeChunk({ name: o => o.name + '_' })
+  let counter = 0
+  config.optimization.runtimeChunk({ name: () => 'r_' + counter++ })
 
   /// 【代码分割(optimization.splitChunks 不能config.merge({}))】 ///
   // https://webpack.docschina.org/plugins/split-chunks-plugin
@@ -150,13 +145,50 @@ module.exports = function(config, ENV, pages) {
     // hidePathInfo: true, // 也没个文件名配置啊...
     minChunks: 3, // 某个chunk被超过该数量的chunk依赖时才拆分出来
     maxAsyncRequests: 6, // 最大异步代码请求数【http <= 1.1 浏览器同域名并发请求上限: 6】
-    maxInitialRequests: 6, // 最大初始化时异步代码请求数
+    maxInitialRequests: 5, // 最大初始化时异步代码请求数
 
     automaticNameMaxLength: 15, // 分包文件名自动命名最大长度
     automaticNameDelimiter: '.', // 超过大小, 分包时文件名分隔符
     name: require('./rename')('chunkName'),
     cacheGroups: {
       /// 【 js 】 ///
+      // configs
+      c_: {
+        name: 'c_',
+        chunks: 'all',
+        enforce: true, // 确保会创建这个chunk (否则可能会根据splitChunks选项被合并/拆分)
+        priority: 66,
+        test: /src[\\/](?:[^\\/]+[\\/])*config[\\/]/,
+      },
+      // 各入口的配置文件
+      ...(() => {
+        const CONFS = { 'src/': 1 }
+        const group = {}
+        const prefix = 'c_'
+        const REG = /[\\/]/g
+        const STR = '[\\\\/]'
+        const STR_ = '[^\\\\/]'
+        const REG_SUB = /[^\\/]+$/
+        let name
+        let entry
+        for (name in pages) {
+          entry = pages[name].entry.replace(REG_SUB, '')
+          if (CONFS[entry]) {
+            continue
+          }
+          CONFS[entry] = 1
+          entry = entry.replace(REG, STR)
+          name = prefix + name
+          group[name] = {
+            name,
+            chunks: 'all',
+            enforce: true,
+            priority: 666,
+            test: new RegExp(`${entry}(?:${STR_}+${STR})*config${STR}`),
+          }
+        }
+        return group
+      })(),
       // 所有其他依赖的模块
       dll: {
         name: 'dll',
@@ -173,37 +205,6 @@ module.exports = function(config, ENV, pages) {
         reuseExistingChunk: true,
         test: /[\\/]node_modules[\\/]core-js(?:-pure)?[\\/]/,
       },
-      // configs
-      conf: {
-        name: 'conf',
-        chunks: 'all',
-        enforce: true, // 确保会创建这个chunk (否则可能会根据splitChunks选项被合并/拆分)
-        priority: 66,
-        test: /src[\\/](?:[^\\/]+[\\/])*config[\\/]/,
-      },
-      // 各入口的配置文件
-      ...(() => {
-        const group = {}
-        const prefix = 'conf.'
-        const REG = /[\\/]/g
-        const STR = '[\\\\/]'
-        const STR_ = '[^\\\\/]'
-        const REG_SUB = /[^\\/]+$/
-        let name
-        let entry
-        for (name in pages) {
-          entry = pages[name].entry.replace(REG_SUB, '').replace(REG, STR)
-          name = prefix + name
-          group[name] = {
-            name,
-            chunks: 'all',
-            enforce: true,
-            priority: 666,
-            test: new RegExp(`${entry}(?:${STR_}+${STR})*config${STR}`),
-          }
-        }
-        return group
-      })(),
       // json文件 (-> json.*.*.js)
       // json: {
       //   name: 'json',

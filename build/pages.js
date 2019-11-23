@@ -22,15 +22,23 @@ const ENTRY_NAMES = ['main', 'index', 'entry', 'app', 'page'] // 入口文件名
 // https://github.com/jantimon/html-webpack-plugin
 // https://github.com/kangax/html-minifier#options-quick-reference
 const MINIFY = {
-  minifyJS: true, // 压缩script标签里的js 具体：https://github.com/mishoo/UglifyJS2
+  html5: true,
+  minifyJS: { output: { comments: /^!/ } }, // 压缩script标签里的js
   minifyCSS: true, // 压缩style标签里的css
-  // 默认（居然不会自己合并 ￣へ￣ ...）
+  minifyURLs: true, // 压缩url
+  ignoreCustomComments: [/^!/], // 保留的注释
+  sortClassName: true, // class排序
+  sortAttributes: true, // 属性排序
+  removeEmptyAttributes: true, // 移除空属性
+  removeRedundantAttributes: true, // 移除默认值
+  processConditionalComments: true, // 处理条件注释(IE)
+  removeStyleLinkTypeAttributes: true, // 去 link type="text/css"
+  // 默认（不会自己合并 ￣へ￣ ...）
   removeComments: true, // 移除注释
   collapseWhitespace: true, // 去多余空格
   removeAttributeQuotes: true, // 去属性括号
-  // 去Boolean属性 比如: checked="checked" => checked
-  collapseBooleanAttributes: true,
-  removeScriptTypeAttributes: true, // 去脚本类型属性
+  collapseBooleanAttributes: true, // Boolean属性简写
+  removeScriptTypeAttributes: true, // 去script type属性
 }
 
 /** 获取存在的文件

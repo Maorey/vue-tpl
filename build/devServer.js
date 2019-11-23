@@ -20,10 +20,21 @@ module.exports = function(ENV) {
   if (!host || host === HOST) {
     try {
       const network = require('os').networkInterfaces()
-      host = network[Object.keys(network)[0]][1].address
-    } catch (e) {
-      host = 'localhost'
-    }
+      const family = ENV.DEV_SERVER_NETWORK || 'IPv4'
+      host = ''
+      for (const key in network) {
+        for (const item of network[key]) {
+          if (!item.internal && family === item.family) {
+            host = item.address
+            break
+          }
+        }
+        if (host) {
+          break
+        }
+      }
+    } catch (e) {}
+    host || (host = 'localhost')
   }
   let proxy
 
