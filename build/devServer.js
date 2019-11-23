@@ -9,6 +9,7 @@ const HOST = '0.0.0.0'
 const TARGET = 'PROXY_TARGET'
 const REG_PROXY = /^BASE_PATH(\d*)$/
 const REG_RELATIVE = /^(?:http|ws)s?:\/\//
+
 /** 获取开发服务器代理设置
  *
  * @param {Object} ENV 环境变量
@@ -38,8 +39,9 @@ module.exports = function(ENV) {
   }
   let proxy
 
+  let key
   let target
-  for (let key in ENV) {
+  for (key in ENV) {
     target = REG_PROXY.exec(key)
     if (target) {
       REG_RELATIVE.test((target = ENV[TARGET + target[1]])) ||

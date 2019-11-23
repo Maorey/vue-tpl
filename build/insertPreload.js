@@ -9,9 +9,6 @@
  */
 const sourceMappingURL = require('source-map-url')
 
-const PLUGIN1 = 'insert-preload'
-const PLUGIN2 = 'inline-manifest'
-
 function getAssetName(chunks, reg) {
   const match = []
   for (const chunk of chunks) {
@@ -109,6 +106,7 @@ module.exports = class {
   // https://webpack.docschina.org/api/plugins/
   apply(compiler) {
     /// insert-preload ///
+    const PLUGIN1 = 'insert-preload'
     compiler.hooks.compilation.tap(PLUGIN1, compilation => {
       // html-webpack-plugin 钩子
       compilation.hooks.htmlWebpackPluginAlterAssetTags &&
@@ -118,6 +116,7 @@ module.exports = class {
         )
     })
     /// inline-manifest ///
+    const PLUGIN2 = 'inline-manifest'
     const REG_RUNTIME = this._REG_RUNTIME
     if (REG_RUNTIME) {
       const MERGE = this._SA

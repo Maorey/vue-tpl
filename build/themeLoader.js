@@ -118,8 +118,7 @@ function getThemeByQuery(temp) {
 
 // 多主题loader 从js源码处理多主题样式
 module.exports = function(source) {
-  init()
-  if (!THEMES) {
+  if (!init().THEMES) {
     this.callback(null, source)
     return
   }
