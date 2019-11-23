@@ -1,13 +1,17 @@
 # git忽略文件
 .DS_Store
 node_modules
-/dist
-/compile
+dist
+compile
+.yarn
+.yarnrc
+yarn.lock
+.pnp.js
 
 # 测试
-/coverage
-/tests/e2e/videos/
-/tests/e2e/screenshots/
+coverage
+tests/e2e/videos
+tests/e2e/screenshots
 
 # 本地环境变量
 .env.local

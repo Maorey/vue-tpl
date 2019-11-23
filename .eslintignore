@@ -1,6 +1,6 @@
 # 不执行代码检查文件列表
-public/js/
-coverage/
-compile/
-dist/
+public/js
+coverage
+compile
+dist
 *.min.js

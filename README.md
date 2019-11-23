@@ -39,27 +39,6 @@ yarn # 安装依赖
 git config core.ignorecase false # 使git对文件名大小写敏感
 ```
 
-#### 可选项
-
-- [点击链接](http://editorconfig.org)确定所用 IDE 是否需要安装插件 _(用于跨 IDE 设置, VS Code 可以不装)_
-
-- 可以如下设置增加使用 node ([V8](https://segmentfault.com/a/1190000000440270)) 的内存上限
-
-  ```bash
-  # /node_modules/.bin 目录下 找到文件 webpack.cmd 文件, 如下设置
-  # 增加启动参数 --max_old_space_size=4096 (单位M, 老生代内存)
-  # 可用 node --v8-options 命令查看当前 nodeJS的 V8配置
-
-  @IF EXIST "%~dp0\node.exe" (
-    "%~dp0\node.exe" --max_old_space_size=4096 "%~dp0\..\webpack\bin\webpack.js" %*
-  ) ELSE (
-    @SETLOCAL
-    @SET PATHEXT=%PATHEXT:;.JS;=;%
-    node --max_old_space_size=4096 "%~dp0\..\webpack\bin\webpack.js" %*
-  )
-
-  ```
-
 ### 开发环境(开发调试时使用)
 
 ```bash

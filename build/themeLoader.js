@@ -141,7 +141,7 @@ module.exports = function(source) {
         !(temp = REG_THEME.exec(query))
       ) {
         // 注入主题
-        let len = match.length
+        const len = match.length
         let strObj = '{'
         let vars
 
@@ -182,6 +182,7 @@ module.exports.plugin = class {
   constructor() {
     init()
   }
+
   // https://webpack.docschina.org/api/plugins/
   apply(compiler) {
     compiler.hooks.compilation.tap(PLUGIN_NAME, compilation =>

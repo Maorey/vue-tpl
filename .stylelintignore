@@ -1,8 +1,8 @@
 # 不执行样式检查文件列表
-dist/
-compile/
-coverage/
-public/css/
-src/**/theme/export/
+dist
+compile
+coverage
+public/css
+src/**/theme/export
 *.min.css
 export*.scss

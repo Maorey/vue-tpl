@@ -8,7 +8,7 @@ module.exports = {
   plugins: {
     // https://github.com/postcss/autoprefixer#options
     autoprefixer: {
-      grid: true,
+      grid: 'autoplace',
     },
   },
 }

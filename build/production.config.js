@@ -157,7 +157,7 @@ module.exports = function(config, ENV, pages) {
         name: 'c_',
         chunks: 'all',
         enforce: true, // 确保会创建这个chunk (否则可能会根据splitChunks选项被合并/拆分)
-        priority: 66,
+        priority: 6,
         test: /src[\\/](?:[^\\/]+[\\/])*config[\\/]/,
       },
       // 各入口的配置文件
@@ -183,7 +183,7 @@ module.exports = function(config, ENV, pages) {
             name,
             chunks: 'all',
             enforce: true,
-            priority: 666,
+            priority: 66,
             test: new RegExp(`${entry}(?:${STR_}+${STR})*config${STR}`),
           }
         }
@@ -198,13 +198,13 @@ module.exports = function(config, ENV, pages) {
         test: /[\\/]node_modules[\\/]/,
       },
       // polyfills
-      plf: {
-        name: 'plf',
-        chunks: 'all',
-        priority: 6,
-        reuseExistingChunk: true,
-        test: /[\\/]node_modules[\\/]core-js(?:-pure)?[\\/]/,
-      },
+      // plf: {
+      //   name: 'plf',
+      //   chunks: 'all',
+      //   priority: 66,
+      //   reuseExistingChunk: true,
+      //   test: /[\\/]node_modules[\\/]core-js(?:-pure)?[\\/]/,
+      // },
       // json文件 (-> json.*.*.js)
       // json: {
       //   name: 'json',
