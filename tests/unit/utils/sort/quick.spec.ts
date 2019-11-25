@@ -1,20 +1,19 @@
 /*
- * @Description: 排序 测试
+ * @Description: 快速排序 测试
  * @Author: 毛瑞
- * @Date: 2019-07-26 22:16:08
+ * @Date: 2019-06-27 17:41:06
  */
-
-import sort from '@/utils/utils/sort'
+import quickSort from '@/utils/sort/quick'
 import getRandomArray from './getRandomArray'
 
-describe('@/utils/utils/sort: 排序', () => {
-  it('sort', () => {
+describe('@/utils/sort/quick: 快速排序', () => {
+  it('quickSort', () => {
     let arrayLength = 10000
     const testArray = getRandomArray(arrayLength--)
 
     let pass = true
 
-    sort(testArray)
+    quickSort(testArray)
     for (let i = 0; i < arrayLength; i++) {
       if (testArray[i + 1] < testArray[i]) {
         pass = false
@@ -23,7 +22,7 @@ describe('@/utils/utils/sort: 排序', () => {
     }
 
     if (pass) {
-      sort(testArray, (a, b) => a < b)
+      quickSort(testArray, (a, b) => a < b)
       for (let i = 0; i < arrayLength; i++) {
         if (testArray[i + 1] > testArray[i]) {
           pass = false
@@ -33,17 +32,5 @@ describe('@/utils/utils/sort: 排序', () => {
     }
 
     expect(pass).toBe(true)
-
-    expect(sort(['l', 'k', 'j', 'h', 'g', 'f', 'd', 's', 'a'])).toEqual([
-      'a',
-      'd',
-      'f',
-      'g',
-      'h',
-      'j',
-      'k',
-      'l',
-      's',
-    ])
   })
 })

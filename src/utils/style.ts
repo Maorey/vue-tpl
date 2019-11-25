@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 16:50:15
  */
-import { camelToKebab } from '@/utils'
+import { camelToKebab } from '@/utils/case'
 
 const PREV_STRING = ';\\s*'
 const TAIL_STRING = '\\s*:\\s*(.*?)\\s*;'

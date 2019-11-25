@@ -9,9 +9,9 @@ import {
   styleToObject,
   objectToStyle,
   updateStyle,
-} from '@/utils/utils/style'
+} from '@/utils/style'
 
-describe('@/utils/utils/style css样式处理', () => {
+describe('@/utils/style css样式处理', () => {
   const STYLE = `float: left;
 margin: 15px 13px;
 width: 100px;

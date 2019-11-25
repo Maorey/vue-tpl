@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { getOffset } from '@/utils'
+import { getOffset } from '@/utils/dom'
 
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue } from 'vue-property-decorator'

@@ -4,9 +4,9 @@
  * @Date: 2019-06-27 18:08:54
  */
 
-import formatNumber from '@/utils/utils/formatNumber'
+import formatNumber from '@/utils/formatNumber'
 
-describe('@/utils/utils/formatNumber: 格式化数字', () => {
+describe('@/utils/formatNumber: 格式化数字', () => {
   it('formatNumber 默认格式化', () => {
     expect(formatNumber(1234567890.9876)).toBe('1,234,567,890.9876')
   })

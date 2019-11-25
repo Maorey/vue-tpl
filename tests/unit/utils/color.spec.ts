@@ -4,9 +4,9 @@
  * @Date: 2019-07-03 17:26:45
  */
 
-import { toRGB, isTransparent, reverseColor } from '@/utils/utils/color'
+import { toRGB, isTransparent, reverseColor } from '@/utils/color'
 
-describe('@/utils/utils/color: 颜色处理', () => {
+describe('@/utils/color: 颜色处理', () => {
   const HEX1 = '#abc'
   const RGB1 = 'rgb(170,187,204)'
   const RGB1_REVERSE = 'rgb(85,68,51)'

@@ -1,19 +1,19 @@
 /*
- * @Description: 快速排序 测试
+ * @Description: 归并排序 测试
  * @Author: 毛瑞
- * @Date: 2019-06-27 17:41:06
+ * @Date: 2019-07-19 16:24:03
  */
-import quickSort from '@/utils/utils/sort/quick'
+import mergeSort from '@/utils/sort/merge'
 import getRandomArray from './getRandomArray'
 
-describe('@/utils/utils/sort/quick: 快速排序', () => {
-  it('quickSort', () => {
+describe('@/utils/sort/merge: 归并排序', () => {
+  it('mergeSort', () => {
     let arrayLength = 10000
     const testArray = getRandomArray(arrayLength--)
 
     let pass = true
 
-    quickSort(testArray)
+    mergeSort(testArray)
     for (let i = 0; i < arrayLength; i++) {
       if (testArray[i + 1] < testArray[i]) {
         pass = false
@@ -22,7 +22,7 @@ describe('@/utils/utils/sort/quick: 快速排序', () => {
     }
 
     if (pass) {
-      quickSort(testArray, (a, b) => a < b)
+      mergeSort(testArray, (a, b) => a < b)
       for (let i = 0; i < arrayLength; i++) {
         if (testArray[i + 1] > testArray[i]) {
           pass = false

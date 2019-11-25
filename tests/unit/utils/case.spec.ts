@@ -10,9 +10,9 @@ import {
   kebabToUpper,
   upperToCamel,
   UpperTokebab,
-} from '@/utils/utils/case'
+} from '@/utils/case'
 
-describe('@/utils/utils/case: 词语风格转换', () => {
+describe('@/utils/case: 词语风格转换', () => {
   it('camelToKebab', () => {
     expect(camelToKebab('camelCase')).toBe('camel-case')
   })

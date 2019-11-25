@@ -3,9 +3,9 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:17:12
  */
-import clone from '@/utils/utils/clone'
+import clone from '@/utils/clone'
 
-describe('@/utils/utils/clone: 深克隆/扩展 对象/数组(无其他原型和循环引用)', () => {
+describe('@/utils/clone: 深克隆/扩展 对象/数组(无其他原型和循环引用)', () => {
   test('clone', () => {
     const testObject = {
       a: 0,

@@ -6,7 +6,8 @@
 import AXIOS from 'axios'
 
 import CONFIG from '@/config'
-import { clone, sort } from '@/utils'
+import sort from '@/utils/sort'
+import clone from '@/utils/clone'
 import { Memory } from '@/utils/storage'
 
 // 默认请求配置 https://github.com/axios/axios#config-defaults

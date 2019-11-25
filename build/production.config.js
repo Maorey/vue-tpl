@@ -129,11 +129,11 @@ module.exports = function(config, ENV, pages) {
     chunks: 'all', // 包含所有类型包（同步&异步 用insert-preload补齐依赖）
 
     // 分割优先级: maxInitialRequest/maxAsyncRequests < maxSize < minSize
-    minSize: 62464, // 最小分包大小
+    minSize: 84992, // 最小分包大小
     // webpack 5
     // minSize: {
-    //   javascript: 62464, // 61k
-    //   style: 103424, // 101k
+    //   javascript: 84992, // 83k
+    //   style: 134144, // 131k
     // },
     maxSize: 320512, // 最大分包大小（超过后尝试分出大于minSize的包）
     // maxSize: {

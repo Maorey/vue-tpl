@@ -3,9 +3,9 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  */
-import formatDate, { getDateByString } from '@/utils/utils/formatDate'
+import formatDate, { getDateByString } from '@/utils/formatDate'
 
-describe('@/utils/utils/formatDate: 日期格式化/反格式化', () => {
+describe('@/utils/formatDate: 日期格式化/反格式化', () => {
   const DATE = new Date(2019, 6, 3, 17, 17, 11, 111)
 
   const FORMAT = '今天是yyyy年MM月dd日ww 现在是tthh点mm分ss秒nnn毫秒'

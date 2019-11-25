@@ -1,19 +1,20 @@
 /*
- * @Description: 归并排序 测试
+ * @Description: 排序 测试
  * @Author: 毛瑞
- * @Date: 2019-07-19 16:24:03
+ * @Date: 2019-07-26 22:16:08
  */
-import mergeSort from '@/utils/utils/sort/merge'
+
+import sort from '@/utils/sort'
 import getRandomArray from './getRandomArray'
 
-describe('@/utils/utils/sort/merge: 归并排序', () => {
-  it('mergeSort', () => {
+describe('@/utils/sort: 排序', () => {
+  it('sort', () => {
     let arrayLength = 10000
     const testArray = getRandomArray(arrayLength--)
 
     let pass = true
 
-    mergeSort(testArray)
+    sort(testArray)
     for (let i = 0; i < arrayLength; i++) {
       if (testArray[i + 1] < testArray[i]) {
         pass = false
@@ -22,7 +23,7 @@ describe('@/utils/utils/sort/merge: 归并排序', () => {
     }
 
     if (pass) {
-      mergeSort(testArray, (a, b) => a < b)
+      sort(testArray, (a, b) => a < b)
       for (let i = 0; i < arrayLength; i++) {
         if (testArray[i + 1] > testArray[i]) {
           pass = false
@@ -32,5 +33,17 @@ describe('@/utils/utils/sort/merge: 归并排序', () => {
     }
 
     expect(pass).toBe(true)
+
+    expect(sort(['l', 'k', 'j', 'h', 'g', 'f', 'd', 's', 'a'])).toEqual([
+      'a',
+      'd',
+      'f',
+      'g',
+      'h',
+      'j',
+      'k',
+      'l',
+      's',
+    ])
   })
 })

@@ -3,9 +3,9 @@
  * @Author: 毛瑞
  * @Date: 2019-07-04 15:23:29
  */
-import { getInfoByHtml, escapeHTML } from '@/utils/utils/dom'
+import { getInfoByHtml, escapeHTML } from '@/utils/dom'
 
-describe('@/utils/utils/dom: 和dom结构相关的工具', () => {
+describe('@/utils/dom: 和dom结构相关的工具', () => {
   const HTML = `
 <article class="post-content toc-container">
   <h4 class="post-title">标题</h4>

@@ -3,10 +3,10 @@
  * @Author: 毛瑞
  * @Date: 2019-07-19 16:24:03
  */
-import insertSort, { findByBinary, bubble } from '@/utils/utils/sort/insert'
+import insertSort, { findByBinary, bubble } from '@/utils/sort/insert'
 import getRandomArray from './getRandomArray'
 
-describe('@/utils/utils/sort/insert: 插入排序', () => {
+describe('@/utils/sort/insert: 插入排序', () => {
   const DES = (a: number, b: number) => a < b
 
   it('insertSort', () => {
