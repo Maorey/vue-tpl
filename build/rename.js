@@ -1,12 +1,12 @@
 /*
- * @Description: vender chunks重命名,避免文件名过长,命名映射:build/fileName.map
+ * @Description: vender chunks重命名,避免文件名过长,命名映射:fileName.log
  * @Author: 毛瑞
  * @Date: 2019-07-25 19:31:14
  */
 const updateJSON = require('./updateJSON')
 const shortString = require('./shortString')
 
-/** 重命名 vender chunks (命名映射:build/fileName.map)
+/** 重命名 vender chunks (命名映射:fileName.log)
  *    vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
  * @param {String} des 缩写描述
  * @param {Object} DIC 缩写字典 eg: { index: 'i' }
@@ -14,22 +14,14 @@ const shortString = require('./shortString')
  * @returns {Function} 缩写函数
  */
 module.exports = function(des = '', DIC = {}) {
-  let record // 命名缩写记录
-  // 字符串缩写函数
-  const short = shortString(DIC, (name, n) => {
-    if (!record) {
-      record = {}
-      setTimeout(() => updateJSON('build/fileName.map', des, record))
-    }
+  const short = shortString(DIC)// 字符串缩写函数
+  process.on('beforeExit', () => updateJSON('fileName.log', des, DIC))
 
-    record[n] = name
-  })
-
-  /** 重命名 vender chunks (命名映射:build/fileName.map)
+  /** 重命名 vender chunks (命名映射:fileName.log)
    *    vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
    * @param {WebpackModule} module webpack模块
    */
-  return module => {
+  const rename = module => {
     let name = '_' // 前缀
     for (const chunk of module.chunksIterable) {
       name += short(chunk.name)
@@ -44,4 +36,7 @@ module.exports = function(des = '', DIC = {}) {
 
     return name
   }
+
+  rename.get = short
+  return rename
 }

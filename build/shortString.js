@@ -136,12 +136,21 @@ function toRadix(number) {
   return str
 }
 
+function duplicate(name, DIC) {
+  for (const key in DIC) {
+    if (name === DIC[key]) {
+      return true
+    }
+  }
+  return false
+}
+
 /** 获取唯一字符串缩写方法
  * @param {Object} DIC 命名字典，用于去重
  * 【优化】 按码值总和区间分成多个字典 暂无必要
  * @param {Function} callback 获取到新的缩写时执行的回调
  *
- * @returns {String:name => String:shortName} 返回唯一字符串缩写的方法
+ * @returns {(name:String) => String} 返回唯一字符串缩写的方法
  */
 module.exports = function(DIC = {}, callback) {
   let counter = 0 // 因build有序
@@ -149,7 +158,9 @@ module.exports = function(DIC = {}, callback) {
   return name => {
     let n = DIC[(name = String(name))]
     if (!n) {
-      n = DIC[name] = toRadix(counter++)
+      // 查重
+      while (duplicate((n = toRadix(counter++)), DIC)) {}
+      DIC[name] = n
       callback && callback(name, n)
     }
 

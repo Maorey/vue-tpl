@@ -1,5 +1,5 @@
 /*
- * @description: 插入 preload 的资源 & 基于scss变量打包主题
+ * @description: 插入 preload 的资源 & inline-manifest & 基于scss变量打包主题
  * 依赖:
  *  https://github.com/jantimon/html-webpack-plugin
  *  @vue/preload-webpack-plugin (fork:https://github.com/GoogleChromeLabs/preload-webpack-plugin)
@@ -23,7 +23,9 @@ function inlineWhenMatched(compilation, scripts, manifestAssetNames, MERGE) {
   let script
   let item
   let src
-  for (script of scripts) {
+  let i
+  for (i = 0; i < scripts.length; i++) {
+    script = scripts[i]
     if (script.tagName === 'script') {
       src = script.attributes.src
       for (item of manifestAssetNames) {
@@ -36,11 +38,10 @@ function inlineWhenMatched(compilation, scripts, manifestAssetNames, MERGE) {
               inline.innerHTML += src
             } else {
               inline = {
+                i,
                 tagName: 'script',
                 closeTag: true,
-                attributes: {
-                  type: 'text/javascript',
-                },
+                attributes: { type: 'text/javascript' },
                 innerHTML: src,
               }
             }
@@ -59,7 +60,7 @@ function inlineWhenMatched(compilation, scripts, manifestAssetNames, MERGE) {
     }
     result.push(script)
   }
-  inline && result.push(inline)
+  inline && result.splice(inline.i, 0, inline)
 
   return result
 }
@@ -222,10 +223,7 @@ module.exports = class {
           case 'style': // css
             styles.push({
               tagName: 'link',
-              attributes: {
-                rel: relStyle,
-                href: temp.href,
-              },
+              attributes: { rel: relStyle, href: temp.href },
             })
             break
           case script: // js

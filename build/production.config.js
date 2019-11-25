@@ -4,6 +4,7 @@
  * @Date: 2019-04-01 13:28:06
  */
 const path = require('path')
+const rename = require('./rename')('chunkName')
 
 const getLoaderOption = name => ({
   limit: 4096,
@@ -89,7 +90,7 @@ module.exports = function(config, ENV, pages) {
   const DIR = process.cwd()
   config.merge({
     // https://webpack.js.org/configuration/other-options/#recordspath
-    recordsPath: path.join(DIR, 'build/records.json'),
+    recordsPath: path.join(DIR, 'records.log'),
   })
   /// 多主题 ///
   // const name = 'theme-loader'
@@ -120,8 +121,7 @@ module.exports = function(config, ENV, pages) {
 
   /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
-  let counter = 0
-  config.optimization.runtimeChunk({ name: () => 'r_' + counter++ })
+  config.optimization.runtimeChunk({ name: e => 'r_' + rename.get(e.name) })
 
   /// 【代码分割(optimization.splitChunks 不能config.merge({}))】 ///
   // https://webpack.docschina.org/plugins/split-chunks-plugin
@@ -149,7 +149,7 @@ module.exports = function(config, ENV, pages) {
 
     automaticNameMaxLength: 15, // 分包文件名自动命名最大长度
     automaticNameDelimiter: '.', // 超过大小, 分包时文件名分隔符
-    name: require('./rename')('chunkName'),
+    name: rename,
     cacheGroups: {
       /// 【 js 】 ///
       // configs
@@ -178,7 +178,7 @@ module.exports = function(config, ENV, pages) {
           }
           CONFS[entry] = 1
           entry = entry.replace(REG, STR)
-          name = prefix + name
+          name = prefix + rename.get(name)
           group[name] = {
             name,
             chunks: 'all',
