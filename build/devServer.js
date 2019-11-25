@@ -3,7 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2019-07-25 19:27:34
  */
-const PAGE = ''
 const PORT = 9000
 const HOST = '0.0.0.0'
 const TARGET = 'PROXY_TARGET'
@@ -17,12 +16,12 @@ const REG_RELATIVE = /^(?:http|ws)s?:\/\//
 module.exports = function(ENV) {
   const https = !!ENV.DEV_SERVER_HTTPS
   const port = ENV.DEV_SERVER_PORT || PORT
-  let host = ENV.DEV_SERVER_HOST || HOST
+  let host = ENV.DEV_SERVER_HOST
   if (!host || host === HOST) {
+    host = ''
     try {
       const network = require('os').networkInterfaces()
       const family = ENV.DEV_SERVER_NETWORK || 'IPv4'
-      host = ''
       for (const key in network) {
         for (const item of network[key]) {
           if (!item.internal && family === item.family) {
@@ -35,7 +34,7 @@ module.exports = function(ENV) {
         }
       }
     } catch (e) {}
-    host || (host = 'localhost')
+    host || (host = HOST)
   }
   let proxy
 
@@ -48,10 +47,11 @@ module.exports = function(ENV) {
         (target = `http${https ? 's' : ''}://${host}:${port}/${target}`)
       key = ENV[key]
       proxy || (proxy = {})
+      const REG = new RegExp(`^/?${key}([/?].+)?$`)
       proxy[key] = {
         target,
         changeOrigin: true,
-        pathRewrite: url => url.replace(new RegExp(`^/${key}(/.*)?$`), '$1'),
+        pathRewrite: url => url.replace(REG, '$1'),
       }
     }
   }
@@ -63,6 +63,6 @@ module.exports = function(ENV) {
     https,
     proxy,
     overlay: { errors: true }, // lint
-    openPage: ENV.DEV_SERVER_PAGE || PAGE,
+    openPage: ENV.DEV_SERVER_PAGE || '',
   }
 }
