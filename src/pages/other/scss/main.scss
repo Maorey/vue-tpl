@@ -75,14 +75,6 @@
     background: $colorScrollBarHover;
   }
 }
-// 鼠标提示
-.el-tooltip__popper {
-  z-index: $zComp !important;
-}
-// 弹出框
-.el-popover {
-  z-index: $zMenu !important;
-}
 // 通知
 .el-notification {
   position: fixed;
@@ -106,4 +98,9 @@
 .el-message {
   z-index: $zMessage !important;
   margin-top: $heightHeader;
+}
+// 鼠标提示&弹出框
+.el-popover,
+.el-tooltip__popper {
+  z-index: $zTop !important;
 }

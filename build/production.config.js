@@ -78,6 +78,20 @@ function plugin(config, DIR) {
       extension: ['.*'], // 文件后缀
     },
   ])
+  // dll
+  const hardSource = require('hard-source-webpack-plugin')
+  config.plugin('hard-source').use(hardSource)
+  // 需要 【webpack.config.js】 webpack-cli webpack-command
+  // config.plugin('hard-source-parallel').use(hardSource.ParallelModulePlugin)
+  config
+    .plugin('hard-source-exclude')
+    .use(hardSource.ExcludeModulePlugin, [
+      [
+        { test: /[\\/]mini-css-extract-plugin[\\/]dist[\\/]loader/ },
+        { test: /[\\/]file-loader[\\/]/ },
+        { test: /[\\/]url-loader[\\/]/ },
+      ],
+    ])
 }
 
 /** webpack 配置

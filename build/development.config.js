@@ -38,6 +38,9 @@ module.exports = function(config) {
   //   return `webpack://${info.namespace}/${fileName}`
   // })
 
+  /// 文件监听 ///
+  config.watchOptions({ ignored: /node_modules/ })
+
   /// 插件 ///
   // html-webpack-plugin
   // 想要直接放到body后html前啊... inject: false、'head'、true(='body')
