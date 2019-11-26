@@ -65,4 +65,6 @@ module.exports = function(config) {
       cacheLocation: 'node_modules/.cache/stylelint/',
     },
   ])
+  // dll
+  config.plugin('hard-source').use('hard-source-webpack-plugin')
 }
