@@ -7,7 +7,7 @@ import { getAsync } from '@/utils/highOrder' // 高阶组件工具
 
 /* eslint-disable comma-dangle */
 export default {
-  /*! 【other页路由配置(https://router.vuejs.org/zh/api/#router-构建选项)】↓ */
+  /*! 【other页路由配置(https://router.vuejs.org/zh/api/#router-构建选项)】 */
 
   mode: 'hash',
   meta: {
@@ -45,6 +45,4 @@ export default {
       ),
     },
   ],
-
-  /*! 【other页路由配置↑】 */
 }
