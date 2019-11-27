@@ -23,8 +23,8 @@ export default {
         name: '首页',
         thumb: require('@index/assets/home.png'),
       },
-      component: getAsync(() =>
-        import(/* webpackChunkName: "iHome" */ '@index/views/Home'),
+      component: getAsync(
+        () => import(/* webpackChunkName: "iHome" */ '@index/views/Home') as any
       ),
     },
     {
@@ -36,7 +36,7 @@ export default {
         thumb: require('@index/assets/about.png'),
       },
       component: getAsync(() =>
-        import(/* webpackChunkName: "iAbout" */ '@index/views/About'),
+        import(/* webpackChunkName: "iAbout" */ '@index/views/About')
       ),
     },
   ],

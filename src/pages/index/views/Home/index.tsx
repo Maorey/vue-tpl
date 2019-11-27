@@ -9,97 +9,89 @@ import { getAsync } from '@/utils/highOrder' // 高阶组件工具
 import PageHeader from '@indexCom/PageHeader' // 页面标题
 import ModuleContainer from '@indexCom/ModuleContainer' // 模块容器
 
-import { CreateElement } from 'vue'
-import { Component, Vue } from 'vue-property-decorator'
-
 import $style from './index.module.scss'
 
 // 异步组件
 /* eslint-disable comma-dangle */
-const ModuleOne = getAsync(() =>
-  import(/* webpackChunkName: "ihOne" */ './ModuleOne'),
-) as any
-const ModuleTwo = getAsync(() =>
-  import(/* webpackChunkName: "ihTwo" */ './ModuleTwo'),
-) as any
-const ModuleThree = getAsync(() =>
-  import(/* webpackChunkName: "ihThree" */ './ModuleThree'),
-) as any
-const ModuleFour = getAsync(() =>
-  import(/* webpackChunkName: "ihFour" */ './ModuleFour'),
-) as any
-const ModuleFive = getAsync(() =>
-  import(/* webpackChunkName: "ihFive" */ './ModuleFive'),
-) as any
-const ModuleSix = getAsync(() =>
-  import(/* webpackChunkName: "ihSix" */ './ModuleSix'),
-) as any
+const ModuleOne: any = getAsync(() =>
+  import(/* webpackChunkName: "ihOne" */ './ModuleOne')
+)
+const ModuleTwo: any = getAsync(() =>
+  import(/* webpackChunkName: "ihTwo" */ './ModuleTwo')
+)
+const ModuleThree: any = getAsync(() =>
+  import(/* webpackChunkName: "ihThree" */ './ModuleThree')
+)
+const ModuleFour: any = getAsync(() =>
+  import(/* webpackChunkName: "ihFour" */ './ModuleFour')
+)
+const ModuleFive: any = getAsync(() =>
+  import(/* webpackChunkName: "ihFive" */ './ModuleFive')
+)
+const ModuleSix: any = getAsync(() =>
+  import(/* webpackChunkName: "ihSix" */ './ModuleSix')
+)
 
-@Component
-export default class extends Vue {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private render(h: CreateElement) {
-    return (
-      <div class={$style.wrapper}>
-        {/* 标题 */}
-        <PageHeader />
-        {/* 内容 */}
-        <div class={$style.content}>
-          <ModuleContainer class={$style.one}>
-            <template slot="icon">
-              <i class="i-check-circle" />
-            </template>
-            <template slot="title">ECharts</template>
+// functional
+export default () => (
+  <div class={$style.wrapper}>
+    {/* 标题 */}
+    <PageHeader />
+    {/* 内容 */}
+    <div class={$style.content}>
+      <ModuleContainer class={$style.one}>
+        <template slot="icon">
+          <i class="i-check-circle" />
+        </template>
+        <template slot="title">ECharts</template>
 
-            <ModuleOne />
-          </ModuleContainer>
+        <ModuleOne />
+      </ModuleContainer>
 
-          <ModuleContainer class={$style.two}>
-            <template slot="icon">
-              <i class="i-CI" />
-            </template>
-            <template slot="title">ECharts + ZRender</template>
+      <ModuleContainer class={$style.two}>
+        <template slot="icon">
+          <i class="i-CI" />
+        </template>
+        <template slot="title">ECharts + ZRender</template>
 
-            <ModuleTwo />
-          </ModuleContainer>
+        <ModuleTwo />
+      </ModuleContainer>
 
-          <ModuleContainer class={$style.three}>
-            <template slot="icon">
-              <i class="i-Dollar" />
-            </template>
-            <template slot="title">three.js</template>
+      <ModuleContainer class={$style.three}>
+        <template slot="icon">
+          <i class="i-Dollar" />
+        </template>
+        <template slot="title">three.js</template>
 
-            <ModuleThree />
-          </ModuleContainer>
+        <ModuleThree />
+      </ModuleContainer>
 
-          <ModuleContainer class={$style.four}>
-            <template slot="icon">
-              <i class="i-compass" />
-            </template>
-            <template slot="title">luma.gl</template>
+      <ModuleContainer class={$style.four}>
+        <template slot="icon">
+          <i class="i-compass" />
+        </template>
+        <template slot="title">luma.gl</template>
 
-            <ModuleFour />
-          </ModuleContainer>
+        <ModuleFour />
+      </ModuleContainer>
 
-          <ModuleContainer class={$style.five}>
-            <template slot="icon">
-              <i class="i-close-circle" />
-            </template>
-            <template slot="title">d3</template>
+      <ModuleContainer class={$style.five}>
+        <template slot="icon">
+          <i class="i-close-circle" />
+        </template>
+        <template slot="title">d3</template>
 
-            <ModuleFive />
-          </ModuleContainer>
+        <ModuleFive />
+      </ModuleContainer>
 
-          <ModuleContainer class={$style.six}>
-            <template slot="icon">
-              <i class="i-frown" />
-            </template>
-            <template slot="title">zdog + pixi.js(背景)</template>
+      <ModuleContainer class={$style.six}>
+        <template slot="icon">
+          <i class="i-frown" />
+        </template>
+        <template slot="title">zdog + pixi.js(背景)</template>
 
-            <ModuleSix />
-          </ModuleContainer>
-        </div>
-      </div>
-    )
-  }
-}
+        <ModuleSix />
+      </ModuleContainer>
+    </div>
+  </div>
+)
