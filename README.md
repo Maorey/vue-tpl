@@ -51,7 +51,7 @@ yarn dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.developmen
 yarn build # --watch: 跟踪文件变化 --report: 生成打包分析
 ```
 
-同时会生成`fileName.log`记录 文件名/chunk 名映射 (公共代码抽到`_`开头的文件里了)
+同时会生成文件名/chunk名[映射文件](build/fileName.log) (公共代码抽到`_`开头的文件里了)
 
 ### 代码风格检查和修正(提交 Git 时会自动执行)
 
@@ -548,7 +548,17 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 ## 部署(nginx)
 
-简记如下, 有待运维大佬进一步优化
+- chunk hash 长度： 修改 [webpack.optimize.SplitChunksPlugin](node_modules/webpack/lib/optimize/SplitChunksPlugin.js)
+
+  ```JavaScript
+  /* 23 */ const hashFilename = name => {
+  /* 24 */   return crypto
+  /* 25 */       .createHash("md4")
+  /* 26 */       .update(name)
+  /* 27 */       .digest("hex")
+  /* 28 */       .slice(0, 5); // 默认8无法配置
+  /* 29 */ };
+  ```
 
 - url 重写兼容旧版
 - 反向代理, 绕过同源策略限制(api/图片等资源跨域等)

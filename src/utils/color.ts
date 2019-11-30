@@ -42,7 +42,7 @@ const PARSEINT = (str: string) => parseInt(str)
 function toRGB(
   color: string,
   opacity?: number | null | Alpha,
-  filter?: Filter,
+  filter?: Filter
 ) {
   color = color.trim()
   // 非字符串或空字符串返回空字符串
@@ -136,7 +136,7 @@ function isTransparent(color: string) {
 function fitColor(
   color: string,
   ratio: number = 0.25,
-  opacity?: number | null | Alpha,
+  opacity?: number | null | Alpha
 ) {
   return toRGB(color, opacity, (rgb: number[]) => {
     let value: number
@@ -170,7 +170,7 @@ const FILLER_REVERSE = (rgb: number[]) => {
 function reverseColor(
   color: string,
   filter: Filter = FILLER_REVERSE,
-  opacity?: number | null | Alpha,
+  opacity?: number | null | Alpha
 ) {
   return toRGB(color, opacity, filter)
 }

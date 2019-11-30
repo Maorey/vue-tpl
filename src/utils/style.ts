@@ -74,7 +74,7 @@ function styleToObject(
         match?: string
       ) => [string, string] | string | boolean | void)
     | boolean,
-  isjson?: boolean,
+  isjson?: boolean
 ): IObject<string> | string {
   if (typeof style === 'string') {
     style = style.trim()
@@ -169,7 +169,7 @@ function objectToStyle(
     key: string,
     value: string,
     styleObject?: IObject<string>
-  ) => [string, string] | string | boolean | void,
+  ) => [string, string] | string | boolean | void
 ) {
   if (typeof styleObj === 'string') {
     return styleObj // 原样返回
@@ -251,7 +251,7 @@ function updateStyle(
     value: string,
     current?: IObject<string>,
     target?: IObject<string>
-  ) => [string, string] | string | boolean | void,
+  ) => [string, string] | string | boolean | void
 ) {
   if (!current) {
     // 当前为空

@@ -24,7 +24,7 @@ describe('@/utils/dom: 和dom结构相关的工具', () => {
   &lt;script type="TypeScript"&gt;
   // do someThing
   &lt;/script&gt;
-</article>`,
+</article>`
     )
   })
 

@@ -37,7 +37,7 @@ const IS_EQUAL = (
   item: ITag,
   tagName: string,
   attributeName: string,
-  value: string,
+  value: string
 ) =>
   (!tagName || tagName === item.tagName) &&
   (attributeName
@@ -65,7 +65,7 @@ class HtmlInfo extends Array<ITag> {
       tagName: string,
       attributeName: string,
       value: string
-    ) => boolean | void = IS_EQUAL,
+    ) => boolean | void = IS_EQUAL
   ) {
     tagName = tagName.trim()
     attributeName = attributeName.trim()

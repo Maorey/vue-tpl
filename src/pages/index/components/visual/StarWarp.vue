@@ -15,6 +15,8 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Application, Texture, Sprite } from 'pixi.js'
 import { isWebGLSupported } from '@pixi/utils'
 
+import IMG_STAR from '@index/assets/star.png'
+
 isWebGLSupported() || require('pixi.js-legacy')
 
 /// name,components,directives,filters,extends,mixins ///
@@ -39,7 +41,7 @@ export default class extends Vue {
       view: canvas,
       transparent: true,
     })
-    const starTexture = Texture.from(require('@index/assets/star.png'))
+    const starTexture = Texture.from(IMG_STAR)
 
     const starAmount = 1000
     let cameraZ = 0
@@ -109,7 +111,7 @@ export default class extends Vue {
         const dxCenter = star.sprite.x - app.renderer.screen.width / 2
         const dyCenter = star.sprite.y - app.renderer.screen.height / 2
         const distanceCenter = Math.sqrt(
-          dxCenter * dxCenter + dyCenter + dyCenter,
+          dxCenter * dxCenter + dyCenter + dyCenter
         )
         const distanceScale = Math.max(0, (2000 - z) / 2000)
         star.sprite.scale.x = distanceScale * starBaseSize

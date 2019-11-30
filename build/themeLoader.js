@@ -1,3 +1,4 @@
+// 多主题插件
 // const ora = require('ora')
 // const spinner = ora({
 //   text: 'Building themes...',
@@ -5,8 +6,10 @@
 // }).start()
 const fs = require('fs')
 const path = require('path')
+const loaderUtils = require('loader-utils')
 
 const PLUGIN_NAME = 'theme-loader'
+const DEFAULT_HANDLER = path.resolve('src/utils/getCSSModule')
 
 const EXTENSION = '.scss'
 const INDEX = '/index.scss'
@@ -14,13 +17,10 @@ const INDEX = '/index.scss'
 const REG_EXTENSION = /\.scss$/
 const REG_INDEX = /\/index\.scss$/
 const REG_SCSS = /\/[^/]+\.scss$/
-const REG_LANG = /(?:^\??|&)lang=([^&]*)/
-const REG_THEME = /(?:^\??|&)theme=([^|&]*)\|?([^&]*)/
-// require不管了
-const REG_IMPORT = /(?:^|\n)import[\s\n]+([^'"]+?)[\s\n]+from[\s\n]+['"]([^'"]+?)\.(scss|vue)(\?[^'"]+?)?['"]/g
+const REG_THEME = /[?&]theme=([^|&]*)\|?([^&]*)/
 
 const CACHE_EXISTS = {}
-const DIR_SRC = path.join(process.cwd(), 'src')
+const DIR_SRC = path.resolve('src')
 
 let CACHE_INIT
 /** 默认主题 { name, path }
@@ -116,82 +116,67 @@ function getThemeByQuery(temp) {
   }
 }
 
-// 多主题loader 从js源码处理多主题样式
+function getResource(resource) {
+  return (resource.includes('?')
+    ? resource.endsWith('&')
+      ? resource
+      : resource + '&'
+    : resource + '?'
+  ).replace(/\\/g, '\\\\')
+}
+
+// 多主题loader
+// 参考: multi-loader
 module.exports = function(source) {
-  if (!init().THEMES) {
-    this.callback(null, source)
+  this.callback(null, source)
+}
+module.exports.pitch = function() {
+  this.cacheable()
+
+  if (!(THEMES || init().THEMES)) {
     return
   }
-  const info = {} // 收集的样式注入信息
-  const PREFIX = '$_STYLE'
-  let counter = 0
-  let lastImport = 0
-  let more = 0
-  source = (typeof source === 'string' ? source : source.toString()).replace(
-    REG_IMPORT,
-    (match, variable, name, type, query = '?', index) => {
-      // 处理多主题
-      let temp = REG_LANG.exec(query)
-      if (type === 'vue' && (!temp || temp[1] !== 'scss')) {
-        return match
-      }
-      if (
-        (type === 'scss' || type === 'vue') &&
-        !(temp = REG_THEME.exec(query))
-      ) {
-        // 注入主题
-        const len = match.length
-        let strObj = '{'
-        let vars
 
-        match = '\n'
-        for (temp in THEMES) {
-          vars = PREFIX + counter++
-          match += `import ${vars} from "${name}.${type +
-            query}&theme=${temp}"\n`
-          strObj += `"${temp}":${vars},`
-        }
-        info[variable] = strObj + '}'
-        more += match.length - len
-        lastImport = index + len + more
-        return match
-      }
-
-      return match
-    },
-  )
-
-  let variables = ''
-  if (lastImport) {
-    variables = '\nimport $_getCSSModule from "@/utils/getCSSModule"'
-    for (const vars in info) {
-      variables += `\nconst ${vars} = $_getCSSModule(${info[vars]})`
-    }
-    variables += '\n'
+  const resource = getResource(this.resource)
+  if (REG_THEME.exec(resource)) {
+    return
   }
 
-  this.callback(
-    null,
-    source.substring(0, lastImport) + variables + source.substring(lastImport),
-  )
+  let resultSource = `// extracted by ${PLUGIN_NAME}\nimport getOb from '${getResource(
+    (loaderUtils.getOptions(this) || {}).localHandler || DEFAULT_HANDLER
+  )}'`
+  let locals = ''
+  let first = 0
+  for (const theme in THEMES) {
+    first || (first = theme)
+    resultSource += `\nimport ${theme} from '${resource}theme=${theme}'`
+    locals += theme + ','
+  }
+
+  return `${resultSource}\nlet locals\n${first} && Object.keys(${first}).length && (locals = getOb({${locals}}))\nexport default locals`
 }
-// 插件: 不同theme到不同chunk (顺便合并下小文件？)
-// hack mini-css-extract-plugin
+// 不同theme到不同chunk插件
+// 参考: mini-css-extract-plugin webpack.optimize.SplitChunksPlugin
 module.exports.plugin = class {
-  constructor() {
-    init()
-  }
-
   // https://webpack.docschina.org/api/plugins/
   apply(compiler) {
-    compiler.hooks.compilation.tap(PLUGIN_NAME, compilation =>
-      compilation.hooks.optimizeChunkAssets.tapAsync(
+    if (!(THEMES || init().THEMES)) {
+      return
+    }
+
+    // const options = (compiler.options.optimization || {}).splitChunks || {}
+    // // 其他配置先不管
+    // const minSize = options.minSize || 0
+    // const maxSize = options.maxSize || 0
+    const MODULE_TYPE = 'css/mini-extract'
+
+    compiler.hooks.thisCompilation.tap(PLUGIN_NAME, compilation =>
+      compilation.mainTemplate.hooks.requireEnsure.tap(
         PLUGIN_NAME,
-        (chunks, callback) => {
-          // 不同theme到不同chunk
-          callback()
-        },
-      ),
+        (source, chunk, hash) => {
+
+        }
+      )
     )
   }
 }

@@ -23,8 +23,8 @@ describe('@/utils/clone: 深克隆/扩展 对象/数组(无其他原型和循环
     expect(
       clone(
         (key?: string) => (key === 'd' || key === 'e') && { jump: true },
-        testObject,
-      ),
+        testObject
+      )
     ).toEqual({ a: 0, b: 'a', c: null })
 
     expect(
@@ -39,8 +39,8 @@ describe('@/utils/clone: 深克隆/扩展 对象/数组(无其他原型和循环
           f: { a: 12 },
           g: ['i', 'j'],
         },
-        null,
-      ),
+        null
+      )
     ).toEqual({
       a: 9,
       b: 'a',

@@ -16,7 +16,7 @@ module.exports = function(pages, config, ALIAS) {
     // ts 目录别名
     '@/*': ['src/*'],
   }
-  const CURRENT_DIR = process.cwd()
+  const CURRENT_DIR = path.resolve()
   // 【应有序，先目录层级高的，scss变量才能正确注入】
   // ALIAS['@'] = path.join(CURRENT_DIR, 'src')
 

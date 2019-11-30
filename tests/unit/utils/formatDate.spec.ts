@@ -20,7 +20,7 @@ describe('@/utils/formatDate: 日期格式化/反格式化', () => {
   })
   it('getDateByString 指定格式反格式化字符串为日期(Date)', () => {
     expect((getDateByString(RESULT, FORMAT) as Date).getTime()).toBe(
-      DATE.getTime(),
+      DATE.getTime()
     )
     expect((getDateByString(RESULT1, FORMAT1) as Date).getFullYear()).toBe(2019)
   })

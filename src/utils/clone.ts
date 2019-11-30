@@ -43,7 +43,7 @@ function extend(
   source: IObject | any[] | any,
   target: IObject | any[] | any,
   filter?: Filter,
-  deep?: number,
+  deep?: number
 ): any | any[] {
   let currentValue
   let targetValue
@@ -68,7 +68,7 @@ function extend(
         currentValue || (tmp ? [] : {}),
         targetValue,
         filter,
-        (deep || 0) + 1,
+        (deep || 0) + 1
       )
     }
   }

@@ -16,7 +16,7 @@ console.log(
     Math.ceil(Math.random() * 6) +
     'm' +
     FIGURE[(Math.random() * FIGURE.length) | 0] +
-    '\33[0m', // eslint-disable-line no-octal-escape
+    '\33[0m' // eslint-disable-line no-octal-escape
 )
 
 /// 【配置项】https://cli.vuejs.org/zh/config ///
@@ -26,7 +26,7 @@ module.exports = {
   lintOnSave: !isProd, // 保存时检查代码
   productionSourceMap: false, // 生产环境不要sourceMap
   // babel转码, 默认不转依赖包
-  transpileDependencies: isProd ? ['vuex-module-decorators'] : undefined,
+  // transpileDependencies: isProd ? ['vuex-module-decorators'] : undefined,
 
   /// 【配置页面入口】https://cli.vuejs.org/zh/config/#pages ///
   pages,
@@ -40,6 +40,7 @@ module.exports = {
   /// 【webpack配置】 ///
   // https://github.com/neutrinojs/webpack-chain#getting-started
   chainWebpack(config) {
+    config.cache(true) // 使用缓存
     /// 【设置目录别名 已有: @ => src 】 ///
     require('./build/alias')(pages, config, ALIAS)
 

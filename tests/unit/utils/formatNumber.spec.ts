@@ -19,14 +19,14 @@ describe('@/utils/formatNumber: 格式化数字', () => {
       formatNumber(1234567890.9876, {
         len: 4,
         unit: '万',
-      }),
+      })
     ).toBe('123,456.78909876万')
     expect(
       formatNumber(1234567890.9876, {
         len: 4,
         unit: '万',
         limit: 1234567891,
-      }),
+      })
     ).toBe('1,234,567,890.9876')
   })
   it('formatNumber 指定小数位数和单位格式化', () => {
@@ -35,7 +35,7 @@ describe('@/utils/formatNumber: 格式化数字', () => {
       formatNumber(1234567890.9876, 2, {
         len: 4,
         unit: '万',
-      }),
+      })
     ).toBe('123,456.79万')
   })
 })

@@ -59,7 +59,7 @@ export default class extends Vue {
       45,
       (canvas.offsetWidth * 0.5) / canvas.offsetHeight,
       1,
-      2000,
+      2000
     )
     camera.position.z = 500
     const scene: Scene = new Scene()
@@ -94,7 +94,7 @@ export default class extends Vue {
       canvas,
       context: canvas.getContext(
         WEBGL.isWebGL2Available() ? 'webgl2' : 'webgl',
-        { antialias: false },
+        { antialias: false }
       ) as WebGLRenderingContext,
     })
     renderer.autoClear = false
@@ -109,7 +109,7 @@ export default class extends Vue {
       new WebGLMultisampleRenderTarget(size.width, size.height, {
         format: RGBAFormat,
         stencilBuffer: false,
-      }),
+      })
     )
     composer1.addPass(renderPass)
     composer1.addPass(copyPass)

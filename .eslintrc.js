@@ -40,7 +40,16 @@ module.exports = {
     indent: ['error', 2, { SwitchCase: 1 }], // 缩进
     semi: ['error', 'never'], // 不要句尾分号
     quotes: ['error', 'single'], // 使用单引号
-    'comma-dangle': ['error', 'always-multiline'], // 保留多行末尾逗号
+    'comma-dangle': [
+      'error',
+      {
+        arrays: 'always-multiline',
+        objects: 'always-multiline',
+        imports: 'always-multiline',
+        exports: 'always-multiline',
+        functions: 'never',
+      },
+    ], // 保留多行末尾逗号
     'space-before-function-paren': ['error', 'never'], // 方法名后不要空格
     'max-len': [
       'error',

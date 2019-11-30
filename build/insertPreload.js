@@ -1,5 +1,5 @@
 /*
- * @description: 插入 preload 的资源 & inline-manifest & 基于scss变量打包主题
+ * @description: 插入 preload 的资源 & inline-manifest
  * 依赖:
  *  https://github.com/jantimon/html-webpack-plugin
  *  @vue/preload-webpack-plugin (fork:https://github.com/GoogleChromeLabs/preload-webpack-plugin)
@@ -31,7 +31,7 @@ function inlineWhenMatched(compilation, scripts, manifestAssetNames, MERGE) {
       for (item of manifestAssetNames) {
         if (src.indexOf(item.file) >= 0) {
           src = sourceMappingURL.removeFrom(
-            compilation.assets[item.file].source(),
+            compilation.assets[item.file].source()
           )
           if (MERGE) {
             if (inline) {
@@ -113,7 +113,7 @@ module.exports = class {
       compilation.hooks.htmlWebpackPluginAlterAssetTags &&
         compilation.hooks.htmlWebpackPluginAlterAssetTags.tap(
           PLUGIN1,
-          htmlPluginData => this.insert(htmlPluginData),
+          htmlPluginData => this.insert(htmlPluginData)
         )
     })
     /// inline-manifest ///
@@ -133,7 +133,7 @@ module.exports = class {
             (data, cb) => {
               const manifestAssetNames = getAssetName(
                 compilation.chunks,
-                REG_RUNTIME,
+                REG_RUNTIME
               )
 
               manifestAssetNames.length &&
@@ -142,12 +142,12 @@ module.exports = class {
                     compilation,
                     data[section],
                     manifestAssetNames,
-                    MERGE,
+                    MERGE
                   )
                 })
 
               cb(null, data)
-            },
+            }
           )
 
         compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration &&
@@ -158,7 +158,7 @@ module.exports = class {
               const assets = htmlPluginData.assets
               const manifestAssetNames = getAssetName(
                 compilation.chunks,
-                REG_RUNTIME,
+                REG_RUNTIME
               )
 
               if (
@@ -169,13 +169,13 @@ module.exports = class {
                   runtime.push('<script>')
                   runtime.push(
                     sourceMappingURL.removeFrom(
-                      compilation.assets[item.file].source(),
-                    ),
+                      compilation.assets[item.file].source()
+                    )
                   )
                   runtime.push('</script>')
 
                   const runtimeIndex = assets.js.indexOf(
-                    assets.publicPath + item.file,
+                    assets.publicPath + item.file
                   )
                   if (runtimeIndex >= 0) {
                     assets.js.splice(runtimeIndex, 1)
@@ -186,7 +186,7 @@ module.exports = class {
 
               assets.runtime = runtime.join('')
               cb(null, htmlPluginData)
-            },
+            }
           )
       })
     }

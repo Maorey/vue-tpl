@@ -58,7 +58,7 @@ export default class extends Vue {
         'collide',
         forceCollide()
           .radius((node: any) => node.r)
-          .iterations(2),
+          .iterations(2)
       )
       .on('tick', () => {
         if (!context) {

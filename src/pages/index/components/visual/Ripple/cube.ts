@@ -49,7 +49,7 @@ class Cube extends ModelNode {
     }
 
     const colors = new Float32Array(SIDE * SIDE * 3).map(
-      () => Math.random() * 0.75 + 0.25,
+      () => Math.random() * 0.75 + 0.25
     )
 
     const vs = `attribute float instanceSizes;
@@ -99,7 +99,7 @@ void main(void) {
           instanceColors: [colorsBuffer, { divisor: 1 }],
           instancePickingColors: [pickingColorsBuffer, { divisor: 1 }],
         },
-      }),
+      })
     )
   }
 }

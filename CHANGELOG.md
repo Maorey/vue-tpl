@@ -1,5 +1,14 @@
 # 更新日志
 
+## v 0.2.0
+
+- 升级到 @vue/cli 4.1.1
+- 工具库目录结构
+- 增强代码检查 ESLint & StyleLint
+- 支持内联多个 chunk 到 html (修改自[inline-manifest-webpack-plugin](https://github.com/szrenwei/inline-manifest-webpack-plugin))
+- 使用[hard-source-webpack-plugin](https://github.com/mzgoddard/hard-source-webpack-plugin)优化构建速度
+- 完善 themeLoader
+
 ## v 0.1.0
 
 - 初始化 @vue/cli 4 项目

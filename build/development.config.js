@@ -52,9 +52,7 @@ module.exports = function(config) {
   //   },
   // ])
   // 补全html插入资源
-  config
-    .plugin('insert-preload')
-    .use(require('path').join(process.cwd(), 'build/insertPreload.js'))
+  config.plugin('insert-preload').use(require.resolve('./insertPreload.js'))
   // stylelint
   config.plugin('stylelint').use('stylelint-webpack-plugin', [
     {

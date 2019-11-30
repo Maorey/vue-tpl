@@ -9,7 +9,7 @@ const path = require('path')
 const REG_SPLIT = /\.(?!['"])/
 
 module.exports = function(fileName, key, value) {
-  fileName = path.join(process.cwd(), fileName)
+  fileName = path.resolve(fileName)
   key = key.split(REG_SPLIT)
 
   let json
@@ -43,7 +43,7 @@ module.exports = function(fileName, key, value) {
     fs.writeFile(
       fileName,
       JSON.stringify(json, null, 2),
-      error => error && console.error(`写入${fileName}失败`, error),
+      error => error && console.error(`写入${fileName}失败`, error)
     )
   }
 }

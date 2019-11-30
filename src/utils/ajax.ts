@@ -69,7 +69,7 @@ function getKEY(url: string, params?: IObject) {
   query &&
     (params = clone(
       JSON.parse(`{${query.replace(/&/g, ',').replace(/=/g, ':')}}`),
-      params,
+      params
     ))
   query = '.'
 
@@ -92,7 +92,7 @@ location.search
     (match, field, value) => {
       value && ((SEARCH || (SEARCH = {}))[field] = value)
       return match
-    },
+    }
   )
 
 /** 发起请求
@@ -109,7 +109,7 @@ function request(
   method: string,
   params?: IObject,
   data?: any,
-  config: IObject = {},
+  config: IObject = {}
 ): Promise<any> {
   config.url = url
   config.method = method
@@ -153,7 +153,7 @@ function request(
         requestQueue.remove(KEY) // 移除请求队列
         /// 错误拦截 ///
         throw res
-      }),
+      })
   )
 }
 /// http 方法 ///
@@ -179,7 +179,7 @@ function put(
   url: string,
   data: any,
   params?: IObject,
-  config?: IObject,
+  config?: IObject
 ): Promise<any> {
   return request(url, 'put', params, data, config)
 }
@@ -195,7 +195,7 @@ function post(
   url: string,
   data: any,
   params?: IObject,
-  config?: IObject,
+  config?: IObject
 ): Promise<any> {
   return request(url, 'post', params, data, config)
 }

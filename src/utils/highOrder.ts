@@ -50,7 +50,7 @@ function getChooser(DIC: IDictionary, filter: filter = filterByIS): Component {
 function getAsync(
   promiseFactory: () => Promise<Component | { default: Component }>,
   loading: Component = LOADING,
-  error: Component = ERROR,
+  error: Component = ERROR
 ): Component {
   const asyncComponentFactory = (): AsyncComponent => () => ({
     error, // 加载失败时

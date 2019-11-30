@@ -6,7 +6,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const rootDir = process.cwd()
+const rootDir = path.resolve()
 const publicDir = path.join(rootDir, 'public') // html模板只考虑放在根目录
 const srcDir = path.join(rootDir, 'src') // html对应入口代码路径
 const pagesName = 'pages' // 存放页面代码目录名

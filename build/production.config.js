@@ -3,7 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2019-04-01 13:28:06
  */
-const path = require('path')
 const rename = require('./rename')('chunkName')
 
 const getLoaderOption = name => ({
@@ -43,7 +42,7 @@ function fileName(config) {
     .options(getLoaderOption('media/' + FileName))
 }
 
-function plugin(config, DIR) {
+function plugin(config) {
   // 【弃 过时但有效】固定打包文件哈希, 避免相同代码打包出不同哈希
   //  (排除 boilerplate(runtime and manifest)等影响)
   // config.plugin('md5-hash').use('webpack-md5-hash')
@@ -52,14 +51,12 @@ function plugin(config, DIR) {
   //   .plugin('hash-module')
   //   .use(require('webpack').HashedModuleIdsPlugin, [{ hashDigestLength: 5 }])
   // 补全html插入资源
-  config
-    .plugin('insert-preload')
-    .use(path.join(DIR, 'build/insertPreload.js'), [
-      {
-        runtime: ['c_', 'r_'],
-        defer: true,
-      },
-    ])
+  config.plugin('insert-preload').use(require.resolve('./insertPreload'), [
+    {
+      runtime: ['c_', 'r_'],
+      defer: true,
+    },
+  ])
   // 文件 gzip 压缩 https://webpack.docschina.org/plugins/compression-webpack-plugin/
   config.plugin('gzip').use('compression-webpack-plugin', [
     {
@@ -81,7 +78,7 @@ function plugin(config, DIR) {
   // dll
   const hardSource = require('hard-source-webpack-plugin')
   config.plugin('hard-source').use(hardSource)
-  // 需要 【webpack.config.js】 webpack-cli webpack-command
+  // 需要 【webpack.config.js】 & webpack-cli & webpack-command
   // config.plugin('hard-source-parallel').use(hardSource.ParallelModulePlugin)
   config
     .plugin('hard-source-exclude')
@@ -101,37 +98,26 @@ function plugin(config, DIR) {
  *  https://github.com/neutrinojs/webpack-chain#getting-started
  */
 module.exports = function(config, ENV, pages) {
-  const DIR = process.cwd()
-  config.merge({
-    // https://webpack.js.org/configuration/other-options/#recordspath
-    recordsPath: path.join(DIR, 'records.log'),
-  })
+  // https://webpack.js.org/configuration/other-options/#recordspath
+  config.merge({ recordsPath: require('path').resolve('build/records.log') })
   /// 多主题 ///
-  // const name = 'theme-loader'
-  // const themeLoader = require('./themeLoader')
-  // config.plugin(name).use(themeLoader.plugin)
-  // if (themeLoader.init(ENV).THEMES) {
-  //   const loader = path.join(DIR, 'build/themeLoader.js')
-  //   config.module
-  //     .rule('vue')
-  //     .use(name)
-  //     .loader(loader)
-  //     .before('vue-loader')
-  //   config.module
-  //     .rule('js')
-  //     .use(name)
-  //     .loader(loader)
-  //   config.module
-  //     .rule('ts')
-  //     .use(name)
-  //     .loader(loader)
-  //   config.module
-  //     .rule('tsx')
-  //     .use(name)
-  //     .loader(loader)
-  // }
+  const themeLoader = require('./themeLoader')
+  if (themeLoader.init(ENV).THEMES) {
+    const name = 'theme-loader'
+    config.module
+      .rule('scss')
+      .use(name)
+      .loader(require.resolve('./themeLoader'))
+    /** 选项
+     * {
+     *   localHandler: String 默认: 'src/utils/getCSSModule.ts'
+     *    ({[theme]:Object}) => Object
+     * }
+     */
+    config.plugin(name).use(themeLoader.plugin)
+  }
   fileName(config)
-  plugin(config, DIR, pages)
+  plugin(config, pages)
 
   /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
@@ -155,17 +141,15 @@ module.exports = function(config, ENV, pages) {
     //   style: 398336, // 389k
     // },
     // maxInitialSize: 216064, // 最大初始加载大小 211k
-    // 超过maxSize分割命名 true:hash(长度8，不造哪儿改)[默认] false:路径
-    // hidePathInfo: true, // 也没个文件名配置啊...
+    // hidePathInfo: true, // chunk分割命名 true:hash[默认] false:路径
     minChunks: 3, // 某个chunk被超过该数量的chunk依赖时才拆分出来
     maxAsyncRequests: 6, // 最大异步代码请求数【http <= 1.1 浏览器同域名并发请求上限: 6】
     maxInitialRequests: 5, // 最大初始化时异步代码请求数
 
-    automaticNameMaxLength: 15, // 分包文件名自动命名最大长度
-    automaticNameDelimiter: '.', // 超过大小, 分包时文件名分隔符
+    automaticNameMaxLength: 15, // 分割chunk自动命名最大长度
+    automaticNameDelimiter: '.', // 分割chunk自动命名分隔符
     name: rename,
     cacheGroups: {
-      /// 【 js 】 ///
       // configs
       c_: {
         name: 'c_',
