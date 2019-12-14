@@ -44,11 +44,18 @@ const requestQueue = new Memory()
  */
 const dataStore = new Memory(CONFIG.apiMaxCache, CONFIG.apiCacheAlive)
 
-/** 任意类型转为字符串
- * @param {Any} value 值
- *
- * @returns {String} 字符串
- */
+/// 【debug】带上特定查询字段 ///
+let SEARCH: IObject | undefined
+location.search
+  .replace(/\/$/, '')
+  .replace(
+    new RegExp(`[?&](${process.env.SEARCH_FIELD})=([^&]*)`, 'g'),
+    (match, field, value) => {
+      value && ((SEARCH || (SEARCH = {}))[field] = value)
+      return match
+    }
+  )
+
 function toString(value: any) {
   switch (typeof value) {
     case 'object':
@@ -57,20 +64,21 @@ function toString(value: any) {
       return String(value)
   }
 }
-
-/** 获得设置存储的KEY url + sorted查询参数 ?a=a&b=b + config.params
- * @param {String} url 资源地址
- * @param {Object<any>} params 查询参数
- */
+function searchToObj(search: string) {
+  const Obj: IObject<string> = {}
+  let param: string | string[]
+  for (param of search.split('&')) {
+    // param = decodeURIComponent(param)
+    param = param.split('=')
+    Obj[param[0]] = param[1]
+  }
+  return Obj
+}
 function getKEY(url: string, params?: IObject) {
   const part = url.split('?') // 提取查询参数
   // 处理查询参数
   let query = part[1]
-  query &&
-    (params = clone(
-      JSON.parse(`{${query.replace(/&/g, ',').replace(/=/g, ':')}}`),
-      params
-    ))
+  query && (params = clone(searchToObj(query), params))
   query = '.'
 
   // 按key升序排列 拼接字符
@@ -82,18 +90,6 @@ function getKEY(url: string, params?: IObject) {
 
   return part[0] + query
 }
-
-// 带上特定查询字段（用于微服务调试指定目标机器）
-let SEARCH: IObject | undefined
-location.search
-  .replace(/\/$/, '')
-  .replace(
-    new RegExp(`[?&](${process.env.SEARCH_FIELD})=([^&]*)`, 'g'),
-    (match, field, value) => {
-      value && ((SEARCH || (SEARCH = {}))[field] = value)
-      return match
-    }
-  )
 
 /** 发起请求
  * @param {String} url 请求地址
@@ -156,8 +152,9 @@ function request(
       })
   )
 }
-/// http 方法 ///
-/** get请求
+
+/// http 方法: https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods ///
+/** get请求(获取资源)
  * @param {String} url 请求地址
  * @param {Object} params 查询参数
  * @param {Object} config 请求配置
@@ -167,7 +164,17 @@ function request(
 function get(url: string, params?: IObject, config?: IObject): Promise<any> {
   return request(url, 'get', params, null, config)
 }
-/** put请求
+/** delete请求(删除资源)
+ * @param {String} url 请求地址
+ * @param {Object} params 查询参数
+ * @param {Object} config 请求配置
+ *
+ * @returns {Promise} 响应
+ */
+function del(url: string, params?: IObject, config?: IObject): Promise<any> {
+  return request(url, 'delete', params, null, config)
+}
+/** put请求(覆盖资源)
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
  * @param {Object} params 查询参数
@@ -183,7 +190,7 @@ function put(
 ): Promise<any> {
   return request(url, 'put', params, data, config)
 }
-/** post请求
+/** post请求(创建资源)
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
  * @param {Object} params 查询参数
@@ -199,15 +206,21 @@ function post(
 ): Promise<any> {
   return request(url, 'post', params, data, config)
 }
-/** delete请求
+/** patch请求(部分覆盖资源)
  * @param {String} url 请求地址
+ * @param {Object} data 请求数据
  * @param {Object} params 查询参数
  * @param {Object} config 请求配置
  *
  * @returns {Promise} 响应
  */
-function del(url: string, params?: IObject, config?: IObject): Promise<any> {
-  return request(url, 'delete', params, null, config)
+function patch(
+  url: string,
+  data: any,
+  params?: IObject,
+  config?: IObject
+): Promise<any> {
+  return request(url, 'patch', params, data, config)
 }
 
 /** 全局请求头配置【只用于携带token等】
@@ -215,4 +228,4 @@ function del(url: string, params?: IObject, config?: IObject): Promise<any> {
 let HEADERS = AXIOS.defaults.headers || (AXIOS.defaults.headers = {})
 HEADERS = HEADERS.common || (HEADERS.common = {})
 
-export { get, put, post, del, HEADERS as default }
+export { get, del, put, post, patch, HEADERS as default }

@@ -7,7 +7,7 @@ import Vue from 'vue'
 import router from './router'
 import store from './store'
 import App from './App'
-// import prefer from './store/modules/prefer'
+// import { throttle } from '@/utils/performance'
 import './registerServiceWorker'
 
 /// 全局注册的组件，请尽量不要让这个列表变太长 ///
@@ -86,6 +86,21 @@ Scrollbar.components.Bar.created = function() {
     this.$el.style.display = size && size !== '0' ? '' : 'none'
   })
 }
+// hack: 重设表单的初始值 (initialValue 丧心病狂地只读且不可配置...)
+FormItem.mounted = function() {
+  if (this.prop) {
+    this.dispatch('ElForm', 'el.form.addField', [this])
+    Array.isArray((this.initialValue = this.fieldValue)) &&
+      (this.initialValue = [this.initialValue])
+    this.addValidateEvents()
+  }
+}
+Form.methods.setIni = function(model: IObject) {
+  for (const field of this.fields) {
+    field.initialValue = model[field.prop]
+  }
+  this.clearValidate()
+}
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 
@@ -96,25 +111,29 @@ Scrollbar.components.Bar.created = function() {
 //   }
 // }
 
+/// 埋点 ///
+// const data: IObject[] = []
+// window.addEventListener(
+//   'mousemove',
+//   throttle((e: MouseEvent) => {
+//     // 页面地址&鼠标位置 可用于统计(比如热力图)用户关注的页面及功能
+//     data.push({ url: location.href, x: e.pageX, y: e.pageY })
+//   }, 3000)
+// )
+// window.addEventListener('beforeunload', () => {
+//   submit(data) // 上传数据
+// })
+
 // 防阻塞页面（defer的脚本已缓存时不会非阻塞执行bug:chromium#717979）
 setTimeout(() => {
   // new Vue({
   //   store,
   //   router,
-  //   created() {
-  //     prefer.setSkin() // 设置皮肤
-  //   },
   //   render: (h: CreateElement) => h(App),
   // }).$mount('#app')
   // hacky: 省root组件
   const options = App.options || App
   options.store = store
   options.router = router
-  // 设置皮肤
-  // const created = App.created
-  // App.created = function() {
-  //   created && created.apply(this, arguments)
-  //   prefer.setSkin()
-  // }
   new Vue(App).$mount('#app')
 })

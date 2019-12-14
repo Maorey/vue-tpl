@@ -1,56 +1,57 @@
 // 皮肤工具
-// import Vue from 'vue'
+import Vue from 'vue'
 
-type callback = (skin: string) => void
-/** 订阅列表
- */
-const subscribes = new Set<callback>()
+// css 对象集合(就不用Set了)
+const OBJS: IObject<string>[] = []
 
-/** 默认皮肤
+/** 获取当前皮肤
  */
-const DEFAULT = process.env.THEME
-/** 当前皮肤
- */
-let theme = DEFAULT
-
-const state = {}
-Object.defineProperty(state, 'value', {
-  get: () => theme,
-  set(skin = DEFAULT) {
-    if (skin === theme) {
-      return
-    }
-    for (const dom of document.querySelectorAll<HTMLLinkElement>('link[title]')) {
-      dom.disabled = dom.title !== skin
-    }
-    theme = skin
-    // 通知订阅者
-    for (const callback of subscribes) {
-      callback(skin)
-      ;(callback as any).$ && off(callback)
-    }
-  },
-})
-// state = Vue.observable(state)
-// 放全局去【弃】
-// window[process.env.THEME_FIELD] = state as any
-
-/** 订阅皮肤修改
- * @param {Function} callback 回调函数，接受当前皮肤作为参数
- * @param {Boolean} once 是否只订阅一次
- * @param {Boolean} immediate 是否马上执行
- */
-function on(callback: callback, once?: boolean, immediate?: boolean) {
-  ;(callback as any).$ = once
-  subscribes.add(callback)
-  immediate && callback(theme)
-}
-/** 取消订阅
- * @param {Function} callback 回调函数
- */
-function off(callback: callback) {
-  subscribes.delete(callback)
+function get(): string {
+  return (window as any)[process.env.THEME_FIELD] || process.env.THEME
 }
 
-export default state as { value: string }
-export { on, off }
+/** 设置当前皮肤
+ * @param {String} skin 要设置的皮肤名
+ */
+function set(skin?: string) {
+  if ((skin || (skin = process.env.THEME as string)) === get()) {
+    return skin
+  }
+
+  /// 切换样式 ///
+  let el
+  for (el of document.querySelectorAll<HTMLLinkElement>('link[title]')) {
+    el.disabled = el.title !== skin
+  }
+
+  /// 更新css对象 ///
+  for (el of OBJS) {
+    Object.assign(el, (el.$ as any)[skin])
+  }
+
+  return ((window as any)[process.env.THEME_FIELD] = skin)
+}
+
+/** 获取响应式CSS对象(根据皮肤改变)
+ * @param {IObject<IObject<string>>} dic 字典，比如: {dark:{wrapper:'asd2'}}
+ *
+ * @returns {IObject<string>} 响应式CSS Module对象
+ */
+function getObj(dic: IObject<IObject<string>>) {
+  /// 已有 ///
+  let obj
+  for (obj of OBJS) {
+    if ((obj as any).$ === dic) {
+      return obj
+    }
+  }
+
+  /// 新增 ///
+  obj = Vue.observable({ ...dic[get()] })
+  Object.defineProperty(obj, '$', { get: () => dic })
+  OBJS.push(obj)
+
+  return obj
+}
+
+export { getObj as default, get, set }

@@ -74,6 +74,7 @@ module.exports = class {
    *    runtime:String|Array<String>|RegExp 内联runtime
    *    defer:Boolean 脚本是否defer 默认true
    *    async:Boolean 脚本是否async 默认false (和defer只能有一个)
+   *    theme:String 默认主题({theme}@{name}.css)
    *  }
    */
   constructor(option = {}) {
@@ -102,6 +103,8 @@ module.exports = class {
     /// 脚本属性 ///
     this._SA =
       option.defer === false ? option.async === true && 'async' : 'defer'
+    /// 主题 ///
+    this._REG_THEME = (this._T = option.theme) && /[\\/]([^\\/]+)@.+/
   }
 
   // https://webpack.docschina.org/api/plugins/
@@ -204,6 +207,10 @@ module.exports = class {
     const relStyle = 'stylesheet'
     const REG_RUNTIME = this._REG_RUNTIME
 
+    const theme = this._T
+    const REG_THEME = this._REG_THEME
+    const relAlternate = 'alternate ' + relStyle
+
     const SCRIPT_ATTRIBUTE = this._SA
     let el
     if (SCRIPT_ATTRIBUTE) {
@@ -221,10 +228,21 @@ module.exports = class {
       if (temp.as || temp.rel === relStyle) {
         switch (temp.as) {
           case 'style': // css
-            styles.push({
-              tagName: 'link',
-              attributes: { rel: relStyle, href: temp.href },
-            })
+            if (REG_THEME && (el = REG_THEME.exec(temp.href))) {
+              styles.push({
+                tagName: 'link',
+                attributes: {
+                  rel: theme === el[1] ? relStyle : relAlternate,
+                  href: temp.href,
+                  title: el[1],
+                },
+              })
+            } else {
+              styles.push({
+                tagName: 'link',
+                attributes: { rel: relStyle, href: temp.href },
+              })
+            }
             break
           case script: // js
             // 去掉runtime
@@ -259,7 +277,7 @@ module.exports = class {
 
         // 下一个不是样式则把样式放在下一个
         temp = (head[index + 1] || {}).attributes || {}
-        if (!(temp.as || temp.rel === relStyle)) {
+        if (!(temp.as || temp.rel === relStyle || temp.rel === relAlternate)) {
           ++index
           break
         }

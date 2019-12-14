@@ -5,6 +5,17 @@
  -->
 <template>
   <body>
+    <form :class="$style.skin">
+      <input
+        v-for="val in SKIN"
+        :key="val"
+        name="skin"
+        type="radio"
+        :value="val"
+        :checked="val === skin"
+        @click="skin = val"
+      >
+    </form>
     <Transition
       appear
       name="fade"
@@ -50,6 +61,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
 
+import statePrefer from '@index/store/modules/prefer'
+
 @Component
 export default class extends Vue {
   // data()
@@ -69,6 +82,18 @@ export default class extends Vue {
     }
 
     return LINK
+  }
+
+  get SKIN() {
+    return ['light', 'dark', 'grey']
+  }
+
+  get skin() {
+    return statePrefer.skin
+  }
+
+  set skin(skin: string) {
+    statePrefer.setSkin(skin)
   }
 }
 </script>
@@ -127,6 +152,12 @@ export default class extends Vue {
       }
     }
   }
+}
+
+.skin {
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 </style>
 

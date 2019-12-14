@@ -302,10 +302,12 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   ```
 
 - 尽量使用项目代码模板, 现有模板有(VSCode 输入左侧字符, [其他 IDE](.vscode/vue.code-snippets)):
-  - `ts`: `TypeScript`, `vue` 文件中使用
-  - `vue`: `TypeScript`, `tsx` 文件中使用
-  - `js`: `JavaScript`, `vue` 文件中使用
-  - `vue`: `JavaScript`, `jsx` 文件中使用
+  - `ts`: `.vue` 文件中使用, `TypeScript`
+  - `vue`: `.tsx` 文件中使用, `TypeScript`
+  - `vuex`: `.ts` 文件中使用, `vuex module` class语法
+  - `js`: `.vue` 文件中使用, `JavaScript`
+  - `vue`: `.jsx` 文件中使用, `JavaScript`
+  - `vuex`: `.js` 文件中使用, `vuex module` class语法
 - 请[规范](https://github.com/vuejs/vue/blob/dev/.github/COMMIT_CONVENTION.md)提交消息
 
 ### 其他
@@ -671,6 +673,7 @@ http {
 - 在 `scss` 中引入 `css` ([@import](https://www.sass.hk/docs)) 有两种方式
   1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件. 比如: `@import '~normalize.css';`
   1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import). 比如: `@import '~normalize.css/normalize.css';`
+- Element UI 的 Form 组件 hack 上了 `setIni` 方法, 用于重设表单的初始值以更好地支持重置表单
 
 ### 问题及思考
 

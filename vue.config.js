@@ -46,8 +46,10 @@ module.exports = {
 
     /// 环境变量 ///
     const env = {}
+    const prefix = 'process.env.'
+    const REG_ENV = /^[A-Z][A-Z_]*$/
     for (const att in ENV) {
-      env['process.env.' + att] = JSON.stringify(ENV[att])
+      REG_ENV.test(att) && (env[prefix + att] = JSON.stringify(ENV[att]))
     }
     config.plugin('define').use(require('webpack').DefinePlugin, [env])
 

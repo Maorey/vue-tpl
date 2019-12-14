@@ -9,8 +9,8 @@
       "name": "file",
       "cwd": "${workspaceFolder}",
       "program": "${file}",
-      // "preLaunchTask": "tsc: 监视 - .vscode/tsconfig.json", // cn
-      "preLaunchTask": "tsc: watch - .vscode/tsconfig.json", // en
+      "preLaunchTask": "tsc: 监视 - .vscode/tsconfig.json", // cn
+      // "preLaunchTask": "tsc: watch - .vscode/tsconfig.json", // en
       "outFiles": [
         "${workspaceFolder}/compile/**/*.js"
       ]
@@ -38,8 +38,20 @@
       "cwd": "${workspaceFolder}",
       "program": "${workspaceFolder}/node_modules/@vue/cli-service/bin/vue-cli-service.js",
       "args": [
-        "build",
-        "--report"
+        "build"
+      ]
+    },
+    // 调试单元测试脚本
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "test:unit",
+      // "stopOnEntry": true,
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/node_modules/@vue/cli-service/bin/vue-cli-service.js",
+      "args": [
+        "test:unit",
+        "--detectOpenHandles"
       ]
     }
   ]

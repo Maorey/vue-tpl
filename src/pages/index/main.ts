@@ -7,7 +7,7 @@ import router from './router'
 import store from './store'
 import Vue from 'vue'
 import App from './App'
-// import prefer from './store/modules/prefer'
+// import { throttle } from '@/utils/performance'
 import './registerServiceWorker'
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
@@ -19,25 +19,29 @@ import './registerServiceWorker'
 //   }
 // }
 
+/// 埋点 ///
+// const data: IObject[] = []
+// window.addEventListener(
+//   'mousemove',
+//   throttle((e: MouseEvent) => {
+//     // 页面地址&鼠标位置 可用于统计(比如热力图)用户关注的页面及功能
+//     data.push({ url: location.href, x: e.pageX, y: e.pageY })
+//   }, 3000)
+// )
+// window.addEventListener('beforeunload', () => {
+//   submit(data) // 上传数据
+// })
+
 // 防阻塞页面（defer的脚本已缓存时不会非阻塞执行bug:chromium#717979）
 setTimeout(() => {
   // new Vue({
   //   store,
   //   router,
-  //   created() {
-  //     prefer.setSkin() // 初始化皮肤
-  //   },
   //   render: (h: CreateElement): VNode => h(App),
   // }).$mount('#app')
   // hacky: 省root组件
   const options = App.options || App
   options.store = store
   options.router = router
-  // 设置皮肤
-  // const created = options.created
-  // options.created = function() {
-  //   created && created.apply(this, arguments)
-  //   prefer.setSkin()
-  // }
   new Vue(App).$mount('#app')
 })

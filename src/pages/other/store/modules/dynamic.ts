@@ -27,7 +27,7 @@ class Dynamic extends VuexModule implements IDynamic {
 
   /// Mutation 无法调用/commit 必须通过Action ///
   @Mutation
-  private SET_DYNAMIC(dynamic: boolean) {
+  private DYNAMIC(dynamic: boolean) {
     this.dynamic = dynamic
   }
 
@@ -37,7 +37,7 @@ class Dynamic extends VuexModule implements IDynamic {
    */
   @Action
   setDynamic(dynamic: boolean) {
-    this.SET_DYNAMIC(dynamic) // 动态模块可以不用 context.commit
+    this.DYNAMIC(dynamic) // 动态模块可以不用 context.commit
   }
 }
 

@@ -5,7 +5,7 @@
  */
 import { getAsync } from '@/utils/highOrder' // 高阶组件工具
 
-// import IMG_HOME from '@index/assets/home.png'
+import IMG_HOME from '@index/assets/home.png'
 import IMG_ABOUT from '@index/assets/about.png'
 
 /* eslint-disable comma-dangle */
@@ -18,19 +18,18 @@ export default {
     /*! 标题 */ name: 'vue-tpl',
   },
   routes: [
-    // {
-    //   /*! 首页 */
+    {
+      /*! 首页 */
 
-    //   path: '/home',
-    //   meta: {
-    //     name: '首页',
-    //     thumb: IMG_HOME,
-    //   },
-    //   component: getAsync(
-    // eslint-disable-next-line max-len
-    //     () => import(/* webpackChunkName: "iHome" */ '@index/views/Home') as any
-    //   ),
-    // },
+      path: '/home',
+      meta: {
+        name: '首页',
+        thumb: IMG_HOME,
+      },
+      component: getAsync(
+        () => import(/* webpackChunkName: "iHome" */ '@index/views/Home') as any
+      ),
+    },
     {
       /*! 关于 */
 

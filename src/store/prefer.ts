@@ -2,7 +2,7 @@
  */
 import { VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import { local } from '@/utils/storage'
-import SKIN from '@/utils/skin'
+import { set } from '@/utils/skin'
 import CONFIG from '@/config'
 
 /** 本地存储的偏好信息
@@ -27,7 +27,7 @@ interface IPrefer {
 class Prefer extends VuexModule implements IPrefer {
   /// State & Getter(public) ///
   lang = (PREFER.lang || 'zh') as string
-  skin = (SKIN.value = PREFER.skin || process.env.THEME) as string
+  skin = (PREFER.skin = set(PREFER.skin))
 
   /// Mutation 无法调用/commit 必须通过Action ///
   @Mutation
@@ -37,7 +37,7 @@ class Prefer extends VuexModule implements IPrefer {
 
   @Mutation
   protected SKIN(skin: string) {
-    this.skin = PREFER.skin = SKIN.value = skin
+    this.skin = PREFER.skin = set(skin)
   }
 
   /// Action ///
@@ -45,7 +45,7 @@ class Prefer extends VuexModule implements IPrefer {
    * @param {String} skin 皮肤名
    */
   @Action
-  setSkin(skin: string = process.env.THEME) {
+  setSkin(skin: string) {
     this.context.commit('SKIN', skin)
   }
 

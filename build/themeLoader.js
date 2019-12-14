@@ -1,4 +1,4 @@
-// 多主题插件
+// 多主题g构建工具
 // const ora = require('ora')
 // const spinner = ora({
 //   text: 'Building themes...',
@@ -9,7 +9,7 @@ const path = require('path')
 const loaderUtils = require('loader-utils')
 
 const PLUGIN_NAME = 'theme-loader'
-const DEFAULT_HANDLER = path.resolve('src/utils/getCSSModule')
+const DEFAULT_HANDLER = path.resolve('src/utils/skin')
 
 const EXTENSION = '.scss'
 const INDEX = '/index.scss'
@@ -17,23 +17,19 @@ const INDEX = '/index.scss'
 const REG_EXTENSION = /\.scss$/
 const REG_INDEX = /\/index\.scss$/
 const REG_SCSS = /\/[^/]+\.scss$/
-const REG_THEME = /[?&]theme=([^|&]*)\|?([^&]*)/
+const REG_THEME = /[?&]theme=([^|& ]*)\|?([^& ]*)/
 
 const CACHE_EXISTS = {}
 const DIR_SRC = path.resolve('src')
 
 let CACHE_INIT
-/** 默认主题 { name, path }
- */
+/** 默认主题 { name, path } */
 let THEME
-/** 所有主题 { [name]: path }
- */
+/** 所有主题 { [name]: path } */
 let THEMES
-/** 主题文件夹相对路径
- */
+/** 主题文件夹相对路径 */
 let R_THEME
-/** 根主题文件夹局对路径
- */
+/** 根主题文件夹局对路径 */
 let DIR_THEME
 
 function exists(rootDir, fileName) {
@@ -125,7 +121,7 @@ function getResource(resource) {
   ).replace(/\\/g, '\\\\')
 }
 
-// 多主题loader
+/// 多主题loader ///
 // 参考: multi-loader
 module.exports = function(source) {
   this.callback(null, source)
@@ -138,7 +134,7 @@ module.exports.pitch = function() {
   }
 
   const resource = getResource(this.resource)
-  if (REG_THEME.exec(resource)) {
+  if (REG_THEME.test(resource)) {
     return
   }
 
@@ -155,32 +151,7 @@ module.exports.pitch = function() {
 
   return `${resultSource}\nlet locals\n${first} && Object.keys(${first}).length && (locals = getOb({${locals}}))\nexport default locals`
 }
-// 不同theme到不同chunk插件
-// 参考: mini-css-extract-plugin webpack.optimize.SplitChunksPlugin
-module.exports.plugin = class {
-  // https://webpack.docschina.org/api/plugins/
-  apply(compiler) {
-    if (!(THEMES || init().THEMES)) {
-      return
-    }
-
-    // const options = (compiler.options.optimization || {}).splitChunks || {}
-    // // 其他配置先不管
-    // const minSize = options.minSize || 0
-    // const maxSize = options.maxSize || 0
-    const MODULE_TYPE = 'css/mini-extract'
-
-    compiler.hooks.thisCompilation.tap(PLUGIN_NAME, compilation =>
-      compilation.mainTemplate.hooks.requireEnsure.tap(
-        PLUGIN_NAME,
-        (source, chunk, hash) => {
-
-        }
-      )
-    )
-  }
-}
-
+/// 其他 ///
 module.exports.init = init
 module.exports.getThemeByQuery = getThemeByQuery
 module.exports.exists = function(dir, file) {

@@ -42,7 +42,7 @@ function fileName(config) {
     .options(getLoaderOption('media/' + FileName))
 }
 
-function plugin(config) {
+function plugin(config, ENV) {
   // 【弃 过时但有效】固定打包文件哈希, 避免相同代码打包出不同哈希
   //  (排除 boilerplate(runtime and manifest)等影响)
   // config.plugin('md5-hash').use('webpack-md5-hash')
@@ -53,8 +53,9 @@ function plugin(config) {
   // 补全html插入资源
   config.plugin('insert-preload').use(require.resolve('./insertPreload'), [
     {
-      runtime: ['c_', 'r_'],
       defer: true,
+      theme: ENV.THEME,
+      runtime: ['c_', 'r_'],
     },
   ])
   // 文件 gzip 压缩 https://webpack.docschina.org/plugins/compression-webpack-plugin/
@@ -104,20 +105,19 @@ module.exports = function(config, ENV, pages) {
   const themeLoader = require('./themeLoader')
   if (themeLoader.init(ENV).THEMES) {
     const name = 'theme-loader'
+    /** 选项
+     * {
+     *   localHandler: String 默认: 'src/utils/skin.ts'
+     *    ({[theme]:Object}) => Object
+     * }
+     */
     config.module
       .rule('scss')
       .use(name)
       .loader(require.resolve('./themeLoader'))
-    /** 选项
-     * {
-     *   localHandler: String 默认: 'src/utils/getCSSModule.ts'
-     *    ({[theme]:Object}) => Object
-     * }
-     */
-    config.plugin(name).use(themeLoader.plugin)
   }
   fileName(config)
-  plugin(config, pages)
+  plugin(config, ENV)
 
   /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
