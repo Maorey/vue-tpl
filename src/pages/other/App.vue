@@ -5,6 +5,16 @@
  -->
 <template>
   <body :class="$style.wrapper">
+    <div :class="$style.skin">
+      <ElLink
+        v-for="item in SKIN"
+        :key="item.name"
+        :type="item.type"
+        :disabled="skin === item.name"
+        icon="el-icon-magic-stick"
+        @click="skin = item.name"
+      />
+    </div>
     <div :class="$style.nav">
       <RouterLink to="/home">
         Home
@@ -160,6 +170,30 @@
   </body>
 </template>
 
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+
+import statePrefer from '@other/store/modules/prefer'
+
+@Component
+export default class extends Vue {
+  get SKIN() {
+    return [
+      { name: 'light', type: 'danger' },
+      { name: 'dark', type: 'primary' },
+    ]
+  }
+
+  get skin() {
+    return statePrefer.skin
+  }
+
+  set skin(skin: string) {
+    statePrefer.setSkin(skin)
+  }
+}
+</script>
+
 <style lang="scss" module>
 .wrapper {
   color: $colorTextCommon;
@@ -176,6 +210,16 @@
     &:global(.router-link-exact-active) {
       color: $colorTheme;
     }
+  }
+}
+
+.skin {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+
+  :global(.el-link) {
+    font-size: $large;
   }
 }
 </style>

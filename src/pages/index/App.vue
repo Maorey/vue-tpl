@@ -98,6 +98,19 @@ export default class extends Vue {
 }
 </script>
 
+<style lang="scss">
+/// 全局样式 ///
+@import '~@/scss/reset';
+@import '~@/scss/icon';
+@import '~@/scss/transitions';
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+</style>
+
 <style lang="scss" module>
 .nav {
   position: absolute;
@@ -158,18 +171,5 @@ export default class extends Vue {
   position: absolute;
   top: 5px;
   right: 5px;
-}
-</style>
-
-<style lang="scss">
-/// 全局样式 ///
-@import '~@/scss/reset';
-@import '~@/scss/icon';
-@import '~@/scss/transitions';
-
-html,
-body {
-  height: 100%;
-  overflow: hidden;
 }
 </style>

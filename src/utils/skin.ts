@@ -26,6 +26,7 @@ function set(skin?: string) {
   /// 切换样式 ///
   let el
   for (el of document.querySelectorAll<HTMLLinkElement>('link[title]')) {
+    el.disabled = true // 必须先disabled下
     el.disabled = el.title !== skin
   }
 

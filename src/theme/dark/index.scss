@@ -8,12 +8,12 @@
  */
 /// 变量 (私有变量 _+camelCase)///
 @import './colors'; // 颜色 【colorCase】: colorRed
-@import '../light/border'; // 边框 【(border|shadow)Case】: borderSolidWidth
-@import '../light/fontSIzes'; // 字号 【cssCase】: xSmaller、xxxLarge
-@import '../light/zIndexes'; // z-index层级划分 【zCase】: zMessage
-@import '../light/layout'; // 固定布局尺寸 【(height|width)Case】: heightHeader、widthLfetColumn
-@import '../light/scrollBar'; // 滚动条变量 【scrollBarCase】
-@import '../light/icon'; // 字体图标变量 【iconCase】
+@import '../parts/border'; // 边框 【(border|shadow)Case】: borderSolidWidth
+@import '../parts/fontSIzes'; // 字号 【cssCase】: xSmaller、xxxLarge
+@import '../parts/zIndexes'; // z-index层级划分 【zCase】: zMessage
+@import '../parts/layout'; // 固定布局尺寸 【(height|width)Case】: heightHeader、widthLfetColumn
+@import '../parts/scrollBar'; // 滚动条变量 【scrollBarCase】
+@import '../parts/icon'; // 字体图标变量 【iconCase】
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 
