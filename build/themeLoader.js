@@ -9,7 +9,7 @@ const path = require('path')
 const loaderUtils = require('loader-utils')
 
 const PLUGIN_NAME = 'theme-loader'
-const DEFAULT_HANDLER = path.resolve('src/utils/skin')
+const DEFAULT_HANDLER = path.resolve('src/utils/theme')
 
 const EXTENSION = '.scss'
 const INDEX = '/index.scss'

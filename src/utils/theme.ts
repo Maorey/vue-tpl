@@ -14,28 +14,28 @@ function get(): string {
 }
 
 /** 设置当前皮肤
- * @param {String} skin 要设置的皮肤名
+ * @param {String} theme 要设置的皮肤名
  *
  * @returns {String} 当前皮肤
  */
-function set(skin?: string) {
-  if ((skin || (skin = process.env.THEME as string)) === get()) {
-    return skin
+function set(theme?: string) {
+  if ((theme || (theme = process.env.THEME as string)) === get()) {
+    return theme
   }
 
   /// 切换样式 ///
   let el
   for (el of document.querySelectorAll<HTMLLinkElement>('link[title]')) {
     el.disabled = true // 必须先disabled下
-    el.disabled = el.title !== skin
+    el.disabled = el.title !== theme
   }
 
   /// 更新css对象 ///
   for (el of OBJS) {
-    Object.assign(el, (el.$ as any)[skin])
+    Object.assign(el, (el.$ as any)[theme])
   }
 
-  return ((window as any)[process.env.THEME_FIELD] = skin)
+  return ((window as any)[process.env.THEME_FIELD] = theme)
 }
 
 /** 获取响应式CSS对象(根据皮肤改变)

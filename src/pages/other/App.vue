@@ -5,14 +5,14 @@
  -->
 <template>
   <body :class="$style.wrapper">
-    <div :class="$style.skin">
+    <div :class="$style.theme">
       <ElLink
-        v-for="item in SKIN"
+        v-for="item in THEME"
         :key="item.name"
         :type="item.type"
-        :disabled="skin === item.name"
+        :disabled="theme === item.name"
         icon="el-icon-magic-stick"
-        @click="skin = item.name"
+        @click="theme = item.name"
       />
     </div>
     <div :class="$style.nav">
@@ -177,19 +177,19 @@ import statePrefer from '@other/store/modules/prefer'
 
 @Component
 export default class extends Vue {
-  get SKIN() {
+  get THEME() {
     return [
       { name: 'light', type: 'danger' },
       { name: 'dark', type: 'primary' },
     ]
   }
 
-  get skin() {
-    return statePrefer.skin
+  get theme() {
+    return statePrefer.theme
   }
 
-  set skin(skin: string) {
-    statePrefer.setSkin(skin)
+  set theme(theme: string) {
+    statePrefer.setSkin(theme)
   }
 }
 </script>
@@ -213,7 +213,7 @@ export default class extends Vue {
   }
 }
 
-.skin {
+.theme {
   position: absolute;
   top: 5px;
   right: 5px;

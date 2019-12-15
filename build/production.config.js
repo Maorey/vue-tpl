@@ -107,7 +107,7 @@ module.exports = function(config, ENV, pages) {
     const name = 'theme-loader'
     /** 选项
      * {
-     *   localHandler: String 默认: 'src/utils/skin.ts'
+     *   localHandler: String 默认: 'src/utils/theme.ts'
      *    ({[theme]:Object}) => Object
      * }
      */

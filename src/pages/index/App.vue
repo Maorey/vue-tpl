@@ -5,15 +5,15 @@
  -->
 <template>
   <body>
-    <form :class="$style.skin">
+    <form :class="$style.theme">
       <input
-        v-for="val in SKIN"
+        v-for="val in THEME"
         :key="val"
-        name="skin"
+        name="theme"
         type="radio"
         :value="val"
-        :checked="val === skin"
-        @click="skin = val"
+        :checked="val === theme"
+        @click="theme = val"
       >
     </form>
     <Transition
@@ -84,16 +84,16 @@ export default class extends Vue {
     return LINK
   }
 
-  get SKIN() {
+  get THEME() {
     return ['light', 'dark']
   }
 
-  get skin() {
-    return statePrefer.skin
+  get theme() {
+    return statePrefer.theme
   }
 
-  set skin(skin: string) {
-    statePrefer.setSkin(skin)
+  set theme(theme: string) {
+    statePrefer.setSkin(theme)
   }
 }
 </script>
@@ -167,9 +167,10 @@ body {
   }
 }
 
-.skin {
+.theme {
   position: absolute;
   top: 5px;
   right: 5px;
+  cursor: pointer;
 }
 </style>
