@@ -85,7 +85,7 @@ export default class extends Vue {
   }
 
   get SKIN() {
-    return ['light', 'dark', 'grey']
+    return ['light', 'dark']
   }
 
   get skin() {

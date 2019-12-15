@@ -43,6 +43,7 @@ git config core.ignorecase false # 使git对文件名大小写敏感
 
 ```bash
 yarn dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.development.local 文件中设置)
+yarn dev --mode=production # 调试多主题切换
 ```
 
 ### 构建项目(生成部署文件)

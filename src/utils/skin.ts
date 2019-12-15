@@ -1,10 +1,13 @@
-// 皮肤工具
+/** 皮肤工具(getter & setter 发布订阅/依赖注入就不用了)
+ */
 import Vue from 'vue'
 
-// css 对象集合(就不用Set了)
+// css 对象集合(就不用WeekMap/Set了)
 const OBJS: IObject<string>[] = []
 
 /** 获取当前皮肤
+ *
+ * @returns {String} 当前皮肤
  */
 function get(): string {
   return (window as any)[process.env.THEME_FIELD] || process.env.THEME
@@ -12,6 +15,8 @@ function get(): string {
 
 /** 设置当前皮肤
  * @param {String} skin 要设置的皮肤名
+ *
+ * @returns {String} 当前皮肤
  */
 function set(skin?: string) {
   if ((skin || (skin = process.env.THEME as string)) === get()) {
@@ -48,10 +53,22 @@ function getObj(dic: IObject<IObject<string>>) {
 
   /// 新增 ///
   obj = Vue.observable({ ...dic[get()] })
-  Object.defineProperty(obj, '$', { get: () => dic })
+  Object.defineProperty(obj, '$', { value: dic })
   OBJS.push(obj)
 
   return obj
 }
 
-export { getObj as default, get, set }
+/** 删除一个响应式CSS对象(的引用，释放内存)
+ * @param {IObject<string>} obj  响应式CSS对象
+ */
+function delObj(obj: IObject<string>) {
+  for (let i = 0, len = OBJS.length; i < len; i++) {
+    if (obj === OBJS[i]) {
+      OBJS.splice(i, 1)
+      return
+    }
+  }
+}
+
+export { getObj as default, delObj, get, set }

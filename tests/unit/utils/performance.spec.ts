@@ -1,37 +1,39 @@
-/** 性能优化相关工具
+/** 性能优化相关工具函数
  */
 import {
   throttle,
   debounce,
-  throttleDelay,
-  debounceDelay,
+  throttleAtOnce,
+  debounceAtOnce,
 } from '@/utils/performance'
 
-describe('@/utils: 工具函数', () => {
-  it('throttle 节流（立即执行）', done => {
+describe('@/utils/performance: 性能优化相关工具函数', () => {
+  it('throttle 节流（延迟执行）', done => {
     let countIt = 0
+    let countFn = 0
+
     const interval = setInterval(() => {
       test(countIt++)
     }, 4)
 
-    let countFn = 0
     const test = throttle((num: number) => {
       countFn++
-      if (num > 2) {
-        expect(countFn).toBe(2)
+      if (num > 1) {
+        expect(countFn).toBe(1)
         clearInterval(interval)
         done()
       }
     }, 8)
   })
-  it('throttleDelay 节流（延迟执行）', done => {
+  it('throttleAtOnce 节流（立即执行）', done => {
     let countIt = 0
+    let countFn = 0
+
     const interval = setInterval(() => {
       test(countIt++)
     }, 4)
 
-    let countFn = 0
-    const test = throttleDelay((num: number) => {
+    const test = throttleAtOnce((num: number) => {
       countFn++
       if (num > 1) {
         expect(countFn).toBe(2)
@@ -41,35 +43,13 @@ describe('@/utils: 工具函数', () => {
     }, 8)
   })
 
-  it('debounce 防抖（立即执行）', done => {
+  it('debounce 防抖（延迟执行）', done => {
     let countIt = 0
-    let interval = setInterval(() => {
-      test(countIt++)
-      if (countIt > 2) {
-        expect(countFn).toBe(1)
-        clearInterval(interval)
-
-        interval = setInterval(() => {
-          test(countIt++)
-        }, 8)
-      }
-    })
-
     let countFn = 0
-    const test = debounce((num: number) => {
-      countFn++
-      if (num > 3) {
-        expect(countFn).toBe(3)
-        clearInterval(interval)
-        done()
-      }
-    }, 4)
-  })
-  it('debounceDelay 防抖（延迟执行）', done => {
-    let countIt = 0
+
     let interval = setInterval(() => {
       test(countIt++)
-      if (countIt > 2) {
+      if (countIt > 1) {
         expect(countFn).toBe(0)
         clearInterval(interval)
 
@@ -79,10 +59,34 @@ describe('@/utils: 工具函数', () => {
       }
     })
 
-    let countFn = 0
-    const test = debounceDelay((num: number) => {
+    const test = debounce((num: number) => {
       countFn++
-      if (num > 3) {
+      if (num > 2) {
+        expect(countFn).toBe(3)
+        clearInterval(interval)
+        done()
+      }
+    }, 4)
+  })
+  it('debounceAtOnce 防抖（立即执行）', done => {
+    let countIt = 0
+    let countFn = 0
+
+    let interval = setInterval(() => {
+      test(countIt++)
+      if (countIt > 1) {
+        expect(countFn).toBe(1)
+        clearInterval(interval)
+
+        interval = setInterval(() => {
+          test(countIt++)
+        }, 8)
+      }
+    })
+
+    const test = debounceAtOnce((num: number) => {
+      countFn++
+      if (num > 2) {
         expect(countFn).toBe(3)
         clearInterval(interval)
         done()

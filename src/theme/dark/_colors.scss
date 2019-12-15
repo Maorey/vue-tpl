@@ -3,8 +3,50 @@
  * @Author: 毛瑞
  * @Date: 2019-07-06 08:30:59
  */
-/// 背景色 ///
-$colorBackGround: #cfcfcf;
+/// 常用颜色 ///
+$colorBlank: #fff; // 黑色
+$colorWhite: #000; // 白色
+$colorTransparent: #0000; // 透明
 
-/// 文本 ///
-$colorTextCommon: #0d1a25;
+// 【主题色】
+$colorTheme: #40d2ff;
+$colorTheme1: mix($colorWhite, $colorTheme, 10%);
+$colorTheme2: mix($colorWhite, $colorTheme, 20%);
+$colorTheme3: mix($colorWhite, $colorTheme, 30%);
+$colorTheme4: mix($colorWhite, $colorTheme, 40%);
+$colorTheme5: mix($colorWhite, $colorTheme, 50%);
+$colorTheme6: mix($colorWhite, $colorTheme, 60%);
+$colorTheme7: mix($colorWhite, $colorTheme, 70%);
+$colorTheme8: mix($colorWhite, $colorTheme, 80%);
+$colorTheme9: mix($colorWhite, $colorTheme, 90%);
+
+// 【辅助色】
+$colorSuccess: #3ac25c;
+$colorSuccess1: mix($colorWhite, $colorSuccess, 80%);
+$colorSuccess2: mix($colorWhite, $colorSuccess, 90%);
+
+$colorWarn: #dbe63c;
+$colorWarn1: mix($colorWhite, $colorWarn, 80%);
+$colorWarn2: mix($colorWhite, $colorWarn, 90%);
+
+$colorDanger: #f56c6c;
+$colorDanger1: mix($colorWhite, $colorDanger, 80%);
+$colorDanger2: mix($colorWhite, $colorDanger, 90%);
+
+$colorInfo: #969099;
+$colorInfo1: mix($colorWhite, $colorInfo, 80%);
+$colorInfo2: mix($colorWhite, $colorInfo, 90%);
+
+// 【中性色】
+$colorTextMain: #c0c4cc; // 主要文字
+$colorTextCommon: #909399; // 常规文字
+$colorTextMinor: #606266; // 次要文字
+$colorTextHolder: #3b3b3b; // 占位文字
+
+$colorBorderLv1: #3b3b3b; // 一级边框
+$colorBorderLv2: #3c3c3c; // 二级边框
+$colorBorderLv3: #3d3d3d; // 三级边框
+$colorBorderLv4: #3e3e3e; // 四级边框
+
+/// 背景色 ///
+$colorBackGround: #f1f8ff;
