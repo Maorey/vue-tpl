@@ -44,10 +44,43 @@ function set(theme?: string) {
  * @returns {IObject<string>} 响应式CSS Module对象
  */
 function getObj(dic: IObject<IObject<string>>) {
-  /// 已有 ///
+  let key
+  let item
+  let flag
   let obj
+  /// 值一样 ///
+  for (key in dic) {
+    if (obj) {
+      item = dic[key]
+      for (key in obj) {
+        if (obj[key] !== item[key]) {
+          flag = true
+          break
+        }
+      }
+      if (flag) {
+        break
+      }
+    } else {
+      obj = dic[key]
+    }
+  }
+  if (!flag) {
+    return obj
+  }
+
+  /// 已有 ///
   for (obj of OBJS) {
-    if ((obj as any).$ === dic) {
+    flag = true
+    item = (obj as any).$
+    for (key in dic) {
+      // import obj from ‘*.scss’ 得到单例
+      if (dic[key] !== item[key]) {
+        flag = false
+        break
+      }
+    }
+    if (flag) {
       return obj
     }
   }
