@@ -45,7 +45,7 @@ class Prefer extends VuexModule implements IPrefer {
    * @param {String} theme 皮肤名
    */
   @Action
-  setSkin(theme: string) {
+  setTheme(theme: string) {
     this.context.commit('THEME', theme)
   }
 

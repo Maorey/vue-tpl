@@ -1,4 +1,4 @@
-/*
+/** 深色主题
  * @Description: 全局scss变量
  *  【此文件中请勿出现具体样式，否则会打包到!所有!css chunk中】
  *  【在此文件中导出的变量会混合到!所有!scss的导出中】
@@ -16,36 +16,7 @@
 @import '../parts/icon'; // 字体图标变量 【iconCase】
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
-
-/// 扩展（@extend %ellipsis;） ///
-
-// 单行文本溢出省略号
-%ellipsis {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-// 在页面居中【需要指定高宽】
-%centerPage {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-}
+@import '../parts/extend'; // 扩展 @extend %{var};
 
 /* ---------------------- 我也是一条分割线 (*❦ω❦) ---------------------- */
-
-/// 混入（@include name(args);） ///
-
-// 多行溢出省略号(-webkit-有效，其它截断) 参数为行数
-@mixin ellipsis($clamp) {
-  // -webkit-多行溢出省略号
-  -webkit-box-orient: vertical; /* stylelint-disable-line property-no-vendor-prefix */
-  -webkit-line-clamp: $clamp;
-  display: -webkit-box; /* stylelint-disable-line value-no-vendor-prefix */
-  overflow: hidden;
-  word-break: break-word;
-}
+@import '../parts/mixin'; // 混入@include name(args);

@@ -1,0 +1,20 @@
+/// 混入（@include name(args);） ///
+
+// 多行溢出省略号(-webkit-有效，其它截断) 参数为行数
+@mixin ellipsis($clamp) {
+  // -webkit-多行溢出省略号
+  -webkit-box-orient: vertical; /* stylelint-disable-line property-no-vendor-prefix */
+  -webkit-line-clamp: $clamp;
+  display: -webkit-box; /* stylelint-disable-line value-no-vendor-prefix */
+  overflow: hidden;
+  word-break: break-word;
+}
+
+// 清除浮动
+@mixin clear($float: both) {
+  &::after {
+    display: block;
+    clear: $float;
+    content: '';
+  }
+}

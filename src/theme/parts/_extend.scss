@@ -1,0 +1,18 @@
+/// 扩展（@extend %ellipsis;） ///
+
+// 单行文本溢出省略号
+%ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// 在页面居中【需要指定高宽】
+%centerPage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+}

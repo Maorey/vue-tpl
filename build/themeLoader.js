@@ -149,7 +149,7 @@ module.exports.pitch = function() {
     locals += theme + ','
   }
 
-  return `${resultSource}\nlet locals\n${first} && Object.keys(${first}).length && (locals = getOb({${locals}}))\nexport default locals`
+  return `${resultSource}\nlet locals\n${first} && (locals = getOb({${locals}}))\nexport default locals`
 }
 /// 其他 ///
 module.exports.init = init

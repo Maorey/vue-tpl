@@ -189,7 +189,7 @@ export default class extends Vue {
   }
 
   set theme(theme: string) {
-    statePrefer.setSkin(theme)
+    statePrefer.setTheme(theme)
   }
 }
 </script>
