@@ -3,6 +3,6 @@ dist
 compile
 coverage
 public/css
-src/**/theme/export
+src/**/skin/export
 *.min.css
 export*.scss

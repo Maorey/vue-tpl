@@ -54,7 +54,7 @@ function plugin(config, ENV) {
   config.plugin('insert-preload').use(require.resolve('./insertPreload'), [
     {
       defer: true,
-      theme: ENV.THEME,
+      skin: ENV.SKIN,
       runtime: ['c_', 'r_'],
     },
   ])
@@ -101,20 +101,20 @@ function plugin(config, ENV) {
 module.exports = function(config, ENV, pages) {
   // https://webpack.js.org/configuration/other-options/#recordspath
   config.merge({ recordsPath: require('path').resolve('build/records.log') })
-  /// 多主题 ///
-  const themeLoader = require('./themeLoader')
-  if (themeLoader.init(ENV).THEMES) {
-    const name = 'theme-loader'
+  /// 多皮肤 ///
+  const skinLoader = require('./skinLoader')
+  if (skinLoader.init(ENV).SKINS) {
+    const name = 'skin-loader'
     /** 选项
      * {
-     *   localHandler: String 默认: 'src/utils/theme.ts'
-     *    ({[theme]:Object}) => Object
+     *   localHandler: String 默认: 'src/utils/skin.ts'
+     *    ({[skin]:Object}) => Object
      * }
      */
     config.module
       .rule('scss')
       .use(name)
-      .loader(require.resolve('./themeLoader'))
+      .loader(require.resolve('./skinLoader'))
   }
   fileName(config)
   plugin(config, ENV)

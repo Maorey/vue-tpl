@@ -43,7 +43,7 @@ git config core.ignorecase false # 使git对文件名大小写敏感
 
 ```bash
 yarn dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.development.local 文件中设置)
-yarn dev --mode=production # 调试多主题切换
+yarn dev --mode=production # 调试皮肤切换
 ```
 
 ### 构建项目(生成部署文件)
@@ -91,7 +91,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 │   │── config # 配置目录
 │   │── lang # 多语言目录
 │   │── libs # 存储不(能)通过 npm 管理的第三方或项目 js/css 库
-│   │── scss # .scss/.module.scss 文件
+│   │── scss # (.module).scss 文件
 │   │── router # 路由设置
 │   │── store # 状态管理
 │   │   └── modules # 各模块状态管理
@@ -238,7 +238,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
   ```scss
   // el.scss
-  @import '~element-ui/packages/theme-chalk/src/button.scss';
+  @import '~element-ui/packages/theme-chalk/src/button';
   ```
 
   ```html
@@ -261,7 +261,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   </script>
   <!-- 也可以在这儿引用
   <style lang="scss">
-  @import '~element-ui/packages/theme-chalk/src/button.scss';
+  @import '~element-ui/packages/theme-chalk/src/button';
   </style> -->
   ```
 
@@ -286,6 +286,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
   ```scss
   // 以下默认local
+
   // bad →_→
   :global(.content .title.active) {
     color: $colorHighlight;
@@ -313,32 +314,33 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 ### 其他
 
-- 关于多主题方案, 本模板采用的是 `<link rel="alternate stylesheet">`[方案](https://developer.mozilla.org/en-US/docs/Web/CSS/Alternative_style_sheets), 基于`scss`全局变量注入进行多个主题的构建, 优点是支持异步, 浏览器原生支持并且无缝流畅切换. 通过环境变量[.env](.env)进行配置, 在`import` **scss** 文件时可以指定主题和使用的 scss 变量(指定后不生成其他主题的)
+- 关于换肤方案, 本模板采用的是 `<link rel="alternate stylesheet">`[方案](https://developer.mozilla.org/en-US/docs/Web/CSS/Alternative_style_sheets), 基于`scss`全局变量注入进行多个皮肤的构建, 优点是支持异步, 浏览器原生支持并且无缝流畅切换. 通过环境变量[.env](.env)进行配置, 在`import` **scss** 文件时可以指定皮肤和使用的 scss 变量(指定后不生成其他皮肤的)
 
   ```html
   <script lang="ts">
     /// 基础样式 ///
-    import './scss/a.scss?theme='
-    // 指定scss变量文件相对路径(别名、别名/主题文件夹)
-    import './scss/b.scss?theme=|foo.scss'
+    import './scss/a.scss?skin='
+    // 指定scss变量文件相对路径(别名/皮肤文件夹)
+    import './scss/b.scss?skin=|foo.scss'
 
-    /// 主题样式 ///
+    /// 皮肤样式 ///
     import './scss/c.scss'
     import $styleD from './scss/d.module.scss'
 
-    /// 指定各主题下的样式 ///
-    import './scss/e.scss?theme=dark'
-    import './scss/f.scss?theme=light'
+    /// 指定各皮肤下的样式 ///
+    import './scss/e.scss?skin=dark'
+    import './scss/f.scss?skin=light'
 
     // CSS Module
-    import SKIN from '@/utils/skin'
-    import $styleDark from './scss/g.module.scss?theme=dark|foo.scss'
-    import $styleLight from './scss/g.module.scss?theme=light|bar.scss'
+    import getSkin from '@/utils/skin'
+    import styleDark from './scss/g.module.scss?skin=dark|foo.scss'
+    import styleLight from './scss/g.module.scss?skin=light|bar.scss'
 
     // see: https://github.com/kaorun343/vue-property-decorator
     import { Component, Vue } from 'vue-property-decorator'
 
     // const UPPER_CASE:string|number|any[] // 常量
+    const $styleF = getSkin({ dark: styleDark, light: styleLight })
     // const camelCase:any // 单例
     // function utils() {} // 函数(无副作用)
 
@@ -355,12 +357,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
       }
 
       private get $styleF() {
-        switch(SKIN.value) {
-          case 'dark':
-            return $styleDark
-          default:
-            return $styleLight
-        }
+        return $styleF
       }
       /// watch (@Watch) ///
       /// LifeCycle (private beforeCreate/created/.../destroyed) ///
@@ -369,25 +366,25 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
     }
   </script>
 
-  <!-- 主题样式 CSS Module or not -->
+  <!-- 皮肤样式 CSS Module or not -->
   <style lang="scss" module>
   .foo {
     color: $red;
   }
   </style>
   <!-- 基础样式 -->
-  <style lang="scss" module theme="theme=|foo.scss">
+  <style lang="scss" module skin="skin=|foo.scss">
   .bar {
     color: $red;
   }
   </style>
-  <!-- 指定各主题下的样式【不支持CSS Module】 -->
-  <style lang="scss" theme="dark">
+  <!-- 指定各皮肤下的样式【不支持CSS Module】 -->
+  <style lang="scss" skin="dark">
   .foo {
     color: $red;
   }
   </style>
-  <style lang="scss" theme="light">
+  <style lang="scss" skin="light">
   .foo {
     color: $red;
   }
@@ -432,6 +429,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   分支注释:
 
   ```TypeScript
+  // if return 或 pipeline ｂ(￣▽￣)ｄ
   if(...) {
     // 说明
   } else if(...) {
@@ -526,7 +524,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 #### 工程
 
-暂未找到更多可优化内容(虽然`run scripts`略慢 ┐(: ´ ゞ｀)┌)
+暂未找到更多可优化内容(热更新用不用缓存都差不多)
 
 ### IDE
 
@@ -687,4 +685,3 @@ http {
 ### 其他
 
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
-- TODO: 多主题方案 module(含共享变量) & normal (chunk and alternate stylesheet) (其实要是不异步加载 css, 没那么复杂) 先支持异步的再说 直接正则修改原始代码 没法 AST 的吧

@@ -1,14 +1,14 @@
 /*
- * @Description: 统一设置ECharts主题等
+ * @Description: 统一设置ECharts皮肤等
  * @Author: 毛瑞
  * @Date: 2019-07-31 15:13:54
  */
 // import { ECharts } from 'echarts' // 类型申明 ┐(：´ゞ｀)┌
 import echarts from 'echarts/lib/echarts'
 
-/// 注册主题 ///
+/// 注册皮肤 ///
 echarts.registerTheme('tpl', {
-  // 自带主题 light 的颜色, 定制主题: https://echarts.baidu.com/theme-builder/
+  // 自带皮肤 light 的颜色, 定制皮肤: https://echarts.baidu.com/theme-builder/
   color: [
     '#37A2DA',
     '#32C5E9',

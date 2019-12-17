@@ -10,32 +10,32 @@ const OBJS: IObject<string>[] = []
  * @returns {String} 当前皮肤
  */
 function get(): string {
-  return (window as any)[process.env.THEME_FIELD] || process.env.THEME
+  return (window as any)[process.env.SKIN_FIELD] || process.env.SKIN
 }
 
 /** 设置当前皮肤
- * @param {String} theme 要设置的皮肤名
+ * @param {String} skin 要设置的皮肤名
  *
  * @returns {String} 当前皮肤
  */
-function set(theme?: string) {
-  if ((theme || (theme = process.env.THEME as string)) === get()) {
-    return theme
+function set(skin?: string) {
+  if ((skin || (skin = process.env.SKIN as string)) === get()) {
+    return skin
   }
 
   /// 切换样式 ///
   let el
   for (el of document.querySelectorAll<HTMLLinkElement>('link[title]')) {
     el.disabled = true // 必须先disabled下
-    el.disabled = el.title !== theme
+    el.disabled = el.title !== skin
   }
 
   /// 更新css对象 ///
   for (el of OBJS) {
-    Object.assign(el, (el.$ as any)[theme])
+    Object.assign(el, (el.$ as any)[skin])
   }
 
-  return ((window as any)[process.env.THEME_FIELD] = theme)
+  return ((window as any)[process.env.SKIN_FIELD] = skin)
 }
 
 /** 获取响应式CSS对象(根据皮肤改变)

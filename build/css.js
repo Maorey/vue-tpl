@@ -4,7 +4,7 @@
  * @Date: 2019-07-25 19:11:02
  */
 const fiber = require('fibers')
-const themeLoader = require('./themeLoader')
+const skinLoader = require('./skinLoader')
 
 /** 获取样式选项
  * @param {Boolean} isProd 是否生产环境
@@ -12,7 +12,7 @@ const themeLoader = require('./themeLoader')
  * @param {Object} ENV 环境变量
  */
 module.exports = function(isProd, ALIAS, ENV) {
-  themeLoader.init(ENV)
+  skinLoader.init(ENV)
 
   // https://cli.vuejs.org/zh/config/#css-loaderoptions
   return {
@@ -36,14 +36,14 @@ module.exports = function(isProd, ALIAS, ENV) {
           let content = ''
 
           // 注入scss变量
-          const THEME = themeLoader.getThemeByQuery(loaderContext.resourceQuery)
-          if (THEME) {
-            content = `@import "~@/${THEME.path}";`
+          const SKIN = skinLoader.getSkinByQuery(loaderContext.resourceQuery)
+          if (SKIN) {
+            content = `@import "~@/${SKIN.path}";`
             let temp
             for (const alias in ALIAS) {
               temp = ALIAS[alias]
               loaderContext.context.includes(temp) &&
-                (temp = themeLoader.exists(temp, THEME.path)) &&
+                (temp = skinLoader.exists(temp, SKIN.path)) &&
                 (content += `@import "~${alias}/${temp}";`)
             }
           }

@@ -1,7 +1,7 @@
 {
   "name": "vue-tpl",
   "author": "毛瑞 <Maorey@Foxmail.com>",
-  "version": "0.3.1",
+  "version": "1.0.0",
   "private": false,
   "license": "MIT",
   "keywords": [
@@ -57,8 +57,8 @@
     "@types/d3": "^5.7.2",
     "@types/echarts": "^4.4.2",
     "@types/jest": "^24.0.23",
-    "@typescript-eslint/eslint-plugin": "^2.11.0",
-    "@typescript-eslint/parser": "^2.11.0",
+    "@typescript-eslint/eslint-plugin": "^2.12.0",
+    "@typescript-eslint/parser": "^2.12.0",
     "@vue/cli-plugin-babel": "^4.1.1",
     "@vue/cli-plugin-e2e-cypress": "^4.1.1",
     "@vue/cli-plugin-eslint": "^4.1.1",
@@ -81,7 +81,7 @@
     "fibers": "^4.0.2",
     "hard-source-webpack-plugin": "^0.13.1",
     "lint-staged": "^9.5.0",
-    "mini-css-extract-plugin": "Maorey/alternate-css-extract-plugin#d246d64ea",
+    "mini-css-extract-plugin": "Maorey/alternate-css-extract-plugin#6f33336a0fe8ce92caff63eb307775f3e63d9a5b",
     "regenerate": "^1.4.0",
     "regjsgen": "^0.5.1",
     "regjsparser": "^0.6.1",

@@ -1,8 +1,12 @@
 # 更新日志
 
+## v 1.0.0
+
+- [Breaking] 重命名主题(theme)为皮肤(skin)，并调整相关环境变量及目录、文件名
+
 ## v 0.3.0
 
-- 支持多主题构建
+- 支持换肤
 
 ## v 0.2.0
 
@@ -11,7 +15,7 @@
 - 增强代码检查 ESLint & StyleLint
 - 支持内联多个 chunk 到 html (修改自[inline-manifest-webpack-plugin](https://github.com/szrenwei/inline-manifest-webpack-plugin))
 - 使用[hard-source-webpack-plugin](https://github.com/mzgoddard/hard-source-webpack-plugin)优化构建速度
-- 完善 themeLoader
+- 完善 skinLoader
 
 ## v 0.1.0
 

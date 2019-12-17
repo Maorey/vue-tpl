@@ -74,7 +74,7 @@ module.exports = class {
    *    runtime:String|Array<String>|RegExp 内联runtime
    *    defer:Boolean 脚本是否defer 默认true
    *    async:Boolean 脚本是否async 默认false (和defer只能有一个)
-   *    theme:String 默认主题({theme}@{name}.css)
+   *    skin:String 默认皮肤({skin}@{name}.css)
    *  }
    */
   constructor(option = {}) {
@@ -103,8 +103,8 @@ module.exports = class {
     /// 脚本属性 ///
     this._SA =
       option.defer === false ? option.async === true && 'async' : 'defer'
-    /// 主题 ///
-    this._REG_THEME = (this._T = option.theme) && /[\\/]([^\\/]+)@.+/
+    /// 皮肤 ///
+    this._REG_SKIN = (this._T = option.skin) && /[\\/]([^\\/]+)@.+/
   }
 
   // https://webpack.docschina.org/api/plugins/
@@ -207,8 +207,8 @@ module.exports = class {
     const relStyle = 'stylesheet'
     const REG_RUNTIME = this._REG_RUNTIME
 
-    const theme = this._T
-    const REG_THEME = this._REG_THEME
+    const skin = this._T
+    const REG_SKIN = this._REG_SKIN
     const relAlternate = 'alternate ' + relStyle
 
     const SCRIPT_ATTRIBUTE = this._SA
@@ -228,11 +228,11 @@ module.exports = class {
       if (temp.as || temp.rel === relStyle) {
         switch (temp.as) {
           case 'style': // css
-            if (REG_THEME && (el = REG_THEME.exec(temp.href))) {
+            if (REG_SKIN && (el = REG_SKIN.exec(temp.href))) {
               styles.push({
                 tagName: 'link',
                 attributes: {
-                  rel: theme === el[1] ? relStyle : relAlternate,
+                  rel: skin === el[1] ? relStyle : relAlternate,
                   href: temp.href,
                   title: el[1],
                 },
