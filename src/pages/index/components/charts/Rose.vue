@@ -11,7 +11,7 @@
 import CONFIG from '@index/config'
 
 import { EChartOption, ECharts } from 'echarts'
-import echarts from './echarts'
+import echarts from '@index/libs/echarts'
 import 'echarts/lib/chart/pie' // 饼图
 
 import 'echarts/lib/component/title' // 标题
@@ -59,7 +59,7 @@ export default class extends Vue {
     if (!el || !data) {
       return
     }
-    this.chart || (this.chart = echarts.init(el as HTMLDivElement, 'tpl'))
+    echarts.init(el as HTMLDivElement)
 
     // 一些设置
     this.option = {
@@ -83,8 +83,8 @@ export default class extends Vue {
   }
 
   private refresh() {
-    const chart = this.chart
     const option = this.option
+    const chart = echarts.getInstanceByDom(this.$el as HTMLDivElement)
 
     if (chart && option) {
       chart.clear()

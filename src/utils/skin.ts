@@ -1,9 +1,7 @@
 /** 皮肤工具(getter & setter 发布订阅/依赖注入就不用了)
  */
 import Vue from 'vue'
-
-// css 对象集合(就不用WeekMap/Set了)
-const OBJS: IObject<string>[] = []
+import { on, emit } from './eventBus'
 
 /** 获取当前皮肤
  *
@@ -13,7 +11,7 @@ function get(): string {
   return (window as any)[process.env.SKIN_FIELD] || process.env.SKIN
 }
 
-/** 设置当前皮肤
+/** 设置当前皮肤(触发eventBus事件process.env.SKIN_FIELD)
  * @param {String} skin 要设置的皮肤名
  *
  * @returns {String} 当前皮肤
@@ -30,39 +28,50 @@ function set(skin?: string) {
     el.disabled = el.title !== skin
   }
 
-  /// 更新css对象 ///
-  for (el of OBJS) {
-    Object.assign(el, (el.$ as any)[skin])
-  }
+  /// 触发事件 ///
+  emit(process.env.SKIN_FIELD, ((window as any)[process.env.SKIN_FIELD] = skin))
 
-  return ((window as any)[process.env.SKIN_FIELD] = skin)
+  return skin
 }
+
+/** css 对象集合
+ */
+const OBJS: IObject<string>[] = []
 
 /** 获取响应式CSS对象(根据皮肤改变)
  * @param {IObject<IObject<string>>} dic 字典，比如: {dark:{wrapper:'asd2'}}
+ * @param {IObject<string>} obj 当前皮肤对象
  *
  * @returns {IObject<string>} 响应式CSS Module对象
  */
-function getObj(dic: IObject<IObject<string>>) {
+function getObj(dic: IObject<IObject<string>>, obj: IObject<string>) {
+  if (!obj) {
+    return obj
+  }
+
   let key
+  let flag = true
+  /// 空对象 ///
+  for (key in obj) {
+    flag = false
+    break
+  }
+  if (flag) {
+    return obj
+  }
+
   let item
-  let flag
-  let obj
   /// 值一样 ///
   for (key in dic) {
-    if (obj) {
-      item = dic[key]
-      for (key in obj) {
-        if (obj[key] !== item[key]) {
-          flag = true
-          break
-        }
-      }
-      if (flag) {
+    item = dic[key]
+    for (key in obj) {
+      if (obj[key] !== item[key]) {
+        flag = true
         break
       }
-    } else {
-      obj = dic[key]
+    }
+    if (flag) {
+      break
     }
   }
   if (!flag) {
@@ -104,5 +113,12 @@ function delObj(obj: IObject<string>) {
     }
   }
 }
+
+/// 更新css对象 ///
+on(process.env.SKIN_FIELD, skin => {
+  for (const obj of OBJS) {
+    Object.assign(obj, (obj.$ as any)[skin])
+  }
+})
 
 export { getObj as default, delObj, get, set }

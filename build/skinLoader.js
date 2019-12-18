@@ -137,14 +137,12 @@ module.exports.pitch = function() {
     (loaderUtils.getOptions(this) || {}).localHandler || DEFAULT_HANDLER
   )}'`
   let locals = ''
-  let first = 0
   for (const skin in SKINS) {
-    first || (first = skin)
     resultSource += `\nimport ${skin} from '${resource}skin=${skin}'`
     locals += skin + ','
   }
 
-  return `${resultSource}\nlet locals\n${first} && (locals = getOb({${locals}}))\nexport default locals`
+  return `${resultSource}\nexport default getOb({${locals}}, ${SKIN.name})`
 }
 /// 其他 ///
 module.exports.init = init

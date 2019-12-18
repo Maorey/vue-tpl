@@ -11,7 +11,7 @@
 import CONFIG from '@index/config'
 
 import { EChartOption, ECharts } from 'echarts'
-import echarts from './echarts'
+import echarts from '@index/libs/echarts'
 import 'echarts/lib/chart/line' // 折线图
 
 import 'echarts/lib/component/grid' // 直角坐标系
@@ -56,7 +56,8 @@ export default class extends Vue {
     if (!el || !data) {
       return
     }
-    this.chart || (this.chart = echarts.init(el as HTMLDivElement, 'tpl'))
+
+    echarts.init(el as HTMLDivElement)
 
     const series: EChartOption.SeriesLine[] = []
     const legend: object[] = []
@@ -147,8 +148,8 @@ export default class extends Vue {
   }
 
   private refresh() {
-    const chart = this.chart
     const option = this.option
+    const chart = echarts.getInstanceByDom(this.$el as HTMLDivElement)
 
     if (chart && option) {
       chart.clear()

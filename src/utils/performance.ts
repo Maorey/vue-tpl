@@ -9,7 +9,7 @@
  *
  * @returns {Function} 目标函数包装
  */
-function throttle(fn: Function, interval: number) {
+function throttle(fn: Function, interval?: number) {
   let runable = true
 
   let _this: any
@@ -38,7 +38,7 @@ function throttle(fn: Function, interval: number) {
  *
  * @returns {Function} 目标函数包装
  */
-function debounce(fn: Function, interval: number) {
+function debounce(fn: Function, interval?: number) {
   let timer: number
 
   let _this: any
@@ -65,7 +65,7 @@ function debounce(fn: Function, interval: number) {
  *
  * @returns {Function} 目标函数包装
  */
-function throttleAtOnce(fn: Function, interval: number) {
+function throttleAtOnce(fn: Function, interval?: number) {
   let runable = true
   const FN = () => {
     runable = true
@@ -88,7 +88,7 @@ function throttleAtOnce(fn: Function, interval: number) {
  *
  * @returns {Function} 目标函数包装
  */
-function debounceAtOnce(fn: Function, interval: number) {
+function debounceAtOnce(fn: Function, interval?: number) {
   let timer: number
 
   let runable = true
