@@ -3,7 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2019-07-31 15:13:54
  */
-// import { ECharts } from 'echarts' // 类型申明 ┐(：´ゞ｀)┌
 import echarts from 'echarts/lib/echarts'
 // import CONFIG from '@/config'
 import { get } from '@/utils/skin'
@@ -32,20 +31,29 @@ import { on } from '@/utils/eventBus'
 
 // const idSet = new Set<string>()
 // const instanceSet = new WeakSet()
-let idMap: IObject<1> = {}
-/// hack init 方法 ///
+let idMap: IObject<IArguments> = {}
+/// hack 方法 ///
+let orginSetOption: Function
 const orginInit = echarts.init
-echarts.init = function(dom: any, theme?: string | IObject, opts?: IObject) {
-  let instance: any = echarts.getInstanceByDom(dom)
-  if (instance) {
-    delete idMap[instance.id]
-    instance.dispose()
-  }
-
-  instance = orginInit.call(this, dom, theme || get(), opts)
+echarts.init = function(
+  dom: HTMLDivElement,
+  theme?: string | IObject,
+  opts?: IObject
+) {
+  const instance = orginInit.call(this, dom, theme || get(), opts)
   instance.$ = opts
 
-  idMap[instance.id] = 1
+  if (!orginSetOption) {
+    try {
+      const echartsProto = Object.getPrototypeOf(instance)
+      orginSetOption = echartsProto.setOption
+      echartsProto.setOption = function() {
+        idMap[this.id] = arguments
+
+        return orginSetOption.apply(this, arguments)
+      }
+    } catch (error) {}
+  }
 
   return instance
 }
@@ -58,28 +66,36 @@ echarts.init = function(dom: any, theme?: string | IObject, opts?: IObject) {
 
 /// 监听皮肤改变 ///
 on(process.env.SKIN_FIELD, skin => {
-  const newIdMap: IObject<1> = {}
+  const newIdMap: IObject<IArguments> = {}
 
-  let instance: any
-  let option
+  let instance
+  let args
   let opts
   let id
   for (id in idMap) {
-    if ((instance = (echarts as any).getInstanceById(id))) {
-      id = instance.getDom()
+    if ((instance = echarts.getInstanceById(id))) {
+      args = idMap[id]
       opts = instance.$
-      option = instance.getOption()
+      id = instance.getDom()
       instance.dispose()
 
-      instance = orginInit.call(echarts, id, skin, opts)
-      instance.setOption(option)
-      instance.$ = opts
+      instance = echarts.init(id, skin, opts)
+      orginSetOption.apply(instance, args)
 
-      newIdMap[instance.id] = 1
+      newIdMap[instance.id] = args
     }
   }
 
   idMap = newIdMap
+})
+
+/// 响应窗口大小改变 ///
+window.addEventListener('resize', () => {
+  let id
+  let instance
+  for (id in idMap) {
+    ;(instance = echarts.getInstanceById(id)) && instance.resize()
+  }
 })
 
 /** echarts实例会因主题切换而改变,请使用echarts.getInstanceByDom获取实例

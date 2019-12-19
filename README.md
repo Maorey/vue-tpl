@@ -234,7 +234,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 不要使用 `$` 作为组件事件名, 该名字已被[异步组件刷新](src/utils/highOrder.ts)占用
 - 路由请**全部**使用异步组件(`@utils/highOrder getAsync`), 以使路由及其**子(异步)组件**可以局部刷新
 - CSS Modules class 名使用 `camelCase` (global 可以 kebab-case), 选择器嵌套**不应超过三层**
-- <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)(应在 `export` 目录下或 `export*.scss` 中使用); 为保证`ts/js`中引入时 scss 变量注入正确(使用缓存会导致无法对相同文件多次注入变量，不用缓存显然不合理), 应在合适的 scss 文件中引入目标样式源码:
+- <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)(应在 `scss/export` 目录下或 `export*.scss` 中使用); 为保证`ts/js`中引入时 scss 变量注入正确(使用缓存会导致无法对相同文件多次注入变量，不用缓存显然不合理), 应在合适的 scss 文件中引入目标样式源码:
 
   ```scss
   // el.scss

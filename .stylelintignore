@@ -3,6 +3,6 @@ dist
 compile
 coverage
 public/css
-src/**/skin/export
-*.min.css
+src/**/scss/export
 export*.scss
+*.min.css
