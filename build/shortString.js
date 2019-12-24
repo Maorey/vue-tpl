@@ -119,7 +119,7 @@
 //   return key !== 0 ? str : shortStr(DIC, ++count)
 // }
 
-const CHAR = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
+const CHAR = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const RADIX = CHAR.length
 /** 数字转RADIX进制字符串
  * @param {Number} number 10进制数字

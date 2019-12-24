@@ -10,5 +10,7 @@ module.exports = {
     autoprefixer: {
       grid: 'autoplace',
     },
+    // https://github.com/csstools/postcss-preset-env
+    'postcss-preset-env': {},
   },
 }

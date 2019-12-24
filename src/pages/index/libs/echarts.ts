@@ -35,13 +35,9 @@ let idMap: IObject<IArguments> = {}
 /// hack 方法 ///
 let orginSetOption: Function
 const orginInit = echarts.init
-echarts.init = function(
-  dom: HTMLDivElement,
-  theme?: string | IObject,
-  opts?: IObject
-) {
+echarts.init = function(dom: any, theme?: string | IObject, opts?: IObject) {
   const instance = orginInit.call(this, dom, theme || get(), opts)
-  instance.$ = opts
+  ;(instance as any).$ = opts
 
   if (!orginSetOption) {
     try {
@@ -60,7 +56,7 @@ echarts.init = function(
 // 定时清理
 // setInterval(() => {
 //   for (const id of idSet) {
-//     instanceSet.has(echarts.getInstanceById(id)) || idSet.delete(id)
+//     instanceSet.has((echarts as any).getInstanceById(id)) || idSet.delete(id)
 //   }
 // }, CONFIG.apiCacheAlive << 3)
 
@@ -73,16 +69,16 @@ on(process.env.SKIN_FIELD, skin => {
   let opts
   let id
   for (id in idMap) {
-    if ((instance = echarts.getInstanceById(id))) {
+    if ((instance = (echarts as any).getInstanceById(id))) {
       args = idMap[id]
-      opts = instance.$
+      opts = (instance as any).$
       id = instance.getDom()
       instance.dispose()
 
       instance = echarts.init(id, skin, opts)
       orginSetOption.apply(instance, args)
 
-      newIdMap[instance.id] = args
+      newIdMap[(instance as any).id] = args
     }
   }
 
@@ -94,7 +90,7 @@ window.addEventListener('resize', () => {
   let id
   let instance
   for (id in idMap) {
-    ;(instance = echarts.getInstanceById(id)) && instance.resize()
+    ;(instance = (echarts as any).getInstanceById(id)) && instance.resize()
   }
 })
 

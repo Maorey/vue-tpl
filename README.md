@@ -681,6 +681,7 @@ http {
 - [#714](https://github.com/webpack-contrib/sass-loader/issues/714): 【不再考虑支持】可追踪引用, 使在 js 中引用 scss 时可正确<a href="#全局scss">注入 scss 变量</a>
 - scss 模块化: 已出 beta 但生态不完善, [草案](https://github.com/sass/sass/blob/master/accepted/module-system.md)
 - [微前端化](https://github.com/phodal/microfrontends#复合型): 应考虑基于 [Web Components](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components) ([vue 友好](https://cli.vuejs.org/zh/guide/build-targets.html#web-components-组件), 可以兼容其他) 的集成和通信.
+- `tsx` 类型支持(去掉`as any`, 利于重构)
 
 ### 其他
 

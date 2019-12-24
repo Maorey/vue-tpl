@@ -26,7 +26,6 @@ declare module '*.css' {
   const content: object
   export default content
 }
-
 declare module '*.png' {
   /** 图片路径或base64字符串
    */
@@ -57,13 +56,13 @@ declare module '*.svg' {
   const content: string
   export = content
 }
-
 declare module '*.json' {
   /** 得到json表达的对象/数组【混入到代码中】
    */
   const content: object | any[]
   export default content
 }
+
 // 需要配置loader,否则会当成js eval(内容)
 // declare module '*.text' {
 //   /** 文件内容
@@ -84,8 +83,6 @@ declare module '*.json' {
 //   const plugin: PluginObject<Vue> | PluginFunction<Vue>
 //   export default plugin
 // }
-
-declare module 'jsencrypt'
 
 /// hack 放最后 ///
 // declare module 'zrender/lib/*'

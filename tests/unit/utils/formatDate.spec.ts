@@ -3,7 +3,12 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  */
-import formatDate, { getDateByString } from '@/utils/formatDate'
+import formatDate, {
+  getDate,
+  getWeek,
+  getMonth,
+  getYear,
+} from '@/utils/formatDate'
 
 describe('@/utils/formatDate: 日期格式化/反格式化', () => {
   const DATE = new Date(2019, 6, 3, 17, 17, 11, 111)
@@ -18,10 +23,45 @@ describe('@/utils/formatDate: 日期格式化/反格式化', () => {
     expect(formatDate(DATE, FORMAT)).toBe(RESULT)
     expect(formatDate(DATE, FORMAT1)).toBe(RESULT1)
   })
-  it('getDateByString 指定格式反格式化字符串为日期(Date)', () => {
-    expect((getDateByString(RESULT, FORMAT) as Date).getTime()).toBe(
-      DATE.getTime()
-    )
-    expect((getDateByString(RESULT1, FORMAT1) as Date).getFullYear()).toBe(2019)
+
+  it('getDate 指定格式反格式化字符串为日期(Date)', () => {
+    expect((getDate(RESULT, FORMAT) as Date).getTime()).toBe(DATE.getTime())
+    expect((getDate(RESULT1, FORMAT1) as Date).getFullYear()).toBe(2019)
+  })
+
+  function isEqual(result: string[], target: string[]) {
+    for (let i = 0; i < result.length; i++) {
+      if (result[i] !== target[i]) {
+        return false
+      }
+    }
+    return true
+  }
+
+  it('getWeek 获取本周起止日期字符串数组', () => {
+    expect(
+      isEqual(getWeek(DATE, FORMAT), [
+        '今天是2019年07月01日星期一 现在是下午05点17分11秒111毫秒',
+        '今天是2019年07月07日星期日 现在是下午05点17分11秒111毫秒',
+      ])
+    ).toBe(true)
+  })
+
+  it('getMonth 获取本月起止日期字符串数组', () => {
+    expect(
+      isEqual(getMonth(DATE, FORMAT), [
+        '今天是2019年07月01日星期一 现在是下午05点17分11秒111毫秒',
+        '今天是2019年07月31日星期三 现在是下午05点17分11秒111毫秒',
+      ])
+    ).toBe(true)
+  })
+
+  it('getYear 获取今年起止日期字符串数组', () => {
+    expect(
+      isEqual(getYear(DATE, FORMAT), [
+        '今天是2019年01月01日星期二 现在是下午05点17分11秒111毫秒',
+        '今天是2019年12月31日星期二 现在是下午05点17分11秒111毫秒',
+      ])
+    ).toBe(true)
   })
 })

@@ -5,7 +5,7 @@
  */
 import { Memory } from '@/utils/storage'
 
-/** 保留字枚举, 如下(允许使用转义字符\来输出保留字):
+/** 日期格式化字符串, 保留字如下(允许使用转义字符\来输出保留字):
  *
  *  y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
  *
@@ -26,7 +26,10 @@ import { Memory } from '@/utils/storage'
  *  s: 一到二位，表示秒钟
  *
  *  n: 一到三位，表示毫秒数
- *
+ */
+type format = string
+
+/** 保留字枚举
  */
 const enum Reserve {
   // 年月日星期
@@ -42,34 +45,6 @@ const enum Reserve {
   minute = 'm',
   second = 's',
   milliSecond = 'n',
-}
-/** 保留字串
- */
-const RESERVED =
-  Reserve.year +
-  Reserve.month +
-  Reserve.day +
-  Reserve.week +
-  Reserve.hour +
-  Reserve.Hour +
-  Reserve.slot +
-  Reserve.minute +
-  Reserve.second +
-  Reserve.milliSecond
-/** 获取保留字最大重复次数
- * @param {Any} char 目标字符串
- *
- * @returns {Number}
- */
-const getReserveMaxRepeat = (char: any) => {
-  switch (char) {
-    case Reserve.year:
-      return 4
-    case Reserve.milliSecond:
-      return 3
-    default:
-      return 2
-  }
 }
 
 /** 分组结果
@@ -99,6 +74,19 @@ interface IResult {
   g: IGroup[]
 }
 
+/** 保留字串
+ */
+const RESERVED =
+  Reserve.year +
+  Reserve.month +
+  Reserve.day +
+  Reserve.week +
+  Reserve.hour +
+  Reserve.Hour +
+  Reserve.slot +
+  Reserve.minute +
+  Reserve.second +
+  Reserve.milliSecond
 /** 正则表达式保留字
  */
 const RESERVE_REG = '`|{}[]()*?+.^$!'
@@ -108,12 +96,27 @@ const ESCAPE = '\\'
 /** 格式处理结果缓存
  */
 const CACHE = new Memory()
+/** 获取保留字最大重复次数
+ * @param {String} char 目标字符
+ *
+ * @returns {Number}
+ */
+const getReserveMaxRepeat = (char: string) => {
+  switch (char) {
+    case Reserve.year:
+      return 4
+    case Reserve.milliSecond:
+      return 3
+    default:
+      return 2
+  }
+}
 /** 获取日期格式化对象，允许使用转义字符 \ 来输出保留字
- * @param {String} format 格式，保留字见Reserve枚举
+ * @param {format} format 日期格式
  *
  * @returns {IResult} 格式处理结果
  */
-function getFormat(format: string): IResult {
+function getFormat(format: format): IResult {
   const result: IResult | any = CACHE.get(format)
   if (result) {
     return result
@@ -175,7 +178,6 @@ function getFormat(format: string): IResult {
 
 const ISO_DATE_FORMAT = 'yyyy-MM-ddTHH:mm:ss.nnnZ'
 getFormat(ISO_DATE_FORMAT) // warm 下
-
 const REG_NUM_REG = /\(\\d\{\d(,\d)?\}\)/g
 const REG_RESERVE = new RegExp(
   `\\\\([${RESERVE_REG.replace(']', '\\]\\\\')}])`,
@@ -185,31 +187,11 @@ const REG_RESERVE = new RegExp(
  * @test true
  *
  * @param {Date} date 日期对象
- * @param {String} format 格式，保留字如下
+ * @param {format} format 日期格式
  *
- *  y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
- *
- *  M: 一到二位，表示月 MM: 始终两位数字 比如7月 => 07 (MM) 7 (M)
- *
- *  d: 一到二位，表示日
- *
- *  w: 一到二位，表示周，比如 w=周四 ww=星期四
- *
- *  h: 一到二位，表示12小时制的小时
- *
- *  H: 一到二位，表示24小时制的小时
- *
- *  t: 一到二位，表示上午或下午 t=下 tt=下午
- *
- *  m: 一到二位，表示分钟
- *
- *  s: 一到二位，表示秒钟
- *
- *  n: 一到三位，表示毫秒数
- *
- * @returns {String} 格式化的日期字符串
+ * @returns {String} 格式化的日期
  */
-function formatDate(date: Date, format = ISO_DATE_FORMAT) {
+function formatDate(date: Date, format: format = ISO_DATE_FORMAT) {
   const { t, g } = getFormat(format)
 
   let index = 0
@@ -311,34 +293,14 @@ const REPLACE_NOON = (match: string, slot: string) =>
 /** 根据日期字符串得到Date对象
  * @test true
  *
- * @param {String} dateString 日期字符串
- * @param {String} format 格式，保留字如下
- *
- *  y: 一到四位，表示年 比如 yyyy=2018 yyy=018 yy=18 y=8
- *
- *  M: 一到二位，表示月 MM: 始终两位数字 比如7月 => 07 (MM) 7 (M)
- *
- *  d: 一到二位，表示日
- *
- *  w: 一到二位，表示周，比如 w=周四 ww=星期四
- *
- *  h: 一到二位，表示12小时制的小时
- *
- *  H: 一到二位，表示24小时制的小时
- *
- *  t: 一到二位，表示上午或下午 t=下 tt=下午
- *
- *  m: 一到二位，表示分钟
- *
- *  s: 一到二位，表示秒钟
- *
- *  n: 一到三位，表示毫秒数
+ * @param {String} dateString 格式化的日期
+ * @param {format} format 日期格式
  *
  * @returns {Date} Date对象
  */
-function getDateByString(
+function getDate(
   dateString: string,
-  format: string | IResult = ISO_DATE_FORMAT,
+  format: format | IResult = ISO_DATE_FORMAT,
   tryHistory = true
 ): Date | void {
   const { r, g } = typeof format === 'string' ? getFormat(format) : format
@@ -388,7 +350,7 @@ function getDateByString(
   } else if (tryHistory) {
     // 从记录中尝试
     for (const item of CACHE.pool) {
-      const result = getDateByString(dateString, item.v, false)
+      const result = getDate(dateString, item.v, false)
       if (result) {
         return result
       }
@@ -396,4 +358,73 @@ function getDateByString(
   }
 }
 
-export { formatDate as default, getDateByString }
+/** 获取本周起止日期
+ * @test true
+ *
+ * @param {Date} date 日期对象
+ * @param {format} format 格式化的日期
+ *
+ * @returns {Array<String>} 格式化的日期数组
+ */
+function getWeek(date?: Date, format: format = ISO_DATE_FORMAT) {
+  date = date ? new Date(date.getTime()) : new Date() // 复制日期对象
+  const result = []
+
+  const week = date.getDay()
+  const day = date.getDate()
+  // 本周第一天
+  date.setDate(day + 1 - week)
+  result.push(formatDate(date, format))
+  // 本周最后一天
+  date.setDate(day + 7 - week)
+  result.push(formatDate(date, format))
+
+  return result
+}
+/** 获取本月起止日期
+ * @test true
+ *
+ * @param {Date} date 日期对象
+ * @param {format} format 格式化的日期
+ *
+ * @returns {Array<String>} 格式化的日期数组
+ */
+function getMonth(date?: Date, format: format = ISO_DATE_FORMAT) {
+  date = date ? new Date(date.getTime()) : new Date() // 复制日期对象
+  const result = []
+
+  // 本月第一天 [一定是1号]
+  date.setDate(1)
+  result.push(formatDate(date, format))
+  // 本月最后一天
+  date.setDate(32) // 先到下个月
+  date.setDate(0) // 上个月最后一天
+  result.push(formatDate(date, format))
+
+  return result
+}
+/** 获取今年起止日期
+ * @test true
+ *
+ * @param {Date} date 日期对象
+ * @param {format} format 格式化的日期
+ *
+ * @returns {Array<String>} 格式化的日期数组
+ */
+function getYear(date?: Date, format: format = ISO_DATE_FORMAT) {
+  date = date ? new Date(date.getTime()) : new Date() // 复制日期对象
+  const result = []
+
+  // 今年第一天 [一定是1月1号]
+  date.setDate(1)
+  date.setMonth(0)
+  result.push(formatDate(date, format))
+  // 今年最后一天 [一定是12月31号]
+  date.setDate(31)
+  date.setMonth(11)
+  result.push(formatDate(date, format))
+
+  return result
+}
+
+export { formatDate as default, getDate, getWeek, getMonth, getYear }
