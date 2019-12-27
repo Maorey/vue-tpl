@@ -92,6 +92,22 @@ declare module '*.json' {
 // declare module '@luma.gl/addons'
 declare module '*'
 
+// hack ECharts for switch skin
+declare namespace echarts {
+  // eslint-disable-next-line @typescript-eslint/interface-name-prefix
+  interface EChartOption {}
+  // eslint-disable-next-line @typescript-eslint/interface-name-prefix
+  interface EChartsResponsiveOption {}
+  // eslint-disable-next-line @typescript-eslint/interface-name-prefix
+  interface ECharts {
+    setOption(
+      option: () => EChartOption | EChartsResponsiveOption,
+      notMerge?: boolean,
+      lazyUpdate?: boolean
+    ): void
+  }
+}
+
 /** 任意对象
  */
 declare interface IObject<T = any> {

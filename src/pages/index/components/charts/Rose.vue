@@ -8,7 +8,8 @@
 </template>
 
 <script lang="ts">
-import CONFIG from '@index/config'
+// see: https://github.com/kaorun343/vue-property-decorator
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 import { EChartOption, ECharts } from 'echarts'
 import echarts from '@index/libs/echarts'
@@ -17,8 +18,7 @@ import 'echarts/lib/chart/pie' // 饼图
 import 'echarts/lib/component/title' // 标题
 import 'echarts/lib/component/tooltip' // 提示
 
-// see: https://github.com/kaorun343/vue-property-decorator
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import CONFIG from '@index/config'
 
 const INTERVAL = CONFIG.redraw
 
@@ -32,7 +32,7 @@ export default class extends Vue {
   /// private instance attributes (private name?: string // 非响应式属性) ///
   private interval?: number
   private chart?: ECharts
-  private option?: object
+  private option?: EChartOption
   /// computed (get name() { return this.name } set name()... ///
   /// watch (@Watch) ///
   @Watch('data')
@@ -65,7 +65,7 @@ export default class extends Vue {
     this.option = {
       title: {
         subtext: '单位: 个',
-        x: 'right',
+        x: 'right', // 没定义啊
       },
       tooltip: {
         trigger: 'item',
@@ -77,7 +77,7 @@ export default class extends Vue {
         radius: [20, '70%'],
         ...data,
       },
-    }
+    } as any
 
     this.refresh()
   }

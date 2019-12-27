@@ -1,0 +1,19 @@
+// 图表颜色
+:export {
+  black: $colorBlack;
+  white: $colorWhite;
+  theme: $colorTheme;
+  theme3: $colorTheme3;
+  theme6: $colorTheme6;
+  theme9: $colorTheme9;
+  transparent: $colorTransparent;
+  textStress: $colorTextStress;
+  textMain: $colorTextMain;
+  textCommon: $colorTextCommon;
+  textMinor: $colorTextMinor;
+  textHolder: $colorTextHolder;
+  success: $colorSuccess;
+  warn: $colorWarn;
+  danger: $colorDanger;
+  info: $colorInfo;
+}

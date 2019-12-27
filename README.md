@@ -682,6 +682,7 @@ http {
 - scss 模块化: 已出 beta 但生态不完善, [草案](https://github.com/sass/sass/blob/master/accepted/module-system.md)
 - [微前端化](https://github.com/phodal/microfrontends#复合型): 应考虑基于 [Web Components](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components) ([vue 友好](https://cli.vuejs.org/zh/guide/build-targets.html#web-components-组件), 可以兼容其他) 的集成和通信.
 - `tsx` 类型支持(去掉`as any`, 利于重构)
+- 相同chunk下的基础样式(非皮肤样式)文件合并(比如css和scss)
 
 ### 其他
 

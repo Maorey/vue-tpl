@@ -10,6 +10,10 @@ import App from './App'
 // import { throttle } from '@/utils/performance'
 import './registerServiceWorker'
 
+/// 全局样式 ///
+import '@/scss/icon.scss?skin='
+import '@/scss/transitions.scss?skin='
+
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 
 /// 错误日志采集 ///

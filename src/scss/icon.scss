@@ -1,19 +1,25 @@
 /*
- * @Description: 字体图标(Ant Design 官方图标) 【 icon- 换成 i- 】
+ * @Description: 字体图标(Ant Design 官方图标，icon-换成i-)
+ *  【随皮肤改变须注意content是否一致】
  * @Author: 毛瑞
  * @Date: 2019-07-01 14:10:27
  */
+$family: 'antDesign'; // 字体名
 // 查看图标: https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=9402
-// 相对路径会从当前import的文件所在目录算起
 @font-face {
-  font-family: $iconFamily;
-  src: $iconEot;
-  src: $iconSrc;
+  font-family: $family;
+  src: url('~@/scss/font/antDesign.eot');
+  src:
+    url('~@/scss/font/antDesign.eot?#iefix') format('embedded-opentype'),
+    url('~@/scss/font/antDesign.woff2') format('woff2'),
+    url('~@/scss/font/antDesign.woff') format('woff'),
+    url('~@/scss/font/antDesign.ttf') format('truetype'),
+    url('~@/scss/font/antDesign.svg#antDesign') format('svg');
 }
 
 // 所有字体图标
 [class*='i-']::before {
-  font-family: $iconFamily;
+  font-family: $family;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-style: normal;

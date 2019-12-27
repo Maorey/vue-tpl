@@ -3,6 +3,8 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 15:58:46
  */
+const ENV = process.env.NODE_ENV === 'production' ? 'error' : 'warn'
+
 module.exports = {
   root: true,
   env: {
@@ -29,13 +31,6 @@ module.exports = {
     },
   ],
   rules: {
-    /// 开发环境 ///
-    ...(process.env.NODE_ENV === 'production' || {
-      // 允许console.log、debugger
-      'no-console': ['warn', { allow: ['info', 'warn', 'error'] }],
-      'no-debugger': 'warn',
-    }),
-
     /// ESLint https://eslint.org/docs/rules/ ///
     indent: ['error', 2, { SwitchCase: 1 }], // 缩进
     semi: ['error', 'never'], // 不要句尾分号
@@ -64,10 +59,12 @@ module.exports = {
     ], // 最大列数
     'max-params': ['error', 7], // function最大参数数
     'max-statements': ['error', 120], // function最大语句数
+    'no-debugger': ENV,
+    'no-console': [ENV, { allow: ['info', 'warn', 'error'] }],
 
     /// TSLint https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#supported-rules ///
     'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-unused-vars': ENV,
     '@typescript-eslint/class-name-casing': 'error', // 类名 PascalCase
     '@typescript-eslint/interface-name-prefix': ['error', 'always'], // 接口I开头
 

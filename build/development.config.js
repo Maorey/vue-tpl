@@ -64,5 +64,11 @@ module.exports = function(config) {
     },
   ])
   // dll
-  config.plugin('hard-source').use('hard-source-webpack-plugin')
+  const hardSource = require('hard-source-webpack-plugin')
+  config.plugin('hard-source').use(hardSource)
+  // 需要 【webpack.config.js】 & webpack-cli & webpack-command
+  // config.plugin('hard-source-parallel').use(hardSource.ParallelModulePlugin)
+  config
+    .plugin('hard-source-exclude')
+    .use(hardSource.ExcludeModulePlugin, [{ test: /[\\/]src[\\/]/ }])
 }

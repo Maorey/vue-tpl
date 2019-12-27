@@ -101,8 +101,6 @@ export default class extends Vue {
 <style lang="scss">
 /// 全局样式 ///
 @import '~@/scss/reset';
-@import '~@/scss/icon';
-@import '~@/scss/transitions';
 
 html,
 body {

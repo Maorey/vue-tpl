@@ -1,9 +1,9 @@
-/// 全局样式 ///
-@import '~@/scss/reset';
-@import '~@/scss/icon';
-@import '~@/scss/transitions';
+/// 【全局样式】 ///
 
-/// 全局element-ui组件样式 ///
+/// [基础] ///
+@import '~@/scss/reset';
+
+// [element-ui] ///
 @import '~element-ui/packages/theme-chalk/src/base'; // 含字体图标和过渡动画
 // 条件隐藏
 // https://element.eleme.cn/#/zh-CN/component/layout#ji-yu-duan-dian-de-yin-cang-lei
@@ -39,7 +39,18 @@
 // 滚动面板【隐藏组件】
 @import '~element-ui/packages/theme-chalk/src/scrollbar';
 
-/// 【覆盖element-ui样式】 ///
+/// 【覆盖element-ui】 ///
+// 表格
+.el-table tbody {
+  color: $colorTextCommon;
+}
+// input:text/textarea数字统计
+.el-input,
+.el-textarea {
+  .el-input__count {
+    line-height: $larger;
+  }
+}
 // 滚动条
 .el-scrollbar > .el-scrollbar__bar {
   opacity: 1;

@@ -44,9 +44,15 @@ echarts.init = function(dom: any, theme?: string | IObject, opts?: IObject) {
       const echartsProto = Object.getPrototypeOf(instance)
       orginSetOption = echartsProto.setOption
       echartsProto.setOption = function() {
-        idMap[this.id] = arguments
+        let args: IArguments | any[] = arguments
+        idMap[this.id] = args
 
-        return orginSetOption.apply(this, arguments)
+        if (typeof args[0] === 'function') {
+          args = [...args]
+          args[0] = args[0]()
+        }
+
+        return orginSetOption.apply(this, args)
       }
     } catch (error) {}
   }
@@ -76,9 +82,12 @@ on(process.env.SKIN_FIELD, skin => {
       instance.dispose()
 
       instance = echarts.init(id, skin, opts)
-      orginSetOption.apply(instance, args)
-
       newIdMap[(instance as any).id] = args
+      if (typeof args[0] === 'function') {
+        args = [...args]
+        args[0] = args[0]()
+      }
+      orginSetOption.apply(instance, args)
     }
   }
 

@@ -4,7 +4,7 @@
  * @Date: 2019-07-06 08:30:59
  */
 /// 常用颜色 ///
-$colorBlank: #000; // 黑色
+$colorBlack: #000; // 黑色
 $colorWhite: #fff; // 白色
 $colorTransparent: #0000; // 透明
 
@@ -38,6 +38,7 @@ $colorInfo1: mix($colorWhite, $colorInfo, 80%);
 $colorInfo2: mix($colorWhite, $colorInfo, 90%);
 
 // 【中性色】
+$colorTextStress: #222525; // 强调文字
 $colorTextMain: #303133; // 主要文字
 $colorTextCommon: #606266; // 常规文字
 $colorTextMinor: #909399; // 次要文字

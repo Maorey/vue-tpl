@@ -26,14 +26,14 @@ const REG_NUMBER = /(\d)(?=(\d{3})+$)/g
  * @test true
  *
  * @param {Number|String} num
- * @param {Number} digit Number:保留小数位数 other: unit
+ * @param {Number|string|INumberUnit} digit Number:保留小数位数 other: unit
  * @param {String|INumberUnit} unit String 单位 默认按万计算
  *
  * @returns {String} 格式化后的数字
  */
 function formatNumber(
   num: string | number,
-  digit?: any,
+  digit?: number | string | INumberUnit,
   unit?: string | INumberUnit
 ) {
   !unit && typeof digit !== 'number' && (unit = digit)
@@ -59,10 +59,10 @@ function formatNumber(
 
   // 小数四舍五入
   if (decimal) {
-    if (isNaN(digit)) {
+    if (isNaN(digit as number)) {
       decimal = '.' + decimal
     } else {
-      decimal = parseFloat('0.' + decimal).toFixed(Math.abs(digit))
+      decimal = parseFloat('0.' + decimal).toFixed(Math.abs(digit as number))
       if (parseFloat(decimal) >= 1) {
         num = String(parseInt(num) + 1)
         decimal = ''

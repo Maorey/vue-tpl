@@ -42,7 +42,35 @@ import Notification from 'element-ui/lib/notification'
 // 滚动面板【隐藏组件】
 import Scrollbar from 'element-ui/lib/scrollbar'
 
-import './scss/main.scss' // 全局样式
+/// 全局样式 ///
+import '@/scss/icon.scss?skin='
+import '@/scss/transitions.scss?skin='
+import './scss/main.scss'
+
+// hack: 不出现滚动条时不显示
+const options = Scrollbar.options || Scrollbar
+const created = options.components.Bar.created
+options.components.Bar.created = function() {
+  created && created.apply(this, arguments)
+  this.$watch('size', function(this: any, size: string) {
+    this.$el.style.display = size && size !== '0' ? '' : 'none'
+  })
+}
+// hack: 表单重设初始值(initialValue)
+;(FormItem.options || FormItem).mounted = function() {
+  if (this.prop) {
+    this.dispatch('ElForm', 'el.form.addField', [this])
+    Array.isArray((this.initialValue = this.fieldValue)) &&
+      (this.initialValue = [this.initialValue])
+    this.addValidateEvents()
+  }
+}
+;(Form.options || Form).methods.setIni = function(model: IObject) {
+  for (const field of this.fields) {
+    field.initialValue = model[field.prop]
+  }
+  this.clearValidate()
+}
 
 // 布局
 Vue.use(Row)
@@ -78,29 +106,6 @@ Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
 // 滚动面板
 Vue.use(Scrollbar)
-// hack: 不出现滚动条时不显示
-const created = Scrollbar.components.Bar.created
-Scrollbar.components.Bar.created = function() {
-  created && created.apply(this, arguments)
-  this.$watch('size', function(this: any, size: string) {
-    this.$el.style.display = size && size !== '0' ? '' : 'none'
-  })
-}
-// hack: 重设表单的初始值 (initialValue 丧心病狂地只读且不可配置...)
-FormItem.mounted = function() {
-  if (this.prop) {
-    this.dispatch('ElForm', 'el.form.addField', [this])
-    Array.isArray((this.initialValue = this.fieldValue)) &&
-      (this.initialValue = [this.initialValue])
-    this.addValidateEvents()
-  }
-}
-Form.methods.setIni = function(model: IObject) {
-  for (const field of this.fields) {
-    field.initialValue = model[field.prop]
-  }
-  this.clearValidate()
-}
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 
