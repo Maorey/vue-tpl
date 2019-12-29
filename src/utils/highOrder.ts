@@ -23,8 +23,7 @@ type filter = (context: RenderContext) => string
 
 /** 根据is属性选择组件
  */
-const filterByIS: filter = context =>
-  (context.data.attrs && context.data.attrs.is) || context.props.is
+const filterByIS: filter = context => context.data.attrs?.is || context.props.is
 
 /** 获取高阶组件，用于根据type从DIC中选择一个组件【同步】
  * @param {IDictionary} DIC 组件字典对象 { key:string : value:VueComponent }

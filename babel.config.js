@@ -22,4 +22,10 @@ module.exports = {
   //   },
   // ],
   // ],
+  plugins: [
+    'minify-builtins',
+    // '@babel/plugin-syntax-bigint',
+    '@babel/plugin-proposal-function-sent',
+    '@babel/plugin-proposal-optional-chaining',
+  ],
 }
