@@ -1,12 +1,12 @@
 /*
- * @Description: vender chunks重命名,避免文件名过长,命名映射:build/fileName.log
+ * @Description: vender chunks重命名,避免文件名过长,命名映射:build/~fileName
  * @Author: 毛瑞
  * @Date: 2019-07-25 19:31:14
  */
 const updateJSON = require('./updateJSON')
 const shortString = require('./shortString')
 
-/** 重命名 vender chunks (命名映射:build/fileName.log)
+/** 重命名 vender chunks (命名映射:build/~fileName)
  *    vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
  * @param {String} des 缩写描述
  * @param {Object} DIC 缩写字典 eg: { index: 'i' }
@@ -15,9 +15,9 @@ const shortString = require('./shortString')
  */
 module.exports = function(des = '', DIC = {}) {
   const short = shortString(DIC)// 字符串缩写函数
-  process.on('beforeExit', () => updateJSON('build/fileName.log', des, DIC))
+  process.on('beforeExit', () => updateJSON('build/~fileName', des, DIC))
 
-  /** 重命名 vender chunks (命名映射:build/fileName.log)
+  /** 重命名 vender chunks (命名映射:build/~fileName)
    *    vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
    * @param {WebpackModule} module webpack模块
    */

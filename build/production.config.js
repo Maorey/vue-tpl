@@ -100,7 +100,7 @@ function plugin(config, ENV) {
  */
 module.exports = function(config, ENV, pages) {
   // https://webpack.js.org/configuration/other-options/#recordspath
-  config.merge({ recordsPath: require('path').resolve('build/records.log') })
+  config.merge({ recordsPath: require('path').resolve('build/~records') })
   /// 多皮肤 ///
   const skinLoader = require('./skinLoader')
   if (skinLoader.init(ENV).SKINS) {

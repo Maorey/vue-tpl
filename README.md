@@ -52,7 +52,7 @@ yarn dev --mode=production # 调试皮肤切换
 yarn build # --watch: 跟踪文件变化 --report: 生成打包分析
 ```
 
-同时会生成文件名/chunk名[映射文件](build/fileName.log) (公共代码抽到`_`开头的文件里了)
+同时会生成文件名/chunk名[映射文件](build/~fileName) (公共代码抽到`_`开头的文件里了)
 
 ### 代码风格检查和修正(提交 Git 时会自动执行)
 

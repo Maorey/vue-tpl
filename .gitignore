@@ -28,3 +28,6 @@ tests/e2e/screenshots
 *.njsproj
 *.sln
 *.sw?
+
+# 其他忽略文件(夹)
+~*
