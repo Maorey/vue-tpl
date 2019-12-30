@@ -44,7 +44,8 @@ const requestQueue = new Memory()
  */
 const dataStore = new Memory(CONFIG.apiMaxCache, CONFIG.apiCacheAlive)
 
-/// 【debug】带上特定查询字段 ///
+/** 【debug】带上特定查询字段
+ */
 let SEARCH: IObject | undefined
 location.search
   .replace(/\/$/, '')
@@ -228,4 +229,4 @@ function patch(
 let HEADERS = AXIOS.defaults.headers || (AXIOS.defaults.headers = {})
 HEADERS = HEADERS.common || (HEADERS.common = {})
 
-export { get, del, put, post, patch, HEADERS as default }
+export { HEADERS as default, SEARCH, get, del, put, post, patch }

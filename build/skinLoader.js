@@ -65,8 +65,9 @@ function init(ENV = process.env) {
     if (!SKIN) {
       // 单皮肤
       SKIN = (exists(DIR_SKIN + (SKIN = EXTENSION)) ||
-        exists(DIR_SKIN + (SKIN = INDEX))) && {
-        path: `${R_SKIN}/${SKIN}`,
+        exists(DIR_SKIN + (SKIN = INDEX)) ||
+        exists(DIR_SKIN)) && {
+        path: R_SKIN + (SKIN || ''),
       }
     } else {
       // 多皮肤
@@ -98,7 +99,7 @@ function getSkinByQuery(temp) {
           exists(DIR_SRC, skin.path) ||
           (exists(DIR_SKIN, skin.path) &&
             (skin.path = `${R_SKIN}/${skin.path}`)))) ||
-        (skin.path = SKINS[skin.name] || SKIN.path)
+        (skin.path = (SKINS && SKINS[skin.name]) || SKIN.path)
     } else {
       // 默认皮肤
       skin = SKIN
