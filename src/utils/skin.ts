@@ -22,8 +22,7 @@ function set(skin?: string) {
   }
 
   /// 切换样式 ///
-  let el
-  for (el of document.querySelectorAll<HTMLLinkElement>('link[title]')) {
+  for (const el of document.querySelectorAll<HTMLLinkElement>('link[title]')) {
     el.disabled = true // 必须先disabled下
     el.disabled = el.title !== skin
   }
@@ -40,14 +39,11 @@ const OBJS: IObject<string>[] = []
 
 /** 获取响应式CSS对象(根据皮肤改变)
  * @param {IObject<IObject<string>>} dic 字典，比如: {dark:{wrapper:'asd2'}}
- * @param {IObject<string>} obj 当前皮肤对象
  *
  * @returns {IObject<string>} 响应式CSS Module对象
  */
-function getObj(dic: IObject<IObject<string>>, obj: IObject<string>) {
-  if (!obj) {
-    return obj
-  }
+function getObj(dic: IObject<IObject<string>>) {
+  let obj = dic[get()]
 
   let key
   let flag = true
@@ -63,15 +59,16 @@ function getObj(dic: IObject<IObject<string>>, obj: IObject<string>) {
   let item
   /// 值一样 ///
   for (key in dic) {
-    item = dic[key]
-    for (key in obj) {
-      if (obj[key] !== item[key]) {
-        flag = true
+    if (obj !== (item = dic[key])) {
+      for (key in obj) {
+        if (obj[key] !== item[key]) {
+          flag = true
+          break
+        }
+      }
+      if (flag) {
         break
       }
-    }
-    if (flag) {
-      break
     }
   }
   if (!flag) {
@@ -79,23 +76,27 @@ function getObj(dic: IObject<IObject<string>>, obj: IObject<string>) {
   }
 
   /// 已有 ///
-  for (obj of OBJS) {
+  let itemDic
+  for (item of OBJS) {
+    if (dic === (itemDic = (item as any).$)) {
+      return item
+    }
+
     flag = true
-    item = (obj as any).$
     for (key in dic) {
       // import obj from ‘*.scss’ 得到单例
-      if (dic[key] !== item[key]) {
+      if (dic[key] !== itemDic[key]) {
         flag = false
         break
       }
     }
     if (flag) {
-      return obj
+      return item
     }
   }
 
   /// 新增 ///
-  obj = Vue.observable({ ...dic[get()] })
+  obj = Vue.observable({ ...obj })
   Object.defineProperty(obj, '$', { value: dic })
   OBJS.push(obj)
 

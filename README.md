@@ -511,7 +511,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   // ...
   ```
 
-### 优化
+### 配置 & 优化
 
 #### web 页面
 
@@ -524,7 +524,8 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 #### 工程
 
-暂未找到更多可优化内容(热更新用不用缓存都差不多)
+- 需要在 `yarn.lock` (或 `package-lock.json` ) 中, 指定**所有** `mini-css-extract-plugin` 的版本为 `package.json` 对应版本
+- 相同chunk下的基础样式(非皮肤样式)文件合并(比如css和scss)
 
 ### IDE
 
@@ -682,7 +683,6 @@ http {
 - scss 模块化: 已出 beta 但生态不完善, [草案](https://github.com/sass/sass/blob/master/accepted/module-system.md)
 - [微前端化](https://github.com/phodal/microfrontends#复合型): 应考虑基于 [Web Components](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components) ([vue 友好](https://cli.vuejs.org/zh/guide/build-targets.html#web-components-组件), 可以兼容其他) 的集成和通信.
 - `tsx` 类型支持(去掉`as any`, 利于重构)
-- 相同chunk下的基础样式(非皮肤样式)文件合并(比如css和scss)
 
 ### 其他
 

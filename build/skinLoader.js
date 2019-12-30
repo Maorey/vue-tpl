@@ -142,7 +142,7 @@ module.exports.pitch = function() {
     locals += skin + ','
   }
 
-  return `${resultSource}\nexport default getOb({${locals}}, ${SKIN.name})`
+  return `${resultSource}\nexport default ${SKIN.name} && getOb({${locals}})`
 }
 /// 其他 ///
 module.exports.init = init
