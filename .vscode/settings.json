@@ -7,6 +7,7 @@
   "editor.detectIndentation": false,
   "editor.renderIndentGuides": true,
   "editor.fontFamily": "'Fira Code Retina', 'Cascadia Code', Consolas, 'Courier New', monospace",
+  "diffEditor.ignoreTrimWhitespace": false,
 
   "git.autofetch": true,
   "git.enableSmartCommit": true,
@@ -18,6 +19,8 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   /// 代码风格 ///
   "vetur.completion.tagCasing": "initial",
+  "vetur.useWorkspaceDependencies": true,
+  "vetur.experimental.templateInterpolationService": true,
   "vetur.format.defaultFormatterOptions": {
     "prettier": {
       "semi": false, // 不要句尾分号

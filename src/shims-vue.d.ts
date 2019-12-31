@@ -110,6 +110,9 @@ interface IMessage extends Message {
 declare module 'vue/types/vue' {
   // eslint-disable-next-line @typescript-eslint/interface-name-prefix
   interface Vue {
+    /** 默认绑定<style module> class名字典
+     */
+    $style: IObject<string>
     /** 是否满足(全部)指定权限
      * @param {...String} authKey 权限id
      *
