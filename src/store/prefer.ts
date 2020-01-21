@@ -11,7 +11,7 @@ const PREFER = local.get(CONFIG.prefer) || {}
 
 /** 偏好管理
  */
-interface IPrefer {
+export interface IPrefer {
   /** 皮肤
    */
   skin: string
@@ -64,4 +64,4 @@ window.addEventListener('beforeunload', () => {
   local.set(CONFIG.prefer, PREFER)
 })
 
-export { Prefer as default, IPrefer }
+export default Prefer

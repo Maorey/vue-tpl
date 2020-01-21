@@ -13,7 +13,7 @@ interface IKeyVal {
 }
 /** 存储池
  */
-interface IPool extends IKeyVal {
+export interface IPool extends IKeyVal {
   /** 使用计数
    */
   c: number
@@ -282,4 +282,4 @@ const local = {
   },
 }
 
-export { IPool, Memory, local }
+export { Memory, local }

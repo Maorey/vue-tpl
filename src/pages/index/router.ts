@@ -50,12 +50,27 @@ keep-alive 缓存处理，这很hacky, 俺know
 */
 let counter = 0
 function refreshRoute(matched: RouteRecord[], meta: { e: any }) {
-  const instances = matched[0].instances
-  let temp
-  for (temp in instances) {
-    ;(temp = instances[temp].$vnode.componentOptions) &&
-      (temp = (temp.Ctor as any).options) &&
-      (meta.e = temp.name = 'r' + counter++)
+  let temp: any = matched.length
+  let instances
+  while (temp--) {
+    if ((instances = matched[temp]).instances) {
+      matched = instances as any
+      instances = instances.instances
+
+      temp = null
+      for (temp in instances) {
+        ;(temp = instances[temp]) && // 可能是 undefined...
+          (temp = temp.$vnode.componentOptions) &&
+          (temp = temp.Ctor.options) &&
+          (meta.e = temp.name = 'r' + counter++)
+      }
+
+      if (temp === null && (matched as any).parent) {
+        // 没实例 - 刷她爸爸
+        refreshRoute([(matched as any).parent], meta)
+      }
+      return
+    }
   }
 }
 

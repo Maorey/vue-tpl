@@ -72,7 +72,7 @@ function has(key: string) {
 
 /** Cookie 键值对
  */
-interface IEntry {
+export interface IEntry {
   /** 键
    */
   k: string
@@ -107,4 +107,4 @@ function remove(key: string) {
   document.cookie = encodeURIComponent(key) + EXPIRED
 }
 
-export { get, set, has, entries, remove, IEntry }
+export { get, set, has, entries, remove }

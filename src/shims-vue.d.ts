@@ -113,21 +113,8 @@ declare module 'vue/types/vue' {
     /** 默认绑定<style module> class名字典
      */
     $style: IObject<string>
-    /** 是否满足(全部)指定权限
-     * @param {...String} authKey 权限id
-     *
-     * @returns {Boolean}
-     */
-    authFit: (...authKey: string[]) => boolean
-    /** 是否包含指定权限(之一)
-     * @param {...String} authKey 权限id
-     *
-     * @returns {Boolean}
-     */
-    authAny: (...authKey: string[]) => boolean
 
     /// element-UI 组件快速方法 ///
-
     $loading: (options: {
       target?: Element | Node | string
       body?: boolean

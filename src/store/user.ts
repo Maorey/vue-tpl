@@ -19,7 +19,7 @@ interface IInfo {
 }
 /** 用户管理
  */
-interface IUser {
+export interface IUser {
   /** 用户信息
    */
   info?: IInfo
@@ -81,4 +81,4 @@ window.addEventListener('beforeunload', () => {
   local.set(CONFIG.token, USER_INFO)
 })
 
-export { User as default, IUser }
+export default User

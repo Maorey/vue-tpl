@@ -4,6 +4,7 @@
  * @Date: 2019-06-19 15:56:35
  */
 import AXIOS from 'axios'
+import combineURLs from 'axios/lib/helpers/combineURLs'
 
 import CONFIG from '@/config'
 import sort from '@/utils/sort'
@@ -229,4 +230,18 @@ function patch(
 let HEADERS = AXIOS.defaults.headers || (AXIOS.defaults.headers = {})
 HEADERS = HEADERS.common || (HEADERS.common = {})
 
-export { HEADERS as default, SEARCH, get, del, put, post, patch }
+/** 获取url (直接使用url的情况, 比如验证码、下载、上传等, 添加BaseUrl、调试参数等)
+ * @param {string} url
+ * @param {IObject} params 查询参数
+ */
+function getUri(url: string, params?: IObject) {
+  return combineURLs(
+    AXIOS.defaults.baseURL,
+    AXIOS.getUri({
+      url,
+      params: SEARCH ? Object.assign(params || {}, SEARCH) : params,
+    })
+  )
+}
+
+export { HEADERS as default, SEARCH, get, del, put, post, patch, getUri }

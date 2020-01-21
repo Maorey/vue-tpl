@@ -3,53 +3,77 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 14:32:33
  */
+import Vue, { Component, AsyncComponent, RenderContext } from 'vue'
 import CONFIG from '@/config'
 
-import LOADING from '@com/Loading' // 加载中
-import ERROR from '@com/Error' // 加载失败
+import Loading from '@com/Loading' // 加载中
+import Info from '@com/Info' // 加载失败
 
-import Vue, { Component, AsyncComponent, RenderContext } from 'vue'
-
-/** 组件字典
- */
-interface IDictionary {
-  [key: string]: Component
-}
-/** 组件过滤器
+/** 组件筛选器
  * @param {RenderContext} context vue渲染上下文
- * @returns {String} 匹配的组件名
+ * @param {IObject<Component>} components 组件字典
+ *
+ * @returns {String | Component} 匹配的组件名/组件
  */
-type filter = (context: RenderContext) => string
+type filter = (
+  context: RenderContext,
+  components?: IObject<Component>
+) => string | Component | void
 
 /** 根据is属性选择组件
  */
-const filterByIS: filter = context => context.data.attrs?.is || context.props.is
+const filterByIS: filter = context => context.props.is || context.data.attrs?.is
 
-/** 获取高阶组件，用于根据type从DIC中选择一个组件【同步】
- * @param {IDictionary} DIC 组件字典对象 { key:string : value:VueComponent }
- * @param {Function} filter 类型筛选器
+/** 获取选择器(函数式组件)
+ * @param {IObject<Component>} components 组件字典
+ * @param {filter} filter 组件筛选器
  *
- * @returns {Component} 一个函数式组件
+ * @returns {Component} 函数式组件
  */
-function getChooser(DIC: IDictionary, filter: filter = filterByIS): Component {
+function getChooser(
+  components?: IObject<Component>,
+  filter: filter = filterByIS
+): Component {
   return {
     functional: true,
     render(createElement, context) {
-      return createElement(DIC[filter(context)], context.data, context.children)
+      let Comp: any = filter(context, components)
+      Comp = (components && components[Comp]) || Comp
+
+      return Comp && createElement(Comp, context.data, context.children)
     },
   }
 }
 
-/** 获取带加载状态的【异步】组件
+/** 选择器(函数式组件)
+ * @prop {IObject<Component>} components 组件字典
+ * @prop {filter} filter 组件筛选器
+ */
+const Chooser: Component = {
+  functional: true,
+  render(createElement, context) {
+    const { components, filter = filterByIS } = context.props as {
+      components?: IObject<Component>
+      filter?: filter
+    }
+
+    let Comp: any = filter(context, components)
+    Comp = (components && components[Comp]) || Comp
+
+    return Comp && createElement(Comp, context.data, context.children)
+  },
+}
+
+/** 获取带加载状态的【异步】组件包装
  * @param {Function} promiseFactory 异步组件, 比如: () => import('a')
  *    另: 第一次执行import方法就会开始下载chunk并返回Promise，成功后保存Promise下次直接返回
  *
- * @returns {Component} 带加载状态的异步组件
+ * @returns {Component} 函数式组件
  */
 function getAsync(
-  promiseFactory: () => Promise<Component | { default: Component }>,
-  loading: Component = LOADING,
-  error: Component = ERROR
+  promiseFactory: () => Promise<Component | AsyncComponent>,
+  loading: Component = Loading,
+  error: Component = Info
 ): Component {
   const asyncComponentFactory = (): AsyncComponent => () => ({
     error, // 加载失败时
@@ -180,4 +204,4 @@ export default class extends Vue {
 */
 // 更多...
 
-export { filterByIS as filter, getChooser, getAsync, IDictionary }
+export { filterByIS as filter, Chooser, getChooser, getAsync }

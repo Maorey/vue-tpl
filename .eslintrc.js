@@ -59,6 +59,9 @@ module.exports = {
     ], // 最大列数
     'max-params': ['error', 7], // function最大参数数
     'max-statements': ['error', 120], // function最大语句数
+    'curly': 'error', // 控制语句不允许省略大括号
+    'no-lonely-if': 'error',
+    'no-dupe-else-if': 'error',
     'no-debugger': ENV,
     'no-console': [ENV, { allow: ['info', 'warn', 'error'] }],
 

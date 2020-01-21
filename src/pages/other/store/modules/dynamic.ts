@@ -10,7 +10,7 @@ import store from '../'
 
 /** 动态模块
  */
-interface IDynamic {
+export interface IDynamic {
   /** 是否动态
    */
   dynamic: boolean
@@ -42,4 +42,3 @@ class Dynamic extends VuexModule implements IDynamic {
 }
 
 export default getModule(Dynamic)
-export { IDynamic }

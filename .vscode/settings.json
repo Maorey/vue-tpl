@@ -20,7 +20,7 @@
   /// 代码风格 ///
   "vetur.completion.tagCasing": "initial",
   "vetur.useWorkspaceDependencies": true,
-  "vetur.experimental.templateInterpolationService": true,
+  // "vetur.experimental.templateInterpolationService": true, // 卡
   "vetur.format.defaultFormatterOptions": {
     "prettier": {
       "semi": false, // 不要句尾分号

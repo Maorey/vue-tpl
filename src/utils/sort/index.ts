@@ -13,7 +13,7 @@ import mergeSort from './merge' // 归并排序
  *
  * @returns {Number | Boolean | null | undefined} true/大于0数字: a在b后; 其它: a在b前
  */
-type Compare = (a: any, b: any) => number | boolean | null | undefined
+export type Compare = (a: any, b: any) => number | boolean | null | undefined
 
 /** 升序
  */
@@ -67,4 +67,4 @@ const ASC: Compare = (a: any, b: any) => a > b
 //   return array
 // }
 
-export { mergeSort as default, ASC, Compare }
+export { mergeSort as default, ASC }

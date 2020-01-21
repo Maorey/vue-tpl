@@ -29,7 +29,7 @@ function getVerify() {
 
 /** 登陆表单
  */
-interface ILogin {
+export interface ILogin {
   verify: string
   account: string
   password: string
@@ -73,4 +73,4 @@ function logout() {
 
 // 用户信息修改...
 
-export { ILogin, getVerify, login, logout }
+export { getVerify, login, logout }

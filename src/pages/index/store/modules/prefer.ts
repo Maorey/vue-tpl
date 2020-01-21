@@ -6,7 +6,7 @@ import store from '../'
 
 /** 偏好管理
  */
-interface IPrefer extends RootIPrefer {
+export interface IPrefer extends RootIPrefer {
   foo: string
 
   // ...
@@ -34,4 +34,3 @@ class Prefer extends RootPrefer {
 }
 
 export default getModule(Prefer)
-export { IPrefer }

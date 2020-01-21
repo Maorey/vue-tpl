@@ -230,7 +230,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   }
   ```
 
-- 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
+- `enum/type/interface` 需要导出的直接 `export` (否则可能会得到 undefined), 其他的除了字典(硬编码)外, 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
 - 不要使用 `$` 作为组件事件名, 该名字已被[异步组件刷新](src/utils/highOrder.ts)占用
 - 路由请**全部**使用异步组件(`@utils/highOrder getAsync`), 以使路由及其**子(异步)组件**可以局部刷新
 - CSS Modules class 名使用 `camelCase` (global 可以 kebab-case), 选择器嵌套**不应超过三层**
@@ -391,7 +391,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   </style>
   ```
 
-- 正确规范简洁优雅适当的各种**注释**, 比如方法注释及必要的变量注释:
+- 正确规范([JSDoc](https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html#supported-jsdoc))简洁适当的各种**注释**, 比如函数注释及必要的变量注释:
 
   ```TypeScript
   /** 二维点

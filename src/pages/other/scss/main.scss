@@ -40,11 +40,27 @@
 @import '~element-ui/packages/theme-chalk/src/scrollbar';
 
 /// 【覆盖element-ui】 ///
+// <a> 按钮
+.el-button {
+  text-decoration: none;
+}
 // 表格
 .el-table tbody {
   color: $colorTextCommon;
 }
+// 条纹
+.el-table__row--striped td {
+  background: rgba($colorTheme9, 0.3) !important;
+}
+// 选中行
+.current-row > td {
+  background: $colorTheme6 !important;
+}
 // input:text/textarea数字统计
+.el-range-editor .el-range-input {
+  background: $colorTransparent;
+}
+
 .el-input,
 .el-textarea {
   .el-input__count {
@@ -96,6 +112,7 @@
 .v-modal,
 .el-loading-mask {
   z-index: $zFixed !important;
+  background-color: rgba($colorBackGround, 0.9);
 }
 // 弹窗
 .el-dialog__wrapper {

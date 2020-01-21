@@ -1,0 +1,62 @@
+/** 状态颜色
+*/
+
+.primary {
+  color: $colorTheme !important;
+}
+
+.success {
+  color: $colorSuccess !important;
+}
+
+.danger {
+  color: $colorDanger !important;
+}
+
+.warn {
+  color: $colorWarn !important;
+}
+
+.info {
+  color: $colorInfo !important;
+}
+
+.bgprimary {
+  background-color: $colorTheme !important;
+}
+
+.bgsuccess {
+  background-color: $colorSuccess !important;
+}
+
+.bgdanger {
+  background-color: $colorDanger !important;
+}
+
+.bgwarn {
+  background-color: $colorWarn !important;
+}
+
+.bginfo {
+  background-color: $colorInfo !important;
+}
+
+.bdprimary {
+  border-color: $colorTheme !important;
+}
+
+.bdsuccess {
+  border-color: $colorSuccess !important;
+}
+
+.bddanger {
+  border-color: $colorDanger !important;
+}
+
+.bdwarn {
+  border-color: $colorWarn !important;
+}
+
+.bdinfo {
+  border-color: $colorInfo !important;
+}

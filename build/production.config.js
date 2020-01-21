@@ -10,10 +10,8 @@ const getLoaderOption = name => ({
   fallback: { loader: 'file-loader', options: { name } },
 })
 function fileName(config) {
-  // js chunkFilename只能是String...这个hash就缩不短了啊
   const jsFileName = 'js/[name].[chunkhash:3].js'
   config.output.filename(jsFileName).chunkFilename(jsFileName)
-  // css filename/chunkFilename只能String
   const cssFileName = 'css/[name].[contenthash:3].css'
   config
     .plugin('extract-css')

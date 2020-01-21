@@ -12,7 +12,6 @@ import ModuleContainer from '@indexCom/ModuleContainer' // 模块容器
 import $style from './index.module.scss'
 
 // 异步组件
-/* eslint-disable comma-dangle */
 const ModuleOne: any = getAsync(() =>
   import(/* webpackChunkName: "ihOne" */ './ModuleOne')
 )

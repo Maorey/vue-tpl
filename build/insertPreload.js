@@ -71,10 +71,12 @@ module.exports = class {
   /**
    * @param {Object} option 选项
    *  {
-   *    runtime:String|Array<String>|RegExp 内联runtime
-   *    defer:Boolean 脚本是否defer 默认true
-   *    async:Boolean 脚本是否async 默认false (和defer只能有一个)
-   *    skin:String 默认皮肤({skin}@{name}.css)
+   *    runtime:String|Array<String>|RegExp 内联runtime(指定js文件)
+   *    defer:Boolean 脚本是否defer
+   *    async:Boolean 脚本是否async (和defer只能有一个)
+   *    skin:String 默认皮肤({skin}@*.css)
+   *    noPreload:Boolean 是否去掉 preload
+   *    noPrefetch:Boolean 是否去掉 prefetch
    *  }
    */
   constructor(option = {}) {
@@ -102,9 +104,12 @@ module.exports = class {
     }
     /// 脚本属性 ///
     this._SA =
-      option.defer === false ? option.async === true && 'async' : 'defer'
+      option.defer === true ? 'defer' : option.async === true && 'async'
     /// 皮肤 ///
     this._REG_SKIN = (this._T = option.skin) && /[\\/]([^\\/]+)@.+/
+    /// preload & prefetch ///
+    this._L = option.noPreload && 'preload'
+    this._F = option.noPrefetch && 'prefetch'
   }
 
   // https://webpack.docschina.org/api/plugins/
@@ -205,6 +210,8 @@ module.exports = class {
 
     const script = 'script'
     const relStyle = 'stylesheet'
+    const preload = this._L
+    const prefetch = this._F
     const REG_RUNTIME = this._REG_RUNTIME
 
     const skin = this._T
@@ -224,6 +231,16 @@ module.exports = class {
     let len = head.length
     while (++index < len) {
       temp = head[index].attributes // 当前属性
+      // 去掉runtime/preload/prefetch
+      if (
+        (preload && temp.rel === preload) ||
+        (prefetch && temp.rel === prefetch) ||
+        (REG_RUNTIME && REG_RUNTIME.test(temp.href))
+      ) {
+        head.splice(index--, 1)
+        len--
+      }
+
       // preload 只认 as 属性吧
       if (temp.as || temp.rel === relStyle) {
         switch (temp.as) {
@@ -245,11 +262,6 @@ module.exports = class {
             }
             break
           case script: // js
-            // 去掉runtime
-            if (REG_RUNTIME && REG_RUNTIME.test(temp.href)) {
-              head.splice(index--, 1)
-              len--
-            }
             // 去重
             for (el of body) {
               if (temp.href === el.attributes.src) {

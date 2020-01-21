@@ -114,3 +114,5 @@ declare interface IObject<T = any> {
   [key: string]: T
   [key: number]: T
 }
+
+declare type Falsy = false | 0 | 0n | '' | null | undefined // | NaN

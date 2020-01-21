@@ -12,12 +12,10 @@ import { IDynamic } from './modules/dynamic'
 Vue.use(Vuex) // 只能全局注册
 
 /** 全局状态【若使用 Namespaced Modules, 属性名必须和 name 一致】
+ *    先声明空 Store 再动态注册
  */
-interface IRootState {
+export default new Vuex.Store<{
   user: IUser
   prefer: IPrefer
   dynamic: IDynamic
-}
-
-// 先声明空 Store 再动态注册
-export default new Vuex.Store<IRootState>({})
+}>({})
