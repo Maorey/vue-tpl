@@ -53,7 +53,7 @@ class Prefer extends VuexModule implements IPrefer {
    * @param {String} lang 语言
    */
   @Action
-  setLang(lang: string = 'zh') {
+  setLang(lang = 'zh') {
     this.context.commit('LANG', lang)
   }
 }

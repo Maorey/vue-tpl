@@ -1,7 +1,7 @@
 {
   "editor.tabSize": 2,
   "editor.wordWrap": "on",
-  "editor.wordWrapColumn": 80,
+  "editor.wordWrapColumn": 100,
   "editor.fontLigatures": true,
   "editor.wrappingIndent": "indent",
   "editor.detectIndentation": false,

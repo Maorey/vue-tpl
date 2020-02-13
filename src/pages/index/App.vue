@@ -25,7 +25,7 @@
         :max="9"
         :exclude="$route.meta.$.e"
       >
-        <RouterView />
+        <RouterView :key="$route.meta.code" />
       </KeepAlive>
     </Transition>
     <!-- 导航 -->
@@ -66,7 +66,7 @@ import statePrefer from '@index/store/modules/prefer'
 @Component
 export default class extends Vue {
   // data()
-  private showNav: boolean = false
+  private showNav = false
 
   // computed
   get LINK() {

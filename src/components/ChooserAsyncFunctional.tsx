@@ -14,7 +14,7 @@
     </ChooserAsyncFunctional>
   </div>
 </template> */
-import Vue, { Component, RenderContext, VNodeData, VNode } from 'vue'
+import Vue, { Component, RenderContext, VNodeData } from 'vue'
 
 /// [import] vue组件,其他,CSS Module ///
 // import { getAsync } from '@/utils/highOrder'
@@ -100,8 +100,7 @@ function watch(state: state) {
     const result = state.filter(data)
     if (result) {
       state.d = { data: result.data || result }
-      state.i.i =
-        (DIC && DIC[result.comp as string]) || result.comp || tag || DEFAULT_TAG
+      state.i.i = (DIC && DIC[result.comp as string]) || result.comp || tag || DEFAULT_TAG
       return
     }
   }
@@ -118,8 +117,7 @@ function get(state: state) {
     })
     .catch(err => {
       state.i.i =
-        (typeof state.error === 'function' ? state.error(err) : state.error) ||
-        status.error
+        (typeof state.error === 'function' ? state.error(err) : state.error) || status.error
     })
 }
 
@@ -158,17 +156,24 @@ function init(state: state) {
   let target
   /// props ///
   for (prop in PROPS) {
-    if (state[prop as acceptProps] !== (target = props[prop] || attrs[prop])) {
-      flag = false
-      state[prop as acceptProps] = target
-      fun ||
-        ((prop === acceptProps.get || prop === acceptProps.error) &&
-          (fun = get))
-    }
+    if (
+      // eslint-disable-next-line no-prototype-builtins
+      state.hasOwnProperty(prop) ||
+      // eslint-disable-next-line no-prototype-builtins
+      props.hasOwnProperty(prop) ||
+      // eslint-disable-next-line no-prototype-builtins
+      attrs.hasOwnProperty(prop)
+    ) {
+      if (state[prop as acceptProps] !== (target = props[prop] || attrs[prop])) {
+        flag = false
+        state[prop as acceptProps] = target
+        fun || ((prop === acceptProps.get || prop === acceptProps.error) && (fun = get))
+      }
 
-    // 不向下传递
-    delete attrs[prop]
-    delete props[prop]
+      // 不向下传递
+      delete attrs[prop]
+      delete props[prop]
+    }
   }
 
   // 去掉无效dom属性(虽然不会暴露数据)
@@ -239,21 +244,20 @@ export function getKey() {
   return counter++
 }
 
-const hook = '~hook:destroyed'
-let emptyNode: VNode
 /** 异步选择器组件(functional) 【相同父组件存在多个选择器时, 必须提供key作为唯一标识】
  *    支持默认插槽/默认作用域插槽 二选一(二者都有无法确定顺序)
  */
 export default (context: RenderContext) => {
-  // Fix: 销毁
-  const parent = context.parent
+  let data: VNodeData | typeof context.scopedSlots.default = context.data
+  const key = data.key as string
+
+  const parent: any = context.parent
+  parent._$n || (parent._$n = {})
   if (parent.$el && !parent.$el.parentNode) {
-    // 必须得有个具体节点
-    return emptyNode || (emptyNode = <i style="display:none" />)
+    return parent._$n[key]
   }
 
-  let data: VNodeData | typeof context.scopedSlots.default = context.data
-  const state = getState(parent, data.key)
+  const state = getState(parent, key)
   state.c = context
   init(state)
 
@@ -261,28 +265,26 @@ export default (context: RenderContext) => {
   switch (Comp) {
     case status.none:
       call(state.f[status.none], context)
-      // (不返回也没啥问题)
-      return emptyNode || (emptyNode = <i style="display:none" />)
+      return (parent._$n[key] = <i style="display:none" />)
     case status.loading:
       call(state.f[status.loading], context)
-      return <Loading />
+      return (parent._$n[key] = <Loading />)
     case status.empty:
       call(state.f[status.empty], context)
-      return <Info icon="el-icon-info" type="info" msg="empty" retry="" />
+      return (parent._$n[key] = <Info icon="el-icon-info" type="info" msg="empty" retry="" />)
     case status.error:
       call(state.f[status.error], context)
-      return <Info on={state.$} />
+      return (parent._$n[key] = <Info on={state.$} />)
     default:
       data.props = context.props
       data.props.data = state.d.data
-      ;(data.on || (data.on = {}))[hook] = state._
+      ;(data.on || (data.on = {}))['~hook:destroyed'] = state._
 
       call(state.f[status.success], context)
-      return (
+      return (parent._$n[key] = (
         <Comp {...data}>
-          {context.slots().default ||
-            ((data = context.scopedSlots.default) && data(state.d))}
+          {context.slots().default || ((data = context.scopedSlots.default) && data(state.d))}
         </Comp>
-      )
+      ))
   }
 }

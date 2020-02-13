@@ -20,7 +20,7 @@ let effect: ISubscribe | undefined
  *
  * @returns {Object} 目标对象
  */
-function watch(key: string = 'value', target: IObject = {}) {
+function watch(key = 'value', target: IObject = {}) {
   let local: any = target[key]
   try {
     Object.defineProperty(target, key, {
@@ -62,7 +62,7 @@ function watch(key: string = 'value', target: IObject = {}) {
  * @param {String} key 订阅属性
  * @param {Function} fn 副作用函数 缺省则移除全部
  */
-function unWatch(target: IObject, key: string = 'value', fn?: Function) {
+function unWatch(target: IObject, key = 'value', fn?: Function) {
   const depsMap = targetMap.get(target)
   const depsSet = depsMap && depsMap[key]
   if (depsSet) {

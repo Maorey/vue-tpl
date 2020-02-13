@@ -135,7 +135,7 @@ function isTransparent(color: string) {
  */
 function fitColor(
   color: string,
-  ratio: number = 0.25,
+  ratio = 0.25,
   opacity?: number | null | Alpha
 ) {
   return toRGB(color, opacity, (rgb: number[]) => {

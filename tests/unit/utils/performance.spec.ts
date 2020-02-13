@@ -13,6 +13,7 @@ describe('@/utils/performance: 性能优化相关工具函数', () => {
     let countFn = 0
 
     const interval = setInterval(() => {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       test(countIt++)
     }, 4)
 
@@ -30,6 +31,7 @@ describe('@/utils/performance: 性能优化相关工具函数', () => {
     let countFn = 0
 
     const interval = setInterval(() => {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       test(countIt++)
     }, 4)
 
@@ -48,12 +50,14 @@ describe('@/utils/performance: 性能优化相关工具函数', () => {
     let countFn = 0
 
     let interval = setInterval(() => {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       test(countIt++)
       if (countIt > 1) {
         expect(countFn).toBe(0)
         clearInterval(interval)
 
         interval = setInterval(() => {
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
           test(countIt++)
         }, 8)
       }
@@ -73,12 +77,14 @@ describe('@/utils/performance: 性能优化相关工具函数', () => {
     let countFn = 0
 
     let interval = setInterval(() => {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       test(countIt++)
       if (countIt > 1) {
         expect(countFn).toBe(1)
         clearInterval(interval)
 
         interval = setInterval(() => {
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
           test(countIt++)
         }, 8)
       }

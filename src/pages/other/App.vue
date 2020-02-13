@@ -32,7 +32,7 @@
         :max="9"
         :exclude="$route.meta.$.e"
       >
-        <RouterView />
+        <RouterView :key="$route.meta.code" />
       </KeepAlive>
     </Transition>
 

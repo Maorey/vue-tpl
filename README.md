@@ -4,6 +4,9 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
 
 [更新日志](CHANGELOG.md)
 
+- [环境要求](#环境要求)
+  - [建议开发环境](#建议开发环境)
+- [浏览器支持](#浏览器支持)
 - [命令参考](#命令参考)
   - [安装项目](#安装项目)
     - [可选项](#可选项)
@@ -20,8 +23,6 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
   - [优化](#优化)
     - [web 页面](#web%20页面)
     - [工程](#工程)
-  - [IDE](#ide)
-- [浏览器支持](#浏览器支持)
 - [部署](<#部署(nginx)>)
 - [备忘](#备忘)
   - [文档](#文档)
@@ -29,6 +30,40 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
   - [笔记](#笔记)
   - [问题及思考](#问题及思考)
   - [其他](#其他)
+
+## 环境要求
+
+- `Node.js`: 建议 v12.13.1
+- `yarn`: 建议 v1.21.1
+
+### 建议开发环境
+
+- `Git`: 最新 代码管理
+- `Visual Studio Code` (VSCode): 最新 IDE
+
+VSCode 插件
+
+- `Vetur`: 最新 vue 开发必备
+- `GitLens`: 最新 Git 可视化工具
+- `ESLint`: 最新 脚本代码检查
+- `stylelint`: 最新 样式代码检查
+- `Prettier - Code formatter`: 最新 代码格式化
+
+浏览器插件
+
+- `Vue Devtools`: 最新
+
+> 推荐工具: [`@vue/cli`](https://cli.vuejs.org/zh/guide), 全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
+
+> 推荐字体: [FiraCode](https://github.com/tonsky/FiraCode)
+
+## 浏览器支持
+
+支持现代浏览器及 IE10+
+
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
+| :-: | :-: | :-: | :-: |
+| IE10, IE11, Edge | last 2 versions | last 2 versions | last 2 versions |
 
 ## 命令参考
 
@@ -310,7 +345,21 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   - `js`: `.vue` 文件中使用, `JavaScript`
   - `vue`: `.jsx` 文件中使用, `JavaScript`
   - `vuex`: `.js` 文件中使用, `vuex module` class语法
-- 请[规范](https://github.com/vuejs/vue/blob/dev/.github/COMMIT_CONVENTION.md)提交消息
+- **Git 提交信息规范**参考 [vue](https://github.com/vuejs/vue/blob/dev/.github/COMMIT_CONVENTION.md) 规范 ([Angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular))
+
+  - `Feat` 增加新功能
+  - `Fix` 修复问题/BUG
+  - `Style` 代码风格相关无影响运行结果的
+  - `Perf` 优化/性能提升
+  - `Refactor` 重构
+  - `Polish` 润色
+  - `Revert` 撤销修改
+  - `Test` 测试相关
+  - `Docs` 文档/注释
+  - `Chore` 依赖更新/脚手架配置修改等
+  - `Workflow` 工作流改进
+  - `Ci` 持续集成
+  - `Mod` 不确定分类的修改
 
 ### 其他
 
@@ -527,27 +576,6 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 需要在 `yarn.lock` (或 `package-lock.json` ) 中, 指定**所有** `mini-css-extract-plugin` 的版本为 `package.json` 对应版本
 - 相同chunk下的基础样式(非皮肤样式)文件合并(比如css和scss)
 
-### IDE
-
-推荐使用: **Visual Studio Code** (VSCode), 推荐插件:
-
-- Vetur: vue 开发必备
-- ESLint & stylelint: 代码检查
-- Prettier - Code formatter: 代码格式化
-- GitLens: Git 工具
-
-> 推荐工具: [`@vue/cli`](https://cli.vuejs.org/zh/guide), 全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
-
-> 推荐字体: [FiraCode](https://github.com/tonsky/FiraCode)
-
-## 浏览器支持
-
-支持现代浏览器及 IE10+
-
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
-| :-: | :-: | :-: | :-: |
-| IE10, IE11, Edge | last 2 versions | last 2 versions | last 2 versions |
-
 ## 部署(nginx)
 
 - chunk hash 长度： 修改 [webpack.optimize.SplitChunksPlugin](node_modules/webpack/lib/optimize/SplitChunksPlugin.js)
@@ -683,6 +711,7 @@ http {
 - scss 模块化: 已出 beta 但生态不完善, [草案](https://github.com/sass/sass/blob/master/accepted/module-system.md)
 - [微前端化](https://github.com/phodal/microfrontends#复合型): 应考虑基于 [Web Components](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components) ([vue 友好](https://cli.vuejs.org/zh/guide/build-targets.html#web-components-组件), 可以兼容其他) 的集成和通信.
 - `tsx` 类型支持(去掉`as any`, 利于重构)
+- 是否只下载当前皮肤(应无必要, 又不影响性能, 未验证移动端换肤方案是否可行)
 
 ### 其他
 

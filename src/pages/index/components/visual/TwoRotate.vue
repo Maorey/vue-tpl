@@ -489,7 +489,7 @@ export default class extends Vue {
     canvas.width = canvas.clientWidth
     canvas.height = canvas.clientHeight
 
-    let isSpinning: boolean = true
+    let isSpinning = true
 
     const illo = new Illustration({
       element: canvas,

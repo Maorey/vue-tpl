@@ -13,14 +13,14 @@ describe('@/utils/watch: 响应式工具', () => {
   it('run 运行副作用函数', done => {
     const test = watch()
     let count = 0
-    const noEffect = () => {
+    function noEffect() {
       count++
     }
-    const effect = () => {
+    function effect() {
       count++
       return test.value
     }
-    const effect1 = (a: number) => {
+    function effect1(a: number) {
       count++
       if (test.value) {
         expect(a).toBe(0)
@@ -42,7 +42,7 @@ describe('@/utils/watch: 响应式工具', () => {
 
   it('unWatch (添加多个订阅并)取消订阅', done => {
     const test = watch()
-    const update = () => {
+    function update() {
       let value = 6
       test.value = 0
       while (value--) {
@@ -51,7 +51,7 @@ describe('@/utils/watch: 响应式工具', () => {
     }
 
     let count = 0
-    const effect1 = () => {
+    function effect1() {
       count++
       run(effect2)
       test.value = 0
@@ -60,7 +60,7 @@ describe('@/utils/watch: 响应式工具', () => {
         update()
       }
     }
-    const effect2 = () => {
+    function effect2() {
       count++
       if (test.value) {
         expect(count).toBe(3)

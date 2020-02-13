@@ -62,6 +62,7 @@ module.exports = function(ENV) {
     port,
     https,
     proxy,
+    clientLogLevel: 'warn',
     overlay: { errors: true }, // lint
     openPage: ENV.DEV_SERVER_PAGE || '',
   }

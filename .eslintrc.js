@@ -13,11 +13,12 @@ module.exports = {
   extends: [
     'plugin:vue/recommended', // vue 代码风格预设
     '@vue/standard',
-    '@vue/typescript',
+    '@vue/typescript/recommended',
   ],
   plugins: ['@typescript-eslint'],
   parserOptions: {
-    parser: '@typescript-eslint/parser',
+    ecmaVersion: 2020,
+    // parser: '@typescript-eslint/parser',
   },
   overrides: [
     {
@@ -49,7 +50,7 @@ module.exports = {
     'max-len': [
       'error',
       {
-        code: 80,
+        code: 100,
         tabWidth: 2,
         ignoreUrls: true,
         ignoreStrings: true,
@@ -59,17 +60,36 @@ module.exports = {
     ], // 最大列数
     'max-params': ['error', 7], // function最大参数数
     'max-statements': ['error', 120], // function最大语句数
-    'curly': 'error', // 控制语句不允许省略大括号
+    curly: 'error', // 控制语句不允许省略大括号
     'no-lonely-if': 'error',
     'no-dupe-else-if': 'error',
     'no-debugger': ENV,
     'no-console': [ENV, { allow: ['info', 'warn', 'error'] }],
+    camelcase: ['error', { allow: ['^\\$_', '^_\\$'] }],
+    'prefer-spread': 0,
+    'prefer-rest-params': 0,
 
-    /// TSLint https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#supported-rules ///
-    'no-unused-vars': 'off',
+    /// typescript-eslint https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#supported-rules ///
+    // 'no-unused-vars': 'off', // in extends
+    '@typescript-eslint/camelcase': ['error', { allow: ['^\\$_', '^_\\$'] }],
     '@typescript-eslint/no-unused-vars': ENV,
+    '@typescript-eslint/no-var-requires': 0,
+    '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/no-empty-function': 'warn',
+    '@typescript-eslint/no-empty-interface': 0,
     '@typescript-eslint/class-name-casing': 'error', // 类名 PascalCase
+    '@typescript-eslint/no-use-before-define': [
+      ENV,
+      { functions: false, classes: false },
+    ],
     '@typescript-eslint/interface-name-prefix': ['error', 'always'], // 接口I开头
+    '@typescript-eslint/member-delimiter-style': [
+      'error',
+      {
+        multiline: { delimiter: 'none' },
+        singleline: { delimiter: 'semi' },
+      },
+    ],
 
     /// Vue https://eslint.vuejs.org/rules/ ///
     'vue/component-name-in-template-casing': 'error',

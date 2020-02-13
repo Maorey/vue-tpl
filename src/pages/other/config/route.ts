@@ -26,17 +26,20 @@ export default {
 
       path: '/home',
       meta: {
+        code: 'home', // 唯一标识, 作为根路由的key
         name: '首页',
       },
       component: getAsync(() =>
         import(/* webpackChunkName: "oHome" */ '@other/views/Home')
       ),
+      // 嵌套路由(children)由meta.name唯一标识
     },
     {
       /*! 关于 */
 
       path: '/about',
       meta: {
+        code: 'about',
         name: '关于',
       },
       component: getAsync(() =>

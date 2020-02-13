@@ -13,9 +13,13 @@ export default {
   },
   created(this: any) {
     this.d = { props: { max: 5 } }
+    this.k = { key: 0 }
   },
   render(this: any, h) {
-    this.d.props.exclude = (this.$route.meta.$ || 0).e // for 依赖收集
-    return h('KeepAlive', this.d, [h('RouterView')])
+    const meta = this.$route.meta
+    this.d.props.exclude = (meta.$ || 0).e // for 依赖收集
+    this.k.key = meta.name
+
+    return h('KeepAlive', this.d, [h('RouterView', this.k)])
   },
 } as Component

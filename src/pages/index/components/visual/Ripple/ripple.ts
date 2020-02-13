@@ -17,9 +17,10 @@ function pickInstance(
 ) {
   framebuffer.clear({ color: true, depth: true })
   // Render picking colors
-  /* eslint-disable camelcase */
+  // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
   model.setUniforms({ picking_uActive: 1 })
   model.draw({ framebuffer })
+  // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
   model.setUniforms({ picking_uActive: 0 })
 
   const color = readPixelsToArray(framebuffer, {
