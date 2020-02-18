@@ -42,6 +42,8 @@ import Notification from 'element-ui/lib/notification'
 // 滚动面板【隐藏组件】
 import Scrollbar from 'element-ui/lib/scrollbar'
 
+import elDialogDragable from '@/libs/elDialogDragable'
+
 /// 全局样式 ///
 import '@/scss/icon.scss?skin='
 import '@/scss/transitions.scss?skin='
@@ -71,6 +73,8 @@ options.components.Bar.created = function() {
   }
   this.clearValidate()
 }
+// hack: ElDialog props dragable 默认(true)允许拖拽
+elDialogDragable(Dialog)
 
 // 布局
 Vue.use(Row)

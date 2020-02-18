@@ -220,7 +220,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   - 浏览器默认样式重置
   - `Transition` 动画样式
   - 字体图标样式
-  - 公共组件默认样式(使支持换肤, 使用[BEM](https://en.bem.info)约定[参考链接](https://www.ibm.com/developerworks/cn/web/1512_chengfu_bem/))
+  - 公共组件样式([BEM](https://en.bem.info)约定[参考链接](https://www.ibm.com/developerworks/cn/web/1512_chengfu_bem/))
 
   均应使用 [CSSModule](https://vue-loader-v14.vuejs.org/zh-cn/features/css-modules.html)(开发环境class名:`[folder]__[name]_[local]-[emoji]$`), 以更好的模块化和复用、打包样式
 
@@ -235,7 +235,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 > 推荐使用 [TypeScript](https://www.tslang.cn)
 
-- JavaScript/TypeScript 代码风格为 [**JavaScript standard**](https://standardjs.com/rules-zhcn.html), 除了以下区别:
+- JavaScript/TypeScript 代码风格为 [**JavaScript standard**](https://standardjs.com/rules-zhcn.html), 主要有以下区别:
 
   - 使用单引号
   - 不要句尾分号
@@ -267,8 +267,9 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 - `enum/type/interface` 需要导出的直接 `export` (否则可能会得到 undefined), 其他的除了字典(硬编码)外, 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
 - 不要使用 `$` 作为组件事件名, 该名字已被[异步组件刷新](src/utils/highOrder.ts)占用
+- 为避免 [Vue属性名](https://cn.vuejs.org/v2/style-guide/#私有属性名-必要) 冲突, 私有属性请使用 `$_` 作为一般命名空间(在保证易维护的前提下可以使用单字母, 但尽量避免), `_$` 作为`全局/跨组件/hack`命名空间
 - 路由请**全部**使用异步组件(`@utils/highOrder getAsync`), 以使路由及其**子(异步)组件**可以局部刷新
-- CSS Modules class 名使用 `camelCase` (global 可以 kebab-case), 选择器嵌套**不应超过三层**
+- CSS Modules class 名使用 `camelCase`, 选择器嵌套**不应超过三层**
 - <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)(应在 `scss/export` 目录下或 `export*.scss` 中使用); 为保证`ts/js`中引入时 scss 变量注入正确(使用缓存会导致无法对相同文件多次注入变量，不用缓存显然不合理), 应在合适的 scss 文件中引入目标样式源码:
 
   ```scss

@@ -5,21 +5,29 @@
  */
 import { Component } from 'vue'
 
-let counter = 0
+/// [import] vue组件,其他,CSS Module ///
+// import { getAsync } from '@/utils/highOrder'
+// import STYLE from './index.module.scss'
+
+/// 常量(UPPER_CASE),单例/变量(camelCase),函数(无副作用,camelCase) ///
+// const ModuleOne: any = getAsync(() =>
+//  import(/* webpackChunkName: "ihOne" */ './ModuleOne')
+// )
+
 export default {
   name: 'RVT',
   beforeCreate(this: any) {
-    this.$vnode.data.key = counter++ // hack key
-  },
-  created(this: any) {
-    this.d = { props: { max: 5 } }
-    this.k = { key: 0 }
+    this.a = this.$router
+    this.b = this.$route.meta
+    this.c = this.$vnode.data.key || this.b.code
+    this.d = { key: this.c, props: { max: 3 } }
   },
   render(this: any, h) {
-    const meta = this.$route.meta
-    this.d.props.exclude = (meta.$ || 0).e // for 依赖收集
-    this.k.key = meta.name
+    const meta = this.a.currentRoute.meta
 
-    return h('KeepAlive', this.d, [h('RouterView', this.k)])
+    this.d.props.exclude = (this.b.$ || 0).e // for 依赖收集
+    this.c === meta.code && (this.e = meta.name)
+
+    return h('KeepAlive', this.d, [h('RouterView', { key: this.e })])
   },
 } as Component

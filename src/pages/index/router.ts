@@ -38,7 +38,7 @@ const router = new Router(configRoute as RouterOptions)
   :max="9"
   :exclude="$route.meta.$.e"
 >
-  <RouterView />
+  <RouterView :key="$route.meta.$.k" />
 </KeepAlive>
 keep-alive 缓存处理，这很hacky, 俺know
 也可以通过切换key绑定实现(如下)，但是:
@@ -50,6 +50,7 @@ keep-alive 缓存处理，这很hacky, 俺know
 */
 let counter = 0
 function refreshRoute(matched: RouteRecord[], meta: { e: any }) {
+  const HOOK = 'hook:beforeDestroy'
   let temp: any = matched.length
   let instances
   while (temp--) {
@@ -57,18 +58,28 @@ function refreshRoute(matched: RouteRecord[], meta: { e: any }) {
       matched = instances as any
       instances = instances.instances
 
-      temp = null
+      temp = 0
       for (temp in instances) {
-        ;(temp = instances[temp]) && // 可能是 undefined...
-          (temp = temp.$vnode.componentOptions) &&
-          (temp = temp.Ctor.options) &&
-          (meta.e = temp.name = 'r' + counter++)
+        // 可能是 undefined...
+        if ((temp = instances[temp])) {
+          if (temp._$a) {
+            temp = (temp = temp.$vnode.componentOptions) && temp.Ctor.options
+          } else {
+            temp.$on(HOOK, function(this: any) {
+              this._$a &&
+                (temp = this.$vnode.componentOptions) &&
+                (temp = temp.Ctor.options) &&
+                (temp.name = this._$a)
+            })
+            temp._$a =
+              (temp = temp.$vnode.componentOptions) && (temp = temp.Ctor.options) && temp.name
+          }
+          temp && (meta.e = temp.name = 'r' + counter++)
+        }
       }
 
-      if (temp === null && (matched as any).parent) {
-        // 没实例 - 刷她爸爸
-        refreshRoute([(matched as any).parent], meta)
-      }
+      // 没实例(functional) - 刷她爸爸
+      temp === 0 && (matched as any).parent && refreshRoute([(matched as any).parent], meta)
       return
     }
   }
@@ -102,6 +113,7 @@ router.beforeEach((to, from, next) => {
     } else if (fromPath !== PAGE_HOME) {
       next(PAGE_HOME)
     }
+
     NProgress.done()
     return
   }
