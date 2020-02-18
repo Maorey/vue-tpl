@@ -78,8 +78,8 @@ function refreshRoute(matched: RouteRecord[], meta: { e: any }) {
         }
       }
 
-      // 没实例(functional) - 刷她爸爸
-      temp === 0 && (matched as any).parent && refreshRoute([(matched as any).parent], meta)
+      // 没实例 - 刷她爸爸
+      !temp && (matched as any).parent && refreshRoute([(matched as any).parent], meta)
       return
     }
   }
