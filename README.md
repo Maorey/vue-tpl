@@ -20,9 +20,8 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
   - [目录结构](#目录结构)
   - [风格建议](#风格建议)
   - [其他建议](#其他建议)
-  - [优化](#优化)
-    - [web 页面](#web%20页面)
-    - [工程](#工程)
+  - [配置和优化](#配置和优化)
+    - [优化](优化)
 - [部署](<#部署(nginx)>)
 - [备忘](#备忘)
   - [文档](#文档)
@@ -33,8 +32,8 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
 
 ## 环境要求
 
-- `Node.js`: 建议 v12.13.1
-- `yarn`: 建议 v1.21.1
+- `Node.js`: v12 ([fibers](https://github.com/laverdet/node-fibers#supported-platforms) v4.0.2 不支持 Node v13)
+- `yarn`: 最新
 
 ### 建议开发环境
 
@@ -53,7 +52,7 @@ VSCode 插件
 
 - `Vue Devtools`: 最新
 
-> 推荐工具: [`@vue/cli`](https://cli.vuejs.org/zh/guide), 全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
+> 推荐工具: [`@vue/cli`](https://cli.vuejs.org/zh/guide)(最新), 全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
 
 > 推荐字体: [FiraCode](https://github.com/tonsky/FiraCode)
 
@@ -73,6 +72,8 @@ VSCode 插件
 yarn # 安装依赖
 git config core.ignorecase false # 使git对文件名大小写敏感
 ```
+
+- 安装后需要在 `yarn.lock` (或 `package-lock.json` ) 中, 指定**所有**依赖的 `mini-css-extract-plugin` 的版本为 `package.json` 对应版本然后再次安装(*为了与原插件版本一致, 更新了但没改版本, 导致再次安装的可能是稍旧的版本*, 建议直接下载并替换该依赖)
 
 ### 开发环境(开发调试时使用)
 
@@ -561,21 +562,16 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   // ...
   ```
 
-### 配置 & 优化
+### 配置和优化
 
-#### web 页面
+可通过 [vue.config.js](vue.config.js) (入口)文件配置工具链; `.env.*` 配置环境变量; 根目录下各配置文件配置相应工具
 
-请参照 [vue.config.js](vue.config.js) 文件中 _chainWebpack_ 的注释进行配置
+#### 优化
 
 - 减小图片大小(比如背景图片等)
 - 对多个 js chunk 共同依赖的模块进行缓存/单独提取(cacheGroups)
-- 视情况对 css 文件进行合并(比如按入口等, 不设置则按 chunk)【webpack 5 支持设置 css chunk 的 minSize/maxSize 啦】
+- 相同chunk下的基础样式或各个皮肤样式文件合并(比如css和scss) 或 其他合理的合并策略【webpack 5 支持设置 css chunk 的 minSize/maxSize 啦】
 - [现代模式](https://cli.vuejs.org/zh/guide/browser-compatibility.html#现代模式)
-
-#### 工程
-
-- 需要在 `yarn.lock` (或 `package-lock.json` ) 中, 指定**所有** `mini-css-extract-plugin` 的版本为 `package.json` 对应版本
-- 相同chunk下的基础样式(非皮肤样式)文件合并(比如css和scss)
 
 ## 部署(nginx)
 
