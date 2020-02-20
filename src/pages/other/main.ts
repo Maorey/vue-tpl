@@ -133,6 +133,9 @@ Vue.use(Scrollbar)
 //   submit(data) // 上传数据
 // })
 
+// 在浏览器开发工具的性能/时间线面板中启用Vue组件性能追踪
+Vue.config.performance = process.env.NODE_ENV === 'development'
+
 // 防阻塞页面（defer的脚本已缓存时不会非阻塞执行bug:chromium#717979）
 setTimeout(() => {
   // new Vue({

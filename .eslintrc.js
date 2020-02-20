@@ -7,28 +7,21 @@ const ENV = process.env.NODE_ENV === 'production' ? 'error' : 'warn'
 
 module.exports = {
   root: true,
-  env: {
-    node: true,
-  },
+  env: { node: true },
   extends: [
     'plugin:vue/recommended', // vue 代码风格预设
     '@vue/standard',
     '@vue/typescript/recommended',
   ],
   plugins: ['@typescript-eslint'],
-  parserOptions: {
-    ecmaVersion: 2020,
-    // parser: '@typescript-eslint/parser',
-  },
+  parserOptions: { ecmaVersion: 2020 },
   overrides: [
     {
       files: [
         '**/__tests__/*.{j,t}s?(x)',
         '**/tests/unit/**/*.spec.{j,t}s?(x)',
       ],
-      env: {
-        jest: true,
-      },
+      env: { jest: true },
     },
   ],
   rules: {

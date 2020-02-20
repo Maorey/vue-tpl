@@ -15,6 +15,8 @@ const targetMap = new WeakMap<IObject, IObject<Set<ISubscribe>>>()
 let effect: ISubscribe | undefined
 
 /** 订阅
+ * @test true
+ *
  * @param {String} key 订阅属性
  * @param {Object} target 目标对象
  *
@@ -58,6 +60,8 @@ function watch(key = 'value', target: IObject = {}) {
 }
 
 /** 取消订阅
+ * @test true
+ *
  * @param {Object} target 目标对象
  * @param {String} key 订阅属性
  * @param {Function} fn 副作用函数 缺省则移除全部
@@ -80,6 +84,8 @@ function unWatch(target: IObject, key = 'value', fn?: Function) {
 }
 
 /** 运行副作用函数, 自动订阅目标函数(同步)
+ * @test true
+ *
  * @param {Function} fn 副作用函数
  */
 function run(fn: Function, _this?: any, _arguments?: any[]) {

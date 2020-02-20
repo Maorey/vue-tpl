@@ -54,7 +54,7 @@
 }
 // 选中行
 .current-row > td {
-  background: $colorTheme6 !important;
+  background: rgba($colorTheme6, 0.6) !important;
 }
 // input:text/textarea数字统计
 .el-range-editor .el-range-input {

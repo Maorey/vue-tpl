@@ -130,4 +130,34 @@ function clone(...args: any[]): any {
   return filter ? clone(filter, current, ...args) : clone(current, ...args)
 }
 
-export default clone
+/** 设置对象默认值
+ * @param {Object|Array} target 目标对象 (被修改)
+ * @param {Object|Array} defaultObject 默认值 (不变)
+ *
+ * @returns {Object|Array} 原target对象
+ */
+function setDefault(target: IObject | any[], defaultObject: IObject | any[]) {
+  const TYPE = 'object'
+  // if (typeof target !== TYPE || typeof defaultObject !== TYPE) {
+  //   return target
+  // }
+  let key
+  let temp
+  for (key in defaultObject) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (target.hasOwnProperty(key)) {
+      typeof (temp = target[key]) === TYPE &&
+        typeof (key = defaultObject[key]) === TYPE &&
+        // a ^ b 同真(1)同假(0)返回0
+        Array.isArray(temp) === Array.isArray(key) &&
+        setDefault(temp, key)
+    } else {
+      target[key] =
+        typeof (temp = defaultObject[key]) === TYPE ? clone(temp) : temp
+    }
+  }
+
+  return target
+}
+
+export { clone as default, setDefault }

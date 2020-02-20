@@ -1,11 +1,13 @@
 /** 阿拉伯数字转中文数字(最高支持描述万万亿)
+ * @test true
+ *
  * @param {string|number} number 阿拉伯数字
  * @param {number} describe 描述 默认:使用描述 1:不使用描述 2:不使用描述且保留开头的0
  * @param {number} cases 大小写 默认:中文小写 1:中文小写但是使用大写零 2:中文大写
  *
  * @returns {string} 中文数字
  */
-export default function(
+function numToCN(
   number: string | number,
   describe?: 0 | 1 | 2,
   cases?: 0 | 1 | 2
@@ -117,3 +119,5 @@ export default function(
     }
   )
 }
+
+export default numToCN

@@ -30,6 +30,7 @@ META.home && (PAGE_HOME = META.home)
   }
 })(configRoute.routes as RouteConfig[])
 
+// scrollBehavior 不能处理指定元素的滚动
 const router = new Router(configRoute as RouterOptions)
 
 /// 路由局部刷新 ///
@@ -72,14 +73,18 @@ function refreshRoute(matched: RouteRecord[], meta: { e: any }) {
                 (temp.name = this._$a)
             })
             temp._$a =
-              (temp = temp.$vnode.componentOptions) && (temp = temp.Ctor.options) && temp.name
+              (temp = temp.$vnode.componentOptions) &&
+              (temp = temp.Ctor.options) &&
+              temp.name
           }
           temp && (meta.e = temp.name = 'r' + counter++)
         }
       }
 
       // 没实例 - 刷她爸爸
-      !temp && (matched as any).parent && refreshRoute([(matched as any).parent], meta)
+      !temp &&
+        (matched as any).parent &&
+        refreshRoute([(matched as any).parent], meta)
       return
     }
   }
@@ -96,6 +101,11 @@ router.beforeEach((to, from, next) => {
   try {
     app.$msgbox.close()
   } catch (error) {}
+  // if ((app = app.$el?.querySelector('.el-main'))) {
+  //   // 记录离开前的滚动位置
+  //   from.meta.x = app.scrollLeft
+  //   from.meta.y = app.scrollTop
+  // }
 
   const fromPath = from.redirectedFrom || from.fullPath
   const fromMatched = from.matched
@@ -128,11 +138,33 @@ router.beforeEach((to, from, next) => {
   /// 跳转 ///
   to.meta._ ? next() : fromMatched.length ? NProgress.done() : next(PAGE_HOME)
 })
-router.afterEach(to => {
+// const restoreScrollPosition = function(this: Vue) {
+//   const container = this.$root.$el.querySelector('.el-main')
+//   if (container) {
+//     const meta = this.$route.meta
+//     container.scrollLeft = meta.x
+//     container.scrollTop = meta.y
+//   }
+// }
+router.afterEach((to: any) => {
+  const meta = to.meta
   /// 设置页面标题 ///
-  let title = META.name || ''
-  title = to.meta.name ? to.meta.name + (title && ' - ' + title) : title
+  let title: any = META.name || ''
+  title = meta.name ? meta.name + (title && ' - ' + title) : title
   title && (document.title = title)
+  // 还原滚动位置
+  // if ((meta = to.matched)) {
+  //   for (title of meta) {
+  //     if ((title = title.instances)) {
+  //       for (to in title) {
+  //         if ((to = title[to]) && !to._$b) {
+  //           to._$b = restoreScrollPosition
+  //           to.$on('hook:activated', to._$b)
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   NProgress.done() // 结束进度条
 })

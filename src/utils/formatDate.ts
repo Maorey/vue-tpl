@@ -177,7 +177,8 @@ function getFormat(format: format): IResult {
 }
 
 const ISO_DATE_FORMAT = 'yyyy-MM-ddTHH:mm:ss.nnnZ'
-getFormat(ISO_DATE_FORMAT) // warm 下
+const WEEK = '日一二三四五六'
+// getFormat(ISO_DATE_FORMAT) // warm 下
 const REG_NUM_REG = /\(\\d\{\d(,\d)?\}\)/g
 const REG_RESERVE = new RegExp(
   `\\\\([${RESERVE_REG.replace(']', '\\]\\\\')}])`,
@@ -218,30 +219,7 @@ function formatDate(date: Date, format: format = ISO_DATE_FORMAT) {
           item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.week:
-          switch (date.getDay()) {
-            case 0:
-              value = '日'
-              break
-            case 1:
-              value = '一'
-              break
-            case 2:
-              value = '二'
-              break
-            case 3:
-              value = '三'
-              break
-            case 4:
-              value = '四'
-              break
-            case 5:
-              value = '五'
-              break
-            case 6:
-              value = '六'
-              break
-          }
-          value = (item.l > 1 ? '星期' : '周') + value
+          value = (item.l > 1 ? '星期' : '周') + WEEK[date.getDay()]
           break
 
         case Reserve.hour:
@@ -285,7 +263,7 @@ function formatDate(date: Date, format: format = ISO_DATE_FORMAT) {
     .replace(REG_RESERVE, '$1')
 }
 
-const REG_WEEK = /(周|星期)[一二三四五六日]/g
+const REG_WEEK = /(周|星期)[日一二三四五六]/g
 const REG_NOON = /(上|下)午?/g
 const REPLACE_WEEK = (match: string) => (match.length > 2 ? '00' : '0')
 const REPLACE_NOON = (match: string, slot: string) =>

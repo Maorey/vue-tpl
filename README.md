@@ -122,12 +122,14 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 ├── public # 静态文件目录, 除特殊文件(比如 html 模板)外, 直接复制到输出目录下
 ├── src # 源码目录
 │   │── api # http通信
-│   │── assets # 静态资源文件目录, 使用到的会被解析处理(比如图片可能转成base64写入css/js或复制到输出目录)
-│   │── components # 组件目录
+│   │── assets # 静态资源文件目录, 使用到的会被解析处理(比如图片等)
+│   │── components # 从views/pages提取的复用组件(建文件夹分类, 未分类的基本就是基础组件了)
 │   │── config # 配置目录
+│   │── enum # 枚举目录
 │   │── lang # 多语言目录
-│   │── libs # 存储不(能)通过 npm 管理的第三方或项目 js/css 库
-│   │── scss # (.module).scss 文件
+│   │── libs # 存储不(能)通过 npm 管理的第三方库/依赖库等相关
+│   │── scss # 样式/CSS 对象(.module).scss 文件
+│   │── skin # 皮肤(scss变量) 文件
 │   │── router # 路由设置
 │   │── store # 状态管理
 │   │   └── modules # 各模块状态管理
@@ -150,11 +152,11 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 1. 只支持对 `public` 目录下的 html 模板(不包括子文件夹下的)自动设置入口, 规则为:
 
-   1. 遍历 public 下的 html 模板文件, 得到一个 html 模板
-   2. 依次对 src 目录及 src/pages 进行如下查找:
-      1. 若该目录下存在与该 html 模板名同名的 ts/tsx/js/jsx 文件则设置为入口, 未找到或已占用则**↓**
-      2. 依次检查下列文件名: main/index/entry/app/page 设置为入口, 未找到或已占用则**↓**
-      3. 在该目录下与 html 模板同名的目录下按照**上述**规则继续查找, 最终仍未找到或已占用则不设置入口
+   1. 从 public 目录得到一个 html 模板
+   2. 依次查找 src 目录、 src/pages 目录:
+      1. 是否存在与 html 模板同名的(ts/tsx/js/jsx)文件且未占用
+      2. 依次检查下列文件名: main/index/entry/app/page 是否存在且未占用
+      3. 在与 html 模板同名的目录下重复**上两步**查找, 仍未找到则忽略
 
    建议: **单页入口直接放 src 目录下, 多页时入口分别放在 pages 目录下与 html 模板同名的文件夹下**
 
@@ -199,11 +201,11 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
   **文件夹及其它文件**(js/scss/图片等)使用 `camelCase` (即: 首字母小写驼峰 = lowerCamelCase)
 
-  **vue 单文件组件**(含[tsx](https://github.com/wonderful-panda/vue-tsx-support)/`jsx`/`functional.(ts|js)`)使用 `PascalCase` ( 即: 首字母大写驼峰 = CamelCase = UpperCamelCase)
+  **vue 单文件组件**(含[tsx](https://github.com/wonderful-panda/vue-tsx-support)/`ts`/`jsx`/`js`)使用 `PascalCase` ( 即: 首字母大写驼峰 = CamelCase = UpperCamelCase)
 
-  例外情况(方便重构):
+  例外情况:
 
-  - 组件包含不可复用的子组件时, 应视为一个组件, 创建**文件夹容器**, 比如:
+  - 设计或重构(拆分)组件为多个部分的, **使用文件夹包裹**, 比如:
 
     ```TypeScript
     // BillList组件
@@ -216,20 +218,9 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
     import BillList from '{path}/BillList'
     ```
 
-- 除了以下样式可以使用全局:
-
-  - 浏览器默认样式重置
-  - `Transition` 动画样式
-  - 字体图标样式
-  - 公共组件样式([BEM](https://en.bem.info)约定[参考链接](https://www.ibm.com/developerworks/cn/web/1512_chengfu_bem/))
-
-  均应使用 [CSSModule](https://vue-loader-v14.vuejs.org/zh-cn/features/css-modules.html)(开发环境class名:`[folder]__[name]_[local]-[emoji]$`), 以更好的模块化和复用、打包样式
-
-- 视图只负责布局及交互(props 传递和事件监听), 包含子组件的可使用**文件夹容器**方式或将子组件存放在对应层级的 `components` 目录下的同名目录(`camelCase`)下
-- 公共组件/逻辑/函数/样式等模块请按照: `模块 -> 视图 -> 页面 -> 项目` 的层级提升, 配合**提前规划**确定初始层级
-- 越高的层级测试覆盖率也应越高; 被测试的代码应加注释`@test: true`表示在对应目录下包含测试用例,否则指明路径; 修改了测试覆盖的代码后, 应视情况增加测试内容并运行测试, 以保证功能和行为与之前一致
-- 尽量**不要使用全局注册**(插件/组件/指令/混入等)以优化打包和使代码更清晰、易维护
-- 组件尽量**按逻辑和呈现拆分**以更好的复用和维护
+- 先设计功能模块/组件再(目录层级)向下细分或向上提取
+- 越接近 src 目录的测试覆盖率也应越高; 被测试的代码应加注释`@test: true`表示在对应目录下包含测试用例, 否则就近建`__tests__`目录或指明路径; 修改了测试覆盖的代码后, 应视情况增加测试内容
+- 尽量**不要使用全局注册**(插件/组件/指令/混入等)以优化性能及chunk并且代码更清晰、易维护
 - 尽量**按照依赖库的文档描述**来使用她, 从其源码(src)引入模块(css/scss/.../js/mjs/ts/jsx/tsx/vue), 将可能**不会被转译**且更可能随版本更新改变, 需要时可以从其构建后的 lib/dist 等目录引入或者增加一些配置(需要了解模块解析及转码规则和相关插件, 不推荐)
 
 ### 风格建议
@@ -270,8 +261,17 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 不要使用 `$` 作为组件事件名, 该名字已被[异步组件刷新](src/utils/highOrder.ts)占用
 - 为避免 [Vue属性名](https://cn.vuejs.org/v2/style-guide/#私有属性名-必要) 冲突, 私有属性请使用 `$_` 作为一般命名空间(在保证易维护的前提下可以使用单字母, 但尽量避免), `_$` 作为`全局/跨组件/hack`命名空间
 - 路由请**全部**使用异步组件(`@utils/highOrder getAsync`), 以使路由及其**子(异步)组件**可以局部刷新
+- 除了以下样式可以使用全局:
+
+  - 浏览器默认样式重置
+  - 通用`Transition` 动画样式
+  - 通用字体图标样式
+  - 基础组件样式(按照[BEM](https://en.bem.info)约定命名[参考链接](https://www.ibm.com/developerworks/cn/web/1512_chengfu_bem/))
+
+  均应使用 [CSSModule](https://vue-loader-v14.vuejs.org/zh-cn/features/css-modules.html)(开发环境class名:`[folder]__[name]_[local]-[emoji]$`), 以更好的实现模块化(支持复用)
 - CSS Modules class 名使用 `camelCase`, 选择器嵌套**不应超过三层**
-- <a id="全局scss"></a>**全局 sccs** _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)(应在 `scss/export` 目录下或 `export*.scss` 中使用); 为保证`ts/js`中引入时 scss 变量注入正确(使用缓存会导致无法对相同文件多次注入变量，不用缓存显然不合理), 应在合适的 scss 文件中引入目标样式源码:
+- <a id="scss变量"></a>**皮肤文件**(scss变量) _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)(应在 `scss/export` 目录下或 `export*.scss` 中使用)
+- 为保证在`ts/js`中引入scss文件时, 变量注入正确(使用缓存会导致无法对相同文件注入不同变量，不用缓存显然不合理也不支持), 应在合适的位置新建 scss 文件来中转:
 
   ```scss
   // el.scss
@@ -319,6 +319,8 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   }
   ```
 
+  (注: 可能出现注入不正确的情况比如各个入口的 skin 不一样但是使用了相同 scss 文件)
+
 - **不要用全局样式覆盖全局样式**, 应使用 `CSSModule` 并使[优先级](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Specificity)相等(注意顺序, 包括同步/异步)或更高:
 
   ```scss
@@ -340,13 +342,13 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   }
   ```
 
-- 尽量使用项目代码模板, 现有模板有(VSCode 输入左侧字符, [其他 IDE](.vscode/vue.code-snippets)):
-  - `ts`: `.vue` 文件中使用, `TypeScript`
-  - `vue`: `.tsx` 文件中使用, `TypeScript`
-  - `vuex`: `.ts` 文件中使用, `vuex module` class语法
-  - `js`: `.vue` 文件中使用, `JavaScript`
-  - `vue`: `.jsx` 文件中使用, `JavaScript`
-  - `vuex`: `.js` 文件中使用, `vuex module` class语法
+- 尽量使用项目代码模板, 现有模板有(VSCode 输入左侧字符, 其他 IDE 查看[模板](.vscode/vue.code-snippets)):
+  - `ts`: `.vue` 文件中使用, `TypeScript`语言
+  - `vue`: `.tsx` 文件中使用, class语法
+  - `vuex`: `.ts` 文件中使用, `vuex module`模板
+  - `js`: `.vue` 文件中使用, `JavaScript`语言
+  - `vue`: `.jsx` 文件中使用, class语法
+  - `vuex`: `.js` 文件中使用, `vuex module`模板
 - **Git 提交信息规范**参考 [vue](https://github.com/vuejs/vue/blob/dev/.github/COMMIT_CONVENTION.md) 规范 ([Angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular))
 
   - `Feat` 增加新功能
@@ -365,20 +367,20 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 ### 其他
 
-- 关于换肤方案, 本模板采用的是 `<link rel="alternate stylesheet">`[方案](https://developer.mozilla.org/en-US/docs/Web/CSS/Alternative_style_sheets), 基于`scss`全局变量注入进行多个皮肤的构建, 优点是支持异步, 浏览器原生支持并且无缝流畅切换. 通过环境变量[.env](.env)进行配置, 在`import` **scss** 文件时可以指定皮肤和使用的 scss 变量(指定后不生成其他皮肤的)
+- 关于换肤方案, 本模板采用的是 `<link rel="alternate stylesheet">`[方案](https://developer.mozilla.org/en-US/docs/Web/CSS/Alternative_style_sheets), 基于`scss`变量注入进行多个皮肤的构建. 可通过环境变量[.env](.env)进行相关配置, 在`import` **scss** 文件时可以指定皮肤和使用的 scss 变量
 
   ```html
   <script lang="ts">
-    /// 基础样式 ///
+    /// 基础样式(所有皮肤下都生效) ///
     import './scss/a.scss?skin='
-    // 指定scss变量文件相对路径(别名/皮肤文件夹)
+    // 指定scss变量文件相对路径(别名|皮肤文件(相对皮肤文件夹))
     import './scss/b.scss?skin=|foo.scss'
 
     /// 皮肤样式 ///
     import './scss/c.scss'
     import $styleD from './scss/d.module.scss'
 
-    /// 指定各皮肤下的样式 ///
+    /// 指定皮肤样式 ///
     import './scss/e.scss?skin=dark'
     import './scss/f.scss?skin=light'
 
@@ -387,22 +389,12 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
     import styleDark from './scss/g.module.scss?skin=dark|foo.scss'
     import styleLight from './scss/g.module.scss?skin=light|bar.scss'
 
-    // see: https://github.com/kaorun343/vue-property-decorator
     import { Component, Vue } from 'vue-property-decorator'
 
-    // const UPPER_CASE:string|number|any[] // 常量
     const $styleF = getSkin({ dark: styleDark, light: styleLight })
-    // const camelCase:any // 单例
-    // function utils() {} // 函数(无副作用)
 
-    /// name,components,directives,filters,extends,mixins ///
     @Component
     export default class extends Vue {
-      /// model (@Model) ///
-      /// props (@Prop) ///
-      /// data (private name: string = '响应式属性' // 除了undefined都会响应式) ///
-      /// private instance attributes (private name?: string // 非响应式属性) ///
-      /// computed (get name() { return this.name } set name()... ///
       private get $styleD() {
         return $styleD
       }
@@ -410,26 +402,22 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
       private get $styleF() {
         return $styleF
       }
-      /// watch (@Watch) ///
-      /// LifeCycle (private beforeCreate/created/.../destroyed) ///
-      /// methods (private/public) ///
-      /// render ///
     }
   </script>
 
-  <!-- 皮肤样式 CSS Module or not -->
-  <style lang="scss" module>
-  .foo {
-    color: $red;
-  }
-  </style>
   <!-- 基础样式 -->
   <style lang="scss" module skin="skin=|foo.scss">
   .bar {
     color: $red;
   }
   </style>
-  <!-- 指定各皮肤下的样式【不支持CSS Module】 -->
+  <!-- 皮肤样式 -->
+  <style lang="scss" module>
+  .foo {
+    color: $red;
+  }
+  </style>
+  <!-- 指定皮肤样式【不支持CSS Module】 -->
   <style lang="scss" skin="dark">
   .foo {
     color: $red;
@@ -442,7 +430,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   </style>
   ```
 
-- 正确规范([JSDoc](https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html#supported-jsdoc))简洁适当的各种**注释**, 比如函数注释及必要的变量注释:
+- 正确规范([JSDoc](https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html#supported-jsdoc))简洁适当的各种**注释**:
 
   ```TypeScript
   /** 二维点
@@ -480,7 +468,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   分支注释:
 
   ```TypeScript
-  // if return 或 pipeline ｂ(￣▽￣)ｄ
+  // if return / 策略 ｂ(￣▽￣)ｄ
   if(...) {
     // 说明
   } else if(...) {
@@ -509,8 +497,8 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   }
   ```
 
-- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用入口层级命名(方便排查问题和碎文件合并), 比如: index 页面下的 home 视图命名为 `index_home`, 其下的用户视图命名为 `index_home_my`, 用户基础信息命名为 `index_home_my_baseinfo` . 为避免文件名太长, 每个层级可以缩写: `iHome`, `ihMy`, `ihmBaseInfo`
-- libs 下的库文件需要按需加载的, 应提供引入方法(只会成功加载一次), 比如:
+- [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用层次命名(方便排查问题和碎文件合并), 比如: index 页面下的 home 视图命名为 `index_home`, 其下的用户视图命名为 `index_home_me`, 用户基础信息命名为 `index_home_me_baseinfo` . 为避免文件名太长, 可以缩写为: `iHome`, `ihMe`, `ihmBaseInfo`
+- libs 下的库文件按需加载示例(只会成功加载一次):
 
   ```TypeScript
   // src/libs/somelib/index.ts
@@ -527,16 +515,16 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   */
   function get(plugins: string[] = []): Promise<any> {
     let somelib: any
-    return import(/* webpackChunkName: "lSomelib" */ 'somelib')
+    return import(/* webpackChunkName: "lSomelib" */ 'somelib.min')
       .then((module: any) => {
         somelib = module.default
         return Promise.all(plugins.map((plugin: string) => {
           switch (plugin) {
             case 'plugin1':
-              return import(/* webpackChunkName: "lsPlugins" */ 'somelib.plugin1')
+              return import(/* webpackChunkName: "lsPlugins" */ 'somelib.plugin1.min')
             case 'plugin2':
-              return import(/* webpackChunkName: "lsPlugins" */ 'somelib.plugin2')
-            // 上面两个插件合并到一个chunk里
+              return import(/* webpackChunkName: "lsPlugins" */ 'somelib.plugin2.min')
+            // 上面两个插件合并到同一个chunk里
             // ...
           }
         }) as Array<Promise<any>>)
@@ -554,8 +542,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
   @Component
   export default class extends Vue {
-    /// methods (private/public) ///
-    private refreshPanel() {
+    private init() {
       get(['plugin2']).then((somelib: any) => somelib.init(this.$refs.panel))
     }
   }
@@ -569,8 +556,8 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 #### 优化
 
 - 减小图片大小(比如背景图片等)
-- 对多个 js chunk 共同依赖的模块进行缓存/单独提取(cacheGroups)
-- 相同chunk下的基础样式或各个皮肤样式文件合并(比如css和scss) 或 其他合理的合并策略【webpack 5 支持设置 css chunk 的 minSize/maxSize 啦】
+- 对多个 js chunk 共同依赖的模块进行缓存/单独提取, 大模块只出现在一个chunk里(cacheGroups)
+- 相同chunk下的基础样式和各个皮肤样式文件分别合并 或 其他合理的合并策略【webpack 5 支持设置 css chunk 的 minSize/maxSize 啦】
 - [现代模式](https://cli.vuejs.org/zh/guide/browser-compatibility.html#现代模式)
 
 ## 部署(nginx)
@@ -618,6 +605,8 @@ http {
   # https + http2
   server {
     #server_name  xxx;
+    #listen       80; # 或者同时监听多个端口
+    #listen       [::]:80;
     listen       443 ssl http2;
     listen       [::]:443 ssl http2;
 
@@ -633,6 +622,9 @@ http {
     add_header X-Frame-Options DENY; # 减少点击劫持
     add_header X-Content-Type-Options nosniff; # 禁止服务器自动解析资源类型
     add_header X-Xss-Protection 1; # 防XSS攻擊
+
+    #error_page 500 502 503 504  /50x.html; # 错误页
+    #error_page 404              /404.html; # 未知页
 
     location / {
       #rewrite ^/(?:path|path-alias)/(.*)$ /$1 last; # 兼容某些路由
@@ -663,48 +655,47 @@ http {
 
 ### 文档
 
-- [scss](https://www.sass.hk/docs)
-- [vue](https://cn.vuejs.org)
-- [vuex](https://vuex.vuejs.org)
-- [vue-router](https://router.vuejs.org)
-- [vuex-class](https://github.com/ktsn/vuex-class)
-- [vue-class-component](https://github.com/vuejs/vue-class-component)
-- [vuex-module-decorators](https://championswimmer.in/vuex-module-decorators/)
-- [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator)
-- [vue-i18n](http://kazupon.github.io/vue-i18n)
-- [element-ui](https://element.eleme.cn)
-- [axios](https://github.com/axios/axios)
-- [crypto-js](http://cryptojs.altervista.org)
-- [jsencrypt](http://travistidwell.com/jsencrypt)
+| [scss](https://www.sass.hk/docs)
+| [vue](https://cn.vuejs.org)
+| [vuex](https://vuex.vuejs.org)
+| [vue-router](https://router.vuejs.org)
+| [vuex-class](https://github.com/ktsn/vuex-class)
+| [vue-class-component](https://github.com/vuejs/vue-class-component)
+| [vuex-module-decorators](https://championswimmer.in/vuex-module-decorators/)
+| [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator)
+| [vue-i18n](http://kazupon.github.io/vue-i18n)
+| [element-ui](https://element.eleme.cn)
+| [axios](https://github.com/axios/axios)
+| [crypto-js](http://cryptojs.altervista.org)
+| [jsencrypt](http://travistidwell.com/jsencrypt)
 
 #### 图形库
 
 2D
 
-- [ECharts](https://echarts.baidu.com/api.html#echarts)
-- [zrender](https://ecomfe.github.io/zrender-doc/public/api.html)
-- [d3](https://github.com/d3/d3/wiki)
-- [zdog](https://zzz.dog)
-- [pixi.js](https://www.pixijs.com) _(WebGL2/WebGL)_
+| [ECharts](https://echarts.baidu.com/api.html#echarts)
+| [zrender](https://ecomfe.github.io/zrender-doc/public/api.html)
+| [d3](https://github.com/d3/d3/wiki)
+| [zdog](https://zzz.dog)
+| [pixi.js](https://www.pixijs.com) _(WebGL2/WebGL)_
 
 3D
 
-- [three.js](https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene) _(WebGL2/WebGL)_
-- [luma.gl](https://luma.gl/#/documentation/api-reference/api-overview/api-structure) _(WebGL2/WebGL)_
+| [three.js](https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene) _(WebGL2/WebGL)_
+| [luma.gl](https://luma.gl/#/documentation/api-reference/api-overview/api-structure) _(WebGL2/WebGL)_
 
 ### 笔记
 
-- 在 `ts/js` 中使用 `assets` 目录下的图片可以通过 `require('@/assets/img/*.png')`(或 import), 将得到输出路径或 base64 字符串, 其他类似(新的文件格式请配置 loader 和增加[ts 定义](src/shims-modules.d.ts))
+- 在 `ts/js` 中使用 `assets` 目录下的图片可以 `import img from '@/assets/img/*.png'`(或 require), `img`为图片输出路径或 base64 字符串, 其他类似(新的文件格式需要配置 loader 和增加[ts 定义](src/shims-modules.d.ts))
 - 在 `scss` 中引入 `css` ([@import](https://www.sass.hk/docs)) 有两种方式
   1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件. 比如: `@import '~normalize.css';`
   1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import). 比如: `@import '~normalize.css/normalize.css';`
-- Element UI 的 Form 组件 hack 上了 `setIni` 方法, 用于重设表单的初始值以更好地支持重置表单
 
 ### 问题及思考
 
 - Vue 异步组件加载失败重试: 最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)
-- 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快, `<script type="module">` & `<link rel="modulepreload">`)；不支持则加载 Babel 转码后的代码(`<script nomodule>` & `<link rel="preload">`). 但是不知何故未能生效, github 上有一些相关 issue
-- [#714](https://github.com/webpack-contrib/sass-loader/issues/714): 【不再考虑支持】可追踪引用, 使在 js 中引用 scss 时可正确<a href="#全局scss">注入 scss 变量</a>
+- 现代模式(只针对 js 文件): 该模式优点是若浏览器支持 ES2015 则加载 ES2015 代码(体积更小执行更快, `<script type="module">` & `<link rel="modulepreload">`); 不支持则加载 Babel 转码后的代码(`<script nomodule>` & `<link rel="preload">`)
+- [#714](https://github.com/webpack-contrib/sass-loader/issues/714): 【不再考虑支持】可追踪引用, 使在 js 中引用 scss 时可正确<a href="#scss变量">注入 scss 变量</a>
 - scss 模块化: 已出 beta 但生态不完善, [草案](https://github.com/sass/sass/blob/master/accepted/module-system.md)
 - [微前端化](https://github.com/phodal/microfrontends#复合型): 应考虑基于 [Web Components](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components) ([vue 友好](https://cli.vuejs.org/zh/guide/build-targets.html#web-components-组件), 可以兼容其他) 的集成和通信.
 - `tsx` 类型支持(去掉`as any`, 利于重构)
