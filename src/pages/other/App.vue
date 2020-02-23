@@ -30,7 +30,7 @@
     >
       <KeepAlive
         :max="9"
-        :exclude="$route.meta.$.e"
+        :exclude="$router.$.e"
       >
         <RouterView :key="$route.meta.code" />
       </KeepAlive>

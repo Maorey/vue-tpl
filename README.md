@@ -222,6 +222,26 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 越接近 src 目录的测试覆盖率也应越高; 被测试的代码应加注释`@test: true`表示在对应目录下包含测试用例, 否则就近建`__tests__`目录或指明路径; 修改了测试覆盖的代码后, 应视情况增加测试内容
 - 尽量**不要使用全局注册**(插件/组件/指令/混入等)以优化性能及chunk并且代码更清晰、易维护
 - 尽量**按照依赖库的文档描述**来使用她, 从其源码(src)引入模块(css/scss/.../js/mjs/ts/jsx/tsx/vue), 将可能**不会被转译**且更可能随版本更新改变, 需要时可以从其构建后的 lib/dist 等目录引入或者增加一些配置(需要了解模块解析及转码规则和相关插件, 不推荐)
+- 因路由缓存策略, 响应路由参数变化的失活组件(但未销毁的)会执行监听函数, 导致性能浪费及显示ajax错误等问题, 可以通过以下方式避免:
+  ```TypeScript
+  export default class extends Vue {
+    /// [model] (@Model('change') readonly attr!: string) ///
+    /// [props] (@Prop() readonly attr!: string) ///
+    @Prop() readonly i!: IObject // props不允许_$开头 ┐(: ´ ゞ｀)┌
+    /// [data] (attr: string = '响应式属性' // 除了 undefined) ///
+    /// 非响应式属性 (attr?: string // undefined) ///
+    private $_id?: string
+    /// [computed] (get attr() {} set attr(){}) ///
+    private get id() {
+      const id = this.$route.params.id // 收集依赖
+      if (!this.i.isActive) {
+        return this.$_id // i不是响应式对象
+      }
+
+      return (this.$_id = id)
+    }
+  }
+  ```
 
 ### 风格建议
 

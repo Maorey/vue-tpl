@@ -17,17 +17,19 @@ import { Component } from 'vue'
 export default {
   name: 'RVT',
   beforeCreate(this: any) {
-    this.a = this.$router
-    this.b = this.$route.meta
-    this.c = this.$vnode.data.key || this.b.code
-    this.d = { key: this.c, props: { max: 3 } }
+    this.k = this.$route.meta.code
   },
   render(this: any, h) {
-    const meta = this.a.currentRoute.meta
+    const meta = this.$route.meta // for 依赖收集
 
-    this.d.props.exclude = (this.b.$ || 0).e // for 依赖收集
-    this.c === meta.code && (this.e = meta.name)
-
-    return h('KeepAlive', this.d, [h('RouterView', { key: this.e })])
+    return h(
+      'KeepAlive',
+      { key: this.k, props: { max: 3, exclude: this.$router.$.e } },
+      [
+        h('RouterView', {
+          key: meta.code === this.k ? (this.n = meta.name) : this.n,
+        }),
+      ]
+    )
   },
 } as Component

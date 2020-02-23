@@ -4,7 +4,7 @@
  * @Date: 2019-06-18 15:58:46
  */
 import Vue from 'vue'
-import Router, { RouterOptions, RouteConfig, RouteRecord } from 'vue-router'
+import Router, { RouterOptions, RouteConfig, Route } from 'vue-router'
 
 import configRoute from './config/route'
 
@@ -12,8 +12,6 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
 const META = configRoute.meta
-let PAGE_HOME: string | undefined
-META.home && (PAGE_HOME = META.home)
 /// 路由元数据 ///
 ;(function hack(list?: RouteConfig[]) {
   if (!list || !list.length) {
@@ -22,22 +20,22 @@ META.home && (PAGE_HOME = META.home)
   let route
   let meta
   for (route of list) {
-    PAGE_HOME || (PAGE_HOME = route.path) // 首页默认第一个路由
+    META.home || (META.home = route.path) // 首页默认第一个路由
     meta = route.meta || (route.meta = {})
     meta._ = true // 有权访问
-    meta.$ = Vue.observable({ e: null }) // hack 刷新路由
     hack(route.children)
   }
 })(configRoute.routes as RouteConfig[])
 
 // scrollBehavior 不能处理指定元素的滚动
 const router = new Router(configRoute as RouterOptions)
+;(router as any).$ = Vue.observable({ e: null }) // hack 刷新路由
 
-/// 路由局部刷新 ///
+/// 路由刷新 ///
 /**
 <KeepAlive
   :max="9"
-  :exclude="$route.meta.$.e"
+  :exclude="$router.$.e"
 >
   <RouterView :key="$route.meta.$.k" />
 </KeepAlive>
@@ -50,89 +48,100 @@ keep-alive 缓存处理，这很hacky, 俺know
 </KeepAlive>
 */
 let counter = 0
-function refreshRoute(matched: RouteRecord[], meta: { e: any }) {
+function restoreName(this: any) {
+  let temp
+  this._$a &&
+    (temp = this.$vnode.componentOptions) &&
+    (temp = temp.Ctor.options) &&
+    (temp.name = this._$a)
+}
+const refreshRoute = (route: Route) => {
+  if (route.matched) {
+    route = route.matched as any // 最后一个match一定是当前路由
+    route = (route as any)[(route as any).length - 1]
+  }
+
+  let temp: any
+  let instance: any
   const HOOK = 'hook:beforeDestroy'
-  let temp: any = matched.length
-  let instances
-  while (temp--) {
-    if ((instances = matched[temp]).instances) {
-      matched = instances as any
-      instances = instances.instances
-
-      temp = 0
-      for (temp in instances) {
-        // 可能是 undefined...
-        if ((temp = instances[temp])) {
-          if (temp._$a) {
-            temp = (temp = temp.$vnode.componentOptions) && temp.Ctor.options
-          } else {
-            temp.$on(HOOK, function(this: any) {
-              this._$a &&
-                (temp = this.$vnode.componentOptions) &&
-                (temp = temp.Ctor.options) &&
-                (temp.name = this._$a)
-            })
-            temp._$a =
-              (temp = temp.$vnode.componentOptions) &&
-              (temp = temp.Ctor.options) &&
-              temp.name
-          }
-          temp && (meta.e = temp.name = 'r' + counter++)
-        }
+  for (temp in (route as any).instances) {
+    if (
+      (instance = (route as any).instances[temp]) &&
+      (temp = (temp = instance.$vnode.componentOptions) && temp.Ctor.options)
+    ) {
+      if (!instance._$a) {
+        instance._$a = temp.name
+        instance.$on(HOOK, restoreName)
       }
-
-      // 没实例 - 刷她爸爸
-      !temp &&
-        (matched as any).parent &&
-        refreshRoute([(matched as any).parent], meta)
-      return
+      ;(router as any).$.e = temp.name = 'r' + counter++
     }
   }
+
+  // 没实例 刷她爸爸/整个网页
+  instance ||
+    ((route as any).parent
+      ? refreshRoute((route as any).parent)
+      : location.reload())
 }
 
 /// 导航守卫 ///
 const REG_REDIRECT = /\/r\//
 router.beforeEach((to, from, next) => {
-  NProgress.start() // 开始进度条
-  // let app: Vue | Element | null = router.app
-  // if ((app = app.$el?.querySelector('.el-main'))) {
-  //   // 记录离开前的滚动位置
-  //   from.meta.x = app.scrollLeft
-  //   from.meta.y = app.scrollTop
-  // }
-
-  const fromPath = from.redirectedFrom || from.fullPath
-  const fromMatched = from.matched
-  let toPath = to.redirectedFrom || to.fullPath
-  let toMatched = to.matched
-  if (!toMatched.length) {
-    if (fromMatched.length && REG_REDIRECT.test(toPath)) {
-      /// 重定向并刷新目标路由 ///
-      toPath = toPath.replace(REG_REDIRECT, '/')
-      if (fromPath === toPath) {
-        // 当前
-        refreshRoute(fromMatched, from.meta.$)
-      } else {
-        to = router.resolve(toPath).route
-        toMatched = to.matched
-        if (toMatched.length) {
-          refreshRoute(toMatched, to.meta.$)
-          next(to) // 还是要再进一次beforeEach, 虽然都给解析出来了┐(: ´ ゞ｀)┌
-          return
-        }
-      }
-    } else if (fromPath !== PAGE_HOME) {
-      next(PAGE_HOME)
+  let temp
+  if (!to.matched.length) {
+    // 没有匹配的路由
+    if (!from.matched.length) {
+      next(META.home)
+      return
     }
-
-    NProgress.done()
+    if (REG_REDIRECT.test((temp = to.redirectedFrom || to.fullPath))) {
+      temp = temp.replace(REG_REDIRECT, '/')
+      if (temp === (from.redirectedFrom || from.fullPath)) {
+        refreshRoute(from)
+        return
+      }
+      // 重定向并刷新
+      if ((to = router.resolve(temp).route).matched.length) {
+        refreshRoute(to)
+        next(to) // 还是要再进一次beforeEach, 虽然都给解析出来了┐(: ´ ゞ｀)┌
+      }
+    }
     return
   }
+  if (!to.meta._) {
+    // 没访问权限
+    from.matched.length || next(META.home)
+    return
+  }
+  NProgress.start() // 开始进度条
+  // 关闭所有提示
+  // temp = router.app
+  // temp.$message.closeAll()
+  // temp.$notify.closeAll()
+  // try {
+  //   temp.$msgbox.close()
+  // } catch (error) {}
+  // if ((temp = temp.$el?.querySelector('.el-main'))) {
+  //   // 记录离开前的滚动位置
+  //   from.meta.x = temp.scrollLeft
+  //   from.meta.y = temp.scrollTop
+  // }
+  // 更新激活状态(hack props 只允许对象 不然报错给你看)
+  if ((temp = from.matched).length && (temp = temp[temp.length - 1])) {
+    temp = temp.props as any
+    temp = temp.default || (temp.default = {})
+    ;(temp.i || (temp.i = {})).isActive = false
+  }
+  if ((temp = to.matched) && (temp = temp[temp.length - 1])) {
+    temp = temp.props as any
+    temp = temp.default || (temp.default = {})
+    ;(temp.i || (temp.i = {})).isActive = true
+  }
 
-  /// 跳转 ///
-  to.meta._ ? next() : fromMatched.length ? NProgress.done() : next(PAGE_HOME)
+  next()
 })
-// const restoreScrollPosition = function(this: Vue) {
+
+// function restoreScrollPosition(this: Vue) {
 //   const container = this.$root.$el.querySelector('.el-main')
 //   if (container) {
 //     const meta = this.$route.meta
@@ -140,20 +149,21 @@ router.beforeEach((to, from, next) => {
 //     container.scrollTop = meta.y
 //   }
 // }
-router.afterEach(to => {
+router.afterEach((to: any) => {
+  // 设置页面标题
   const meta = to.meta
-  /// 设置页面标题 ///
-  let title = META.name || ''
-  title = meta.name ? meta.name + (title && ' - ' + title) : title
-  title && (document.title = title)
+  let temp: any = META.name || ''
+  temp = meta.name ? meta.name + (temp && ' - ' + temp) : temp
+  temp && (document.title = temp)
   // 还原滚动位置
   // if ((meta = to.matched)) {
-  //   for (title of meta) {
-  //     if ((title = title.instances)) {
-  //       for (to in title) {
-  //         if ((to = title[to]) && !to._$b) {
+  //   const HOOK = 'hook:activated'
+  //   for (temp of meta) {
+  //     if ((temp = temp.instances)) {
+  //       for (to in temp) {
+  //         if ((to = temp[to]) && !to._$b) {
   //           to._$b = restoreScrollPosition
-  //           to.$on('hook:activated', to._$b)
+  //           to.$on(HOOK, to._$b)
   //         }
   //       }
   //     }
