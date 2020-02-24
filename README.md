@@ -7,11 +7,10 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
 - [环境要求](#环境要求)
   - [建议开发环境](#建议开发环境)
 - [浏览器支持](#浏览器支持)
-- [命令参考](#命令参考)
-  - [安装项目](#安装项目)
-    - [可选项](#可选项)
+- [安装](#安装)
+- [命令参考(Terminal)](#命令参考(Terminal))
   - [开发环境](#开发环境开发调试时使用)
-  - [构建项目](#构建项目生成部署文件)
+  - [构建](#生成部署包)
   - [代码风格检查和修正](#代码风格检查和修正提交-git-时会自动执行)
   - [e2e测试](#e2eend-to-end-测试)
   - [单元测试](#单元测试)
@@ -52,7 +51,7 @@ VSCode 插件
 
 - `Vue Devtools`: 最新
 
-> 推荐工具: [`@vue/cli`](https://cli.vuejs.org/zh/guide)(最新), 全局安装时可使用 `vue ui` 命令启动图形化界面管理项目
+> 推荐工具: [`@vue/cli`](https://cli.vuejs.org/zh/guide)(最新), 全局安装时可使用 `vue ui` 命令启动图形化界面管理工程
 
 > 推荐字体: [FiraCode](https://github.com/tonsky/FiraCode)
 
@@ -64,25 +63,51 @@ VSCode 插件
 | :-: | :-: | :-: | :-: |
 | IE10, IE11, Edge | last 2 versions | last 2 versions | last 2 versions |
 
-## 命令参考
-
-### 安装项目
+## 安装
 
 ```bash
-yarn # 安装依赖
 git config core.ignorecase false # 使git对文件名大小写敏感
 ```
 
-- 安装后需要在 `yarn.lock` (或 `package-lock.json` ) 中, 指定**所有**依赖的 `mini-css-extract-plugin` 的版本为 `package.json` 对应版本然后再次安装(*为了与原插件版本一致, 更新了但没改版本, 导致再次安装的可能是稍旧的版本*, 建议直接下载并替换该依赖)
+1. `yarn` (安装慢可以使用淘宝镜像 `yarn/npm config set registry 'https://registry.npm.taobao.org'`)
+2. 修改 `yarn.lock` ( `package-lock.json` 类似) 文件:
 
-### 开发环境(开发调试时使用)
+  ```diff
+  - mini-css-extract-plugin@^0.9.0:
+  -   version "0.9.0"
+  -   resolved "https://registry.npm.taobao.org/mini-css-extract-plugin/download/mini-css-extract-plugin-0.9.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmini-css-extract-plugin%2Fdownload%2Fmini-css-extract-plugin-0.9.0.tgz#47f2cf07aa165ab35733b1fc97d4c46c0564339e"
+  -   integrity sha1-R/LPB6oWWrNXM7H8l9TEbAVkM54=
+  -   dependencies:
+  -     loader-utils "^1.1.0"
+  -     normalize-url "1.9.1"
+  -     schema-utils "^1.0.0"
+  -     webpack-sources "^1.1.0"
+
+  - alternate-css-extract-plugin@^0.9.0:
+  + mini-css-extract-plugin@^0.9.0, alternate-css-extract-plugin@^0.9.0:
+      resolved "https://registry.npm.taobao.org/alternate-css-extract-plugin/download/alternate-css-extract-plugin-0.9.0.tgz#6f431f75f94b1cef17bbc83b000c90e30353ddae"
+      integrity sha1-b0MfdflLHO8Xu8g7AAyQ4wNT3a4=
+      dependencies:
+        loader-utils "^1.1.0"
+        normalize-url "1.9.1"
+        schema-utils "^1.0.0"
+        webpack-sources "^1.1.0"
+  ```
+
+  即: 将 `mini-css-extract-plugin` 插件替换为 `alternate-css-extract-plugin` 插件
+
+3. `yarn` 再次安装
+
+## 命令参考(Terminal)
+
+### 启动开发环境
 
 ```bash
 yarn dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.development.local 文件中设置)
 yarn dev --mode=production # 调试皮肤切换
 ```
 
-### 构建项目(生成部署文件)
+### 构建(生成部署包)
 
 ```bash
 yarn build # --watch: 跟踪文件变化 --report: 生成打包分析
@@ -142,7 +167,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 ├── tests # 测试用例目录
 │   │── e2e # e2e 测试(cypress): https://www.cypress.io
 │   └── unit # unit 测试(jest): https://jestjs.io
-├── build # 项目工具类脚本
+├── build # 工具类脚本
 ├── cypress.json # cypress 配置: https://docs.cypress.io/guides/references/configuration.html
 ├── tsconfig.json # typeScript 配置: https://www.tslang.cn/docs/handbook/tsconfig-json.html
 └── vue.config.js # 工程(vue cli)配置入口
@@ -232,6 +257,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
     /// 非响应式属性 (attr?: string // undefined) ///
     private $_id?: string
     /// [computed] (get attr() {} set attr(){}) ///
+    // id 在失活后保持失活前的值, 此时订阅者不会被调用
     private get id() {
       const id = this.$route.params.id // 收集依赖
       if (!this.i.isActive) {
@@ -254,7 +280,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   - 多行末尾保留逗号
   - 方法名后不要空格
 
-  (.vscode 文件夹为 VSCode 的工作区设置, 只在本项目生效, 已包含相关设置)
+  (.vscode 文件夹为 VSCode 的工作区设置, 只在本工程生效, 已包含相关设置)
 
 - 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上** 和 [stylelint](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md) [配置](.stylelintrc.js)
 - 引用 `vue/tsx/ts/js/jsx` **不要加文件扩展名**, 有利于重构代码
@@ -362,7 +388,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   }
   ```
 
-- 尽量使用项目代码模板, 现有模板有(VSCode 输入左侧字符, 其他 IDE 查看[模板](.vscode/vue.code-snippets)):
+- 尽量使用代码模板, 现有模板有(VSCode 输入左侧字符, 其他 IDE 查看[模板](.vscode/vue.code-snippets)):
   - `ts`: `.vue` 文件中使用, `TypeScript`语言
   - `vue`: `.tsx` 文件中使用, class语法
   - `vuex`: `.ts` 文件中使用, `vuex module`模板
@@ -688,6 +714,7 @@ http {
 | [axios](https://github.com/axios/axios)
 | [crypto-js](http://cryptojs.altervista.org)
 | [jsencrypt](http://travistidwell.com/jsencrypt)
+| [npm](https://docs.npmjs.com/files/package.json)
 
 #### 图形库
 
@@ -710,6 +737,29 @@ http {
 - 在 `scss` 中引入 `css` ([@import](https://www.sass.hk/docs)) 有两种方式
   1. 【推荐】不带文件后缀, css 文件内容会被合并到当前文件. 比如: `@import '~normalize.css';`
   1. 带文件后缀, 会处理成 css 的[@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import). 比如: `@import '~normalize.css/normalize.css';`
+- 文件下载(需要token且在请求头设置)
+
+  ```TypeScript
+  import { get } from '@/utils/ajax' // 登陆后已设置请求头携带token
+
+  get('', { id: '' }, { responseType: 'blob' }).then(res => {
+    let fileName = res.headers['content-disposition'].split(';')
+    fileName = fileName[fileName.length - 1].split('=')
+    fileName = fileName[fileName.length - 1]
+    const href = window.URL.createObjectURL(new Blob([res], { type: res.type }))
+
+    const link = document.createElement('a')
+    link.style.display = 'none'
+    link.download = fileName
+    link.href = href
+
+    document.body.appendChild(link)
+    link.click()
+
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(href)
+  })
+  ```
 
 ### 问题及思考
 
@@ -724,3 +774,5 @@ http {
 ### 其他
 
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
+- [fibers](https://github.com/laverdet/node-fibers#supported-platforms) v4.0.2 **不支持 Node v13**
+- `crypto-js` v4 **不支持 IE10**
