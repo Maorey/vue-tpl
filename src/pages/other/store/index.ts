@@ -8,6 +8,7 @@ import Vuex from 'vuex'
 import { IUser } from './modules/user'
 import { IPrefer } from './modules/prefer'
 import { IDynamic } from './modules/dynamic'
+import { IDownloadManager } from './modules/downloadManager'
 
 Vue.use(Vuex) // 只能全局注册
 
@@ -18,4 +19,5 @@ export default new Vuex.Store<{
   user: IUser
   prefer: IPrefer
   dynamic: IDynamic
+  downloadManager: IDownloadManager
 }>({})

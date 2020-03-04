@@ -11,6 +11,9 @@ import sort from '@/utils/sort'
 import clone from '@/utils/clone'
 import { Memory } from '@/utils/storage'
 
+// import { success, failed } from './interceptor' // 自定义全局拦截器
+// import { emit } from '../eventBus' // 通知取消请求 以便自定义取消策略使用
+
 // 默认请求配置 https://github.com/axios/axios#config-defaults
 clone(AXIOS.defaults, {
   baseURL: CONFIG.baseUrl, // 请求前缀（相对路径时添加）
@@ -33,7 +36,7 @@ clone(AXIOS.defaults, {
   //   },
   // },
 
-  // 缓存配置
+  // 缓存配置【避免使用axios的配置项】
   // noCache: true, // 该请求不缓存响应 默认:false
   // alive: 0, // 该请求响应缓存最大存活时间 默认:CONFIG.apiCacheAlive
 })
@@ -44,6 +47,11 @@ const requestQueue = new Memory()
 /** get请求响应缓存
  */
 const dataStore = new Memory(CONFIG.apiMaxCache, CONFIG.apiCacheAlive)
+
+/** 取消请求 https://github.com/axios/axios#cancellation
+ *    创建一次token只能用对应的cancel一次, 不能复用
+ */
+const CancelToken = AXIOS.CancelToken
 
 /** 【debug】带上特定查询字段
  */
@@ -98,7 +106,7 @@ function getKEY(url: string, params?: IObject) {
  * @param {String} method http方法
  * @param {Object} params 查询参数
  * @param {Object} data 请求数据
- * @param {Object} config 请求配置【添加到响应的meta字段】
+ * @param {Object} config [复用]请求配置【添加到响应的meta字段】
  *
  * @returns {Promise} 响应
  */
@@ -136,30 +144,53 @@ function request(
     dataStore.remove(KEY)
   }
 
-  return requestQueue.set(
-    KEY,
-    AXIOS.request(config)
-      .then((res: any) => {
-        res.meta = config
-        shouldCache && dataStore.set(KEY, res, config.alive) // 设置缓存
-        requestQueue.remove(KEY) // 移除请求队列
-        /// 响应拦截 ///
-        return res
-      })
-      .catch((res: any) => {
-        res.meta = config
-        requestQueue.remove(KEY) // 移除请求队列
-        /// 错误拦截 ///
-        throw res
-      })
-  )
+  // 用于取消请求 [不划算]
+  // if ((data = !config.cancelToken)) {
+  // data = CancelToken.source()
+  // config.cancelToken = data.token
+  // data = data.cancel
+  // }
+
+  cache = AXIOS.request(config)
+    .then((res: any) => {
+      if (config._$c) {
+        throw config._$c // 自定义错误标记
+      }
+
+      res.meta = config
+      shouldCache && dataStore.set(KEY, res, config.alive) // 设置缓存
+      requestQueue.remove(KEY) // 移除请求队列
+
+      return res // success(res) 拦截请求
+    })
+    .catch((res: any) => {
+      res.meta = config
+      requestQueue.remove(KEY) // 移除请求队列
+      // if (AXIOS.isCancel(res)) {
+      //   throw res
+      // } else {
+      //   failed(res) 拦截请求
+      // }
+      throw res
+    })
+
+  // data && (cache.cancel = data) // [不划算]
+
+  // 经济版取消(不执行then)
+  config.cancelToken ||
+    (cache.cancel = (reason = '取消请求') => {
+      config._$c = new Error(reason)
+      config._$c.__CANCEL__ = 1
+    })
+
+  return requestQueue.set(KEY, cache)
 }
 
 /// http 方法: https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods ///
 /** get请求(获取资源)
  * @param {String} url 请求地址
  * @param {Object} params 查询参数
- * @param {Object} config 请求配置
+ * @param {Object} config [复用]请求配置
  *
  * @returns {Promise} 响应
  */
@@ -169,7 +200,7 @@ function get(url: string, params?: IObject, config?: IObject): Promise<any> {
 /** delete请求(删除资源)
  * @param {String} url 请求地址
  * @param {Object} params 查询参数
- * @param {Object} config 请求配置
+ * @param {Object} config [复用]请求配置
  *
  * @returns {Promise} 响应
  */
@@ -180,7 +211,7 @@ function del(url: string, params?: IObject, config?: IObject): Promise<any> {
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
  * @param {Object} params 查询参数
- * @param {Object} config 请求配置
+ * @param {Object} config [复用]请求配置
  *
  * @returns {Promise} 响应
  */
@@ -196,7 +227,7 @@ function put(
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
  * @param {Object} params 查询参数
- * @param {Object} config 请求配置
+ * @param {Object} config [复用]请求配置
  *
  * @returns {Promise} 响应
  */
@@ -212,7 +243,7 @@ function post(
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
  * @param {Object} params 查询参数
- * @param {Object} config 请求配置
+ * @param {Object} config [复用]请求配置
  *
  * @returns {Promise} 响应
  */
@@ -244,4 +275,30 @@ function getUri(url: string, params?: IObject) {
   )
 }
 
-export { HEADERS as default, SEARCH, get, del, put, post, patch, getUri }
+/** 取消所有队列中的请求(自定义取消的除外) [经济版(不执行then)]
+ * @param {string} reason 取消请求原因
+ */
+function cancel(reason?: string) {
+  const pool = requestQueue.pool
+  for (let i = 0, len = pool.length, item; i < len; i++) {
+    if ((item = pool[i]).v.cancel) {
+      i--
+      len--
+      item.v.cancel(reason)
+      requestQueue.remove(item.k)
+    }
+  }
+}
+
+export {
+  HEADERS as default,
+  SEARCH,
+  get,
+  del,
+  put,
+  post,
+  patch,
+  getUri,
+  cancel,
+  CancelToken,
+}

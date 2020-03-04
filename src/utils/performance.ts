@@ -9,7 +9,7 @@
  *
  * @returns {Function} 目标函数包装
  */
-function throttle(fn: Function, interval?: number) {
+function throttle<T extends Function>(fn: T, interval?: number): T {
   let runable = true
 
   let _this: any
@@ -28,7 +28,7 @@ function throttle(fn: Function, interval?: number) {
       runable = false
       setTimeout(FN, interval)
     }
-  }
+  } as any
 }
 /** 防抖 (限制函数最小执行间隔 延迟执行)
  * @test true
@@ -38,7 +38,7 @@ function throttle(fn: Function, interval?: number) {
  *
  * @returns {Function} 目标函数包装
  */
-function debounce(fn: Function, interval?: number) {
+function debounce<T extends Function>(fn: T, interval?: number): T {
   let timer: number
 
   let _this: any
@@ -54,7 +54,7 @@ function debounce(fn: Function, interval?: number) {
 
     clearTimeout(timer)
     timer = setTimeout(FN, interval)
-  }
+  } as any
 }
 
 /** 节流 (指定时间间隔内最多执行一次函数 立即执行)
@@ -65,7 +65,7 @@ function debounce(fn: Function, interval?: number) {
  *
  * @returns {Function} 目标函数包装
  */
-function throttleAtOnce(fn: Function, interval?: number) {
+function throttleAtOnce<T extends Function>(fn: T, interval?: number): T {
   let runable = true
   const FN = () => {
     runable = true
@@ -78,7 +78,7 @@ function throttleAtOnce(fn: Function, interval?: number) {
       fn.apply(this, arguments)
       setTimeout(FN, interval)
     }
-  }
+  } as any
 }
 /** 防抖 (限制函数最小执行间隔 立即执行)
  * @test true
@@ -88,7 +88,7 @@ function throttleAtOnce(fn: Function, interval?: number) {
  *
  * @returns {Function} 目标函数包装
  */
-function debounceAtOnce(fn: Function, interval?: number) {
+function debounceAtOnce<T extends Function>(fn: T, interval?: number): T {
   let timer: number
 
   let runable = true
@@ -105,7 +105,7 @@ function debounceAtOnce(fn: Function, interval?: number) {
 
     clearTimeout(timer)
     timer = setTimeout(FN, interval)
-  }
+  } as any
 }
 
 export { throttle, debounce, throttleAtOnce, debounceAtOnce }

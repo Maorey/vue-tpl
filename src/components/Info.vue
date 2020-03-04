@@ -12,7 +12,9 @@
         :class="[icon, STYLE[type], STYLE['bd' + type]]"
       />
       <!-- 消息 -->
-      <p>{{ MSG[msg] || msg }}</p>
+      <p v-if="msg">
+        {{ MSG[msg] || msg }}
+      </p>
       <!-- 重试 -->
       <a
         v-if="retry"
@@ -76,6 +78,7 @@ export default class extends Vue {
   }
   // 重试
   a {
+    display: block;
     color: $colorTheme3;
     cursor: pointer;
 

@@ -7,6 +7,8 @@ import Vue from 'vue'
 import Router, { RouterOptions, RouteConfig, Route } from 'vue-router'
 
 import configRoute from './config/route'
+import { cancel } from '@/utils/ajax'
+import getKey from '@/utils/getKey'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -20,9 +22,10 @@ const META = configRoute.meta
   let route
   let meta
   for (route of list) {
+    route.path || (route.path = getKey('/')) // 默认路径
     META.home || (META.home = route.path) // 首页默认第一个路由
     meta = route.meta || (route.meta = {})
-    meta._ = true // 有权访问
+    meta._ = true // 有权访问 或者移除无权的
     hack(route.children)
   }
 })(configRoute.routes as RouteConfig[])
@@ -37,7 +40,7 @@ const router = new Router(configRoute as RouterOptions)
   :max="9"
   :exclude="$router.$.e"
 >
-  <RouterView :key="$route.meta.$.k" />
+  <RouterView />
 </KeepAlive>
 keep-alive 缓存处理，这很hacky, 俺know
 也可以通过切换key绑定实现(如下)，但是:
@@ -47,7 +50,6 @@ keep-alive 缓存处理，这很hacky, 俺know
   <RouterView :key="$route.meta.$.k" />
 </KeepAlive>
 */
-let counter = 0
 function restoreName(this: any) {
   let temp
   this._$a &&
@@ -73,7 +75,7 @@ const refreshRoute = (route: Route) => {
         instance._$a = temp.name
         instance.$on(HOOK, restoreName)
       }
-      ;(router as any).$.e = temp.name = 'r' + counter++
+      ;(router as any).$.e = temp.name = getKey('r')
     }
   }
 
@@ -114,6 +116,7 @@ router.beforeEach((to, from, next) => {
     return
   }
   NProgress.start() // 开始进度条
+  cancel('导航: 取消未完成请求')
   // 关闭所有提示
   temp = router.app
   temp.$message.closeAll()
@@ -126,17 +129,17 @@ router.beforeEach((to, from, next) => {
   //   from.meta.x = temp.scrollLeft
   //   from.meta.y = temp.scrollTop
   // }
-  // 更新激活状态(hack props 只允许对象 不然报错给你看)
-  if ((temp = from.matched).length && (temp = temp[temp.length - 1])) {
-    temp = temp.props as any
-    temp = temp.default || (temp.default = {})
-    ;(temp.i || (temp.i = {})).isActive = false
-  }
-  if ((temp = to.matched) && (temp = temp[temp.length - 1])) {
-    temp = temp.props as any
-    temp = temp.default || (temp.default = {})
-    ;(temp.i || (temp.i = {})).isActive = true
-  }
+  // 为每个路由对应的组件添加 props (只允许对象 不然报错给你看)
+  // if ((temp = from.matched).length && (temp = temp[temp.length - 1])) {
+  //   temp = temp.props as any
+  //   temp = temp.default || (temp.default = {})
+  //   temp.route = from
+  // }
+  // if ((temp = to.matched) && (temp = temp[temp.length - 1])) {
+  //   temp = temp.props as any
+  //   temp = temp.default || (temp.default = {})
+  //   temp.route = to
+  // }
 
   next()
 })

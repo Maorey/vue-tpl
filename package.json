@@ -1,7 +1,7 @@
 {
   "name": "vue-tpl",
   "author": "毛瑞 <Maorey@Foxmail.com>",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "private": false,
   "license": "MIT",
   "keywords": [
@@ -103,7 +103,7 @@
     "webpack-remove-strict-mode-plugin": "^1.0.0"
   },
   "gitHooks": {
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged --allow-empty"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,vue}": [

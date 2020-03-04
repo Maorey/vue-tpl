@@ -5,10 +5,6 @@ import { local } from '@/utils/storage'
 import { set } from '@/utils/skin'
 import CONFIG from '@/config'
 
-/** 本地存储的偏好信息
- */
-const PREFER = local.get(CONFIG.prefer) || {}
-
 /** 偏好管理
  */
 export interface IPrefer {
@@ -21,12 +17,20 @@ export interface IPrefer {
 
   // ...
 }
+/** 本地存储单例对象 【应确保本网站(所有html)存储键值不会冲突】 */
+export interface IPREFER extends IPrefer {
+  // 存储键值
+}
+
+/** 本地存储的偏好信息对象 单例, 注意key是否冲突
+ */
+const PREFER = (local.get(CONFIG.prefer) || {}) as IPREFER
 
 /** 偏好管理
  */
 class Prefer extends VuexModule implements IPrefer {
   /// State & Getter(public) ///
-  lang = (PREFER.lang || 'zh') as string
+  lang = PREFER.lang || 'zh'
   skin = (PREFER.skin = set(PREFER.skin))
 
   /// Mutation 无法调用/commit 必须通过Action ///
@@ -58,10 +62,30 @@ class Prefer extends VuexModule implements IPrefer {
   }
 }
 
+type hook = (PREFER: IObject) => any
+type hooks = (hook: hook) => void
+interface IHooks extends hooks {
+  _h: hook[]
+}
+
+/** 添加偏好配置写入本地前钩子
+ * @param {hook} fn 钩子
+ */
+const hook: IHooks = (fn: hook) => {
+  const hooks = hook._h
+  if (!hooks.includes(fn)) {
+    hooks.push(fn)
+  }
+}
+hook._h = []
+
 /** 关闭窗口前写入本地
  */
 window.addEventListener('beforeunload', () => {
+  for (const fn of hook._h) {
+    fn(PREFER)
+  }
   local.set(CONFIG.prefer, PREFER)
 })
 
-export default Prefer
+export { Prefer as default, PREFER, hook }

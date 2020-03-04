@@ -11,8 +11,8 @@ export default {
    */
   baseUrl: process.env.BASE_PATH,
 
-  /*! 接口请求超时 */
-  /** 接口请求超时
+  /*! 接口请求超时 0表示不限制 */
+  /** 接口请求超时 0表示不限制
    */
   timeout: 30 * 1000,
 

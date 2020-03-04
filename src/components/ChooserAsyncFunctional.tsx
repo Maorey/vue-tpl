@@ -3,18 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2020-01-02 16:13:36
  */
-/// 【示例】 ///
-/* <template>
-  <div>
-    <!-- 必须提供组件唯一标识key, key应使用导出的getKey方法获得 -->
-    <ChooserAsyncFunctional :key="key" :get="get">
-      <template #default="{ data }">
-        <textarea :value="JSON.stringify(data)" />
-      </template>
-    </ChooserAsyncFunctional>
-  </div>
-</template> */
-import Vue, { Component, RenderContext, VNodeData } from 'vue'
+import Vue, { Component, RenderContext, VNode } from 'vue'
 
 /// [import] vue组件,其他,CSS Module ///
 // import { getAsync } from '@/utils/highOrder'
@@ -26,68 +15,64 @@ import Loading from './Loading'
 // const ModuleOne: any = getAsync(() =>
 //  import(/* webpackChunkName: "ihOne" */ './ModuleOne')
 // )
+/** 加载状态, 同时键名也是支持的事件
+ */
 export const enum status {
   none = 1,
-  loading,
-  error,
-  empty,
-  success,
+  loading = 2,
+  error = 3,
+  empty = 4,
+  success = 5,
 }
-const enum acceptProps {
+const enum PROPS {
   get = 'get',
   error = 'error',
   tag = 'tag',
   filter = 'filter',
   components = 'components',
-  propagate = 'propagate',
 }
 type component = status | string | Component
 type filter = (data: any) => { data: any; comp: component } | void
-type statusType = status
 type state = {
-  /** 接受的props
-   */
+  /// props ///
   /** 未匹配到任何组件但有数据时使用的组件[默认‘div’] 若字典存在, tag为字符串, 则优先从字典取
    */
-  [acceptProps.tag]?: component
+  [PROPS.tag]?: component
   /** 查询函数
    */
-  [acceptProps.get]?: () => Promise<IObject>
+  [PROPS.get]?: () => Promise<any>
   /** 选择组件函数 若字典存在, 返回的comp属性为字符串, 则优先从字典取
    */
-  [acceptProps.filter]?: filter
-  /** 选择组件函数 若字典存在, 返回的comp属性为字符串, 则优先从字典取
+  [PROPS.filter]?: filter
+  /** 自定义处理查询错误时的展示(接受参数为错误对象)
    */
-  [acceptProps.error]?: status | ((err: Error) => component)
+  [PROPS.error]?: status | ((err: Error) => component)
   /** 组件字典 当filter返回string时即从字典取对应组件
    */
-  [acceptProps.components]?: IObject<Component>
-  /** 是否传播支持的事件(自身不监听)
-   */
-  [acceptProps.propagate]?: boolean
+  [PROPS.components]?: IObject<Component>
 
   /// 私有状态 ///
   /** 当前组件 (响应式属性) */
   i: { i: component }
-  /** 原始响应数据 */
-  o?: any
-  /** 绑定数据 */
-  d?: any
-  /** context */
-  c?: RenderContext
+  /** 触发的事件: status 枚举 */
+  f: { [event in status]?: Function | Function[] }
   /** 绑定事件(重试) */
   $: IObject<() => void>
   /** 销毁事件(垃圾回收) */
   _: () => void
-  /** 触发的事件: status 枚举 */
-  f: {
-    [event in statusType]?: Function | Function[]
-  }
+  /** 原始响应数据 */
+  o?: any
+  /** 绑定数据 */
+  d?: any
+  /** 上一次状态 */
+  c?: component
+  /** 当前组件缓存 */
+  n?: VNode
 }
 
-const DEFAULT_TAG = 'div'
 function watch(state: state) {
   const data = state.o
+  const DEFAULT_TAG = 'div'
   if (data) {
     const DIC = state.components
     const tag = state.tag
@@ -100,7 +85,8 @@ function watch(state: state) {
     const result = state.filter(data)
     if (result) {
       state.d = { data: result.data || result }
-      state.i.i = (DIC && DIC[result.comp as string]) || result.comp || tag || DEFAULT_TAG
+      state.i.i =
+        (DIC && DIC[result.comp as string]) || result.comp || tag || DEFAULT_TAG
       return
     }
   }
@@ -117,89 +103,52 @@ function get(state: state) {
     })
     .catch(err => {
       state.i.i =
-        (typeof state.error === 'function' ? state.error(err) : state.error) || status.error
+        (typeof state.error === 'function' ? state.error(err) : state.error) ||
+        status.error
     })
 }
 
 // get 和 error改变走 get函数 否则watch
-const PROPS = {
-  [acceptProps.get]: 1,
-  [acceptProps.error]: 1,
-  [acceptProps.tag]: 1,
-  [acceptProps.filter]: 1,
-  [acceptProps.components]: 1,
-  [acceptProps.propagate]: 1,
+const DIC_PROPS = {
+  [PROPS.get]: 1,
+  [PROPS.error]: 1,
+  [PROPS.tag]: 1,
+  [PROPS.filter]: 1,
+  [PROPS.components]: 1,
 }
-const EVENTS: IObject<status> = {
+const DIC_EVENTS: IObject<status> = {
   none: status.none,
   loading: status.loading,
   error: status.error,
   empty: status.empty,
   success: status.success,
 }
-function init(state: state) {
-  const context = state.c
-  if (!context) {
-    return
-  }
-  state.c = undefined
-
+function init(state: state, context: RenderContext) {
   const {
     props,
     data: { attrs = {}, on = {} },
   } = context
 
   let fun
-  let flag = true // 是否全部未变化
+  let isSame = true // 是否全部未变化
 
   let prop
   let target
-  /// props ///
-  for (prop in PROPS) {
-    if (
-      // eslint-disable-next-line no-prototype-builtins
-      state.hasOwnProperty(prop) ||
-      // eslint-disable-next-line no-prototype-builtins
-      props.hasOwnProperty(prop) ||
-      // eslint-disable-next-line no-prototype-builtins
-      attrs.hasOwnProperty(prop)
-    ) {
-      if (state[prop as acceptProps] !== (target = props[prop] || attrs[prop])) {
-        flag = false
-        state[prop as acceptProps] = target
-        fun || ((prop === acceptProps.get || prop === acceptProps.error) && (fun = get))
-      }
-
-      // 不向下传递
-      delete attrs[prop]
-      delete props[prop]
+  /// props/attrs ///
+  for (prop in DIC_PROPS) {
+    if ((target = props[prop] || attrs[prop]) !== state[prop as PROPS]) {
+      isSame = false
+      fun || ((prop === PROPS.get || prop === PROPS.error) && (fun = get))
     }
+    state[prop as PROPS] = target
   }
-
-  // 去掉无效dom属性(虽然不会暴露数据)
-  // for (prop in attrs) {
-  //   switch (typeof (target = attrs[prop])) {
-  //     case 'object':
-  //     case 'symbol':
-  //     case 'function':
-  //     case 'undefined':
-  //       props[prop] || (props[prop] = target)
-  //       delete attrs[prop]
-  //       break
-  //   }
-  // }
 
   /// on ///
-  if (!state[acceptProps.propagate]) {
-    for (prop in on) {
-      if ((target = EVENTS[prop])) {
-        state.f[target] = on[prop]
-        delete on[prop] // 不向下传递
-      }
-    }
+  for (prop in DIC_EVENTS) {
+    state.f[DIC_EVENTS[prop]] = on[prop]
   }
 
-  flag || (fun || watch)(state)
+  return isSame || (fun || watch)(state)
 }
 
 function getState(CACHE: any, key: any) {
@@ -208,7 +157,7 @@ function getState(CACHE: any, key: any) {
   if (!state) {
     state = CACHE[key] = {
       f: {},
-      i: Vue.observable({ i: status.loading }), // Vue 3
+      i: Vue.observable({ i: status.loading }),
       $: {
         $: () => {
           get(state)
@@ -237,53 +186,59 @@ function call(hooks: state['f'][status], context: RenderContext) {
   }
 }
 
-let counter = 1
-/** 获取唯一key【用于标识一个异步选择器函数组件】
- */
-export function getKey() {
-  return counter++
-}
-
-/** 异步选择器组件(functional) 【相同父组件存在多个选择器时, 必须提供key作为唯一标识】
- *    支持默认插槽/默认作用域插槽 二选一(二者都有无法确定顺序)
+/** 异步选择器组件(functional), 最终渲染组件将得到一个prop: data, 即异步结果
+ *  【相同父组件(functional当然不算)存在多个选择器时, 必须提供key作为唯一标识】
+ *
+ *  props: 见: type state 注释 【注意】: get/error 变化时会重新请求
+ *  events: 见: const enum status 键值
+ *  slots: 支持默认插槽/默认作用域插槽 二选一 (二者都有时无法确定顺序, 所以只能二选一)
+ *  示例:
+ *  <template>
+ *    <ChooserAsyncFunctional :key="key" :get="get" @error="handleError">
+ *      <template #default="{ data }">
+ *        <textarea :value="JSON.stringify(data)" />
+ *      </template>
+ *    </ChooserAsyncFunctional>
+ *  </template>
+ * ( import 咋没得文档呢, 因为tsx么... ┐(: ´ ゞ｀)┌ )
  */
 export default (context: RenderContext) => {
-  let data: VNodeData | typeof context.scopedSlots.default = context.data
-  const key = data.key as string
-
-  const parent: any = context.parent
-  parent._$n || (parent._$n = {})
+  let parent // 工具人
+  parent = context.parent
+  const data = context.data
+  const state = getState(parent, data.key || '')
   if (parent.$el && !parent.$el.parentNode) {
-    return parent._$n[key]
+    return state.n
   }
 
-  const state = getState(parent, key)
-  state.c = context
-  init(state)
-
+  parent = init(state, context)
   const Comp: any = state.i.i // 收集依赖
+  if (parent && Comp === state.c) {
+    return state.n
+  }
+
+  state.c = Comp
+  call(state.f[Comp as status] || state.f[status.success], context)
   switch (Comp) {
     case status.none:
-      call(state.f[status.none], context)
-      return (parent._$n[key] = <i style="display:none" />)
+      return (state.n = <i key='n' style="display:none" />)
     case status.loading:
-      call(state.f[status.loading], context)
-      return (parent._$n[key] = <Loading />)
+      return (state.n = <Loading key="l" />)
     case status.empty:
-      call(state.f[status.empty], context)
-      return (parent._$n[key] = <Info icon="el-icon-info" type="info" msg="empty" retry="" />)
+      return (state.n = (
+        <Info key="e" icon="el-icon-info" type="info" msg="empty" retry="" />
+      ))
     case status.error:
-      call(state.f[status.error], context)
-      return (parent._$n[key] = <Info on={state.$} />)
+      return (state.n = <Info key="i" on={state.$} />)
     default:
       data.props = context.props
-      data.props.data = state.d.data
+      data.props.data = state.d.data // 添加 props: data
       ;(data.on || (data.on = {}))['~hook:destroyed'] = state._
 
-      call(state.f[status.success], context)
-      return (parent._$n[key] = (
+      return (state.n = (
         <Comp {...data}>
-          {context.slots().default || ((data = context.scopedSlots.default) && data(state.d))}
+          {context.slots().default ||
+            ((parent = context.scopedSlots.default) && parent(state.d))}
         </Comp>
       ))
   }

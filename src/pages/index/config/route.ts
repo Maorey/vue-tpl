@@ -23,7 +23,6 @@ export default {
 
       path: '/home',
       meta: {
-        code: 'home', // 唯一标识, 作为component的key
         name: '首页', // 标题
         thumb: IMG_HOME,
       },
@@ -35,10 +34,7 @@ export default {
       // children: [
       //   {
       //     path: '',
-      //     meta: {
-      //       code: 'home', // 同父component
-      //       name: '示例', // 标题及唯一标识子component
-      //     },
+      //     meta: { name: '示例' },
       //     component: getAsync(
       //       () =>
       //         import(
@@ -49,7 +45,7 @@ export default {
       //   },
       //   {
       //     path: ':id',
-      //     meta: { code: 'home', name: '详情' },
+      //     meta: { name: '详情' },
       //     // props: { be: 'detail' },
       //     component: getAsync(
       //       () =>
@@ -66,7 +62,6 @@ export default {
 
       path: '/about',
       meta: {
-        code: 'about',
         name: '关于',
         thumb: IMG_ABOUT,
       },

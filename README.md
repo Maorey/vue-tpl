@@ -69,7 +69,9 @@ VSCode 插件
 git config core.ignorecase false # 使git对文件名大小写敏感
 ```
 
-1. `yarn` (安装慢可以使用淘宝镜像 `yarn/npm config set registry 'https://registry.npm.taobao.org'`)
+有 `.lock` 文件时**只需**执行 `yarn` (或`npm i`) 安装即可, 否则如下:
+
+1. `yarn` (安装慢可以使用淘宝镜像 `yarn config set registry 'https://registry.npm.taobao.org'`)
 2. 修改 `yarn.lock` ( `package-lock.json` 类似) 文件:
 
   ```diff
@@ -104,7 +106,6 @@ git config core.ignorecase false # 使git对文件名大小写敏感
 
 ```bash
 yarn dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.development.local 文件中设置)
-yarn dev --mode=production # 调试皮肤切换
 ```
 
 ### 构建(生成部署包)
@@ -243,31 +244,14 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
     import BillList from '{path}/BillList'
     ```
 
-- 先设计功能模块/组件再(目录层级)向下细分或向上提取
-- 越接近 src 目录的测试覆盖率也应越高; 被测试的代码应加注释`@test: true`表示在对应目录下包含测试用例, 否则就近建`__tests__`目录或指明路径; 修改了测试覆盖的代码后, 应视情况增加测试内容
+- **先设计**功能模块/组件再(目录层级)向下细分或向上提取
+- 越接近 src 目录的, 测试覆盖率也应越高; 被测试的代码应加注释`@test: true`表示在对应目录下包含测试用例, 否则指明测试代码路径或就近建`__tests__`目录; 修改了测试覆盖的代码后, 应视情况增加测试内容
 - 尽量**不要使用全局注册**(插件/组件/指令/混入等)以优化性能及chunk并且代码更清晰、易维护
 - 尽量**按照依赖库的文档描述**来使用她, 从其源码(src)引入模块(css/scss/.../js/mjs/ts/jsx/tsx/vue), 将可能**不会被转译**且更可能随版本更新改变, 需要时可以从其构建后的 lib/dist 等目录引入或者增加一些配置(需要了解模块解析及转码规则和相关插件, 不推荐)
-- 因路由缓存策略, 响应路由参数变化的失活组件(但未销毁的)会执行监听函数, 导致性能浪费及显示ajax错误等问题, 可以通过以下方式避免:
-  ```TypeScript
-  export default class extends Vue {
-    /// [model] (@Model('change') readonly attr!: string) ///
-    /// [props] (@Prop() readonly attr!: string) ///
-    @Prop() readonly i!: IObject // props不允许_$开头 ┐(: ´ ゞ｀)┌
-    /// [data] (attr: string = '响应式属性' // 除了 undefined) ///
-    /// 非响应式属性 (attr?: string // undefined) ///
-    private $_id?: string
-    /// [computed] (get attr() {} set attr(){}) ///
-    // id 在失活后保持失活前的值, 此时订阅者不会被调用
-    private get id() {
-      const id = this.$route.params.id // 收集依赖
-      if (!this.i.isActive) {
-        return this.$_id // i不是响应式对象
-      }
-
-      return (this.$_id = id)
-    }
-  }
-  ```
+- 提交时 `lint-stage` 会删除未暂存的新增文件, 待相关命令(比如lint)执行完后再恢复, 所以若报错, 被删除的文件将无法恢复(有几个类似的issue, 10.0.0解决了, 但是这都10.0.7了), 解决方案有如下几种:
+  1. 确保未暂存的文件里没有新增的, 或者在编辑器打开或手动备份新增的文件用以恢复. 最好能控制好提交粒度, 全部暂存后再提交
+  2. 先执行 `yarn lint` 等相关命令, 待消除所有错误后, 再提交
+  3. 确保开发时无相关报错(浏览器中页面遮罩显示错误, 控制台打印警告), 特别注意 `console.log` 和 `debugger`, 只在开发环境是警告, 其他都是错误
 
 ### 风格建议
 
@@ -283,7 +267,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   (.vscode 文件夹为 VSCode 的工作区设置, 只在本工程生效, 已包含相关设置)
 
 - 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上** 和 [stylelint](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md) [配置](.stylelintrc.js)
-- 引用 `vue/tsx/ts/js/jsx` **不要加文件扩展名**, 有利于重构代码
+- 引用 `vue/tsx/ts/js/jsx` **不要加文件扩展名** 且省略 `/index`, 有利于重构代码
 - 在`tsx/jsx`中使用全局注册的组件时可以使用`kebab-case`, 否则会在控制台输出错误 ┐(: ´ ゞ｀)┌
 
   ```TypeScript
@@ -305,8 +289,10 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 - `enum/type/interface` 需要导出的直接 `export` (否则可能会得到 undefined), 其他的除了字典(硬编码)外, 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
 - 不要使用 `$` 作为组件事件名, 该名字已被[异步组件刷新](src/utils/highOrder.ts)占用
-- 为避免 [Vue属性名](https://cn.vuejs.org/v2/style-guide/#私有属性名-必要) 冲突, 私有属性请使用 `$_` 作为一般命名空间(在保证易维护的前提下可以使用单字母, 但尽量避免), `_$` 作为`全局/跨组件/hack`命名空间
-- 路由请**全部**使用异步组件(`@utils/highOrder getAsync`), 以使路由及其**子(异步)组件**可以局部刷新
+- Vue实例**私有属性**命名规则(避免 [属性名](https://cn.vuejs.org/v2/style-guide/#私有属性名-必要) 冲突):
+  - `$_` 实例命名空间(在保证易维护的前提下可以使用单字母, 但应尽量避免)
+  - `_$` **全局/跨组件/hack**命名空间, 命名前应**先全局搜索**是否有重复
+
 - 除了以下样式可以使用全局:
 
   - 浏览器默认样式重置
@@ -317,7 +303,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   均应使用 [CSSModule](https://vue-loader-v14.vuejs.org/zh-cn/features/css-modules.html)(开发环境class名:`[folder]__[name]_[local]-[emoji]$`), 以更好的实现模块化(支持复用)
 - CSS Modules class 名使用 `camelCase`, 选择器嵌套**不应超过三层**
 - <a id="scss变量"></a>**皮肤文件**(scss变量) _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)(应在 `scss/export` 目录下或 `export*.scss` 中使用)
-- 为保证在`ts/js`中引入scss文件时, 变量注入正确(使用缓存会导致无法对相同文件注入不同变量，不用缓存显然不合理也不支持), 应在合适的位置新建 scss 文件来中转:
+- 为保证在`ts/js`中引入scss文件时, 变量注入正确(使用缓存会导致无法对相同文件注入不同变量，不用缓存显然不合理而且也不支持), 应在合适的位置新建 scss 文件来中转:
 
   ```scss
   // el.scss
@@ -413,7 +399,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 ### 其他
 
-- 关于换肤方案, 本模板采用的是 `<link rel="alternate stylesheet">`[方案](https://developer.mozilla.org/en-US/docs/Web/CSS/Alternative_style_sheets), 基于`scss`变量注入进行多个皮肤的构建. 可通过环境变量[.env](.env)进行相关配置, 在`import` **scss** 文件时可以指定皮肤和使用的 scss 变量
+- 关于换肤方案, 本模板采用 `alternate stylesheet`[方案](https://developer.mozilla.org/en-US/docs/Web/CSS/Alternative_style_sheets), 基于`scss`变量注入同时构建多个皮肤. 可通过环境变量[.env](.env)进行相关配置, 在`import` **scss** 文件时可以指定皮肤和使用的 scss 变量
 
   ```html
   <script lang="ts">
@@ -561,15 +547,15 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   */
   function get(plugins: string[] = []): Promise<any> {
     let somelib: any
-    return import(/* webpackChunkName: "lSomelib" */ 'somelib.min')
+    return import(/* webpackChunkName: "lSomelib" */ './somelib.min')
       .then((module: any) => {
         somelib = module.default
         return Promise.all(plugins.map((plugin: string) => {
           switch (plugin) {
             case 'plugin1':
-              return import(/* webpackChunkName: "lsPlugins" */ 'somelib.plugin1.min')
+              return import(/* webpackChunkName: "lsPlugins" */ './somelib.plugin1.min')
             case 'plugin2':
-              return import(/* webpackChunkName: "lsPlugins" */ 'somelib.plugin2.min')
+              return import(/* webpackChunkName: "lsPlugins" */ './somelib.plugin2.min')
             // 上面两个插件合并到同一个chunk里
             // ...
           }
@@ -625,11 +611,24 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 开启 `gzip` 压缩, 并重用已有 `gz` 文件 `gzip_static on;`
 - 缓存静态资源(html 可减少缓存时间)
 
-配置示例(`xxx` 换成对应值):
+配置示例( `nginx.conf` 文件, `xxx` 换成对应值):
 
 ```bash
 http {
-  #underscores_in_headers on; # 允许带下划线的请求头
+  include       /etc/nginx/mime.types;
+  default_type  application/octet-stream;
+
+  # log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+  #                  '$status $body_bytes_sent "$http_referer" '
+  #                  '"$http_user_agent" "$http_x_forwarded_for"';
+  # access_log  /var/log/nginx/access.log  main;
+
+  sendfile        on;
+  # tcp_nopush     on;
+
+  keepalive_timeout  90;
+  # underscores_in_headers on; # 允许带下划线的请求头
+
   # 开启gZip(图片除外)
   gzip on;
   gzip_vary on;
@@ -640,19 +639,19 @@ http {
   gzip_buffers 32 16k;
   gzip_types application/xml application/json application/ld+json application/rss+xml application/atom+xml application/xhtml+xml application/font-woff application/x-font-ttf application/x-javascript application/javascript application/x-httpd-php application/x-font-woff application/vnd.geo+json application/octet-stream application/manifest+json application/vnd.ms-fontobject application/x-web-app-manifest+json font/opentype text/vtt text/css text/plain text/vcard text/javascript text/x-component text/cache-manifest text/vnd.rim.location.xloc text/x-cross-domain-policy image/svg+xml;
 
-  # http跳转到https
+  # http 跳转到 https
+  # server {
+    # server_name  xxx;
+    # listen       80;
+    # listen       [::]:80;
+
+    # return 301 https://$host$request_uri; # 得用 $host,不造为啥 $server_name 不行
+  # }
+  # http / (https + http2)
   server {
-    #server_name  xxx;
+    # server_name  xxx;
     listen       80;
     listen       [::]:80;
-
-    return 301 https://$host$request_uri; # 得用 $host,不造为啥 $server_name 不行
-  }
-  # https + http2
-  server {
-    #server_name  xxx;
-    #listen       80; # 或者同时监听多个端口
-    #listen       [::]:80;
     listen       443 ssl http2;
     listen       [::]:443 ssl http2;
 
@@ -660,20 +659,20 @@ http {
     ssl_certificate_key  xxx.key; # 私匙
     ssl_session_cache    shared:SSL:5m; # 共享会话缓存大小
     ssl_session_timeout  15m; # 会话超时时间
-    #ssl_protocols        TLSv1 TLSv1.1 TLSv1.2;
-    #ssl_ciphers          HIGH:!aNULL:!MD5; # 定义算法
-    #ssl_prefer_server_ciphers  on; # 优先采取服务器算法
+    # ssl_protocols        TLSv1 TLSv1.1 TLSv1.2;
+    # ssl_ciphers          HIGH:!aNULL:!MD5; # 定义算法
+    # ssl_prefer_server_ciphers  on; # 优先采取服务器算法
 
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always; # HSTS策略
     add_header X-Frame-Options DENY; # 减少点击劫持
     add_header X-Content-Type-Options nosniff; # 禁止服务器自动解析资源类型
     add_header X-Xss-Protection 1; # 防XSS攻擊
 
-    #error_page 500 502 503 504  /50x.html; # 错误页
-    #error_page 404              /404.html; # 未知页
+    # error_page 500 502 503 504  /50x.html; # 错误页
+    # error_page 404              /404.html; # 未知页
 
     location / {
-      #rewrite ^/(?:path|path-alias)/(.*)$ /$1 last; # 兼容某些路由
+      # rewrite ^/(?:path|path-alias)/(.*)$ /$1 last; # 兼容某些路由
       # 设置静态资源缓存(文件名带内容哈希)
       if ($uri ~ .*\.(?:js|css|jpg|jpeg|gif|png|ico|gz|svg|svgz|ttf|eot|mp4)$) {
         expires 7d; # 7天
@@ -681,7 +680,7 @@ http {
       # html(文件名不变)
       if ($uri ~ .*\.(?:htm|html)$) {
         expires 25m; # 25分钟
-        #add_header Cache-Control private,no-store,no-cache,must-revalidate,proxy-revalidate;
+        # add_header Cache-Control private,no-store,no-cache,must-revalidate,proxy-revalidate;
       }
 
       index index.html;
@@ -695,6 +694,16 @@ http {
 
   }
 }
+```
+
+- 解决字体图标偶尔乱码, 在 `mime.types` 文件中补全以下配置:
+
+```diff
+  font/woff                                        woff;
+  font/woff2                                       woff2;
++ font/ttf                                         ttf;
++ font/opentype                                    otf;
+  application/vnd.ms-fontobject                    eot;
 ```
 
 ## 备忘
@@ -769,10 +778,11 @@ http {
 - scss 模块化: 已出 beta 但生态不完善, [草案](https://github.com/sass/sass/blob/master/accepted/module-system.md)
 - [微前端化](https://github.com/phodal/microfrontends#复合型): 应考虑基于 [Web Components](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components) ([vue 友好](https://cli.vuejs.org/zh/guide/build-targets.html#web-components-组件), 可以兼容其他) 的集成和通信.
 - `tsx` 类型支持(去掉`as any`, 利于重构)
-- 是否只下载当前皮肤(应无必要, 又不影响性能, 未验证移动端换肤方案是否可行)
+- 只下载当前皮肤(暂无必要, 不影响性能, 未验证移动端换肤方案是否可行)
 
 ### 其他
 
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
 - [fibers](https://github.com/laverdet/node-fibers#supported-platforms) v4.0.2 **不支持 Node v13**
 - `crypto-js` v4 **不支持 IE10**
+- `TypeScript`(3.8.2) `const enum` 编译为内联代码(`inline code`)的支持有限, 尽量使用常量成员, 然后等[更新](https://github.com/microsoft/TypeScript)吧

@@ -3,16 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2020-01-02 16:13:36
  */
-/// 【示例】 ///
-/* <template>
-  <div>
-    <ChooserAsync :get="get">
-      <template #default="{ data }">
-        <textarea :value="JSON.stringify(data)" />
-      </template>
-    </ChooserAsync>
-  </div>
-</template> */
 import { CreateElement, Component as Comp } from 'vue'
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
@@ -29,15 +19,28 @@ import Loading from './Loading'
 // )
 export const enum status {
   none = 1,
-  loading,
-  error,
-  empty,
+  loading = 2,
+  error = 3,
+  empty = 4,
 }
 type component = status | string | Comp
 type filter = (data: any) => { data: any; comp: component } | void
 
 /// 选项 name,directives,filters,extends,mixins ///
-/** 异步选择器组件(functional) 支持默认插槽/默认作用域插槽 二选一(二者都有无法确定顺序)
+/** 异步选择器组件, 最终渲染组件将得到一个prop: data, 即异步结果
+ *
+ *  props: 见: @Prop 【注意】: get/error 变化时会重新请求
+ *  events: 见: const enum status 键值
+ *  slots: 支持默认插槽/默认作用域插槽 二选一 (二者都有时无法确定顺序, 所以只能二选一)
+ *  示例:
+ *  <template>
+ *    <ChooserAsync :get="get" @error="handleError">
+ *      <template #default="{ data }">
+ *        <textarea :value="JSON.stringify(data)" />
+ *      </template>
+ *    </ChooserAsync>
+ *  </template>
+ * ( import 咋没得文档呢, 因为tsx么... ┐(: ´ ゞ｀)┌ )
  */
 @Component
 export default class extends Vue {
@@ -52,7 +55,7 @@ export default class extends Vue {
   /** 选择组件函数 若字典存在, 返回的comp属性为字符串, 则优先从字典取
    */
   @Prop() readonly filter?: filter
-  /** 选择组件函数 若字典存在, 返回的comp属性为字符串, 则优先从字典取
+  /** 自定义处理查询错误时的展示(接受参数为错误对象)
    */
   @Prop() readonly error?: status | ((err: Error) => component)
   /** 组件字典 当filter返回string时即从字典取对应组件
@@ -128,6 +131,7 @@ export default class extends Vue {
         this.$emit('empty')
         return <Info icon="el-icon-info" type="info" msg="empty" retry="" />
       case status.error:
+        this.$emit('error')
         return <Info on={{ $: this.i }} />
       default:
         this.$emit('success')
