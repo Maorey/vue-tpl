@@ -76,6 +76,12 @@ export default class extends Vue {
     border: $borderBase;
     border-radius: $borderRadiusCircle;
   }
+  // 消息
+  p,
+  a {
+    margin: 5px 0;
+    font-size: $small;
+  }
   // 重试
   a {
     display: block;

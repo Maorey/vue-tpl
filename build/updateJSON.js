@@ -1,5 +1,5 @@
 /*
- * @Description: 修改JSON文件
+ * @Description: 读取/更新JSON文件
  * @Author: 毛瑞
  * @Date: 2019-07-03 13:24:19
  */
@@ -8,6 +8,11 @@ const path = require('path')
 
 const REG_SPLIT = /\.(?!['"])/
 
+/** 读取/更新json文件
+ * @param {string} fileName 文件名(含路径)
+ * @param {string} key 目标对象属性, 支持多级, 比如: 'a.b.c'
+ * @param {any} value 要更新的值, 不传则返回目标值
+ */
 module.exports = function(fileName, key, value) {
   fileName = path.resolve(fileName)
   key = key.split(REG_SPLIT)
@@ -31,6 +36,10 @@ module.exports = function(fileName, key, value) {
   for (k of key) {
     parent = current
     current = parent[k] === undefined ? (parent[k] = {}) : parent[k]
+  }
+
+  if (arguments.length < 3) {
+    return current
   }
 
   if (

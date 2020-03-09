@@ -12,9 +12,8 @@
  *  https://github.com/neutrinojs/webpack-chain#getting-started
  */
 module.exports = function(config) {
-  // eval 更快(默认cheap-module-eval-source-map), 且无同名.vue文件sourceMap冲突
-  // 反正<template><style>也不能调试不是）(TypeScript 有 sourceMap)
-  config.devtool('eval')
+  // https://webpack.js.org/configuration/devtool/#devtool
+  config.devtool(process.env.DEV_TOOL || 'eval')
   /// 避免同名.vue文件sourceMap冲突 ///
   // https://webpack.js.org/configuration/output/#outputdevtoolmodulefilenametemplate
   // config.output.devtoolFallbackModuleFilenameTemplate(

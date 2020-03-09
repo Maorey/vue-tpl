@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-04-01 13:28:06
  */
-const rename = require('./rename')('chunkName')
+const rename = require('./rename')('build/~fileName', 'chunkName')
 
 const getLoaderOption = name => ({
   limit: 4096,
@@ -119,7 +119,7 @@ module.exports = function(config, ENV, pages) {
 
   /// 【优化(optimization)】 ///
   // https://webpack.docschina.org/configuration/optimization 默认就好
-  config.optimization.runtimeChunk({ name: e => 'r_' + rename.get(e.name) })
+  config.optimization.runtimeChunk({ name: e => 'r_' + rename.short(e.name) })
 
   /// 【代码分割(optimization.splitChunks 不能config.merge({}))】 ///
   // https://webpack.docschina.org/plugins/split-chunks-plugin
@@ -174,7 +174,7 @@ module.exports = function(config, ENV, pages) {
           }
           CONFS[entry] = 1
           entry = entry.replace(REG, STR)
-          name = prefix + rename.get(name)
+          name = prefix + rename.short(name)
           group[name] = {
             name,
             chunks: 'all',

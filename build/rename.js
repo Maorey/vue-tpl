@@ -6,16 +6,16 @@
 const updateJSON = require('./updateJSON')
 const shortString = require('./shortString')
 
-/** 重命名 vender chunks (命名映射:build/~fileName)
- *    vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
- * @param {String} des 缩写描述
- * @param {Object} DIC 缩写字典 eg: { index: 'i' }
+/** 字典重命名: vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
+ * @param {String} file 字典文件
+ * @param {Object} key 字典键值
  *
- * @returns {Function} 缩写函数
+ * @returns {Function} 模块重命名函数:rename, rename.short: 字符串缩写函数
  */
-module.exports = function(des = '', DIC = {}) {
-  const short = shortString(DIC)// 字符串缩写函数
-  process.on('beforeExit', () => updateJSON('build/~fileName', des, DIC))
+module.exports = function(file, key) {
+  const DIC = updateJSON(file, key) || {} // 重用已有字典
+  const short = shortString(DIC) // 字符串缩写函数
+  process.on('beforeExit', () => updateJSON(file, key, DIC))
 
   /** 重命名 vender chunks (命名映射:build/~fileName)
    *    vendors.main.other.user.d0ae3f07.77d.js => v.wzS.d0ae3f07.77d.js
@@ -37,6 +37,6 @@ module.exports = function(des = '', DIC = {}) {
     return name
   }
 
-  rename.get = short
+  rename.short = short // 暴露缩写函数
   return rename
 }
