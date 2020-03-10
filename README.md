@@ -530,7 +530,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   ```
 
 - [异步 chunk](https://webpack.docschina.org/api/module-methods) 使用层次命名(方便排查问题和碎文件合并), 比如: index 页面下的 home 视图命名为 `index_home`, 其下的用户视图命名为 `index_home_me`, 用户基础信息命名为 `index_home_me_baseinfo` . 为避免文件名太长, 可以缩写为: `iHome`, `ihMe`, `ihmBaseInfo`
-- libs 下的库文件按需加载示例(只会成功加载一次):
+- libs 下的库文件模块化懒加载示例(只会成功加载一次):
 
   ```TypeScript
   // src/libs/somelib/index.ts

@@ -106,7 +106,7 @@ function getKEY(url: string, params?: IObject) {
  * @param {String} method http方法
  * @param {Object} params 查询参数
  * @param {Object} data 请求数据
- * @param {Object} config [复用]请求配置【添加到响应的meta字段】
+ * @param {Object} config [复用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
@@ -154,7 +154,9 @@ function request(
   cache = AXIOS.request(config)
     .then((res: any) => {
       if (config._$c) {
-        throw config._$c // 自定义错误标记
+        res = config._$c // 自定义错误标记
+        config._$c = 0 // 只取消一次
+        throw res
       }
 
       res.meta = config
@@ -180,7 +182,7 @@ function request(
   config.cancelToken ||
     (cache.cancel = (reason = '取消请求') => {
       config._$c = new Error(reason)
-      config._$c.__CANCEL__ = 1
+      config._$c.__CANCEL__ = 1 // for AXIOS.isCancel
     })
 
   return requestQueue.set(KEY, cache)
@@ -190,7 +192,7 @@ function request(
 /** get请求(获取资源)
  * @param {String} url 请求地址
  * @param {Object} params 查询参数
- * @param {Object} config [复用]请求配置
+ * @param {Object} config [复用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
@@ -200,7 +202,7 @@ function get(url: string, params?: IObject, config?: IObject): Promise<any> {
 /** delete请求(删除资源)
  * @param {String} url 请求地址
  * @param {Object} params 查询参数
- * @param {Object} config [复用]请求配置
+ * @param {Object} config [复用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
@@ -211,7 +213,7 @@ function del(url: string, params?: IObject, config?: IObject): Promise<any> {
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
  * @param {Object} params 查询参数
- * @param {Object} config [复用]请求配置
+ * @param {Object} config [复用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
@@ -227,7 +229,7 @@ function put(
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
  * @param {Object} params 查询参数
- * @param {Object} config [复用]请求配置
+ * @param {Object} config [复用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
@@ -243,7 +245,7 @@ function post(
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
  * @param {Object} params 查询参数
- * @param {Object} config [复用]请求配置
+ * @param {Object} config [复用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
@@ -258,8 +260,8 @@ function patch(
 
 /** 全局请求头配置【只用于携带token等】
  */
-let HEADERS = AXIOS.defaults.headers || (AXIOS.defaults.headers = {})
-HEADERS = HEADERS.common || (HEADERS.common = {})
+let HEAD = AXIOS.defaults.headers || (AXIOS.defaults.headers = {})
+HEAD = HEAD.common || (HEAD.common = {})
 
 /** 获取url (直接使用url的情况, 比如验证码、下载、上传等, 添加BaseUrl、调试参数等)
  * @param {string} url
@@ -291,8 +293,7 @@ function cancel(reason?: string) {
 }
 
 export {
-  HEADERS as default,
-  SEARCH,
+  HEAD,
   get,
   del,
   put,

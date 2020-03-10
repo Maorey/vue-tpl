@@ -1,5 +1,5 @@
 // see: https://luma.gl/#/examples/core-examples/instancing
-/// 按需引入 luma.gl ///
+/// 模块化引入 luma.gl ///
 import { AnimationLoop, setParameters, readPixelsToArray } from 'luma.gl'
 import { Timeline } from '@luma.gl/addons'
 import { Matrix4, radians } from 'math.gl'

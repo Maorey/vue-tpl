@@ -217,7 +217,7 @@ module.exports = function(config, ENV, pages) {
         reuseExistingChunk: true,
         test: /[\\/]node_modules[\\/]vue.*[\\/]/,
       },
-      // elementUI (建议按需引入)
+      // elementUI (建议模块化引入)
       eui: {
         name: 'eui',
         chunks: 'all',

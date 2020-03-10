@@ -1,4 +1,4 @@
-/// 按需引入 luma.gl ///
+/// 模块化引入 luma.gl ///
 import {
   ModelNode,
   picking,

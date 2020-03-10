@@ -188,8 +188,11 @@ function call(hooks: state['f'][status], context: RenderContext) {
  *  【相同父组件(functional当然不算)存在多个选择器时, 必须提供key作为唯一标识】
  *
  *  props: 见: type state 注释 【注意】: get/error 变化时会重新请求
+ *
  *  events: 见: const enum status 键值
+ *
  *  slots: 支持默认插槽/默认作用域插槽【二选一】(二者都有时无法确定顺序, 故)
+ *
  *  示例:
  *  <template>
  *    <ChooserAsyncFunctional :key="key" :get="get" @error="handleError">
@@ -198,7 +201,8 @@ function call(hooks: state['f'][status], context: RenderContext) {
  *      </template>
  *    </ChooserAsyncFunctional>
  *  </template>
- * ( import 咋没得文档呢, 因为tsx么... ┐(: ´ ゞ｀)┌ )
+ *
+ * ( import 了咋没得文档呢, 因为tsx么... ┐(: ´ ゞ｀)┌ )
  */
 export default (context: RenderContext) => {
   let temp // 工具人

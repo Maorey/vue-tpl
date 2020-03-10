@@ -11,7 +11,7 @@
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue } from 'vue-property-decorator'
 
-/// 按需引入zrender (参考 ~zrender/index.js ) ///
+/// 模块化引入zrender (参考 ~zrender/index.js ) ///
 import { init } from 'zrender/lib/zrender' // 核心
 import { Circle } from 'zrender/lib/export' // 可选
 // const zrender = { init, Circle } // 这样就和文档的使用方式一致了

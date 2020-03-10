@@ -1,6 +1,6 @@
 <!--
  * @Description: 二人转
- * @Author: 作者
+ * @Author: 毛瑞
  * @Date: 2019-08-01 13:16:20
  -->
 <template>
@@ -11,7 +11,7 @@
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue } from 'vue-property-decorator'
 
-/// 按需引入Zdog (参考 ~zdog/js/index.js) ///
+/// 模块化引入Zdog (参考 ~zdog/js/index.js) ///
 import Zdog from 'zdog/js/boilerplate' // 核心
 import CanvasRenderer from 'zdog/js/canvas-renderer' // canvas 渲染
 import Illustration from 'zdog/js/illustration'

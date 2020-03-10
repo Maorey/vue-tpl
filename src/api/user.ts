@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @LastEditTime: 2019-07-24 11:01:36
  */
-import HEADERS, { get, post } from '@/utils/ajax'
+import { HEAD, get, post } from '@/utils/ajax'
 import { local } from '@/utils/storage'
 import CONFIG from '@/config'
 import API from '@/config/api/user'
@@ -53,7 +53,7 @@ function login(formData: ILogin) {
     account,
     password,
   }).then(res => {
-    HEADERS[CONFIG.token] = res.data.token
+    HEAD[CONFIG.token] = res.data.token
     local.set(CONFIG.token, res.data, CONFIG.tokenAlive)
     return res
   })
@@ -65,7 +65,7 @@ function login(formData: ILogin) {
  */
 function logout() {
   return get(API.logout).then(res => {
-    delete HEADERS[CONFIG.token]
+    delete HEAD[CONFIG.token]
     local.remove(CONFIG.token)
     return res
   })

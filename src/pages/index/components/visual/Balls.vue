@@ -12,7 +12,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 /* eslint-disable import/no-duplicates */
-/// three.js 按需引入 (摇不动啊, 几乎不能减小尺寸) ///
+/// three.js 模块化引入 (摇不动啊, 几乎不能减小尺寸) ///
 import {
   PerspectiveCamera,
   Scene,

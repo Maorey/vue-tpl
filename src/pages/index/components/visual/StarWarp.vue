@@ -11,7 +11,7 @@
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue } from 'vue-property-decorator'
 
-/// 按需引入pixi.js (参考 ~pixi.js/lib/pixi.es.js) ///
+/// 模块化引入pixi.js (参考 ~pixi.js/lib/pixi.es.js) ///
 import { Application, Texture, Sprite } from 'pixi.js'
 import { isWebGLSupported } from '@pixi/utils'
 

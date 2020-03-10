@@ -52,6 +52,6 @@
 - 增加 vue-ts/vue-js/tsx/jsx 代码模板
 - 配置 vscode 调试
 - index 页大屏示例
-- element-ui 按需 全局/局部 注册示例
-- js 图形库按需引入示例
+- element-ui 模块化 全局/局部 注册示例
+- js 图形库模块化引入示例
 - 路由加载进度条 & 局部刷新路由
