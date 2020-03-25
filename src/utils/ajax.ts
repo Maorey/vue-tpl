@@ -170,9 +170,17 @@ function request(
       requestQueue.remove(KEY) // 移除请求队列
       // if (AXIOS.isCancel(res)) {
       //   throw res
+      // } else if (config._$c) {
+      //   res = config._$c // 自定义取消标记
+      //   config._$c = 0 // 只取消一次
+      //   throw res
       // } else {
-      //   failed(res) 拦截请求
+      //   failed(res) // 拦截请求
       // }
+      if (config._$c) {
+        res = config._$c // 自定义取消标记
+        config._$c = 0 // 只取消一次
+      }
       throw res
     })
 
@@ -292,14 +300,4 @@ function cancel(reason?: string) {
   }
 }
 
-export {
-  HEAD,
-  get,
-  del,
-  put,
-  post,
-  patch,
-  getUri,
-  cancel,
-  CancelToken,
-}
+export { HEAD, get, del, put, post, patch, getUri, cancel, CancelToken }

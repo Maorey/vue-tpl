@@ -1,5 +1,10 @@
 # 更新日志
 
+## v 1.2.9
+
+- 修复异步css chunk包含不定数量(皮肤/默认)文件问题等
+- 异步选择器(ChooserAsyncFunctional/ChooserAsync)active状态处理等
+
 ## v 1.2.8
 
 - 重用本地chunk名字典等

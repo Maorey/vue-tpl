@@ -12,7 +12,7 @@ const INDEX = '/index.scss'
 const REG_EXTENSION = /\.scss$/
 const REG_INDEX = /\/index\.scss$/
 const REG_SCSS = /\/[^/]+\.scss$/
-const REG_SKIN = /[?&]skin=([^|& ]*)\|?([^& ]*)/
+const REG_SKIN = /(?:\?|%3F|&|%26)skin(?:=|%3D)([^|&% ]*)(?:\||%7C)?([^&% ]*)/i
 
 const CACHE_EXISTS = {}
 const DIR_SRC = path.resolve('src')
@@ -91,7 +91,7 @@ function init(ENV = process.env) {
 function getSkinByQuery(temp) {
   if (SKIN) {
     temp = REG_SKIN.exec(temp)
-    let skin = temp && { name: temp[1], path: temp[2] }
+    let skin = temp && { name: temp[1], path: decodeURIComponent(temp[2]) }
     if (skin) {
       // 指定皮肤
       ;(skin.path &&

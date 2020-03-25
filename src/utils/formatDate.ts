@@ -192,8 +192,8 @@ const REG_RESERVE = new RegExp(
  *
  * @returns {String} 格式化的日期
  */
-function formatDate(date: Date, format: format = ISO_DATE_FORMAT) {
-  const { t, g } = getFormat(format)
+function formatDate(date: Date, format?: format) {
+  const { t, g } = getFormat(format || ISO_DATE_FORMAT)
 
   let index = 0
   let item: IGroup
@@ -273,15 +273,20 @@ const REPLACE_NOON = (match: string, slot: string) =>
  *
  * @param {String} dateString 格式化的日期
  * @param {format} format 日期格式
+ * @param {boolean} tryHistory 是否尝试历史记录
  *
  * @returns {Date} Date对象
  */
 function getDate(
   dateString: string,
-  format: format | IResult = ISO_DATE_FORMAT,
-  tryHistory = true
+  format?: format | IResult,
+  tryHistory?: boolean
 ): Date | void {
-  const { r, g } = typeof format === 'string' ? getFormat(format) : format
+  const { r, g } =
+    !format || typeof format === 'string'
+      ? getFormat(format || ISO_DATE_FORMAT)
+      : format
+  tryHistory = tryHistory !== false
 
   let info: IObject<number> | undefined
   // 提取信息
@@ -339,68 +344,107 @@ function getDate(
 /** 获取本周起止日期
  * @test true
  *
- * @param {Date} date 日期对象
- * @param {format} format 格式化的日期
+ * @param {Date|string} date 指定日期对象/字符串
+ * @param {format} format 日期格式
+ * @param {boolean} toDate 是否截止到指定日期
  *
  * @returns {Array<String>} 格式化的日期数组
  */
-function getWeek(date?: Date, format: format = ISO_DATE_FORMAT) {
-  date = date ? new Date(date.getTime()) : new Date() // 复制日期对象
+function getWeek(
+  date?: Date | string | void,
+  format?: format,
+  toDate?: boolean
+) {
+  date && typeof date === 'string' && (date = getDate(date, format))
+  date || (date = new Date())
+  format || (format = ISO_DATE_FORMAT)
+
+  let target = new Date((date as Date).getTime()) // 复制日期对象
   const result = []
 
-  const week = date.getDay()
-  const day = date.getDate()
+  const week = target.getDay()
+  const day = target.getDate()
   // 本周第一天
-  date.setDate(day + 1 - week)
-  result.push(formatDate(date, format))
-  // 本周最后一天
-  date.setDate(day + 7 - week)
-  result.push(formatDate(date, format))
+  target.setDate(day + 1 - week)
+  result.push(formatDate(target, format))
+  if (toDate) {
+    target = date as Date
+  } else {
+    // 本周最后一天
+    target.setDate(day + 7 - week)
+  }
+  result.push(formatDate(target, format))
 
   return result
 }
 /** 获取本月起止日期
  * @test true
  *
- * @param {Date} date 日期对象
- * @param {format} format 格式化的日期
+ * @param {Date|string} date 指定日期对象/字符串
+ * @param {format} format 日期格式
+ * @param {boolean} toDate 是否截止到指定日期
  *
  * @returns {Array<String>} 格式化的日期数组
  */
-function getMonth(date?: Date, format: format = ISO_DATE_FORMAT) {
-  date = date ? new Date(date.getTime()) : new Date() // 复制日期对象
+function getMonth(
+  date?: Date | string | void,
+  format?: format,
+  toDate?: boolean
+) {
+  date && typeof date === 'string' && (date = getDate(date, format))
+  date || (date = new Date())
+  format || (format = ISO_DATE_FORMAT)
+
+  let target = new Date((date as Date).getTime()) // 复制日期对象
   const result = []
 
   // 本月第一天 [一定是1号]
-  date.setDate(1)
-  result.push(formatDate(date, format))
-  // 本月最后一天
-  date.setDate(32) // 先到下个月
-  date.setDate(0) // 上个月最后一天
-  result.push(formatDate(date, format))
+  target.setDate(1)
+  result.push(formatDate(target, format))
+  if (toDate) {
+    target = date as Date
+  } else {
+    // 本月最后一天
+    target.setDate(32) // 先到下个月
+    target.setDate(0) // 上个月最后一天
+  }
+  result.push(formatDate(target, format))
 
   return result
 }
 /** 获取今年起止日期
  * @test true
  *
- * @param {Date} date 日期对象
- * @param {format} format 格式化的日期
+ * @param {Date|string} date 指定日期对象/字符串
+ * @param {format} format 日期格式
+ * @param {boolean} toDate 是否截止到指定日期
  *
  * @returns {Array<String>} 格式化的日期数组
  */
-function getYear(date?: Date, format: format = ISO_DATE_FORMAT) {
-  date = date ? new Date(date.getTime()) : new Date() // 复制日期对象
+function getYear(
+  date?: Date | string | void,
+  format?: format,
+  toDate?: boolean
+) {
+  date && typeof date === 'string' && (date = getDate(date, format))
+  date || (date = new Date())
+  format || (format = ISO_DATE_FORMAT)
+
+  let target = new Date((date as Date).getTime()) // 复制日期对象
   const result = []
 
   // 今年第一天 [一定是1月1号]
-  date.setDate(1)
-  date.setMonth(0)
-  result.push(formatDate(date, format))
-  // 今年最后一天 [一定是12月31号]
-  date.setDate(31)
-  date.setMonth(11)
-  result.push(formatDate(date, format))
+  target.setDate(1)
+  target.setMonth(0)
+  result.push(formatDate(target, format))
+  if (toDate) {
+    target = date as Date
+  } else {
+    // 今年最后一天 [一定是12月31号]
+    target.setDate(31)
+    target.setMonth(11)
+  }
+  result.push(formatDate(target, format))
 
   return result
 }

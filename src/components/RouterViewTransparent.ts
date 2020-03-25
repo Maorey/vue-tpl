@@ -24,7 +24,7 @@ import getKey from '@/utils/getKey'
 export default {
   name: 'RVT',
   data() {
-    return { d: 0 } // 是否未激活
+    return { d: 0 } // 是否失活/休眠
   },
   activated(this: any) {
     this.d = 0

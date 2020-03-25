@@ -48,6 +48,8 @@ module.exports = {
     const env = {}
     const prefix = 'process.env.'
     const REG_ENV = /^[A-Z][A-Z_]*$/
+    // build信息(时间戳年-时)
+    ENV.APP_VERSION += '-' + String(Date.now()).substr(-11, 5)
     for (const att in ENV) {
       REG_ENV.test(att) && (env[prefix + att] = JSON.stringify(ENV[att]))
     }

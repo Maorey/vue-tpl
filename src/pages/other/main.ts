@@ -133,8 +133,27 @@ Vue.use(Scrollbar)
 //   submit(data) // 上传数据
 // })
 
-// 在浏览器开发工具的性能/时间线面板中启用Vue组件性能追踪
-Vue.config.performance = process.env.NODE_ENV === 'development'
+// 在浏览器开发工具的性能/时间线面板中启用Vue组件性能追踪 && 更友好的组件名(vue-devtool)
+;(Vue.config.performance = process.env.NODE_ENV === 'development') &&
+  Vue.mixin({
+    beforeCreate() {
+      let options
+      options = this.$options
+      options ||
+        ((options = this.$vnode) &&
+          (options = options.componentOptions) &&
+          (options = options.Ctor) &&
+          (options = (options as any).options))
+
+      // 匿名组件就不处理了 vue-devtool自己找 $vm0.$options.__file
+      if (options && options.__file && /^default/i.test(options.name)) {
+        const result = /(?:[\\/]([^\\/]+)[\\/])?([^\\/]+)(?:[\\/]index)?\.\w+/.exec(
+          options.__file
+        )
+        result && (options.name = result[1] + result[2])
+      }
+    },
+  })
 
 // 防阻塞页面（defer的脚本已缓存时不会非阻塞执行bug:chromium#717979）
 setTimeout(() => {
@@ -143,7 +162,7 @@ setTimeout(() => {
   //   router,
   //   render: (h: CreateElement) => h(App),
   // }).$mount('#app')
-  // hacky: 省root组件
+  // hack: 省root组件
   const options = App.options || App
   options.store = store
   options.router = router

@@ -1,5 +1,5 @@
 /**
- * @Description: 组件选择器(异步) 比如: Ajax完成后才知道该使用哪个组件
+ * @Description: 组件选择器(异步) 比如: Ajax完成后才知道该使用哪个组件 暂不提供工厂函数
  * @Author: 毛瑞
  * @Date: 2020-01-02 16:13:36
  */
@@ -24,8 +24,8 @@ export const enum status {
   empty = 4,
   success = 5,
 }
-type component = status | string | Component
-type filter = (data: any) => { data: any; comp: component } | void
+export type component = status | string | Component
+export type filter = (data: any) => { data: any; comp: component } | void
 type state = {
   /// props ///
   /** 未匹配到任何组件但有数据时使用的组件[默认‘div’] 若字典存在, tag为字符串, 则优先从字典取
@@ -48,19 +48,31 @@ type state = {
   once?: boolean
 
   /// 私有状态 ///
-  /** 当前组件 (响应式属性) */
-  i: { i: component }
+  /** Vue响应式数据 */
+  i: {
+    /** 当前组件 */
+    i: component
+    /** 父组件是否未激活 */
+    d: 0 | 1
+  }
   /** 触发的事件: status 枚举 */
   f: { [event in status]?: Function | Function[] }
-  /** 绑定事件(重试) */
-  $: IObject<() => void>
-  /** 销毁事件(垃圾回收) */
-  _: () => void
-  /** 原始响应数据 */
+  /** hooks */
+  h: {
+    /** 重新加载 */
+    $: () => void
+    /** 父/返回组件 activated */
+    a: () => void
+    /** 父/返回组件 deactivated */
+    d: () => void
+    // /** 父组件 destroyed */
+    // e: () => void
+  }
+  /** 原始响应 */
   o?: any
-  /** 绑定数据 */
+  /** 绑定 props.data */
   d?: any
-  /** 当前组件缓存 */
+  /** 当前组件VNode */
   n?: VNode
   /** 上一次组件(once时比较) */
   c?: component
@@ -108,10 +120,10 @@ function get(state: state) {
 const DIC_PROPS = {
   get: 1,
   error: 1,
-  tag: 1,
   filter: 1,
-  components: 1,
   once: 1,
+  tag: 1,
+  components: 1,
 }
 const DIC_EVENTS: IObject<status> = {
   none: status.none,
@@ -146,28 +158,56 @@ function init(state: state, context: RenderContext) {
     state.f[DIC_EVENTS[prop]] = on[prop]
   }
 
-  return isSame ? state.once : (fun || watch)(state)
+  if (isSame) {
+    if (state.get || state.error) {
+      return state.once
+    }
+    state.o = 1 // for use slot
+  }
+
+  return (fun || watch)(state)
 }
 
-function getState(CACHE: any, key: any) {
-  CACHE = CACHE._$c || (CACHE._$c = {})
+const activated = 'hook:activated'
+const deactivated = 'hook:deactivated'
+function getState(vm: Vue, key: any) {
+  const CACHE = (vm as any)._$c || ((vm as any)._$c = {})
   let state: state = CACHE[key]
   if (!state) {
     state = CACHE[key] = {
       f: {},
-      i: Vue.observable({ i: status.loading }),
-      $: {
+      i: Vue.observable({ i: status.loading, d: 0 } as state['i']),
+      h: {
         $: () => {
           get(state)
         },
-      },
-      _: () => {
-        delete CACHE[key]
+        a: () => {
+          state.i.d = 0
+        },
+        d: () => {
+          state.i.d = 1
+        },
       },
     }
+
+    // LifeCycle hooks for parent
+    vm.$on(activated, state.h.a)
+    vm.$on(deactivated, state.h.d)
+    vm.$on('hook:destroyed', () => {
+      delete CACHE[key]
+    })
   }
 
   return state
+}
+function hook(on: IObject<Function | Function[]>, hook: string, fn: Function) {
+  if (!on[hook]) {
+    on[hook] = fn
+  } else if (Array.isArray(on[hook])) {
+    ;(hook = on[hook] as any).includes(fn) || (hook as any).push(fn)
+  } else if (on[hook] !== fn) {
+    on[hook] = [on[hook] as Function, fn]
+  }
 }
 
 function call(hooks: state['f'][status], context: RenderContext) {
@@ -205,28 +245,43 @@ function call(hooks: state['f'][status], context: RenderContext) {
  * ( import 了咋没得文档呢, 因为tsx么... ┐(: ´ ゞ｀)┌ )
  */
 export default (context: RenderContext) => {
+  // identify/mark this functional component by/to parent._$c use key
   let temp // 工具人
   temp = context.parent
   const data = context.data
-  const state = getState(temp, data.key || '')
-  if (temp.$el && !temp.$el.parentNode) {
-    return state.n // 父组件未挂载
+  const state = getState(
+    temp,
+    // eslint-disable-next-line no-prototype-builtins
+    data.hasOwnProperty('key') ? data.key : (data.key = '')
+  )
+
+  // situations to use VNode cache
+  if (state.i.d || (temp.$el && !temp.$el.parentNode)) {
+    return state.n // 父组件失活/休眠等
   }
 
+  // init state with diff
   temp = init(state, context)
   const Comp: any = state.i.i // 收集依赖
   if (temp && Comp === state.c) {
     return state.n // once & 自身未变化
   }
 
+  // LifeCycle hooks for Comp & emit events
   state.c = Comp
+  temp = data.on || (data.on = {})
+  hook(temp, activated, state.h.a)
+  hook(temp, deactivated, state.h.d)
   call(state.f[Comp as status] || state.f[status.success], context)
 
+  // save & return VNode
   switch (Comp) {
     case status.none:
-      return (state.n = <i key={data.key + 'w'} style="display:none" />)
+      return (state.n = (
+        <i key={data.key + 'w'} style="display:none" on={temp} />
+      ))
     case status.loading:
-      return (state.n = <Loading key={data.key + 'x'} />)
+      return (state.n = <Loading key={data.key + 'x'} on={temp} />)
     case status.empty:
       return (state.n = (
         <Info
@@ -235,20 +290,20 @@ export default (context: RenderContext) => {
           type="info"
           msg="empty"
           retry=""
+          on={temp}
         />
       ))
     case status.error:
-      return (state.n = <Info key={data.key + 'z'} on={state.$} />)
+      temp.$ = state.h.$ // reload
+      return (state.n = <Info key={data.key + 'z'} on={temp} />)
     default:
+      // add props
       data.props = context.props
-      data.props.data = state.d.data // 添加 props: data
-      ;(data.on || (data.on = {}))['~hook:destroyed'] = state._
+      data.props.data = state.d.data
 
+      temp = context.scopedSlots.default // scopedSlots first
       return (state.n = (
-        <Comp {...data}>
-          {context.slots().default ||
-            ((temp = context.scopedSlots.default) && temp(state.d))}
-        </Comp>
+        <Comp {...data}>{temp ? temp(state.d) : context.slots().default}</Comp>
       ))
   }
 }

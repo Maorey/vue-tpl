@@ -67,6 +67,7 @@ VSCode 插件
 
 ```bash
 git config core.ignorecase false # 使git对文件名大小写敏感
+# 或者修改 .git/config [core] ignorecase = false
 ```
 
 有 `.lock` 文件时**只需**执行 `yarn` (或`npm i`) 安装即可, 否则如下:
@@ -248,10 +249,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 越接近 src 目录的, 测试覆盖率也应越高; 被测试的代码应加注释`@test: true`表示在对应目录下包含测试用例, 否则指明测试代码路径或就近建`__tests__`目录; 修改了测试覆盖的代码后, 应视情况增加测试内容
 - 尽量**不要使用全局注册**(插件/组件/指令/混入等)以优化性能及chunk并且代码更清晰、易维护
 - 尽量**按照依赖库的文档描述**来使用她, 从其源码(src)引入模块(css/scss/.../js/mjs/ts/jsx/tsx/vue), 将可能**不会被转译**且更可能随版本更新改变, 需要时可以从其构建后的 lib/dist 等目录引入或者增加一些配置(需要了解模块解析及转码规则和相关插件, 不推荐)
-- 提交时 `lint-stage` 会删除未暂存的新增文件, 待相关命令(比如lint)执行完后再恢复, 所以若报错, 被删除的文件将无法恢复(有几个类似的issue, 10.0.0解决了, 但是这都10.0.7了), 解决方案有如下几种:
-  1. 确保未暂存的文件里没有新增的, 或者在编辑器打开或手动备份新增的文件用以恢复. 最好能控制好提交粒度, 全部暂存后再提交
-  2. 先执行 `yarn lint` 等相关命令, 待消除所有错误后, 再提交
-  3. 确保开发时无相关报错(浏览器中页面遮罩显示错误, 控制台打印警告), 特别注意 `console.log` 和 `debugger`, 只在开发环境是警告, 其他都是错误
+- 若开发环境出现缓存相关错误信息导致热更新慢, 可以删除 `node_modules/.cache` 文件夹再试
 
 ### 风格建议
 
@@ -438,7 +436,12 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   </script>
 
   <!-- 基础样式 -->
-  <style lang="scss" module skin="skin=|foo.scss">
+  <style lang="scss" module skin="|">
+  .bar {
+    display: none;
+  }
+  </style>
+  <style lang="scss" module skin="|foo.scss">
   .bar {
     color: $red;
   }
@@ -581,6 +584,9 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   // ...
   ```
 
+- 路由视图不需要被缓存的, 可以在自己的`deactivated`钩子销毁实例`this.$destroy()`
+- 所有响应路由变化的可缓存组件(不缓存如上), 应确保失活/休眠后不再响应路由变化, 推荐使用 `@com/ChooserAsyncFunctional` 包裹
+
 ### 配置和优化
 
 可通过 [vue.config.js](vue.config.js) (入口)文件配置工具链; `.env.*` 配置环境变量; 根目录下各配置文件配置相应工具
@@ -591,6 +597,13 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 对多个 js chunk 共同依赖的模块进行缓存/单独提取, 大模块只出现在一个chunk里(cacheGroups)
 - 相同chunk下的基础样式和各个皮肤样式文件分别合并 或 其他合理的合并策略【webpack 5 支持设置 css chunk 的 minSize/maxSize 啦】
 - [现代模式](https://cli.vuejs.org/zh/guide/browser-compatibility.html#现代模式)
+- 打包/热更新慢(已使用 `hard-source-webpack-plugin` 插件动态追踪缓存依赖):
+  1. (第三方)依赖静态化
+    - 优点: 静态化依赖只需一次构建; 支持CDN加载(可供多个应用使用)
+    - 缺点: 增加文件体积, 消耗浏览器资源; 需要更新维护工作
+  2. 开发调试时支持指定需要的模块, 比如指定路由
+    - 优点: 只需构建指定模块, 提升热更新效率
+    - 缺点: 未解决打包慢问题
 
 ## 部署(nginx)
 
@@ -639,19 +652,21 @@ http {
   gzip_buffers 32 16k;
   gzip_types application/xml application/json application/ld+json application/rss+xml application/atom+xml application/xhtml+xml application/font-woff application/x-font-ttf application/x-javascript application/javascript application/x-httpd-php application/x-font-woff application/vnd.geo+json application/octet-stream application/manifest+json application/vnd.ms-fontobject application/x-web-app-manifest+json font/opentype text/vtt text/css text/plain text/vcard text/javascript text/x-component text/cache-manifest text/vnd.rim.location.xloc text/x-cross-domain-policy image/svg+xml;
 
-  # http 跳转到 https
   # server {
-    # server_name  xxx;
-    # listen       80;
-    # listen       [::]:80;
+      # http 跳转到 https
+  #   server_name  xxx;
+  #   listen       80;
+  #   listen       [::]:80;
 
-    # return 301 https://$host$request_uri; # 得用 $host,不造为啥 $server_name 不行
+  #   return 301 https://$host$request_uri; # 得用 $host,不造为啥 $server_name 不行
   # }
-  # http / (https + http2)
+
   server {
     # server_name  xxx;
+    # http
     listen       80;
     listen       [::]:80;
+    # https + http2
     listen       443 ssl http2;
     listen       [::]:443 ssl http2;
 
@@ -685,7 +700,7 @@ http {
 
       index index.html;
       alias xxx/;
-      try_files $uri $uri.html $uri/ /;
+      try_files $uri $uri.html $uri/ / =404;
     }
     location /api {
       proxy_pass https?://xxx:xxx/xxx;
@@ -769,6 +784,11 @@ http {
     window.URL.revokeObjectURL(href)
   })
   ```
+
+- 提交时 `lint-stage` 【10.0.8已修复】会删除未暂存的新增文件(撤销全部未暂存修改), 待相关命令(比如lint)执行完后再恢复, 所以若报错, 被删除的文件将**无法恢复**, 解决方案有如下几种:
+  1. 确保未暂存的文件里没有新增的, 或者在编辑器打开或手动备份新增的文件用以恢复. 最好能控制好提交粒度, 全部暂存后再提交
+  2. 先执行 `yarn lint` 等相关命令, 待消除所有错误后, 再提交
+  3. 确保开发时无相关报错(浏览器中页面遮罩显示错误, 控制台打印警告), 特别注意 `console.log` , `debugger` 和 `定义但未使用变量`, 只在开发环境是警告, 其他都是错误
 
 ### 问题及思考
 

@@ -4,7 +4,7 @@
  * @Date: 2019-06-18 15:58:46
  */
 import Vue from 'vue'
-import Router, { RouterOptions, RouteConfig, Route } from 'vue-router'
+import Router, { RouterOptions, RouteConfig, Route, Location } from 'vue-router'
 
 import configRoute from './config/route'
 import { cancel } from '@/utils/ajax'
@@ -105,7 +105,7 @@ router.beforeEach((to, from, next) => {
       // 重定向并刷新
       if ((to = router.resolve(temp).route).matched.length) {
         refreshRoute(to)
-        next(to) // 还是要再进一次beforeEach, 虽然都给解析出来了┐(: ´ ゞ｀)┌
+        next(to as Location) // 还是要再进一次beforeEach, 虽然都给解析出来了┐(: ´ ゞ｀)┌
       }
     }
     return

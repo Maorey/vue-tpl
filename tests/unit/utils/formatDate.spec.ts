@@ -45,6 +45,18 @@ describe('@/utils/formatDate: 日期格式化/反格式化', () => {
         '今天是2019年07月07日星期日 现在是下午05点17分11秒111毫秒',
       ])
     ).toBe(true)
+    expect(
+      isEqual(getWeek(DATE, FORMAT, true), [
+        '今天是2019年07月01日星期一 现在是下午05点17分11秒111毫秒',
+        RESULT,
+      ])
+    ).toBe(true)
+    expect(
+      isEqual(getWeek(RESULT, FORMAT, true), [
+        '今天是2019年07月01日星期一 现在是下午05点17分11秒111毫秒',
+        RESULT,
+      ])
+    ).toBe(true)
   })
 
   it('getMonth 获取本月起止日期字符串数组', () => {
@@ -54,6 +66,18 @@ describe('@/utils/formatDate: 日期格式化/反格式化', () => {
         '今天是2019年07月31日星期三 现在是下午05点17分11秒111毫秒',
       ])
     ).toBe(true)
+    expect(
+      isEqual(getMonth(DATE, FORMAT, true), [
+        '今天是2019年07月01日星期一 现在是下午05点17分11秒111毫秒',
+        RESULT,
+      ])
+    ).toBe(true)
+    expect(
+      isEqual(getMonth(RESULT, FORMAT, true), [
+        '今天是2019年07月01日星期一 现在是下午05点17分11秒111毫秒',
+        RESULT,
+      ])
+    ).toBe(true)
   })
 
   it('getYear 获取今年起止日期字符串数组', () => {
@@ -61,6 +85,18 @@ describe('@/utils/formatDate: 日期格式化/反格式化', () => {
       isEqual(getYear(DATE, FORMAT), [
         '今天是2019年01月01日星期二 现在是下午05点17分11秒111毫秒',
         '今天是2019年12月31日星期二 现在是下午05点17分11秒111毫秒',
+      ])
+    ).toBe(true)
+    expect(
+      isEqual(getYear(DATE, FORMAT, true), [
+        '今天是2019年01月01日星期二 现在是下午05点17分11秒111毫秒',
+        RESULT,
+      ])
+    ).toBe(true)
+    expect(
+      isEqual(getYear(RESULT, FORMAT, true), [
+        '今天是2019年01月01日星期二 现在是下午05点17分11秒111毫秒',
+        RESULT,
       ])
     ).toBe(true)
   })

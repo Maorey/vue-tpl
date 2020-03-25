@@ -12,6 +12,7 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 // import STYLE from './index.module.scss'
 import Info from './Info'
 import Loading from './Loading'
+import { VNode } from 'vue/types/umd'
 
 /// 常量(UPPER_CASE),单例/变量(camelCase),函数(无副作用,camelCase) ///
 // const ModuleOne: any = getAsync(() =>
@@ -63,13 +64,23 @@ export default class extends Vue {
   @Prop() readonly components?: IObject<Comp>
   /// [data] (attr: string = '响应式属性' // 除了 undefined) ///
   private is: component = status.loading
+  private isSleep = false // 是否失活/休眠
   /// 非响应式属性 (attr?: string // undefined) ///
-  private d?: any // 原始响应数据
-  private data?: any // 绑定数据
+  private $_response?: any // 原始响应数据
+  private $_data?: any // 绑定数据
+  private $_vnode?: VNode
   /// [computed] (get attr() {} set attr(){}) ///
   /// [LifeCycle] (private beforeCreate(){}/.../destroyed(){}) ///
   private created() {
     this.i()
+  }
+
+  private activated() {
+    this.isSleep = false
+  }
+
+  private deactivated() {
+    this.isSleep = true
   }
 
   /// [watch] (@Watch('attr') onAttrChange(val, oldVal) {}) ///
@@ -80,7 +91,7 @@ export default class extends Vue {
     // eslint-disable-next-line prefer-promise-reject-errors
     ;(this.get ? this.get() : Promise.reject())
       .then(data => {
-        this.d = data
+        this.$_response = data
         this.w()
       })
       .catch(err => {
@@ -94,19 +105,19 @@ export default class extends Vue {
   @Watch('filter')
   @Watch('components')
   private w() {
-    const data = this.d
+    const data = this.$_response
     if (data) {
       const DIC = this.components
       const tag = this.tag
       if (!this.filter) {
-        this.data = { props: { data } }
+        this.$_data = { props: { data } }
         this.is = (DIC && DIC[tag as string]) || tag
         return
       }
 
       const result = this.filter(data)
       if (result) {
-        this.data = { props: { data: result.data || result } }
+        this.$_data = { props: { data: result.data || result } }
         this.is = (DIC && DIC[result.comp as string]) || result.comp || tag
         return
       }
@@ -118,29 +129,36 @@ export default class extends Vue {
   // see: https://github.com/vuejs/jsx#installation
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private render(h: CreateElement) {
-    const Comp: any = this.is
+    const Comp: any = this.is // for 依赖收集
+    // for 依赖收集 失活返回缓存
+    if (this.isSleep) {
+      return this.$_vnode
+    }
+
     let temp: any
     switch (Comp) {
       case status.none:
         this.$emit('none')
-        return
+        return (this.$_vnode = undefined)
       case status.loading:
         this.$emit('loading')
-        return <Loading />
+        return (this.$_vnode = <Loading />)
       case status.empty:
         this.$emit('empty')
-        return <Info icon="el-icon-info" type="info" msg="empty" retry="" />
+        return (this.$_vnode = (
+          <Info icon="el-icon-info" type="info" msg="empty" retry="" />
+        ))
       case status.error:
         this.$emit('error')
-        return <Info on={{ $: this.i }} />
+        return (this.$_vnode = <Info on={{ $: this.i }} />)
       default:
         this.$emit('success')
-        return (
-          <Comp {...this.data}>
+        return (this.$_vnode = (
+          <Comp {...this.$_data}>
             {this.$slots.default ||
-              ((temp = this.$scopedSlots.default) && temp(this.data.props))}
+              ((temp = this.$scopedSlots.default) && temp(this.$_data.props))}
           </Comp>
-        )
+        ))
     }
   }
 }
