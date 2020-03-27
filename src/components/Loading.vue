@@ -9,15 +9,15 @@
       <svg viewBox="25 25 50 50">
         <!-- 背景圈 -->
         <circle
+          r="20"
           cx="50"
           cy="50"
-          r="20"
         />
         <!-- 前景圈（动画） -->
         <circle
+          r="20"
           cx="50"
           cy="50"
-          r="20"
         />
       </svg>
       <!-- 文字 -->
@@ -56,6 +56,8 @@ export default class extends Vue {
 
   svg {
     width: 100px;
+    background: url(~@/assets/logo.png) center no-repeat;
+    animation: hue 2.5s infinite;
   }
 
   circle {
@@ -67,13 +69,24 @@ export default class extends Vue {
     }
 
     &:last-child {
-      animation: dash 2.5s linear infinite;
+      animation: dash 2.5s infinite;
       stroke: $colorTheme;
       stroke-linecap: round;
     }
   }
 }
-// 转圈动画
+// 渐变
+@keyframes hue {
+  0% {
+    filter: hue-rotate(0);
+  }
+
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+// 转圈
 @keyframes dash {
   0% {
     stroke-dasharray: 0, 250%;

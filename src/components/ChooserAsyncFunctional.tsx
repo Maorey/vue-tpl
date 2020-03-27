@@ -11,6 +11,8 @@ import Vue, { Component, RenderContext, VNode } from 'vue'
 import Info from './Info'
 import Loading from './Loading'
 
+import { hasOwnProperty, isFn } from '@/utils'
+
 /// 常量(UPPER_CASE),单例/变量(camelCase),函数(无副作用,camelCase) ///
 // const ModuleOne: any = getAsync(() =>
 //  import(/* webpackChunkName: "ihOne" */ './ModuleOne')
@@ -111,7 +113,7 @@ function get(state: state) {
     })
     .catch(err => {
       state.i.i =
-        (typeof state.error === 'function' ? state.error(err) : state.error) ||
+        (isFn(state.error) ? (state.error as any)(err) : state.error) ||
         status.error
     })
 }
@@ -251,8 +253,7 @@ export default (context: RenderContext) => {
   const data = context.data
   const state = getState(
     temp,
-    // eslint-disable-next-line no-prototype-builtins
-    data.hasOwnProperty('key') ? data.key : (data.key = '')
+    hasOwnProperty(data, 'key') ? data.key : (data.key = '')
   )
 
   // situations to use VNode cache

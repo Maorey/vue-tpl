@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2020-01-02 16:13:36
  */
-import { CreateElement, Component as Comp } from 'vue'
+import { CreateElement, Component as Comp, VNode } from 'vue'
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
@@ -12,7 +12,8 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 // import STYLE from './index.module.scss'
 import Info from './Info'
 import Loading from './Loading'
-import { VNode } from 'vue/types/umd'
+
+import { isFn } from '@/utils'
 
 /// 常量(UPPER_CASE),单例/变量(camelCase),函数(无副作用,camelCase) ///
 // const ModuleOne: any = getAsync(() =>
@@ -96,7 +97,7 @@ export default class extends Vue {
       })
       .catch(err => {
         this.is =
-          (typeof this.error === 'function' ? this.error(err) : this.error) ||
+          (isFn(this.error) ? (this.error as any)(err) : this.error) ||
           status.error
       })
   }

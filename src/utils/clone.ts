@@ -3,6 +3,8 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  */
+import { hasOwnProperty, isObj, isArray, isFn } from '@/utils'
+
 /** 克隆过滤函数返回值
  */
 interface IClone {
@@ -57,12 +59,12 @@ function extend(
     tmp = filter && filter(key, targetValue, currentValue, source, target, deep)
     if (tmp) {
       tmp.jump || (source[key] = tmp.value) // 自定义拷贝
-    } else if (!targetValue || typeof targetValue !== 'object') {
+    } else if (!targetValue || !isObj(targetValue)) {
       source[key] = targetValue // 拷贝值
     } else {
       // 当前类型应与目标相同（数组/对象）
-      tmp = Array.isArray(targetValue) // 目标是否数组
-      Array.isArray(currentValue) === tmp || (currentValue = 0) // 类型不同
+      tmp = isArray(targetValue) // 目标是否数组
+      isArray(currentValue) === tmp || (currentValue = 0) // 类型不同
 
       source[key] = extend(
         currentValue || (tmp ? [] : {}),
@@ -85,7 +87,7 @@ function extend(
  */
 function clone(...args: any[]): any {
   let filter: Filter | undefined
-  typeof args[0] === 'function' && (filter = args.shift())
+  isFn(args[0]) && (filter = args.shift())
 
   let argsLength = args.length
 
@@ -97,7 +99,7 @@ function clone(...args: any[]): any {
   let index = 0
   while (index < argsLength) {
     tmp = args[index]
-    if (typeof tmp === 'object') {
+    if (isObj(tmp)) {
       if (!current) {
         current = tmp
       } else if (!target) {
@@ -116,7 +118,7 @@ function clone(...args: any[]): any {
   if (argsLength === 1) {
     // 一个参数时克隆当前对象
     target = current
-    current = Array.isArray(target) ? [] : {}
+    current = isArray(target) ? [] : {}
   }
 
   current && target && extend(current, target, filter, 0)
@@ -137,23 +139,17 @@ function clone(...args: any[]): any {
  * @returns {Object|Array} 原target对象
  */
 function setDefault(target: IObject | any[], defaultObject: IObject | any[]) {
-  const TYPE = 'object'
-  // if (typeof target !== TYPE || typeof defaultObject !== TYPE) {
-  //   return target
-  // }
   let key
   let temp
   for (key in defaultObject) {
-    // eslint-disable-next-line no-prototype-builtins
-    if (target.hasOwnProperty(key)) {
-      typeof (temp = target[key]) === TYPE &&
-        typeof (key = defaultObject[key]) === TYPE &&
+    if (hasOwnProperty(target, key)) {
+      isObj((temp = target[key])) &&
+        isObj((key = defaultObject[key])) &&
         // a ^ b 同真(1)同假(0)返回0
-        Array.isArray(temp) === Array.isArray(key) &&
+        isArray(temp) === isArray(key) &&
         setDefault(temp, key)
     } else {
-      target[key] =
-        typeof (temp = defaultObject[key]) === TYPE ? clone(temp) : temp
+      target[key] = isObj((temp = defaultObject[key])) ? clone(temp) : temp
     }
   }
 
