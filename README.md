@@ -141,6 +141,26 @@ yarn test:unit # --watch : 跟踪文件变化
 yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 ```
 
+可配置和使用指定路由配置(请使用别名引用路由配置)进行开发/构建:
+  - 配置 [.env](.env) `ROUTES`, 示例:
+
+  ```bash
+  ROUTES=[["@iRoute", "src/pages/index/config/route", ["iFoo", "iBar"]], ["@oRoute", "src/pages/other/config/route", ["oFoo", "oBar"]]]
+  ```
+
+  - `route` 目录结构
+
+  ```bash
+  ├── route # 全部路由配置文件夹(未指定时默认)
+  ├── route.foo # 路由配置文件夹: foo
+  ├── route.bar # 路由配置文件夹: bar
+  # ...
+
+  yarn dev --iFoo # 只加载foo配置
+  yarn build --oBar # 只加载foo配置
+  yarn dev --iBar --oFoo # 若多个html入口, 每个入口支持指定一个配置
+  ```
+
 ## 说明及注意事项
 
 ### 目录结构

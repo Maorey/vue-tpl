@@ -38,6 +38,12 @@
       ],
       "@otherCom/*": [
         "src/pages/other/components/*"
+      ],
+      "@iRoute/*": [
+        "src/pages/index/config/route/*"
+      ],
+      "@oRoute/*": [
+        "src/pages/other/config/route/*"
       ]
     },
     "lib": [

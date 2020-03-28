@@ -6,7 +6,7 @@
 import Vue from 'vue'
 import Router, { RouterOptions, RouteConfig, Route, Location } from 'vue-router'
 
-import configRoute from './config/route'
+import configRoute from '@oRoute' // 使用别名
 import { cancel } from '@/utils/ajax'
 import getKey from '@/utils/getKey'
 
