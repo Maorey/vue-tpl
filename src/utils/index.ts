@@ -20,7 +20,7 @@ function hasOwnProperty(obj: any, key?: any) {
  * @returns String
  */
 function getType(value?: any): string {
-  value = Object.prototype.toString.call(value)
+  value = Object.prototype.toString.call(value) // [object type]
   return value.substring(8, value.length - 1).toLowerCase()
 }
 
@@ -139,7 +139,7 @@ function isFn(value?: any) {
   return typeof value === 'function'
 }
 
-/** 比较两个值是否相等 (对象和数组比较值)
+/** 比较两个值是否相等 (对象和数组比较值, 包括原型上可枚举属性, { a: undefined } 与 {} 视为相等)
  * @test true
  *
  * @param value 当前值
@@ -153,7 +153,31 @@ function isEqual(value?: any, target?: any): boolean {
     return false
   }
 
+  if (type === 'number') {
+    // if (value) {
+    //   return value === target
+    // }
+    // if (target) {
+    //   return false
+    // }
+    // if (isNaN(value)) {
+    //   return isNaN(target)
+    // }
+    // return 1 / value === 1 / target // 0 === -0 => false
+    return value
+      ? value === target
+      : target
+        ? false
+        : isNaN(value)
+          ? isNaN(target)
+          : 1 / value === 1 / target
+  }
+
   if (type === 'array') {
+    if (value === target) {
+      return true
+    }
+
     if ((type = value.length) !== target.length) {
       return false
     }
@@ -168,8 +192,11 @@ function isEqual(value?: any, target?: any): boolean {
   }
 
   if (type === 'object') {
-    // { a: undefined } {} 视为相同
-    const KEYS: IObject<1> = {} // for 性能
+    if (value === target) {
+      return true
+    }
+
+    const KEYS: IObject<1> = {} // 先比较Object.keys()长度不太划算
     for (type in value) {
       KEYS[type] = 1
       if (!isEqual(value[type], target[type])) {
@@ -178,17 +205,14 @@ function isEqual(value?: any, target?: any): boolean {
     }
     for (type in target) {
       if (!KEYS[type]) {
-        KEYS[type] = 1
-        if (!isEqual(value[type], target[type])) {
-          return false
-        }
+        return false
       }
     }
 
     return true
   }
 
-  return isNaN(value) ? isNaN(target) : value === target
+  return value === target
 }
 
 export {

@@ -36,8 +36,11 @@ describe('@/utils: 工具函数', () => {
     expect(getType(1n)).toBe('bigint')
     expect(getType({})).toBe('object')
     expect(getType([])).toBe('array')
-    expect(getType(Object)).toBe('function')
     expect(getType(() => {})).toBe('function')
+    expect(getType(Object)).toBe('function')
+    expect(getType(/test/)).toBe('regexp')
+    expect(getType(Math)).toBe('math')
+    // ...
   })
 
   it('isNumber: 是否数字', () => {
@@ -102,11 +105,13 @@ describe('@/utils: 工具函数', () => {
 
   it('isEqual: 两个值是否相等', () => {
     expect(isEqual()).toBe(true)
-    expect(isEqual(0)).toBe(false)
-    expect(isEqual(0, '')).toBe(false)
+    expect(isEqual('')).toBe(false)
+    expect(isEqual('', 0)).toBe(false)
+    expect(isEqual(0, 0)).toBe(true)
+    expect(isEqual(0, -0)).toBe(false)
     expect(isEqual(NaN, NaN)).toBe(true)
-    expect(isEqual(Object, Object)).toBe(true)
     expect(isEqual({}, {})).toBe(true)
+    expect(isEqual(Object, Object)).toBe(true)
     expect(isEqual({ a: 0 }, { a: '0' })).toBe(false)
     expect(isEqual({ test: undefined, a: 0 }, { a: 0 })).toBe(true)
     expect(isEqual({ a: 0, b: { c: [0] } }, { a: 0, b: { c: 0 } })).toBe(false)
