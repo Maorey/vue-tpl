@@ -56,6 +56,7 @@ module.exports = {
     curly: 'error', // 控制语句不允许省略大括号
     'no-lonely-if': 'error',
     'no-dupe-else-if': 'error',
+    'no-empty-function': 'warn',
     'no-debugger': ENV,
     'no-console': [ENV, { allow: ['info', 'warn', 'error'] }],
     camelcase: ['error', { allow: ['^\\$_', '^_\\$'] }],
