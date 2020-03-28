@@ -1,11 +1,11 @@
 /*
- * @Description: 深克隆/扩展 对象/数组(无其他原型和循环引用) 测试
+ * @Description: 深克隆/扩展 对象/数组(不考虑原型和循环引用) 测试
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:17:12
  */
-import clone from '@/utils/clone'
+import clone, { setDefault } from '@/utils/clone'
 
-describe('@/utils/clone: 深克隆/扩展 对象/数组(无其他原型和循环引用)', () => {
+describe('@/utils/clone: 深克隆/扩展 对象/数组(不考虑原型和循环引用)', () => {
   test('clone', () => {
     const testObject = {
       a: 0,
@@ -56,5 +56,30 @@ describe('@/utils/clone: 深克隆/扩展 对象/数组(无其他原型和循环
       f: { a: 12 },
       g: ['i', 'j'],
     })
+  })
+
+  test('setDefault', () => {
+    const defaults = {
+      a: 0,
+      b: 'a',
+      c: null,
+      d: { a: 1, b: 'b', c: { a: 2 }, d: [{ a: 3 }, 4, [5, 'c']] },
+      e: [6, 'd', null, [7, 'e'], { a: 8 }],
+    }
+    let result = setDefault({}, defaults)
+    expect(result).toEqual(defaults)
+    expect(result).not.toBe(defaults)
+    expect(result.d.d[0]).not.toBe(defaults.d.d[0])
+
+    result = setDefault({ d: null }, defaults)
+    expect(result).toEqual({
+      a: 0,
+      b: 'a',
+      c: null,
+      d: null,
+      e: [6, 'd', null, [7, 'e'], { a: 8 }],
+    })
+    expect(result).not.toBe(defaults)
+    expect(result.e[3]).not.toBe(defaults.e[3])
   })
 })
