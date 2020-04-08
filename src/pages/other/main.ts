@@ -45,12 +45,12 @@ import Scrollbar from 'element-ui/lib/scrollbar'
 import elDialogDragable from '@/libs/elDialogDragable'
 
 /// 全局样式 ///
-import '@/scss/icon.scss?skin='
-import '@/scss/transitions.scss?skin='
-import './scss/main.scss'
+import 'element-ui/lib/theme-chalk/base.css' // element-ui字体+过渡动画
+import '@/scss/base.scss?skin=' // 基础样式
+import './scss/main.scss' // 全局皮肤样式
 
 // hack: 不出现滚动条时不显示
-const options = Scrollbar.options || Scrollbar
+let options = Scrollbar.options || Scrollbar
 const created = options.components.Bar.created
 options.components.Bar.created = function() {
   created && created.apply(this, arguments)
@@ -59,7 +59,8 @@ options.components.Bar.created = function() {
   })
 }
 // hack: 表单重设初始值(initialValue)
-;(FormItem.options || FormItem).mounted = function() {
+options = FormItem.options || FormItem
+options.mounted = function() {
   if (this.prop) {
     this.dispatch('ElForm', 'el.form.addField', [this])
     Array.isArray((this.initialValue = this.fieldValue)) &&
@@ -67,7 +68,7 @@ options.components.Bar.created = function() {
     this.addValidateEvents()
   }
 }
-;(Form.options || Form).methods.setIni = function(model: IObject) {
+options.methods.setIni = function(model: IObject) {
   for (const field of this.fields) {
     field.initialValue = model[field.prop]
   }
@@ -163,7 +164,7 @@ setTimeout(() => {
   //   render: (h: CreateElement) => h(App),
   // }).$mount('#app')
   // hack: 省root组件
-  const options = App.options || App
+  options = App.options || App
   options.store = store
   options.router = router
   new Vue(App).$mount('#app')

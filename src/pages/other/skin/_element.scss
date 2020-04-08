@@ -6,9 +6,6 @@
 /* stylelint-disable scss/dollar-variable-pattern */
 // see: https://github.com/ElemeFE/element/blob/dev/packages/theme-chalk/src/common/var.scss
 // or: node_modules/element-ui/packages/theme-chalk/src/common/var.scss
-/// Typography ///
-$--font-path: '~element-ui/lib/theme-chalk/fonts'; // icon 字体路径变量【必需】
-
 /// z-index ///
 $--index-normal: $zPanel;
 $--index-top: $zFixed;

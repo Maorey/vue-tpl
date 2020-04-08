@@ -69,7 +69,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ENV,
     '@typescript-eslint/no-var-requires': 0,
     '@typescript-eslint/no-explicit-any': 0,
-    '@typescript-eslint/no-empty-function': 'warn',
+    '@typescript-eslint/no-empty-function': 0,
     '@typescript-eslint/no-empty-interface': 0,
     '@typescript-eslint/class-name-casing': 'error', // 类名 PascalCase
     '@typescript-eslint/no-use-before-define': [

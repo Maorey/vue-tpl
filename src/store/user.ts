@@ -78,7 +78,7 @@ class User extends VuexModule implements IUser {
 /** 关闭窗口前写入本地
  */
 window.addEventListener('beforeunload', () => {
-  local.set(CONFIG.token, USER_INFO)
+  local.set(CONFIG.token, USER_INFO) // 允许多个标签多个号挺好的
 })
 
 export default User

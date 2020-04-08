@@ -19,23 +19,29 @@ export interface IFile {
 /** 下载文件
  * @param {string} url 下载地址(GET)
  * @param {object} query 查询参数
+ * @param {string} name 指定文件名
  *
  * @returns {Promise<IFile>}
  */
-function download(url: string, query?: IObject) {
+function download(url: string, query?: IObject, name?: string) {
   const source = CancelToken.source()
   const promise = get(url, query, {
     responseType: 'blob',
+    // contentType: 'application/octet-stream;charset=UTF-8',
     cancelToken: source.token,
   }).then(res => {
-    let name = res.headers['content-disposition'].split(';')
-    name = name[name.length - 1].split('=')
-    name = name[name.length - 1]
-
+    if (!name) {
+      name = res.headers['content-disposition'].split(';')
+      name = (name as any)[(name as any).length - 1].split('=')
+      name = (name as any)[(name as any).length - 1]
+    }
+    let type
+    type = (name as string).split('.')
+    type = type[type.length - 1]
     return {
       name,
-      type: res.type,
-      src: window.URL.createObjectURL(new Blob([res], { type: res.type })),
+      type,
+      src: window.URL.createObjectURL(new Blob([res.data], { type })),
     }
   }) as IPromiseCancelable<IFile>
   promise.cancel = source.cancel

@@ -4,10 +4,6 @@
 @import '~@/scss/reset';
 
 // [element-ui] ///
-@import '~element-ui/packages/theme-chalk/src/base'; // 含字体图标和过渡动画
-// 条件隐藏
-// https://element.eleme.cn/#/zh-CN/component/layout#ji-yu-duan-dian-de-yin-cang-lei
-// @import '~element-ui/lib/theme-chalk/display';
 // 布局
 @import '~element-ui/packages/theme-chalk/src/row';
 @import '~element-ui/packages/theme-chalk/src/col';
@@ -132,4 +128,5 @@
 .el-popover,
 .el-tooltip__popper {
   z-index: $zTop !important;
+  max-width: 66%;
 }

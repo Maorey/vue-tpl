@@ -606,6 +606,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 - 路由视图不需要被缓存的, 可以在自己的`deactivated`钩子销毁实例`this.$destroy()`
 - 所有响应路由变化的可缓存组件(不缓存如上), 应确保失活/休眠后不再响应路由变化, 推荐使用 `@com/ChooserAsyncFunctional` 包裹
+- 为避免渲染错误, 请务必为<b style="color: red;">循环创建的组件</b>**加上 `key`**, 特别是 `tsx/ts/jsx/js` 中
 
 ### 配置和优化
 
@@ -702,6 +703,8 @@ http {
     add_header X-Frame-Options DENY; # 减少点击劫持
     add_header X-Content-Type-Options nosniff; # 禁止服务器自动解析资源类型
     add_header X-Xss-Protection 1; # 防XSS攻擊
+
+    client_max_body_size 10m; # 请求体大小限制 for上传文件
 
     # error_page 500 502 503 504  /50x.html; # 错误页
     # error_page 404              /404.html; # 未知页

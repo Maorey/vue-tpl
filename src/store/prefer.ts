@@ -85,7 +85,7 @@ window.addEventListener('beforeunload', () => {
   for (const fn of hook._h) {
     fn(PREFER)
   }
-  local.set(CONFIG.prefer, PREFER)
+  local.set(CONFIG.prefer, PREFER) // 允许多个标签多个号挺好的
 })
 
 export { Prefer as default, PREFER, hook }

@@ -37,13 +37,15 @@ export default class extends Vue {
   @Prop() readonly href!: string
   /** 查询参数 */
   @Prop() readonly query?: IObject
+  /** 文件名 */
+  @Prop() readonly fileName?: string
   /** 显示文字 */
   @Prop() readonly text?: string
   /** 禁用 */
   @Prop() readonly disabled?: boolean
   /** 类型 */
   @Prop({ default: 'primary' }) readonly type?: string
-  /** 图表 */
+  /** 图标 */
   @Prop({ default: 'el-icon-document' }) readonly icon?: string
   /// [data] (attr: string = '响应式属性' // 除了 undefined) ///
   private status: status = status.init
@@ -83,7 +85,7 @@ export default class extends Vue {
     const href = this.href
     if (href) {
       this.status = status.loading
-      download(href, this.query)
+      download(href, this.query, this.fileName)
         .then(res => {
           this.$_file && free(this.$_file)
           this.$_file = res

@@ -1,0 +1,16 @@
+/** 基础样式 */
+
+// @import './icon'; // 全局图标
+@import '~normalize.css'; // 浏览器样式重置 https://www.sass.hk/docs @import
+@import './transitions'; // 全局过渡动画
+
+/// element-ui 基础样式 ///
+// 字体图标scss默认会压缩成 utf-8 with BOM
+// stylelint-disable-next-line scss/dollar-variable-pattern
+// $--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+// 直接使用css
+// @import '~element-ui/packages/theme-chalk/src/base'; // 含字体图标和过渡动画
+// 条件隐藏
+// https://element.eleme.cn/#/zh-CN/component/layout#ji-yu-duan-dian-de-yin-cang-lei
+// @import '~element-ui/lib/theme-chalk/display';

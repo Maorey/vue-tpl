@@ -3,6 +3,7 @@
 node_modules
 dist
 compile
+
 .yarn
 .yarnrc
 yarn.lock
@@ -17,8 +18,10 @@ tests/e2e/screenshots
 .env.local
 .env.*.local
 
-# 日志文件
+# 日志文件(夹)
+.history
 *.log
+report.*.json
 
 # IDE
 .idea

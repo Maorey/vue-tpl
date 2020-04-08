@@ -124,7 +124,7 @@ declare module 'vue/types/vue' {
       spinner?: string
       background?: string
       customClass?: string
-    }) => void
+    }) => { close: () => void }
     $msgbox: IMsgbox
     $alert: IMsgbox['alert']
     $confirm: IMsgbox['confirm']
