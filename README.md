@@ -142,10 +142,10 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 ```
 
 可配置和使用指定路由配置(请使用别名引用路由配置)进行开发/构建:
-  - 配置 [.env](.env) `ROUTES`, 示例:
+  - 配置 [.env](.env) `_ROUTES`, 示例:
 
   ```bash
-  ROUTES=[["@iRoute", "src/pages/index/config/route", ["iFoo", "iBar"]], ["@oRoute", "src/pages/other/config/route", ["oFoo", "oBar"]]]
+  _ROUTES=[["@iRoute", "src/pages/index/config/route", ["iFoo", "iBar"]], ["@oRoute", "src/pages/other/config/route", ["oFoo", "oBar"]]]
   ```
 
   - `route` 目录结构

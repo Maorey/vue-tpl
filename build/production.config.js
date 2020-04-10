@@ -54,6 +54,7 @@ function plugin(config, ENV) {
       defer: true,
       skin: ENV.SKIN,
       runtime: ['c_', 'r_'],
+      banner: require('./banner')(ENV, config),
     },
   ])
   // 文件 gzip 压缩 https://webpack.docschina.org/plugins/compression-webpack-plugin/

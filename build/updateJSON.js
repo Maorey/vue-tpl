@@ -7,6 +7,55 @@ const fs = require('fs')
 const path = require('path')
 
 const REG_SPLIT = /\.(?!['"])/
+function isEqual(x, y) {
+  if (x === y) {
+    return x !== 0 || 1 / x === 1 / y // isEqual(0, -0) => false
+  }
+
+  // eslint-disable-next-line no-self-compare
+  if (x !== x && y !== y) {
+    return true // isEqual(NaN, NaN) => true
+  }
+
+  let temp // 工具人
+  if (Array.isArray(x)) {
+    if (!Array.isArray(y) || (temp = x.length) !== y.length) {
+      return false
+    }
+
+    while (temp--) {
+      if (!isEqual(x[temp], y[temp])) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  if (typeof x === 'object') {
+    if (typeof y !== 'object') {
+      return false // 先比较Object.keys()长度不太划算
+    }
+
+    const KEYS = {}
+    for (temp in x) {
+      if (!isEqual(x[temp], y[temp])) {
+        return false
+      }
+      KEYS[temp] = 1
+    }
+
+    for (temp in y) {
+      if (!KEYS[temp]) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  return false
+}
 
 /** 读取/更新json文件
  * @param {string} fileName 文件名(含路径)
@@ -42,11 +91,7 @@ module.exports = function(fileName, key, value) {
     return current
   }
 
-  if (
-    typeof value === 'object' && typeof current === 'object'
-      ? JSON.stringify(current) !== JSON.stringify(value)
-      : current !== value
-  ) {
+  if (!isEqual(current, value)) {
     parent[k] = value
     // 异步写
     fs.writeFile(

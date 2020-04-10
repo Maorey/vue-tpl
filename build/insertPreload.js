@@ -72,11 +72,13 @@ module.exports = class {
    * @param {Object} option 选项
    *  {
    *    runtime:String|Array<String>|RegExp 内联runtime(指定js文件)
+   *    strict:Boolean 内联脚本是否严格模式
    *    defer:Boolean 脚本是否defer
    *    async:Boolean 脚本是否async (和defer只能有一个)
    *    skin:String 默认皮肤({skin}@*.css)
    *    noPreload:Boolean 是否去掉 preload
    *    noPrefetch:Boolean 是否去掉 prefetch
+   *    banner:String|Function 添加横幅(比如版权注释/控制台打印信息等, 复用/新增<script>)
    *  }
    */
   constructor(option = {}) {
@@ -110,6 +112,8 @@ module.exports = class {
     /// preload & prefetch ///
     this._L = option.noPreload && 'preload'
     this._F = option.noPrefetch && 'prefetch'
+    this._B = option.banner
+    this._S = !option.strict && /['"]use\s+strict['"];?/gm
   }
 
   // https://webpack.docschina.org/api/plugins/
@@ -125,10 +129,10 @@ module.exports = class {
         )
     })
     /// inline-manifest ///
-    const PLUGIN2 = 'inline-manifest'
     const REG_RUNTIME = this._REG_RUNTIME
     if (REG_RUNTIME) {
       const MERGE = this._SA
+      const PLUGIN2 = 'inline-manifest'
       compiler.hooks.emit.tap(PLUGIN2, compilation => {
         for (const item of getAssetName(compilation.chunks, REG_RUNTIME)) {
           delete compilation.assets[item.file]
@@ -194,6 +198,42 @@ module.exports = class {
 
               assets.runtime = runtime.join('')
               cb(null, htmlPluginData)
+            }
+          )
+      })
+    }
+    /// banner ///
+    const BANNER = this._B
+    if (BANNER) {
+      const PLUGIN3 = 'banner'
+      const REG_STRICT = this._S
+      compiler.hooks.compilation.tap(PLUGIN3, compilation => {
+        compilation.hooks.htmlWebpackPluginAlterAssetTags &&
+          compilation.hooks.htmlWebpackPluginAlterAssetTags.tapAsync(
+            PLUGIN3,
+            (data, cb) => {
+              let banner = typeof BANNER === 'string' ? BANNER : BANNER(data)
+              banner &&
+                ['head', 'body'].forEach(section => {
+                  for (const tag of data[section]) {
+                    if (tag.innerHTML && tag.tagName === 'script') {
+                      REG_STRICT &&
+                        (tag.innerHTML = tag.innerHTML.replace(REG_STRICT, ''))
+                      if (banner) {
+                        tag.innerHTML = banner + tag.innerHTML
+                        banner = 0
+                      }
+                    }
+                  }
+                })
+              banner &&
+                data.body.unshift({
+                  tagName: 'script',
+                  closeTag: true,
+                  innerHTML: banner,
+                  attributes: { type: 'text/javascript' },
+                })
+              cb(null, data)
             }
           )
       })

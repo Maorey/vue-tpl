@@ -1,4 +1,5 @@
 /** 工具函数 */
+import { VueConstructor } from 'vue'
 
 /** 对象自身是否存在指定属性 (查找原型链请用 key in obj 判断)
  * @test true
@@ -223,6 +224,33 @@ function isEqual(x?: any, y?: any): boolean {
   return false
 }
 
+/** 开发环境处理
+ * @param Vue
+ */
+function dev(Vue: VueConstructor) {
+  // 在浏览器开发工具的性能/时间线面板中启用Vue组件性能追踪 && 更友好的组件名(vue-devtool)
+  ;(Vue.config.performance = process.env.NODE_ENV === 'development') &&
+    Vue.mixin({
+      beforeCreate() {
+        let options
+        options = this.$options
+        options ||
+          ((options = this.$vnode) &&
+            (options = options.componentOptions) &&
+            (options = options.Ctor) &&
+            (options = (options as any).options))
+
+        // 匿名组件就不处理了 vue-devtool自己找 $vm0.$options.__file
+        if (options && options.__file && /^default/i.test(options.name)) {
+          const result = /(?:[\\/]([^\\/]+)[\\/])?([^\\/]+)(?:[\\/]index)?\.\w+/.exec(
+            options.__file
+          )
+          result && (options.name = result[1] + result[2])
+        }
+      },
+    })
+}
+
 export {
   hasOwnProperty,
   getType,
@@ -239,4 +267,5 @@ export {
   isArray,
   isFn,
   isEqual,
+  dev,
 }
