@@ -11,7 +11,7 @@ import Vue, { Component, RenderContext, VNode } from 'vue'
 import Info from './Info'
 import Loading from './Loading'
 
-import { hasOwnProperty, isFn } from '@/utils'
+import { hasOwnProperty, isFn, setHook } from '@/utils'
 
 /// 常量(UPPER_CASE),单例/变量(camelCase),函数(无副作用,camelCase) ///
 // const ModuleOne: any = getAsync(() =>
@@ -28,7 +28,7 @@ export const enum status {
 }
 export type component = status | string | Component
 export type filter = (data: any) => { data: any; comp: component } | void
-type state = {
+interface IState {
   /// props ///
   /** 未匹配到任何组件但有数据时使用的组件[默认‘div’] 若字典存在, tag为字符串, 则优先从字典取
    */
@@ -44,7 +44,7 @@ type state = {
   error?: status | ((err: Error) => component)
   /** 组件字典 当filter返回string时即从字典取对应组件
    */
-  components?: IObject<Component>
+  components?: { [name: string]: Component }
   /** 类似 v-once, 默认 false
    */
   once?: boolean
@@ -80,7 +80,7 @@ type state = {
   c?: component
 }
 
-function watch(state: state) {
+function watch(state: IState) {
   const data = state.o
   const DEFAULT_TAG = 'div'
   if (data) {
@@ -103,7 +103,7 @@ function watch(state: state) {
 
   state.i.i = status.empty
 }
-function get(state: state) {
+function get(state: IState) {
   state.i.i = status.loading
   // eslint-disable-next-line prefer-promise-reject-errors
   ;(state.get ? state.get() : Promise.reject())
@@ -127,14 +127,14 @@ const DIC_PROPS = {
   tag: 1,
   components: 1,
 }
-const DIC_EVENTS: IObject<status> = {
+const DIC_EVENTS = {
   none: status.none,
   loading: status.loading,
   error: status.error,
   empty: status.empty,
   success: status.success,
 }
-function init(state: state, context: RenderContext) {
+function init(state: IState, context: RenderContext) {
   const {
     props,
     data: { attrs = {}, on = {} },
@@ -157,7 +157,7 @@ function init(state: state, context: RenderContext) {
 
   /// on ///
   for (prop in DIC_EVENTS) {
-    state.f[DIC_EVENTS[prop]] = on[prop]
+    state.f[DIC_EVENTS[prop as keyof typeof DIC_EVENTS] as status] = on[prop]
   }
 
   if (isSame) {
@@ -172,13 +172,14 @@ function init(state: state, context: RenderContext) {
 
 const activated = 'hook:activated'
 const deactivated = 'hook:deactivated'
+const destroyed = 'hook:destroyed'
 function getState(vm: Vue, key: any) {
   const CACHE = (vm as any)._$c || ((vm as any)._$c = {})
-  let state: state = CACHE[key]
+  let state: IState = CACHE[key]
   if (!state) {
     state = CACHE[key] = {
       f: {},
-      i: Vue.observable({ i: status.loading, d: 0 } as state['i']),
+      i: Vue.observable({ i: status.loading, d: 0 as 0 | 1 }),
       h: {
         $: () => {
           get(state)
@@ -195,24 +196,14 @@ function getState(vm: Vue, key: any) {
     // LifeCycle hooks for parent
     vm.$on(activated, state.h.a)
     vm.$on(deactivated, state.h.d)
-    vm.$on('hook:destroyed', () => {
+    vm.$on(destroyed, () => {
       delete CACHE[key]
     })
   }
 
   return state
 }
-function hook(on: IObject<Function | Function[]>, hook: string, fn: Function) {
-  if (!on[hook]) {
-    on[hook] = fn
-  } else if (Array.isArray(on[hook])) {
-    ;(hook = on[hook] as any).includes(fn) || (hook as any).push(fn)
-  } else if (on[hook] !== fn) {
-    on[hook] = [on[hook] as Function, fn]
-  }
-}
-
-function call(hooks: state['f'][status], context: RenderContext) {
+function call(hooks: IState['f'][status], context: RenderContext) {
   if (!hooks) {
     return
   }
@@ -226,18 +217,27 @@ function call(hooks: state['f'][status], context: RenderContext) {
   }
 }
 
+const DEFAULT_KEY = String.fromCharCode(0)
+const DIC_SLOT = {
+  [status.none]: 'none',
+  [status.loading]: 'loading',
+  [status.error]: 'error',
+  [status.empty]: 'empty',
+}
 /** 异步选择器组件(functional), 最终渲染组件将得到一个prop: data, 即异步结果
  *  【相同父组件(functional当然不算)存在多个选择器时, 必须提供key作为唯一标识】
  *
- *  props: 见: type state 注释 【注意】: get/error 变化时会重新请求
+ *  props: 见: interface state 注释 【注意】: get/error 变化时会重新请求
  *
  *  events: 见: const enum status 键值
  *
- *  slots: 支持默认插槽/默认作用域插槽【二选一】(二者都有时无法确定顺序, 故)
+ *  slots: 见: const enum status 键值, 支持对应作用域插槽/插槽【二选一】作用域插槽优先(二者都有时无法确定顺序, 故)
  *
  *  示例:
  *  <template>
  *    <ChooserAsyncFunctional :key="key" :get="get" @error="handleError">
+ *      <template #none>啥也没有</template>
+ *      <!-- 同#success -->
  *      <template #default="{ data }">
  *        <textarea :value="JSON.stringify(data)" />
  *      </template>
@@ -249,21 +249,22 @@ function call(hooks: state['f'][status], context: RenderContext) {
 export default (context: RenderContext) => {
   // identify/mark this functional component by/to parent._$c use key
   let temp // 工具人
+  let data // 工具人
   temp = context.parent
-  const data = context.data
+  data = context.data
   const state = getState(
     temp,
-    hasOwnProperty(data, 'key') ? data.key : (data.key = '')
+    hasOwnProperty(data, 'key') ? data.key : (data.key = DEFAULT_KEY)
   )
 
   // situations to use VNode cache
   if (state.i.d || (temp.$el && !temp.$el.parentNode)) {
-    return state.n // 父组件失活/休眠等
+    return state.n // 父/此组件失活等
   }
 
   // init state with diff
   temp = init(state, context)
-  const Comp: any = state.i.i // 收集依赖
+  let Comp: any = state.i.i
   if (temp && Comp === state.c) {
     return state.n // once & 自身未变化
   }
@@ -271,22 +272,39 @@ export default (context: RenderContext) => {
   // LifeCycle hooks for Comp & emit events
   state.c = Comp
   temp = data.on || (data.on = {})
-  hook(temp, activated, state.h.a)
-  hook(temp, deactivated, state.h.d)
+  temp.$ = state.h.$ // reload
+  setHook(temp, activated, state.h.a)
+  setHook(temp, deactivated, state.h.d)
   call(state.f[Comp as status] || state.f[status.success], context)
 
   // save & return VNode
+  let slot
+  if ((slot = DIC_SLOT[Comp as keyof typeof DIC_SLOT])) {
+    // scopedSlots first
+    slot = context.scopedSlots[slot]
+      ? context.scopedSlots[slot](state.d)
+      : context.slots()[slot]
+    if (slot && slot.length) {
+      data = data.key + Comp
+      Comp = state.tag
+      return (state.n = (
+        <Comp key={data} on={temp}>
+          {slot}
+        </Comp>
+      ))
+    }
+  }
   switch (Comp) {
     case status.none:
       return (state.n = (
-        <i key={data.key + 'w'} style="display:none" on={temp} />
+        <i key={data.key + Comp} style="display:none" on={temp} />
       ))
     case status.loading:
-      return (state.n = <Loading key={data.key + 'x'} on={temp} />)
+      return (state.n = <Loading key={data.key + Comp} on={temp} />)
     case status.empty:
       return (state.n = (
         <Info
-          key={data.key + 'y'}
+          key={data.key + Comp}
           icon="el-icon-info"
           type="info"
           msg="empty"
@@ -295,16 +313,20 @@ export default (context: RenderContext) => {
         />
       ))
     case status.error:
-      temp.$ = state.h.$ // reload
-      return (state.n = <Info key={data.key + 'z'} on={temp} />)
+      return (state.n = <Info key={data.key + Comp} on={temp} />)
     default:
-      // add props
+      // add props: data
       data.props = context.props
       data.props.data = state.d.data
 
-      temp = context.scopedSlots.default // scopedSlots first
+      slot = context.scopedSlots
+      slot = slot.success || slot.default
       return (state.n = (
-        <Comp {...data}>{temp ? temp(state.d) : context.slots().default}</Comp>
+        <Comp {...data}>
+          {slot
+            ? slot(state.d)
+            : (slot = context.slots()).success || slot.default}
+        </Comp>
       ))
   }
 }

@@ -310,6 +310,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - Vue实例**私有属性**命名规则(避免 [属性名](https://cn.vuejs.org/v2/style-guide/#私有属性名-必要) 冲突):
   - `$_` 实例命名空间(在保证易维护的前提下可以使用单字母, 但应尽量避免)
   - `_$` **全局/跨组件/hack**命名空间, 命名前应**先全局搜索**是否有重复
+  - `/^[$_]+_$/` 注入**vue data 选项**命名空间应满足该正则, 即以`_`结尾(因为以`$_`其中一个字符开头的Vue不会劫持), 命名前应**先全局搜索**是否有重复
 
 - 除了以下样式可以使用全局:
 
@@ -604,8 +605,8 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   // ...
   ```
 
-- 路由视图不需要被缓存的, 可以在自己的`deactivated`钩子销毁实例`this.$destroy()`
-- 所有响应路由变化的可缓存组件(不缓存如上), 应确保失活/休眠后不再响应路由变化, 推荐使用 `@com/ChooserAsyncFunctional` 包裹
+- 所有视图组件可接收props:`route`代替`this.$route`, 区别是: **只在首次进入当前视图或当前视图url发生变化时改变**
+- 路由视图不需要被缓存的, 可以在`deactivated`钩子销毁实例(`this.$destroy()`)或者`activated`钩子进行更新
 - 为避免渲染错误, 请务必为<b style="color: red;">循环创建的组件</b>**加上 `key`**, 特别是 `tsx/ts/jsx/js` 中
 
 ### 配置和优化

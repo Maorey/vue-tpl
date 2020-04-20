@@ -14,6 +14,8 @@ export interface IFile {
   name: string
   /** 文件类型 */
   type: string
+  /** 文件大小 */
+  size: number
 }
 
 /** 下载文件
@@ -35,16 +37,22 @@ function download(url: string, query?: IObject, name?: string) {
       name = (name as any)[(name as any).length - 1].split('=')
       name = (name as any)[(name as any).length - 1]
     }
-    let type
-    type = (name as string).split('.')
-    type = type[type.length - 1]
+    const type = (name as string).split('.')
+
     return {
       name,
-      type,
-      src: window.URL.createObjectURL(new Blob([res.data], { type })),
+      size: res.data.size,
+      type: type[type.length - 1], // res.data.type, // application/x-msdownload
+      src: window.URL.createObjectURL(res.data),
     }
   }) as IPromiseCancelable<IFile>
-  promise.cancel = source.cancel
+  promise.cancel = (message?: string) => {
+    if (source.cancel) {
+      console.warn(message || '取消下载:', url, query, name)
+      source.cancel(message)
+      ;(source as any).cancel = 0 // 只取消一次
+    }
+  }
 
   return promise
 }

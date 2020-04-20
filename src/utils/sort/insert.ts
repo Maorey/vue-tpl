@@ -147,7 +147,7 @@ function bubble<T>(array: T[], a: number, b: number): T[] {
  */
 function insertSortBinary<T>(
   array: T[],
-  compare: Compare = ASC,
+  compare: Compare<T> = ASC,
   start?: number,
   end?: number
 ): T[] {

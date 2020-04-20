@@ -6,27 +6,18 @@
  */
 import { CreateElement, VNode } from 'vue'
 // see: https://github.com/kaorun343/vue-property-decorator
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 
 /// [import] vue组件,其他,CSS Module ///
 // import { getAsync } from '@/utils/highOrder'
 // import STYLE from './index.module.scss'
 import ElLink from 'element-ui/lib/link'
-
-import { isEqual } from '@/utils'
-import { download, free, IFile, save } from '@/utils/downloader'
+import storeFile, { STATE, ITask } from '@/store/file'
 
 /// 常量(UPPER_CASE),单例/变量(camelCase),函数(无副作用,camelCase) ///
 // const ModuleOne: any = getAsync(() =>
 //  import(/* webpackChunkName: "ihOne" */ './ModuleOne')
 // )
-const enum status {
-  init = 0,
-  loading = 1,
-  error = 2,
-  success = 3,
-}
-const ALIVE = 30 * 1000 // 下载的文件缓存 30s
 
 /// 选项 name,directives,filters,extends,mixins ///
 @Component
@@ -39,21 +30,41 @@ export default class extends Vue {
   @Prop() readonly query?: IObject
   /** 文件名 */
   @Prop() readonly fileName?: string
-  /** 显示文字 */
+  /** 显示文字(文件名, 与默认slot二选一) */
   @Prop() readonly text?: string
-  /** 禁用 */
+  /** 是否禁用 */
   @Prop() readonly disabled?: boolean
-  /** 类型 */
-  @Prop({ default: 'primary' }) readonly type?: string
-  /** 图标 */
-  @Prop({ default: 'el-icon-document' }) readonly icon?: string
+  /** 图标(TODO: 默认取文件名后缀) */
+  @Prop({ default: 'el-icon-document' }) readonly icon!: string
   /// [data] (attr: string = '响应式属性' // 除了 undefined) ///
-  private status: status = status.init
   private isSleep = false // 是否失活/休眠
+  private isDel = 0
   /// 非响应式属性 (attr?: string // undefined) ///
-  private $_file?: IFile
   private $_vnode?: VNode
   /// [computed] (get attr() {} set attr(){}) ///
+  /** 【必须重写】文件管理数据仓库 */
+  protected get store(): storeFile {
+    throw new Error('File: 必须重写store以提供文件管理数据仓库!')
+  }
+
+  protected get task() {
+    let task: any = this.isDel
+    this.store.ADD_TASK({
+      task: {
+        task: {
+          url: this.href,
+          query: this.query,
+          name: this.fileName,
+        },
+        state: STATE.pause,
+      },
+      callback(t) {
+        task = t
+      },
+    })
+    return task as ITask
+  }
+
   /// [LifeCycle] (private beforeCreate(){}/.../destroyed(){}) ///
   private activated() {
     this.isSleep = false
@@ -63,83 +74,85 @@ export default class extends Vue {
     this.isSleep = true
   }
 
-  private beforeDestroy() {
-    this.$_file && free(this.$_file)
-  }
-
   /// [watch] (@Watch('attr') onAttrChange(val, oldVal) {}) ///
-  @Watch('href')
-  @Watch('query')
-  private reset(value: any, old: any) {
-    // diff
-    if (old && isEqual(value, old)) {
-      return
-    }
-
-    this.status = status.init
-    this.$_file && free(this.$_file)
-  }
-
   /// [methods] (method(){}) ///
-  private load() {
-    const href = this.href
-    if (href) {
-      this.status = status.loading
-      download(href, this.query, this.fileName)
-        .then(res => {
-          this.$_file && free(this.$_file)
-          this.$_file = res
-          this.status = status.success
-          this.save()
-          setTimeout(this.reset.bind(this), ALIVE)
-        })
-        .catch(() => {
-          this.status = status.error
-        })
-    }
+  protected load() {
+    this.store.SET_STATE({
+      task: this.task as ITask,
+      state: STATE.loading,
+    })
   }
 
-  private save() {
-    save(this.$_file as IFile)
+  protected save() {
+    this.store.SAVE(this.task as ITask)
+  }
+
+  protected reLoad() {
+    this.isDel++
   }
 
   // see: https://github.com/vuejs/jsx#installation
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private render(h: CreateElement) {
+  protected render(h: CreateElement) {
     if (this.isSleep) {
       return this.$_vnode
     }
 
-    // 依赖收集
-    switch (this.status) {
-      case status.loading:
+    const text = this.text || this.$slots.default
+    const icon = this.icon // TODO: 未指定图标时根据文件名后缀设置图标
+
+    switch (this.task.state) {
+      case STATE.del:
         return (this.$_vnode = (
-          <ElLink disabled type={this.type} icon="el-icon-loading">
-            {this.text}
-            {this.$slots.default}
+          <ElLink
+            type="info"
+            icon={icon}
+            disabled={this.disabled}
+            on={{ click: this.reLoad }}
+          >
+            {text}
           </ElLink>
         ))
-      case status.error:
+      case STATE.wait:
+        return (this.$_vnode = (
+          <ElLink disabled type="warning" icon="el-icon-more-outline">
+            {text}
+          </ElLink>
+        ))
+      case STATE.loading:
+        return (this.$_vnode = (
+          <ElLink disabled type="success" icon="el-icon-loading">
+            {text}
+          </ElLink>
+        ))
+      case STATE.pause:
+        return (this.$_vnode = (
+          <ElLink
+            type="primary"
+            icon={icon}
+            disabled={this.disabled}
+            on={{ click: this.load }}
+          >
+            {text}
+          </ElLink>
+        ))
+      case STATE.failed:
         return (this.$_vnode = (
           <ElLink
             type="danger"
             icon="el-icon-refresh-right"
             on={{ click: this.load }}
           >
-            {this.text}
-            {this.$slots.default}
+            {text}
           </ElLink>
         ))
+      case STATE.success:
+        this.save() // 下载完成自动保存
+      // eslint-disable-next-line no-fallthrough
       default:
         return (this.$_vnode = (
-          <ElLink
-            type={this.type}
-            icon={this.icon}
-            disabled={this.disabled}
-            on={{ click: this.status === status.init ? this.load : this.save }}
-          >
-            {this.text}
-            {this.$slots.default}
+          <ElLink icon={icon} on={{ click: this.save }}>
+            {text}
           </ElLink>
         ))
     }

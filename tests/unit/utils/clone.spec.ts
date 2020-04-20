@@ -21,10 +21,7 @@ describe('@/utils/clone: 深克隆/扩展 对象/数组(不考虑原型和循环
     expect(clone(testObject)).toEqual(testObject)
 
     expect(
-      clone(
-        (key?: string) => (key === 'd' || key === 'e') && { jump: true },
-        testObject
-      )
+      clone((key: string) => key === 'd' || key === 'e', testObject)
     ).toEqual({ a: 0, b: 'a', c: null })
 
     expect(

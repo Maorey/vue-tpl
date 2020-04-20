@@ -13,12 +13,18 @@ import mergeSort from './merge' // 归并排序
  *
  * @returns {Number | Boolean | null | undefined} true/大于0数字: a在b后; 其它: a在b前
  */
-export type Compare = (a: any, b: any) => number | boolean | null | undefined
+export type Compare<T = any> = (
+  a: T,
+  b: T
+) => number | boolean | null | undefined
 
-/** 升序
- */
+/** 升序 */
 const ASC: Compare = (a: any, b: any) => a > b
 // const ASC: Compare = (a: any, b: any): 0 | boolean => (a === b ? 0 : a > b)
+
+/** 降序 */
+const DES: Compare = (a: any, b: any) => a < b
+// const DES: Compare = (a: any, b: any): 0 | boolean => (a === b ? 0 : a < b)
 
 /** 目标值是否基础类型
  * @param {Any} value 目标值
@@ -67,4 +73,4 @@ const ASC: Compare = (a: any, b: any) => a > b
 //   return array
 // }
 
-export { mergeSort as default, ASC }
+export { mergeSort as default, ASC, DES }

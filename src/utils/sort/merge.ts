@@ -186,7 +186,7 @@ function merge(left: number, middle: number, right: number) {
  */
 function mergeSort<T>(
   array: T[],
-  compare: Compare = ASC,
+  compare: Compare<T> = ASC,
   start?: number,
   end?: number
 ): T[] {

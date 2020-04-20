@@ -174,9 +174,9 @@ function request(
 
   cache = AXIOS.request(config)
     .then((res: any) => {
-      if (config._$c) {
-        res = config._$c // 自定义取消标记
-        config._$c = 0 // 只取消一次
+      if (config.$_) {
+        res = config.$_ // 自定义取消标记
+        config.$_ = 0 // 只取消一次
         throw res
       }
 
@@ -191,16 +191,16 @@ function request(
       requestQueue.remove(config.key) // 移除请求队列
       // if (isCancel(res)) {
       //   throw res
-      // } else if (config._$c) {
-      //   res = config._$c // 自定义取消标记
-      //   config._$c = 0 // 只取消一次
+      // } else if (config.$_) {
+      //   res = config.$_ // 自定义取消标记
+      //   config.$_ = 0 // 只取消一次
       //   throw res
       // } else {
       //   failed(res) // [请求拦截]
       // }
-      if (config._$c) {
-        res = config._$c // 自定义取消标记
-        config._$c = 0 // 只取消一次
+      if (config.$_) {
+        res = config.$_ // 自定义取消标记
+        config.$_ = 0 // 只取消一次
       }
       throw res
     })
@@ -210,8 +210,8 @@ function request(
   // 经济版取消(不执行then)
   config.cancelToken ||
     (cache.cancel = (reason = '取消请求') => {
-      config._$c = new Error(reason)
-      config._$c.__CANCEL__ = 1 // for AXIOS.isCancel
+      config.$_ = new Error(reason)
+      config.$_.__CANCEL__ = 1 // for AXIOS.isCancel
     })
 
   return requestQueue.set(config.key, cache)

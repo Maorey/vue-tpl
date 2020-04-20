@@ -35,14 +35,14 @@ class User extends VuexModule implements IUser {
   info = USER_INFO.info as IInfo | undefined
   menu = USER_INFO.menu as string[] | undefined
 
-  /// Mutation 无法调用/commit 必须通过Action ///
+  /// Mutation ///
   @Mutation
-  protected INFO(info?: IInfo) {
+  protected SET_INFO(info?: IInfo) {
     this.info = USER_INFO.info = info
   }
 
   @Mutation
-  protected MENU(menu?: string[]) {
+  protected SET_MENU(menu?: string[]) {
     this.menu = USER_INFO.menu = menu
   }
 
@@ -55,8 +55,8 @@ class User extends VuexModule implements IUser {
     const { data } = await login(formData)
 
     const context = this.context
-    context.commit('INFO', data.info)
-    context.commit('MENU', data.menu)
+    context.commit('SET_INFO', data.info)
+    context.commit('SET_MENU', data.menu)
     USER_INFO.token = data.token
   }
 
@@ -67,8 +67,8 @@ class User extends VuexModule implements IUser {
     await logout()
 
     const context = this.context
-    context.commit('INFO')
-    context.commit('MENU')
+    context.commit('SET_INFO')
+    context.commit('SET_MENU')
     USER_INFO.token = ''
   }
 

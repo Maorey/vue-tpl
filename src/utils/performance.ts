@@ -1,5 +1,12 @@
 /** 性能优化相关工具函数
  */
+import { hasOwnProperty, isNumber } from '.'
+
+type throttleDebounce = <T extends Function>(
+  fn: T,
+  interval?: number,
+  scope?: any
+) => T
 
 /** 节流 (指定时间间隔内最多执行一次函数 延迟执行)
  * @test true
@@ -10,11 +17,7 @@
  *
  * @returns {Function} 目标函数包装
  */
-function throttle<T extends Function>(
-  fn: T,
-  interval?: number,
-  scope?: any
-): T {
+const throttle = function(fn: Function, interval?: number, scope?: any) {
   let runable = true
   let _arg: any
   const FN = () => {
@@ -23,8 +26,7 @@ function throttle<T extends Function>(
   }
 
   const hasScope = arguments.length > 2
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return function(this: any, ..._args: any[]) {
+  return function(this: any) {
     hasScope || (scope = this)
     _arg = arguments
 
@@ -32,8 +34,8 @@ function throttle<T extends Function>(
       runable = false
       setTimeout(FN, interval)
     }
-  } as any
-}
+  }
+} as throttleDebounce
 /** 防抖 (限制函数最小执行间隔 延迟执行)
  * @test true
  *
@@ -43,11 +45,7 @@ function throttle<T extends Function>(
  *
  * @returns {Function} 目标函数包装
  */
-function debounce<T extends Function>(
-  fn: T,
-  interval?: number,
-  scope?: any
-): T {
+const debounce = function(fn: Function, interval?: number, scope?: any) {
   let _arg: any
   const FN = () => {
     fn.apply(scope, _arg)
@@ -55,15 +53,14 @@ function debounce<T extends Function>(
 
   let timer: number
   const hasScope = arguments.length > 2
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return function(this: any, ..._args: any[]) {
+  return function(this: any) {
     hasScope || (scope = this)
     _arg = arguments
 
     clearTimeout(timer)
     timer = setTimeout(FN, interval)
-  } as any
-}
+  }
+} as throttleDebounce
 
 /** 节流 (指定时间间隔内最多执行一次函数 立即执行)
  * @test true
@@ -74,26 +71,21 @@ function debounce<T extends Function>(
  *
  * @returns {Function} 目标函数包装
  */
-function throttleAtOnce<T extends Function>(
-  fn: T,
-  interval?: number,
-  scope?: any
-): T {
+const throttleAtOnce = function(fn: Function, interval?: number, scope?: any) {
   let runable = true
   const FN = () => {
     runable = true
   }
 
   const hasScope = arguments.length > 2
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return function(this: any, ..._args: any[]) {
+  return function(this: any) {
     if (runable) {
       runable = false
       fn.apply(hasScope ? scope : this, arguments)
       setTimeout(FN, interval)
     }
-  } as any
-}
+  }
+} as throttleDebounce
 /** 防抖 (限制函数最小执行间隔 立即执行)
  * @test true
  *
@@ -103,11 +95,7 @@ function throttleAtOnce<T extends Function>(
  *
  * @returns {Function} 目标函数包装
  */
-function debounceAtOnce<T extends Function>(
-  fn: T,
-  interval?: number,
-  scope?: any
-): T {
+const debounceAtOnce = function(fn: Function, interval?: number, scope?: any) {
   let runable = true
   const FN = () => {
     runable = true
@@ -115,8 +103,7 @@ function debounceAtOnce<T extends Function>(
 
   let timer: number
   const hasScope = arguments.length > 2
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return function(this: any, ..._args: any[]) {
+  return function(this: any) {
     if (runable) {
       runable = false
       fn.apply(hasScope ? scope : this, arguments)
@@ -124,7 +111,77 @@ function debounceAtOnce<T extends Function>(
 
     clearTimeout(timer)
     timer = setTimeout(FN, interval)
-  } as any
-}
+  }
+} as throttleDebounce
 
-export { throttle, debounce, throttleAtOnce, debounceAtOnce }
+/// 装饰器 ///
+interface IThrottleDebounceDecorator {
+  <T>(params?: number | { interval?: number; scope?: any }): MethodDecorator
+}
+interface IThrottleDebounceDecorator {
+  <T, R>(
+    target: T,
+    key: string | symbol,
+    descriptor: TypedPropertyDescriptor<(...args: any[]) => R>
+  ): void
+}
+const factory = (fn: throttleDebounce): IThrottleDebounceDecorator => (
+  targetOrParams?: any,
+  key?: any,
+  descriptor?: any
+) =>
+  descriptor
+    ? ((descriptor.value = fn(targetOrParams[key])), descriptor)
+    : (target: any, key: string, descriptor: PropertyDescriptor) => {
+      descriptor.value = isNumber(targetOrParams)
+        ? fn(target[key], targetOrParams)
+        : hasOwnProperty(targetOrParams, 'scope')
+          ? fn(target[key], targetOrParams.interval, targetOrParams.scope)
+          : fn(target[key], targetOrParams.interval)
+      return descriptor
+    }
+
+/** 节流装饰器 (指定时间间隔内最多执行一次函数 延迟执行)
+ *
+ * @param targetOrParams 参数
+ * @param key
+ * @param descriptor
+ * @constructor
+ */
+const Throttle = factory(throttle)
+/** 防抖装饰器 (限制函数最小执行间隔 延迟执行)
+ *
+ * @param targetOrParams 参数
+ * @param key
+ * @param descriptor
+ * @constructor
+ */
+const Debounce = factory(debounce)
+
+/** 节流装饰器 (指定时间间隔内最多执行一次函数 立即执行)
+ *
+ * @param targetOrParams 参数
+ * @param key
+ * @param descriptor
+ * @constructor
+ */
+const ThrottleAtOnce = factory(throttleAtOnce)
+/** 防抖装饰器 (限制函数最小执行间隔 立即执行)
+ *
+ * @param targetOrParams 参数
+ * @param key
+ * @param descriptor
+ * @constructor
+ */
+const DebounceAtOnce = factory(debounceAtOnce)
+
+export {
+  throttle,
+  debounce,
+  throttleAtOnce,
+  debounceAtOnce,
+  Throttle,
+  Debounce,
+  ThrottleAtOnce,
+  DebounceAtOnce,
+}

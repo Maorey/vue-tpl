@@ -7,8 +7,8 @@ import Vue from 'vue'
 import Router, { RouterOptions, RouteConfig, Route, Location } from 'vue-router'
 
 import configRoute from '@oRoute' // 使用别名
-import { cancel } from '@/utils/ajax'
 import getKey from '@/utils/getKey'
+import { cancel } from '@/utils/ajax'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -57,7 +57,7 @@ function restoreName(this: any) {
     (temp = temp.Ctor.options) &&
     (temp.name = this._$a)
 }
-const refreshRoute = (route: Route) => {
+function refreshRoute(route: Route) {
   if (route.matched) {
     route = route.matched as any // 最后一个match一定是当前路由
     route = (route as any)[(route as any).length - 1]
@@ -124,22 +124,17 @@ router.beforeEach((to, from, next) => {
   try {
     temp.$msgbox.close()
   } catch (error) {}
-  // if ((temp = temp.$el?.querySelector('.el-main'))) {
+  // if ((temp = temp.$el) && (temp = temp.querySelector('.el-main'))) {
   //   // 记录离开前的滚动位置
   //   from.meta.x = temp.scrollLeft
   //   from.meta.y = temp.scrollTop
   // }
-  // 为每个路由对应的组件添加 props (只允许对象 不然报错给你看)
-  // if ((temp = from.matched).length && (temp = temp[temp.length - 1])) {
-  //   temp = temp.props as any
-  //   temp = temp.default || (temp.default = {})
-  //   temp.route = from
-  // }
-  // if ((temp = to.matched) && (temp = temp[temp.length - 1])) {
-  //   temp = temp.props as any
-  //   temp = temp.default || (temp.default = {})
-  //   temp.route = to
-  // }
+  // 为每个路由对应的组件添加 props:route (路由配置props只允许对象 不然报错给你看)
+  if ((temp = to.matched) && (temp = temp[temp.length - 1])) {
+    temp = temp.props as any
+    temp = temp.default || (temp.default = {})
+    ;(!temp.route || temp.route.fullPath !== to.fullPath) && (temp.route = to)
+  }
 
   next()
 })

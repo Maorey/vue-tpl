@@ -189,7 +189,7 @@ export default class extends Vue {
   }
 
   set skin(skin: string) {
-    statePrefer.setSkin(skin)
+    statePrefer.SET_SKIN(skin)
   }
 }
 </script>

@@ -1,6 +1,6 @@
 /** 偏好管理
  */
-import { VuexModule, Mutation, Action } from 'vuex-module-decorators'
+import { VuexModule, Mutation } from 'vuex-module-decorators'
 import { local } from '@/utils/storage'
 import { set } from '@/utils/skin'
 import CONFIG from '@/config'
@@ -33,14 +33,14 @@ class Prefer extends VuexModule implements IPrefer {
   lang = PREFER.lang || 'zh'
   skin = (PREFER.skin = set(PREFER.skin))
 
-  /// Mutation 无法调用/commit 必须通过Action ///
+  /// Mutation ///
   @Mutation
-  protected LANG(lang: string) {
+  SET_LANG(lang: string) {
     this.lang = PREFER.lang = lang
   }
 
   @Mutation
-  protected SKIN(skin: string) {
+  SET_SKIN(skin: string) {
     this.skin = PREFER.skin = set(skin)
   }
 
@@ -48,18 +48,11 @@ class Prefer extends VuexModule implements IPrefer {
   /** 设置皮肤
    * @param {String} skin 皮肤名
    */
-  @Action
-  setSkin(skin: string) {
-    this.context.commit('SKIN', skin)
-  }
-
-  /** 设置语言
-   * @param {String} lang 语言
-   */
-  @Action
-  setLang(lang = 'zh') {
-    this.context.commit('LANG', lang)
-  }
+  // @Action
+  // setSkin(skin: string) {
+  //   this.context.commit('SKIN', skin) // 非动态模块
+  //   // this.SKIN(skin) // 动态模块
+  // }
 }
 
 type hook = (PREFER: IObject) => any

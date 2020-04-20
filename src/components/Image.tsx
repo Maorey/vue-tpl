@@ -5,28 +5,21 @@
  */
 import { CreateElement, VNode } from 'vue'
 // see: https://github.com/kaorun343/vue-property-decorator
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 
 /// [import] vue组件,其他,CSS Module ///
 // import { getAsync } from '@/utils/highOrder'
 // import STYLE from './index.module.scss'
 import Info from './Info'
 
-import { isEqual } from '@/utils'
-import { download, free, IFile } from '@/utils/downloader'
+import { isPassive } from '@/utils'
+import { debounce } from '@/utils/performance'
+import storeImage, { STATE, ITask } from '@/store/image'
 
 /// 常量(UPPER_CASE),单例/变量(camelCase),函数(无副作用,camelCase) ///
 // const ModuleOne: any = getAsync(() =>
 //  import(/* webpackChunkName: "ihOne" */ './ModuleOne')
 // )
-const enum status {
-  init = 0,
-  loading = 1,
-  error = 2,
-  success = 3,
-}
-
-// TODO: lazy/大图预览/保存图片
 
 /// 选项 name,directives,filters,extends,mixins ///
 @Component
@@ -37,15 +30,69 @@ export default class extends Vue {
   @Prop() readonly src!: string
   /** 查询参数 */
   @Prop() readonly query?: IObject
+  /** 同 <img alt> */
   @Prop() readonly alt?: string
+  /** 滚动容器选择器(document.querySelector), 若设置则懒加载 */
+  @Prop() readonly el?: string
   /// [data] (attr: string = '响应式属性' // 除了 undefined) ///
-  private status: status = status.init
   private isSleep = false // 是否失活/休眠
+  private isDel = 0
   /// 非响应式属性 (attr?: string // undefined) ///
-  private $_file?: IFile
   private $_vnode?: VNode
   /// [computed] (get attr() {} set attr(){}) ///
+  /** 【必须重写】文件管理数据仓库 */
+  protected get store(): storeImage {
+    throw new Error('Image: 必须重写store以提供图片管理数据仓库!')
+  }
+
+  protected get task() {
+    let task
+    this.isDel &&
+      this.store.LOAD({
+        task: { url: this.src, query: this.query },
+        callback(t) {
+          task = t
+        },
+      })
+    return (task as any) as ITask
+  }
+
   /// [LifeCycle] (private beforeCreate(){}/.../destroyed(){}) ///
+  private created() {
+    if (this.el) {
+      const el = document.querySelector(this.el)
+      if (el) {
+        const onScroll = debounce(() => {
+          if (this.isDel) {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            return removeListener()
+          }
+
+          const top = el.scrollTop
+          const bottom = top + el.clientHeight
+
+          const left = el.scrollLeft
+          const right = left + el.clientWidth
+
+          const dom = this.$el as HTMLElement
+          const y = dom.offsetTop // + (dom.offsetHeight >> 1)
+          const x = dom.offsetLeft // + (dom.offsetWidth >> 1)
+
+          if (y > top && y < bottom && x > left && x < right) {
+            this.isDel++
+          }
+        }, 99)
+        const removeListener = () => {
+          el.removeEventListener('scroll', onScroll)
+        }
+        el.addEventListener('scroll', onScroll, isPassive())
+        this.$on('hook:destroyed', removeListener)
+        return this.$nextTick(onScroll)
+      }
+    }
+    this.isDel++
+  }
+
   private activated() {
     this.isSleep = false
   }
@@ -54,57 +101,41 @@ export default class extends Vue {
     this.isSleep = true
   }
 
-  private beforeDestroy() {
-    this.$_file && free(this.$_file)
-  }
-
   /// [watch] (@Watch('attr') onAttrChange(val, oldVal) {}) ///
   /// [methods] (method(){}) ///
-  @Watch('src', { immediate: true })
-  @Watch('query')
-  private load(value: any, old: any) {
-    const src = this.src
-    if (!src) {
-      return
-    }
-
-    // diff
-    if (old && isEqual(value, old)) {
-      return
-    }
-
-    this.status = status.loading
-    download(src, this.query)
-      .then(res => {
-        this.$_file && free(this.$_file)
-        this.$_file = res
-        this.status = status.success
-      })
-      .catch(() => {
-        this.status = status.error
-      })
+  protected reLoad() {
+    this.isDel++
   }
 
   // see: https://github.com/vuejs/jsx#installation
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private render(h: CreateElement) {
-    if (this.isSleep) {
-      return this.$_vnode
+    const task = this.task
+    if (this.isSleep || !task) {
+      return this.$_vnode || (this.$_vnode = <i />)
     }
 
-    // 依赖收集
-    switch (this.status) {
-      case status.init:
+    switch (task.state) {
+      case STATE.drop:
+        return (this.$_vnode = (
+          <Info
+            icon="el-icon-picture-outline"
+            type="info"
+            msg={this.alt}
+            retry="重新加载图片"
+            on={{ $: this.reLoad }}
+          />
+        ))
+      case STATE.wait:
         return (this.$_vnode = (
           <Info
             icon="el-icon-picture"
-            type="info"
+            type="warn"
             msg={this.alt}
-            retry="加载图片"
-            on={{ $: this.load }}
+            retry="请稍候"
           />
         ))
-      case status.loading:
+      case STATE.loading:
         return (this.$_vnode = (
           <Info
             icon="el-icon-picture"
@@ -113,18 +144,16 @@ export default class extends Vue {
             retry="加载中"
           />
         ))
-      case status.error:
+      case STATE.failed:
         return (this.$_vnode = (
           <Info
             icon="el-icon-picture-outline"
             msg={this.alt}
-            on={{ $: this.load }}
+            on={{ $: this.reLoad }}
           />
         ))
       default:
-        return (this.$_vnode = (
-          <img src={(this.$_file as IFile).src} alt={this.alt} />
-        ))
+        return (this.$_vnode = <img src={task.src} alt={this.alt} />)
     }
   }
 }

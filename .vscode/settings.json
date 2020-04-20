@@ -12,8 +12,6 @@
   "git.autofetch": true,
   "git.enableSmartCommit": true,
 
-  "svn.enableProposedApi": "product",
-
   "files.trimTrailingWhitespace": true,
 
   "typescript.tsdk": "./node_modules/typescript/lib",

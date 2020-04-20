@@ -269,7 +269,7 @@ function partition(start: number, end: number) {
  */
 function quickSort<T>(
   array: T[],
-  compare: Compare = ASC,
+  compare: Compare<T> = ASC,
   start?: number,
   end?: number
 ): T[] {

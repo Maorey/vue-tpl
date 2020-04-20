@@ -24,24 +24,36 @@ export const enum status {
   loading = 2,
   error = 3,
   empty = 4,
+  success = 5,
 }
 type component = status | string | Comp
 type filter = (data: any) => { data: any; comp: component } | void
 
-/// 选项 name,directives,filters,extends,mixins ///
+const DIC_SLOT = {
+  [status.none]: 'none',
+  [status.loading]: 'loading',
+  [status.error]: 'error',
+  [status.empty]: 'empty',
+}
 /** 异步选择器组件, 最终渲染组件将得到一个prop: data, 即异步结果
  *
- *  props: 见: @Prop 【注意】: get/error 变化时会重新请求
+ *  props: 见: Prop 【注意】: get/error 变化时会重新请求
+ *
  *  events: 见: const enum status 键值
- *  slots: 支持默认插槽/默认作用域插槽 二选一 (二者都有时无法确定顺序, 所以只能二选一)
+ *
+ *  slots: 见: const enum status 键值, 支持对应作用域插槽/插槽【二选一】作用域插槽优先(二者都有时无法确定顺序, 故)
+ *
  *  示例:
  *  <template>
  *    <ChooserAsync :get="get" @error="handleError">
+ *      <template #none>啥也没有</template>
+ *      <!-- 同#success -->
  *      <template #default="{ data }">
  *        <textarea :value="JSON.stringify(data)" />
  *      </template>
  *    </ChooserAsync>
  *  </template>
+ *
  * ( import 咋没得文档呢, 因为tsx么... ┐(: ´ ゞ｀)┌ )
  */
 @Component
@@ -130,34 +142,43 @@ export default class extends Vue {
   // see: https://github.com/vuejs/jsx#installation
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private render(h: CreateElement) {
-    const Comp: any = this.is // for 依赖收集
-    // for 依赖收集 失活返回缓存
     if (this.isSleep) {
       return this.$_vnode
     }
 
-    let temp: any
+    let Comp: any = this.is // for 依赖收集
+    let slot
+    if ((slot = DIC_SLOT[Comp as keyof typeof DIC_SLOT])) {
+      this.$emit(slot)
+      slot = this.$scopedSlots[slot]
+        ? (this.$scopedSlots[slot] as any)(this.$_data)
+        : this.$slots[slot]
+      if (slot && slot.length) {
+        Comp = this.tag
+        return (this.$_vnode = <Comp on={{ $: this.i }}>{slot}</Comp>)
+      }
+    }
+
     switch (Comp) {
       case status.none:
-        this.$emit('none')
         return (this.$_vnode = undefined)
       case status.loading:
-        this.$emit('loading')
         return (this.$_vnode = <Loading />)
       case status.empty:
-        this.$emit('empty')
         return (this.$_vnode = (
           <Info icon="el-icon-info" type="info" msg="empty" retry="" />
         ))
       case status.error:
-        this.$emit('error')
         return (this.$_vnode = <Info on={{ $: this.i }} />)
       default:
         this.$emit('success')
+        slot = this.$scopedSlots
+        slot = slot.success || slot.default
         return (this.$_vnode = (
-          <Comp {...this.$_data}>
-            {this.$slots.default ||
-              ((temp = this.$scopedSlots.default) && temp(this.$_data.props))}
+          <Comp {...{ ...this.$data, ...this.$_data }}>
+            {slot
+              ? slot(this.$_data)
+              : (slot = this.$slots).success || slot.default}
           </Comp>
         ))
     }

@@ -4,7 +4,6 @@ import {
   Module,
   getModule,
   Mutation,
-  Action,
 } from 'vuex-module-decorators'
 import store from '../'
 
@@ -25,9 +24,9 @@ class Dynamic extends VuexModule implements IDynamic {
   /// State & Getter(public) ///
   dynamic = true
 
-  /// Mutation 无法调用/commit 必须通过Action ///
+  /// Mutation ///
   @Mutation
-  private DYNAMIC(dynamic: boolean) {
+  SET_DYNAMIC(dynamic: boolean) {
     this.dynamic = dynamic
   }
 
@@ -35,10 +34,10 @@ class Dynamic extends VuexModule implements IDynamic {
   /** 设置动态
    * @param {Boolean} dynamic 是否动态
    */
-  @Action
-  setDynamic(dynamic: boolean) {
-    this.DYNAMIC(dynamic) // 动态模块可以不用 context.commit
-  }
+  // @Action
+  // setDynamic(dynamic: boolean) {
+  //   this.DYNAMIC(dynamic) // 动态模块可以不用 context.commit
+  // }
 }
 
 export default getModule(Dynamic)

@@ -106,6 +106,19 @@ const enum Status {
 /** 获取带加载状态的【异步】组件
  * @param {Function} promiseFactory 异步组件工厂函数, 比如: () => import('a')
  *    另: import() 只会成功下载一次
+ * @param {Object} config 配置
+ *
+ *    {
+ *
+ *      loading: 加载时展示的组件 默认:'com/Loading'
+ *
+ *      error: 加载失败展示的组件 默认:'com/Info'
+ *
+ *      delay: 展示loading延迟(ms) 默认:250
+ *
+ *      timeout: 加载组件超时时间 默认:'/config'.timeout
+ *
+ *    }
  *
  * @returns {Component} 组件, error、loading、目标三个组件可触发事件'$'以重新加载
  */
@@ -113,11 +126,22 @@ function getAsync(
   promiseFactory: (
     context?: RenderContext
   ) => Promise<Component | AsyncComponent>,
-  loading?: Component,
-  error?: Component
+  config?: {
+    /** 加载时展示的组件 默认:'@com/Loading' */
+    loading?: Component
+    /** 加载失败展示的组件 默认:'@com/Info' */
+    error?: Component
+    /** 展示loading延迟(ms) 默认:250 */
+    delay?: number
+    /** 加载组件超时时间 默认:'@/config'.timeout */
+    timeout?: number
+  }
 ): Component {
-  loading || (loading = Loading)
-  error || (error = Info)
+  config || (config = {})
+  config.loading || (config.loading = Loading)
+  config.error || (config.error = Info)
+  config.delay || (config.delay = 250)
+  config.timeout || (config.timeout = CONFIG.timeout)
 
   const state = Vue.observable({ s: Status.init })
   let component: Component | AsyncComponent
@@ -168,15 +192,15 @@ function getAsync(
           promiseFactory(context)
             .then(onDone)
             .catch(onFail)
-          CONFIG.timeout && (keyTimeout = setTimeout(onTimeout, CONFIG.timeout))
-          keyDelay = setTimeout(onLoad, 250) // 默认延迟250ms显示loading
+          keyTimeout = setTimeout(onTimeout, (config as any).timeout)
+          keyDelay = setTimeout(onLoad, (config as any).delay) // 默认延迟250ms显示loading
           return h()
         case Status.load:
           data.key = key + 'L'
-          return h(loading, data, context.children)
+          return h((config as any).loading, data, context.children)
         case Status.fail:
           data.key = key + 'R'
-          return h(error, data, context.children)
+          return h((config as any).error, data, context.children)
         default:
           data.key = key
           return h(component, data, context.children)

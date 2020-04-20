@@ -1,5 +1,5 @@
 /** 工具函数 */
-import { VueConstructor } from 'vue'
+import Vue, { VueConstructor, Component, AsyncComponent } from 'vue'
 
 /** 对象自身是否存在指定属性 (查找原型链请用 key in obj 判断)
  * @test true
@@ -20,7 +20,7 @@ function hasOwnProperty(obj: any, key?: any) {
  *
  * @returns String
  */
-function getType(value?: any): string {
+function getType(value?: any) {
   value = Object.prototype.toString.call(value) // [object type]
   return value.substring(8, value.length - 1).toLowerCase()
 }
@@ -32,7 +32,7 @@ function getType(value?: any): string {
  *
  * @returns Boolean
  */
-function isUndef(value?: any) {
+function isUndef(value?: any): value is undefined {
   return value === undefined
 }
 
@@ -43,7 +43,7 @@ function isUndef(value?: any) {
  *
  * @returns Boolean
  */
-function isNull(value?: any) {
+function isNull(value?: any): value is null {
   return value === null
 }
 
@@ -54,7 +54,7 @@ function isNull(value?: any) {
  *
  * @returns Boolean
  */
-function isNullish(value?: any) {
+function isNullish(value?: any): value is null | undefined {
   return isUndef(value) || isNull(value)
 }
 
@@ -65,7 +65,7 @@ function isNullish(value?: any) {
  *
  * @returns Boolean
  */
-function isBool(value?: any) {
+function isBool(value?: any): value is boolean {
   return typeof value === 'boolean'
 }
 
@@ -76,7 +76,7 @@ function isBool(value?: any) {
  *
  * @returns Boolean
  */
-function isNumber(value?: any) {
+function isNumber(value?: any): value is number {
   return typeof value === 'number'
 }
 
@@ -87,7 +87,7 @@ function isNumber(value?: any) {
  *
  * @returns Boolean
  */
-function isBigInt(value?: any) {
+function isBigInt(value?: any): value is bigint {
   return getType(value) === 'bigint'
 }
 
@@ -98,7 +98,7 @@ function isBigInt(value?: any) {
  *
  * @returns Boolean
  */
-function isString(value?: any) {
+function isString(value?: any): value is string {
   return typeof value === 'string'
 }
 
@@ -109,7 +109,7 @@ function isString(value?: any) {
  *
  * @returns Boolean
  */
-function isSymbol(value?: any) {
+function isSymbol(value?: any): value is symbol {
   return getType(value) === 'symbol'
 }
 
@@ -120,7 +120,7 @@ function isSymbol(value?: any) {
  *
  * @returns Boolean
  */
-function isObj(value?: any) {
+function isObj(value?: any): value is Record<string, any> {
   return typeof value === 'object'
 }
 
@@ -131,7 +131,7 @@ function isObj(value?: any) {
  *
  * @returns Boolean
  */
-function isObject(value?: any) {
+function isObject(value?: any): value is object {
   return getType(value) === 'object'
 }
 
@@ -142,7 +142,7 @@ function isObject(value?: any) {
  *
  * @returns Boolean
  */
-function isArray(value?: any) {
+function isArray(value?: any): value is any[] {
   return getType(value) === 'array' // Array.isArray(value)
 }
 
@@ -153,7 +153,7 @@ function isArray(value?: any) {
  *
  * @returns Boolean
  */
-function isFn(value?: any) {
+function isFn(value?: any): value is Function {
   return typeof value === 'function'
 }
 
@@ -166,7 +166,7 @@ function isFn(value?: any) {
  *
  * @returns Boolean
  */
-function isEqual(x?: any, y?: any): boolean {
+function isEqual(x?: any, y?: any) {
   if (x === y) {
     return x !== 0 || 1 / x === 1 / y // isEqual(0, -0) => false
   }
@@ -224,6 +224,128 @@ function isEqual(x?: any, y?: any): boolean {
   return false
 }
 
+let passive: any = 0
+/** 浏览器是否支持passive事件监听
+ *    see: https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
+ */
+function isPassive() {
+  if (passive !== 0) {
+    return passive
+  }
+
+  try {
+    passive = Object.defineProperty({}, 'passive', { get: () => true })
+    window.addEventListener('' as any, null as any, passive)
+  } catch (err) {
+    passive = false
+  }
+  return passive as false | { passive: true }
+}
+
+/** 添加vue监听
+ * @param {Object} options 监听对象
+ * @param {String} hook 监听事件
+ * @param {Function} fn 监听回调
+ * @param {Object} scope [可选]绑定回调的this
+ */
+function setHook(
+  options: any,
+  hook: string,
+  fn: Function | Function[],
+  scope?: any
+) {
+  let originHook
+  if (Array.isArray(fn)) {
+    for (originHook of fn) {
+      setHook(options, hook, originHook, scope)
+    }
+    return
+  }
+
+  originHook = options[hook]
+  if (!originHook) {
+    originHook = []
+  } else if (Array.isArray(originHook)) {
+    if (originHook.includes((fn as any)._ || fn)) {
+      return
+    }
+  } else {
+    if (originHook === (fn as any)._ || fn) {
+      return
+    }
+    originHook = [originHook]
+  }
+  if (scope) {
+    scope = fn.bind(scope)
+    scope._ = fn
+    fn = scope
+  }
+  originHook.unshift(fn)
+  options[hook] = originHook
+}
+
+function onWake(this: any, to: any, from: any, next: any) {
+  this.s_ = 0
+  next && setTimeout(next)
+}
+function onSleep(this: any, to: any, from: any, next: any) {
+  if (next) {
+    this.s_ = to.matched.length // for 刷新
+    setTimeout(next)
+  } else {
+    this.s_ = 1
+  }
+}
+/** 对路由组件、<KeepAlive>的组件注入睡眠(装饰器)
+ * @param {Component} component 组件选项
+ */
+function sleep(component: Component | AsyncComponent) {
+  component = (component as any).options || component
+  const originRender = (component as any).render
+  if (!originRender || (component as any).$_s) {
+    return
+  }
+  ;(component as any).$_s = 1
+  if ((component as any).functional) {
+    const state = Vue.observable({ s_: 0 })
+    let vnode: any
+    ;(component as any).render = function(h: any, context: any) {
+      if (state.s_) {
+        return vnode
+      }
+
+      let on = context.data
+      on = on.on || (on.on = {})
+      setHook(on, 'hook:beforeRouteUpdate', onWake, state)
+      setHook(on, 'hook:activated', onWake, state)
+      setHook(on, 'hook:beforeRouteLeave', onSleep, state)
+      setHook(on, 'hook:deactivated', onSleep, state)
+      return (vnode = originRender.apply(this, arguments))
+    }
+    return
+  }
+
+  // mixins这个阶段对class based api无效
+  const originData = (component as any).data
+  ;(component as any).data = function() {
+    const data =
+      (originData && originData.apply && originData.apply(this, arguments)) ||
+      {}
+    data.s_ = 0 // 满足/^[&_]/不能转化为响应式属性
+    return data
+  }
+  setHook(component, 'beforeRouteUpdate', onWake)
+  setHook(component, 'activated', onWake)
+  setHook(component, 'beforeRouteLeave', onSleep)
+  setHook(component, 'deactivated', onSleep)
+  ;(component as any).render = function() {
+    if (this.s_) {
+      return this._$n
+    }
+    return (this._$n = originRender.apply(this, arguments))
+  }
+}
+
 /** 开发环境处理
  * @param Vue
  */
@@ -267,5 +389,8 @@ export {
   isArray,
   isFn,
   isEqual,
+  isPassive,
+  setHook,
+  sleep,
   dev,
 }

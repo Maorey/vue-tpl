@@ -16,7 +16,7 @@ import getKey from '@/utils/getKey'
 // )
 
 /** 透明分发路由(支持嵌套)
- *    以下情况可以给个key防止复用:
+ *    可以给个key防止<RVT>复用:
  *    <KeepAlive>
  *      <RouterView :key="$route.meta.code" />
  *    <KeepAlive />
@@ -24,22 +24,36 @@ import getKey from '@/utils/getKey'
 export default {
   name: 'RVT',
   data() {
-    return { d: 0 } // 是否失活/休眠
+    return { d: 0 } // 是否失活/离开
+  },
+  beforeRouteUpdate(this: any, to, from, next) {
+    this.d = 0
+    setTimeout(next)
   },
   activated(this: any) {
     this.d = 0
+  },
+  beforeRouteLeave(this: any, to, from, next) {
+    this.d = to.matched.length // for 刷新
+    setTimeout(next)
   },
   deactivated(this: any) {
     this.d = 1
   },
   render(this: any, h) {
-    const exclude = this.$router.$.e // for 依赖收集
-    const meta = this.$route.meta // for 依赖收集
+    if (this.d) {
+      return this.c
+    }
 
-    return this.d // for 依赖收集
-      ? this.c
-      : (this.c = h('KeepAlive', { props: { max: 5, exclude } }, [
-        h('RouterView', { key: meta.k || (meta.k = getKey()) }),
-      ]))
+    const exclude = this.$router.$.e
+    const meta = this.$route.meta
+
+    return (this.c = h('KeepAlive', { props: { max: 5, exclude } }, [
+      h(
+        'RouterView',
+        { key: meta.k || (meta.k = getKey()) },
+        this.$slots.default
+      ),
+    ]))
   },
 } as Component
