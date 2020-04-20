@@ -31,21 +31,27 @@ function download(url: string, query?: IObject, name?: string) {
     responseType: 'blob',
     // contentType: 'application/octet-stream;charset=UTF-8',
     cancelToken: source.token,
-  }).then(res => {
-    if (!name) {
-      name = res.headers['content-disposition'].split(';')
-      name = (name as any)[(name as any).length - 1].split('=')
-      name = (name as any)[(name as any).length - 1]
-    }
-    const type = (name as string).split('.')
+  })
+    .then(res => {
+      ;(source as any).cancel = 0 // 已完成不可取消
+      if (!name) {
+        name = res.headers['content-disposition'].split(';')
+        name = (name as any)[(name as any).length - 1].split('=')
+        name = (name as any)[(name as any).length - 1]
+      }
+      const type = (name as string).split('.')
 
-    return {
-      name,
-      size: res.data.size,
-      type: type[type.length - 1], // res.data.type, // application/x-msdownload
-      src: window.URL.createObjectURL(res.data),
-    }
-  }) as IPromiseCancelable<IFile>
+      return {
+        name,
+        size: res.data.size,
+        type: type[type.length - 1], // res.data.type, // application/x-msdownload
+        src: window.URL.createObjectURL(res.data),
+      }
+    })
+    .catch(err => {
+      ;(source as any).cancel = 0 // 已完成不可取消
+      throw err
+    }) as IPromiseCancelable<IFile>
   promise.cancel = (message?: string) => {
     if (source.cancel) {
       console.warn(message || '取消下载:', url, query, name)

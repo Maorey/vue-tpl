@@ -51,7 +51,11 @@ module.exports = function(config) {
   //   },
   // ])
   // 补全html插入资源
-  config.plugin('insert-preload').use(require.resolve('./insertPreload.js'))
+  config
+    .plugin('insert-preload')
+    .use(require.resolve('./insertPreload.js'), [
+      { noPreload: true, noPrefetch: true },
+    ])
   // stylelint
   config.plugin('stylelint').use('stylelint-webpack-plugin', [
     {
