@@ -118,12 +118,12 @@ router.beforeEach((to, from, next) => {
   NProgress.start() // 开始进度条
   cancel('导航: 取消未完成请求')
   // 关闭所有提示
-  temp = router.app
-  temp.$message.closeAll()
-  temp.$notify.closeAll()
-  try {
-    temp.$msgbox.close()
-  } catch (error) {}
+  // temp = router.app
+  // temp.$message.closeAll()
+  // temp.$notify.closeAll()
+  // try {
+  //   temp.$msgbox.close()
+  // } catch (error) {}
   // if ((temp = temp.$el) && (temp = temp.querySelector('.el-main'))) {
   //   // 记录离开前的滚动位置
   //   from.meta.x = temp.scrollLeft

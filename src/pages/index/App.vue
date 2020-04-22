@@ -6,6 +6,7 @@
 <template>
   <body>
     <form :class="$style.skin">
+      <a @click="$router.replace('/r' + $route.fullPath)">刷新</a>
       <input
         v-for="val in SKIN"
         :key="val"
@@ -41,7 +42,7 @@
         :class="$style.nav"
         @mouseleave="showNav = false"
       >
-        <routerLink
+        <RouterLink
           v-for="item in LINK"
           :key="item.name"
           :to="item.to"
@@ -51,7 +52,7 @@
             :alt="item.name"
           >
           <h4>{{ item.name }}</h4>
-        </routerLink>
+        </RouterLink>
       </div>
     </Transition>
   </body>
