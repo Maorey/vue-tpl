@@ -9,8 +9,11 @@ import Vue, { VueConstructor, Component, AsyncComponent } from 'vue'
  *
  * @returns Boolean
  */
-function hasOwnProperty(obj: any, key?: any) {
-  return Object.prototype.hasOwnProperty.call(obj, key)
+function hasOwnProperty<T>(
+  obj: T,
+  key?: string | number | symbol
+): key is keyof T {
+  return Object.prototype.hasOwnProperty.call(obj, key as any)
 }
 
 /** 获取精确类型
@@ -25,6 +28,19 @@ function getType(value?: any) {
   return value.substring(8, value.length - 1).toLowerCase()
 }
 
+/** 值是否为: 指定类型 [注意]无法检查具体类型,比如:is(Class A, Class B)
+ * @test true
+ *
+ * @param value 目标类型(字符串或值)
+ *
+ * @returns Boolean
+ */
+function is<T>(value?: unknown, type?: string | T): value is T {
+  const typeType = getType(type)
+  value = getType(value)
+  return value === typeType || (typeType === 'string' && value === type)
+}
+
 /** 值是否为: undefined
  * @test true
  *
@@ -32,7 +48,7 @@ function getType(value?: any) {
  *
  * @returns Boolean
  */
-function isUndef(value?: any): value is undefined {
+function isUndef(value?: unknown): value is undefined {
   return value === undefined
 }
 
@@ -43,7 +59,7 @@ function isUndef(value?: any): value is undefined {
  *
  * @returns Boolean
  */
-function isNull(value?: any): value is null {
+function isNull(value?: unknown): value is null {
   return value === null
 }
 
@@ -54,8 +70,21 @@ function isNull(value?: any): value is null {
  *
  * @returns Boolean
  */
-function isNullish(value?: any): value is null | undefined {
+function isNullish(value?: unknown): value is null | undefined {
   return isUndef(value) || isNull(value)
+}
+
+/** 值是否[不为]: null/undefined
+ * @test true
+ *
+ * @param value 目标值
+ *
+ * @returns Boolean
+ */
+function isDef(
+  value?: unknown
+): value is Exclude<Record<string, any>, null | undefined> {
+  return !isNullish(value)
 }
 
 /** 值是否为: Boolean
@@ -65,7 +94,7 @@ function isNullish(value?: any): value is null | undefined {
  *
  * @returns Boolean
  */
-function isBool(value?: any): value is boolean {
+function isBool(value?: unknown): value is boolean {
   return typeof value === 'boolean'
 }
 
@@ -76,7 +105,7 @@ function isBool(value?: any): value is boolean {
  *
  * @returns Boolean
  */
-function isNumber(value?: any): value is number {
+function isNumber(value?: unknown): value is number {
   return typeof value === 'number'
 }
 
@@ -87,7 +116,7 @@ function isNumber(value?: any): value is number {
  *
  * @returns Boolean
  */
-function isBigInt(value?: any): value is bigint {
+function isBigInt(value?: unknown): value is bigint {
   return getType(value) === 'bigint'
 }
 
@@ -98,7 +127,7 @@ function isBigInt(value?: any): value is bigint {
  *
  * @returns Boolean
  */
-function isString(value?: any): value is string {
+function isString(value?: unknown): value is string {
   return typeof value === 'string'
 }
 
@@ -109,7 +138,7 @@ function isString(value?: any): value is string {
  *
  * @returns Boolean
  */
-function isSymbol(value?: any): value is symbol {
+function isSymbol(value?: unknown): value is symbol {
   return getType(value) === 'symbol'
 }
 
@@ -120,7 +149,7 @@ function isSymbol(value?: any): value is symbol {
  *
  * @returns Boolean
  */
-function isObj(value?: any): value is Record<string, any> {
+function isObj(value?: unknown): value is object {
   return typeof value === 'object'
 }
 
@@ -131,7 +160,7 @@ function isObj(value?: any): value is Record<string, any> {
  *
  * @returns Boolean
  */
-function isObject(value?: any): value is object {
+function isObject(value?: unknown): value is object {
   return getType(value) === 'object'
 }
 
@@ -142,7 +171,7 @@ function isObject(value?: any): value is object {
  *
  * @returns Boolean
  */
-function isArray(value?: any): value is any[] {
+function isArray(value?: unknown): value is unknown[] {
   return getType(value) === 'array' // Array.isArray(value)
 }
 
@@ -153,8 +182,30 @@ function isArray(value?: any): value is any[] {
  *
  * @returns Boolean
  */
-function isFn(value?: any): value is Function {
+function isFn(value?: unknown): value is Function {
   return typeof value === 'function'
+}
+
+/** 值是否为: RegExp
+ * @test true
+ *
+ * @param value 目标值
+ *
+ * @returns Boolean
+ */
+function isReg(value?: unknown): value is RegExp {
+  return getType(value) === 'regexp'
+}
+
+/** 值是否为: Date
+ * @test true
+ *
+ * @param value 目标值
+ *
+ * @returns Boolean
+ */
+function isDate(value?: unknown): value is Date {
+  return getType(value) === 'date'
 }
 
 /** 比较两个值是否相等(对象和数组比较原型上可枚举属性,{a:undefined}等于{},支持正则对象比较)
@@ -234,8 +285,16 @@ function isPassive() {
   }
 
   try {
-    passive = Object.defineProperty({}, 'passive', { get: () => true })
-    window.addEventListener('' as any, null as any, passive)
+    window.addEventListener(
+      0 as any,
+      null as any,
+      Object.defineProperty({}, 'passive', {
+        get() {
+          passive = { passive: true }
+          return true
+        },
+      })
+    )
   } catch (err) {
     passive = false
   }
@@ -290,7 +349,7 @@ function onWake(this: any, to: any, from: any, next: any) {
 }
 function onSleep(this: any, to: any, from: any, next: any) {
   if (next) {
-    this.s_ = to.matched.length // for 刷新
+    this.s_ = to.matched.length && 1 // for 刷新
     setTimeout(next)
   } else {
     this.s_ = 1
@@ -376,9 +435,11 @@ function dev(Vue: VueConstructor) {
 export {
   hasOwnProperty,
   getType,
+  is,
   isUndef,
   isNull,
   isNullish,
+  isDef,
   isBool,
   isNumber,
   isBigInt,
@@ -388,6 +449,8 @@ export {
   isObject,
   isArray,
   isFn,
+  isReg,
+  isDate,
   isEqual,
   isPassive,
   setHook,

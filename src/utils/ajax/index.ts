@@ -11,8 +11,9 @@ import sort from '@/utils/sort'
 import clone from '@/utils/clone'
 import { Memory } from '@/utils/storage'
 
-// import { success, failed } from './interceptor' // [请求拦截]
-// import { emit } from '../eventBus' // 通知取消请求 以便自定义取消策略使用
+import { success, failed } from './interceptor'
+import WS from './websocket'
+// import { emit } from '@/utils/eventBus' // 通知取消请求 以便自定义取消策略使用
 
 // 默认请求配置 https://github.com/axios/axios#config-defaults
 clone(AXIOS.defaults, {
@@ -54,6 +55,30 @@ const CancelToken = AXIOS.CancelToken
 /** 是否被取消 */
 const isCancel = AXIOS.isCancel
 
+/** 全局请求头配置【只用于携带token等】 */
+let HEAD = AXIOS.defaults.headers || (AXIOS.defaults.headers = {})
+HEAD = HEAD.common || (HEAD.common = {})
+
+/** 设置【全局】请求头
+ * @param headOrKey
+ * @param value
+ * @param isToken
+ */
+function setHEAD(head: IObject): void
+function setHEAD(name: string, value: string, isToken?: boolean): void
+function setHEAD(
+  headOrKey: IObject | string,
+  value?: string,
+  isToken?: boolean
+) {
+  if (value) {
+    HEAD[headOrKey as string] = value
+    isToken && (WS.defaults.protocols = [value]) // websocket 授权
+  } else {
+    Object.assign(HEAD, headOrKey as IObject)
+  }
+}
+
 /** 【debug】带上特定查询字段 */
 let SEARCH: IObject | undefined
 location.search
@@ -65,10 +90,6 @@ location.search
       return match
     }
   )
-
-/** 全局请求头配置【只用于携带token等】 */
-let HEAD = AXIOS.defaults.headers || (AXIOS.defaults.headers = {})
-HEAD = HEAD.common || (HEAD.common = {})
 
 /** 获取url (直接使用url的情况, 比如验证码、下载、上传等, 添加BaseUrl、调试参数等)
  * @param {string} url
@@ -102,6 +123,7 @@ function searchToObj(search: string) {
   }
   return Obj
 }
+
 /** 获取请求标识
  * @param url 请求地址
  * @param params 查询参数
@@ -184,25 +206,20 @@ function request(
       requestQueue.remove(config.key) // 移除请求队列
       shouldCache && dataStore.set(config.key, res, config.alive) // 设置缓存
 
-      return res // success(res) // [请求拦截]
+      return success(res)
     })
     .catch((res: any) => {
       res.meta = config // 请求配置加到元数据
       requestQueue.remove(config.key) // 移除请求队列
-      // if (isCancel(res)) {
-      //   throw res
-      // } else if (config.$_) {
-      //   res = config.$_ // 自定义取消标记
-      //   config.$_ = 0 // 只取消一次
-      //   throw res
-      // } else {
-      //   failed(res) // [请求拦截]
-      // }
-      if (config.$_) {
+      if (isCancel(res)) {
+        throw res
+      } else if (config.$_) {
         res = config.$_ // 自定义取消标记
         config.$_ = 0 // 只取消一次
+        throw res
+      } else {
+        failed(res)
       }
-      throw res
     })
 
   // data && (cache.cancel = data) // [不划算]
@@ -309,6 +326,7 @@ export {
   CancelToken,
   isCancel,
   HEAD,
+  setHEAD,
   getUri,
   getKey,
   get,
@@ -317,4 +335,5 @@ export {
   post,
   patch,
   cancel,
+  WS,
 }

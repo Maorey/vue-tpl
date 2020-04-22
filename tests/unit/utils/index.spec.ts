@@ -3,9 +3,11 @@
 import {
   hasOwnProperty,
   getType,
+  is,
   isUndef,
   isNull,
   isNullish,
+  isDef,
   isBool,
   isNumber,
   isBigInt,
@@ -15,6 +17,8 @@ import {
   isObject,
   isArray,
   isFn,
+  isReg,
+  isDate,
   isEqual,
 } from '@/utils'
 
@@ -45,68 +49,86 @@ describe('@/utils: 工具函数', () => {
     // ...
   })
 
-  it('isUndef', () => {
+  it('is: 是否为指定类型', () => {
+    expect(is()).toBe(true)
+    expect(is(undefined, 'undefined')).toBe(true)
+    expect(is(null, 'object')).toBe(false)
+    expect(is(null, 'null')).toBe(true)
+    expect(is(null, {})).toBe(false)
+    expect(is(null, null)).toBe(true)
+    expect(is(NaN, 0)).toBe(true)
+    expect(is(NaN, NaN)).toBe(true)
+    expect(is(NaN, 'number')).toBe(true)
+  })
+
+  it('isUndef: 是否为 undefined', () => {
     expect(isUndef()).toBe(true)
     expect(isUndef(null)).toBe(false)
   })
 
-  it('isNull', () => {
+  it('isNull: 是否为 null', () => {
     expect(isNull()).toBe(false)
     expect(isNull(null)).toBe(true)
   })
 
-  it('isNullish', () => {
+  it('isNullish: 是否为 null/undefined', () => {
     expect(isNullish()).toBe(true)
     expect(isNullish(null)).toBe(true)
     expect(isNullish(0)).toBe(false)
   })
 
-  it('isBool', () => {
+  it('isDef: 是否[不为] null/undefined', () => {
+    expect(isDef()).toBe(false)
+    expect(isDef(null)).toBe(false)
+    expect(isDef(0)).toBe(true)
+  })
+
+  it('isBool: 是否为 Boolean', () => {
     expect(isBool()).toBe(false)
     expect(isBool(true)).toBe(true)
     expect(isBool(false)).toBe(true)
   })
 
-  it('isNumber', () => {
+  it('isNumber: 是否为 Number', () => {
     expect(isNumber()).toBe(false)
     expect(isNumber(NaN)).toBe(true)
     expect(isNumber(0)).toBe(true)
     expect(isNumber('0')).toBe(false)
   })
 
-  it('isBigInt', () => {
+  it('isBigInt: 是否为 BigInt', () => {
     expect(isBigInt()).toBe(false)
     expect(isBigInt(0)).toBe(false)
     expect(isBigInt(0n)).toBe(true)
   })
 
-  it('isString', () => {
+  it('isString: 是否为 String', () => {
     expect(isString()).toBe(false)
     expect(isString('')).toBe(true)
   })
 
-  it('isSymbol', () => {
+  it('isSymbol: 是否为 Symbol', () => {
     expect(isSymbol()).toBe(false)
     expect(isSymbol(Symbol)).toBe(false)
     expect(isSymbol(Symbol('test'))).toBe(true)
     expect(isSymbol(Symbol.iterator)).toBe(true)
   })
 
-  it('isObj', () => {
+  it('isObj: 是否为 Object/Array/RegExp/...', () => {
     expect(isObj()).toBe(false)
     expect(isObj([])).toBe(true)
     expect(isObj({})).toBe(true)
     expect(isObj(Math)).toBe(true)
   })
 
-  it('isObject', () => {
+  it('isObject: 是否为 Object', () => {
     expect(isObject()).toBe(false)
     expect(isObject([])).toBe(false)
     expect(isObject(/test/)).toBe(false)
     expect(isObject({})).toBe(true)
   })
 
-  it('isArray: 是否数组', function() {
+  it('isArray: 是否为 Array', function() {
     expect(isArray()).toBe(false)
     expect(isArray({})).toBe(false)
     expect(isArray({ 0: 0, 1: 1, length: 2 })).toBe(false)
@@ -114,11 +136,25 @@ describe('@/utils: 工具函数', () => {
     expect(isArray([])).toBe(true)
   })
 
-  it('isFn: 是否函数', () => {
+  it('isFn: 是否为 Function', () => {
     expect(isFn()).toBe(false)
     expect(isFn([])).toBe(false)
     expect(isFn(Object)).toBe(true)
     expect(isFn(() => 0)).toBe(true)
+  })
+
+  it('isReg: 是否为 RegExp', () => {
+    expect(isReg()).toBe(false)
+    expect(isReg([])).toBe(false)
+    expect(isReg({})).toBe(false)
+    expect(isReg(/test/)).toBe(true)
+  })
+
+  it('isDate: 是否为 Date', () => {
+    expect(isDate()).toBe(false)
+    expect(isDate([])).toBe(false)
+    expect(isDate({})).toBe(false)
+    expect(isDate(new Date())).toBe(true)
   })
 
   it('isEqual: 比较两个值是否相等', () => {
@@ -149,13 +185,13 @@ describe('@/utils: 工具函数', () => {
     expect(
       isEqual([0, { a: { b: '' } }, NaN], [0, { a: { b: '' } }, NaN])
     ).toBe(true)
-    const re = /t/ig
+    const re = /t/gi
     expect(isEqual(/t/i, re)).toBe(false)
-    expect(isEqual(/t/ig, re)).toBe(true)
+    expect(isEqual(/t/gi, re)).toBe(true)
     re.exec('tit')
-    expect(isEqual(/t/ig, re)).toBe(false)
+    expect(isEqual(/t/gi, re)).toBe(false)
     re.exec('tit')
     re.exec('tit')
-    expect(isEqual(/t/ig, re)).toBe(true)
+    expect(isEqual(/t/gi, re)).toBe(true)
   })
 })

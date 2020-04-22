@@ -129,17 +129,32 @@ const factory = (fn: throttleDebounce): IThrottleDebounceDecorator => (
   targetOrParams?: any,
   key?: any,
   descriptor?: any
-) =>
-  descriptor
-    ? ((descriptor.value = fn(targetOrParams[key])), descriptor)
+) => {
+  // for Class不同实例
+  const instanceMap = new WeakMap()
+  const FN = function() {
+    const args = arguments
+    return function(this: any) {
+      let handledFN = instanceMap.get(this)
+      if (!handledFN) {
+        handledFN = fn.apply(this, args as any)
+        instanceMap.set(this, handledFN)
+      }
+      return handledFN.apply(this, arguments as any)
+    }
+  } as throttleDebounce
+
+  return descriptor
+    ? ((descriptor.value = FN(targetOrParams[key])), descriptor)
     : (target: any, key: string, descriptor: PropertyDescriptor) => {
       descriptor.value = isNumber(targetOrParams)
-        ? fn(target[key], targetOrParams)
+        ? FN(target[key], targetOrParams)
         : hasOwnProperty(targetOrParams, 'scope')
-          ? fn(target[key], targetOrParams.interval, targetOrParams.scope)
-          : fn(target[key], targetOrParams.interval)
+          ? FN(target[key], targetOrParams.interval, targetOrParams.scope)
+          : FN(target[key], targetOrParams.interval)
       return descriptor
     }
+}
 
 /** 节流装饰器 (指定时间间隔内最多执行一次函数 延迟执行)
  *

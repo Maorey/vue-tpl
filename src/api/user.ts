@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @LastEditTime: 2019-07-24 11:01:36
  */
-import { HEAD, get, post } from '@/utils/ajax'
+import { setHEAD, get, post } from '@/utils/ajax'
 import { local } from '@/utils/storage'
 import CONFIG from '@/config'
 import API from '@/config/api/user'
@@ -53,7 +53,8 @@ function login(formData: ILogin) {
     account,
     password,
   }).then(res => {
-    HEAD[CONFIG.token] = res.data.token
+    setHEAD(CONFIG.token, res.data.token, true)
+    // 加密存token + 进入页面最先检查/设置token
     local.set(CONFIG.token, res.data, CONFIG.tokenAlive)
     return res
   })
@@ -65,7 +66,7 @@ function login(formData: ILogin) {
  */
 function logout() {
   return get(API.logout).then(res => {
-    delete HEAD[CONFIG.token]
+    setHEAD(CONFIG.token, '', true)
     local.remove(CONFIG.token)
     return res
   })

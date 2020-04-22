@@ -34,7 +34,7 @@ export default {
     this.d = 0
   },
   beforeRouteLeave(this: any, to, from, next) {
-    this.d = to.matched.length // for 刷新
+    this.d = to.matched.length && 1 // for 刷新
     setTimeout(next)
   },
   deactivated(this: any) {
