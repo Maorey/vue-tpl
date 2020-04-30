@@ -5,7 +5,7 @@
  */
 import { CreateElement, VNode } from 'vue'
 // see: https://github.com/kaorun343/vue-property-decorator
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 /// [import] vue组件,其他,CSS Module ///
 // import { getAsync } from '@/utils/highOrder'
@@ -32,11 +32,11 @@ export default class extends Vue {
   @Prop() readonly query?: IObject
   /** 同 <img alt> */
   @Prop() readonly alt?: string
-  /** 滚动容器选择器(document.querySelector), 若设置则懒加载 */
+  /** 滚动容器选择器(document.querySelector), 若设置则懒加载【不响应prop变化】 */
   @Prop() readonly el?: string
   /// [data] (attr: string = '响应式属性' // 除了 undefined) ///
   private isSleep = false // 是否失活/休眠
-  private isDel = 0
+  private task = { state: STATE.wait } as ITask // 当前下载任务信息
   /// 非响应式属性 (attr?: string // undefined) ///
   private $_vnode?: VNode
   /// [computed] (get attr() {} set attr(){}) ///
@@ -45,25 +45,13 @@ export default class extends Vue {
     throw new Error('Image: 必须重写store以提供图片管理数据仓库!')
   }
 
-  protected get task() {
-    let task
-    this.isDel &&
-      this.store.LOAD({
-        task: { url: this.src, query: this.query },
-        callback(t) {
-          task = t
-        },
-      })
-    return (task as any) as ITask
-  }
-
   /// [LifeCycle] (private beforeCreate(){}/.../destroyed(){}) ///
   private created() {
     if (this.el) {
       const el = document.querySelector(this.el)
       if (el) {
         const onScroll = debounce(() => {
-          if (this.isDel) {
+          if (this.task.id) {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             return removeListener()
           }
@@ -79,7 +67,7 @@ export default class extends Vue {
           const x = dom.offsetLeft // + (dom.offsetWidth >> 1)
 
           if (y > top && y < bottom && x > left && x < right) {
-            this.isDel++
+            this.load()
           }
         }, 99)
         const removeListener = () => {
@@ -90,7 +78,7 @@ export default class extends Vue {
         return this.$nextTick(onScroll)
       }
     }
-    this.isDel++
+    this.load()
   }
 
   private activated() {
@@ -103,8 +91,15 @@ export default class extends Vue {
 
   /// [watch] (@Watch('attr') onAttrChange(val, oldVal) {}) ///
   /// [methods] (method(){}) ///
-  protected reLoad() {
-    this.isDel++
+  @Watch('src')
+  @Watch('query', { deep: true })
+  protected load() {
+    this.store.LOAD({
+      task: { url: this.src, query: this.query },
+      callback: task => {
+        this.task = task
+      },
+    })
   }
 
   // see: https://github.com/vuejs/jsx#installation
@@ -112,7 +107,7 @@ export default class extends Vue {
   private render(h: CreateElement) {
     const task = this.task
     if (this.isSleep || !task) {
-      return this.$_vnode || (this.$_vnode = <i />)
+      return this.$_vnode
     }
 
     switch (task.state) {
@@ -123,7 +118,7 @@ export default class extends Vue {
             type="info"
             msg={this.alt}
             retry="重新加载图片"
-            on={{ $: this.reLoad }}
+            on={{ $: this.load }}
           />
         ))
       case STATE.wait:
@@ -149,7 +144,7 @@ export default class extends Vue {
           <Info
             icon="el-icon-picture-outline"
             msg={this.alt}
-            on={{ $: this.reLoad }}
+            on={{ $: this.load }}
           />
         ))
       default:

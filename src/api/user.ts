@@ -6,7 +6,7 @@
 import { setHEAD, get, post } from '@/utils/ajax'
 import { local } from '@/utils/storage'
 import CONFIG from '@/config'
-import API from '@/config/api/user'
+import { user as API } from '@/enum/api'
 
 // 加密算法(token + RSA 加密)
 import Jsencrypt from 'jsencrypt'

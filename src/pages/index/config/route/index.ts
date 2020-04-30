@@ -10,7 +10,15 @@ import IMG_HOME from '@index/assets/home.png'
 import IMG_ABOUT from '@index/assets/about.png'
 
 export default {
-  /*! 【index页路由配置(https://router.vuejs.org/zh/api/#router-构建选项)】 */
+  /*! 【index页路由配置(https://router.vuejs.org/zh/api/#router-构建选项)】
+   * meta: {
+   *  name 对应标题/位置导航
+   *  thumb 缩略图
+   *  noCache 是否不缓存
+   *  refresh 是否需要刷新
+   *  pageAlive 最大缓存时间
+   * }
+   */
 
   mode: 'hash',
   meta: {

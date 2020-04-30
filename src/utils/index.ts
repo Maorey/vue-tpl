@@ -23,7 +23,7 @@ function hasOwnProperty<T>(
  *
  * @returns String
  */
-function getType(value?: any) {
+function getType(value?: any): string {
   value = Object.prototype.toString.call(value) // [object type]
   return value.substring(8, value.length - 1).toLowerCase()
 }
@@ -208,16 +208,18 @@ function isDate(value?: unknown): value is Date {
   return getType(value) === 'date'
 }
 
-/** 比较两个值是否相等(对象和数组比较原型上可枚举属性,{a:undefined}等于{},支持正则对象比较)
- *    (函数因为作用域问题无法比较)
+/** 两个变量是否相等
+ *
  * @test true
  *
  * @param x 第一个值
  * @param y 第二个值
+ * @param noRef 是否不比较引用类型的值(对象/数组可枚举属性(含原型),{a:undefined}等于{})
+ *    【不处理循环引用】(比如a.b=a,可以用WeakSet记录和判断指针是否重复出现)
  *
  * @returns Boolean
  */
-function isEqual(x?: any, y?: any) {
+function isEqual(x?: any, y?: any, noRef?: boolean) {
   if (x === y) {
     return x !== 0 || 1 / x === 1 / y // isEqual(0, -0) => false
   }
@@ -227,22 +229,26 @@ function isEqual(x?: any, y?: any) {
     return true // isEqual(NaN, NaN) => true
   }
 
-  let temp // 工具人 非array/object/regexp只执行一次getType
-  if ((temp = getType(x)) === 'object') {
-    if (temp !== getType(y)) {
+  if (noRef) {
+    return false
+  }
+
+  // noRef: 工具人 非array/object/regexp只执行一次getType
+  if ((noRef = getType(x) as any) === 'object') {
+    if ((noRef as any) !== getType(y)) {
       return false // 先比较Object.keys()长度不太划算
     }
 
     const KEYS: IObject<1> = {}
-    for (temp in x) {
-      if (!isEqual(x[temp], y[temp])) {
+    for (noRef as any in x) {
+      if (!isEqual(x[noRef as any], y[noRef as any])) {
         return false
       }
-      KEYS[temp] = 1
+      KEYS[noRef as any] = 1
     }
 
-    for (temp in y) {
-      if (!KEYS[temp]) {
+    for (noRef as any in y) {
+      if (!KEYS[noRef as any]) {
         return false
       }
     }
@@ -250,13 +256,13 @@ function isEqual(x?: any, y?: any) {
     return true
   }
 
-  if (temp === 'array') {
-    if (temp !== getType(y) || (temp = x.length) !== y.length) {
+  if ((noRef as any) === 'array') {
+    if ((noRef as any) !== getType(y) || (noRef = x.length) !== y.length) {
       return false
     }
 
-    while (temp--) {
-      if (!isEqual(x[temp], y[temp])) {
+    while ((noRef as any)--) {
+      if (!isEqual(x[noRef as any], y[noRef as any])) {
         return false
       }
     }
@@ -264,13 +270,13 @@ function isEqual(x?: any, y?: any) {
     return true
   }
 
-  if (temp === 'regexp') {
-    return (
-      temp === getType(y) &&
-      x.lastIndex === y.lastIndex &&
-      x.toString() === y.toString()
-    )
-  }
+  // if ((noRef as any) === 'regexp') {
+  //   return (
+  //     (noRef as any) === getType(y) &&
+  //     x.lastIndex === y.lastIndex &&
+  //     x.toString() === y.toString()
+  //   )
+  // }
 
   return false
 }
@@ -301,7 +307,7 @@ function isPassive() {
   return passive as false | { passive: true }
 }
 
-/** 添加vue监听
+/** 添加vue监听(插入到最前面)
  * @param {Object} options 监听对象
  * @param {String} hook 监听事件
  * @param {Function} fn 监听回调
@@ -313,7 +319,7 @@ function setHook(
   fn: Function | Function[],
   scope?: any
 ) {
-  let originHook
+  let originHook: any
   if (Array.isArray(fn)) {
     for (originHook of fn) {
       setHook(options, hook, originHook, scope)
@@ -321,20 +327,20 @@ function setHook(
     return
   }
 
-  originHook = options[hook]
-  if (!originHook) {
-    originHook = []
-  } else if (Array.isArray(originHook)) {
-    if (originHook.includes((fn as any)._ || fn)) {
+  if ((originHook = options[hook])) {
+    if (
+      (Array.isArray(originHook) && originHook.includes((fn as any)._ || fn)) ||
+      originHook === ((fn as any)._ || fn)
+    ) {
       return
     }
-  } else {
-    if (originHook === (fn as any)._ || fn) {
-      return
-    }
+
     originHook = [originHook]
+  } else {
+    originHook = []
   }
-  if (scope) {
+
+  if (arguments.length > 3) {
     scope = fn.bind(scope)
     scope._ = fn
     fn = scope
@@ -361,24 +367,22 @@ function onSleep(this: any, to: any, from: any, next: any) {
 function sleep(component: Component | AsyncComponent) {
   component = (component as any).options || component
   const originRender = (component as any).render
-  if (!originRender || (component as any).$_s) {
+  if (!originRender || (component as any)._$s) {
     return
   }
-  ;(component as any).$_s = 1
+  ;(component as any)._$s = 1
   if ((component as any).functional) {
-    const state = Vue.observable({ s_: 0 })
+    const store = Vue.observable({ s_: 0 })
     let vnode: any
     ;(component as any).render = function(h: any, context: any) {
-      if (state.s_) {
+      if (store.s_) {
         return vnode
       }
 
       let on = context.data
       on = on.on || (on.on = {})
-      setHook(on, 'hook:beforeRouteUpdate', onWake, state)
-      setHook(on, 'hook:activated', onWake, state)
-      setHook(on, 'hook:beforeRouteLeave', onSleep, state)
-      setHook(on, 'hook:deactivated', onSleep, state)
+      setHook(on, 'hook:activated', onWake, store)
+      setHook(on, 'hook:deactivated', onSleep, store)
       return (vnode = originRender.apply(this, arguments))
     }
     return
@@ -393,7 +397,7 @@ function sleep(component: Component | AsyncComponent) {
     data.s_ = 0 // 满足/^[&_]/不能转化为响应式属性
     return data
   }
-  setHook(component, 'beforeRouteUpdate', onWake)
+  setHook(component, 'beforeRouteUpdate', onWake) // 非hook, 只能实例化前赋值
   setHook(component, 'activated', onWake)
   setHook(component, 'beforeRouteLeave', onSleep)
   setHook(component, 'deactivated', onSleep)

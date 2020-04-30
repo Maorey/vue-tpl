@@ -1,18 +1,14 @@
-/** 偏好管理
- */
+/** 偏好管理 */
 import { VuexModule, Mutation } from 'vuex-module-decorators'
 import { local } from '@/utils/storage'
 import { set } from '@/utils/skin'
 import CONFIG from '@/config'
 
-/** 偏好管理
- */
+/** 偏好管理 */
 export interface IPrefer {
-  /** 皮肤
-   */
+  /** 皮肤 */
   skin: string
-  /** 语言
-   */
+  /** 语言 */
   lang: string
 
   // ...
@@ -22,12 +18,10 @@ export interface IPREFER extends IPrefer {
   // 存储键值
 }
 
-/** 本地存储的偏好信息对象 单例, 注意key是否冲突
- */
+/** 本地存储的偏好信息对象 单例, 注意key是否冲突 */
 const PREFER = (local.get(CONFIG.prefer) || {}) as IPREFER
 
-/** 偏好管理
- */
+/** 偏好管理 */
 class Prefer extends VuexModule implements IPrefer {
   /// State & Getter(public) ///
   lang = PREFER.lang || 'zh'
@@ -72,8 +66,7 @@ const hook: IHooks = (fn: hook) => {
 }
 hook._h = []
 
-/** 关闭窗口前写入本地
- */
+/** 关闭窗口前写入本地 */
 window.addEventListener('beforeunload', () => {
   for (const fn of hook._h) {
     fn(PREFER)

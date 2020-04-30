@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2020-01-02 16:13:36
  */
-import { CreateElement, Component as Comp, VNode } from 'vue'
+import { CreateElement, VNode } from 'vue'
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
@@ -12,156 +12,179 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 // import STYLE from './index.module.scss'
 import Info from './Info'
 import Loading from './Loading'
+import { status, component, filter, SLOTS } from './ChooserAsyncFunctional'
 
-import { isFn } from '@/utils'
+import { isDef, isFn, isEqual } from '@/utils'
 
 /// 常量(UPPER_CASE),单例/变量(camelCase),函数(无副作用,camelCase) ///
 // const ModuleOne: any = getAsync(() =>
 //  import(/* webpackChunkName: "ihOne" */ './ModuleOne')
 // )
-export const enum status {
-  none = 1,
-  loading = 2,
-  error = 3,
-  empty = 4,
-  success = 5,
-}
-type component = status | string | Comp
-type filter = (data: any) => { data: any; comp: component } | void
+export { status, component, filter }
 
-const DIC_SLOT = {
-  [status.none]: 'none',
-  [status.loading]: 'loading',
-  [status.error]: 'error',
-  [status.empty]: 'empty',
-}
 /** 异步选择器组件, 最终渲染组件将得到一个prop: data, 即异步结果
  *
- *  props: 见: Prop 【注意】: get/error 变化时会重新请求
- *
- *  events: 见: const enum status 键值
+ *  props: 见: Prop 【注意】: 响应任意prop变化
  *
  *  slots: 见: const enum status 键值, 支持对应作用域插槽/插槽【二选一】作用域插槽优先(二者都有时无法确定顺序, 故)
  *
+ *  events: 见: const enum status 键值
+ *
  *  示例:
  *  <template>
- *    <ChooserAsync :get="get" @error="handleError">
- *      <template #none>啥也没有</template>
- *      <!-- 同#success -->
+ *    <Async :fetch="fetch" :args="args" @error="handleError">
+ *      <template #error>出错了</template>
+ *      <!-- 与#success二选一 -->
  *      <template #default="{ data }">
- *        <textarea :value="JSON.stringify(data)" />
+ *        <textarea>{{ JSON.stringify(data) }}</textarea>
  *      </template>
- *    </ChooserAsync>
+ *    </Async>
  *  </template>
  *
  * ( import 咋没得文档呢, 因为tsx么... ┐(: ´ ゞ｀)┌ )
  */
-@Component
+@Component({
+  beforeRouteUpdate(this: any, to, from, next) {
+    this.isOut = 0
+    setTimeout(next)
+  },
+  beforeRouteLeave(this: any, to: any, from: any, next: any) {
+    this.isOut = to.matched.length && 1
+    setTimeout(next)
+  },
+})
 export default class extends Vue {
   /// [model] (@Model('change') readonly attr!: string) ///
   /// [props] (@Prop() readonly attr!: string) ///
-  /** 未匹配到任何组件但有数据时使用的组件[默认‘div’] 若字典存在, tag为字符串, 则优先从字典取
-   */
+  /** 查询函数 diff:fetch,args ? fetch.apply(store, args) */
+  @Prop() readonly fetch?: (...args: any[]) => Promise<any>
+  /** 查询函数参数列表 */
+  @Prop() readonly args?: any[]
+  /** 查询函数 get.call(store), 同 (fetch + args) */
+  @Prop() readonly get?: () => Promise<any>
+  /** 查询错误处理 store.error(err) */
+  @Prop() readonly error?: status | ((err?: Error) => component)
+  /** 未匹配到任何组件但有数据时使用的组件[默认div] */
   @Prop({ default: 'div' }) readonly tag!: component
-  /** 查询函数
-   */
-  @Prop() readonly get?: () => Promise<IObject>
-  /** 选择组件函数 若字典存在, 返回的comp属性为字符串, 则优先从字典取
-   */
+  /** 数据&组件筛选 store.filter(data) */
   @Prop() readonly filter?: filter
-  /** 自定义处理查询错误时的展示(接受参数为错误对象)
-   */
-  @Prop() readonly error?: status | ((err: Error) => component)
-  /** 组件字典 当filter返回string时即从字典取对应组件
-   */
-  @Prop() readonly components?: IObject<Comp>
+  /** 组件字典[优先使用] */
+  @Prop() readonly components?: { [name: string]: component }
   /// [data] (attr: string = '响应式属性' // 除了 undefined) ///
   private is: component = status.loading
-  private isSleep = false // 是否失活/休眠
+  private isOut = 0 // 是否失活/离开
   /// 非响应式属性 (attr?: string // undefined) ///
   private $_response?: any // 原始响应数据
   private $_data?: any // 绑定数据
   private $_vnode?: VNode
+  private $_isGet?: false | 1 | 2
+  private $_onError?: (err?: Error) => void
   /// [computed] (get attr() {} set attr(){}) ///
   /// [LifeCycle] (private beforeCreate(){}/.../destroyed(){}) ///
   private created() {
-    this.i()
+    this.g()
   }
 
   private activated() {
-    this.isSleep = false
+    this.isOut = 0
   }
 
   private deactivated() {
-    this.isSleep = true
+    this.isOut = 1
   }
 
   /// [watch] (@Watch('attr') onAttrChange(val, oldVal) {}) ///
   /// [methods] (method(){}) ///
-  @Watch('get')
-  private i() {
-    this.is = status.loading
-    // eslint-disable-next-line prefer-promise-reject-errors
-    ;(this.get ? this.get() : Promise.reject())
-      .then(data => {
-        this.$_response = data
-        this.w()
-      })
-      .catch(err => {
-        this.is =
-          (isFn(this.error) ? (this.error as any)(err) : this.error) ||
-          status.error
-      })
-  }
-
   @Watch('tag')
   @Watch('filter')
-  @Watch('components')
+  @Watch('components', { deep: true })
   private w() {
-    const data = this.$_response
-    if (data) {
+    let data = this.$_response
+    if (isDef(data)) {
       const DIC = this.components
-      const tag = this.tag
-      if (!this.filter) {
-        this.$_data = { props: { data } }
-        this.is = (DIC && DIC[tag as string]) || tag
-        return
+      if (isFn(this.filter)) {
+        if (isDef((data = this.filter(data)))) {
+          this.$_data = { data: data.data || data }
+          this.is = (DIC && DIC[data.comp]) || data.comp || this.tag
+        } else {
+          this.is = status.empty
+        }
+      } else {
+        this.$_data = { data }
+        this.is = (DIC && DIC[this.tag as string]) || this.tag
       }
-
-      const result = this.filter(data)
-      if (result) {
-        this.$_data = { props: { data: result.data || result } }
-        this.is = (DIC && DIC[result.comp as string]) || result.comp || tag
-        return
-      }
+    } else {
+      this.is = status.empty
     }
+  }
 
-    this.is = status.empty
+  @Watch('error')
+  private e() {
+    const onError =
+      this.$_onError ||
+      (this.$_onError = (err?: Error) => {
+        this.is =
+          (isFn(this.error) ? this.error(err) : this.error) || status.error
+      })
+    if (this.$_isGet) {
+      this.is = status.loading
+      ;(this.$_isGet > 1
+        ? (this.fetch as any).apply(this, this.args)
+        : (this as any).get()
+      )
+        .then((data: any) => {
+          this.$_response = data
+          this.w()
+        })
+        .catch(onError)
+    } else if (this.error) {
+      onError()
+    } else {
+      this.$_response = 1
+      this.w()
+    }
+  }
+
+  @Watch('get')
+  private g() {
+    this.$_isGet = isFn(this.get) ? 1 : isFn(this.fetch) && 2
+    this.e()
+  }
+
+  @Watch('fetch')
+  private f() {
+    this.$_isGet = isFn(this.fetch) ? 2 : isFn(this.get) && 1
+    this.e()
+  }
+
+  @Watch('args', { deep: true })
+  private a(now?: any, old?: any) {
+    isEqual(now, old) || this.f()
   }
 
   // see: https://github.com/vuejs/jsx#installation
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private render(h: CreateElement) {
-    if (this.isSleep) {
+    if (this.isOut) {
       return this.$_vnode
     }
 
     let Comp: any = this.is // for 依赖收集
     let slot
-    if ((slot = DIC_SLOT[Comp as keyof typeof DIC_SLOT])) {
+    if ((slot = (SLOTS as any)[Comp])) {
       this.$emit(slot)
       slot = this.$scopedSlots[slot]
         ? (this.$scopedSlots[slot] as any)(this.$_data)
         : this.$slots[slot]
       if (slot && slot.length) {
         Comp = this.tag
-        return (this.$_vnode = <Comp on={{ $: this.i }}>{slot}</Comp>)
+        return (this.$_vnode = <Comp on={{ $: this.e }}>{slot}</Comp>)
       }
     }
 
     switch (Comp) {
       case status.none:
-        return (this.$_vnode = undefined)
+        return (this.$_vnode = <i style="display:none" />)
       case status.loading:
         return (this.$_vnode = <Loading />)
       case status.empty:
@@ -169,13 +192,14 @@ export default class extends Vue {
           <Info icon="el-icon-info" type="info" msg="empty" retry="" />
         ))
       case status.error:
-        return (this.$_vnode = <Info on={{ $: this.i }} />)
+        return (this.$_vnode = <Info on={{ $: this.e }} />)
       default:
         this.$emit('success')
         slot = this.$scopedSlots
         slot = slot.success || slot.default
+        Object.assign(this.$data.props || (this.$data.props = {}), this.$_data)
         return (this.$_vnode = (
-          <Comp {...{ ...this.$data, ...this.$_data }}>
+          <Comp {...this.$data}>
             {slot
               ? slot(this.$_data)
               : (slot = this.$slots).success || slot.default}

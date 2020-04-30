@@ -3,7 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2019-07-09 16:08:07
  */
-// import { on } from '@/utils/eventBus' // 全局消息总线
 import { getAsync } from '@/utils/highOrder' // 高阶组件工具
 
 import PageHeader from '@indexCom/PageHeader' // 页面标题

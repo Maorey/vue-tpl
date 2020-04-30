@@ -7,28 +7,26 @@ import { getAsync } from '@/utils/highOrder' // 高阶组件工具
 // import RouterViewTransparent from '@com/RouterViewTransparent'
 
 export default {
-  /*! 【other页路由配置(https://router.vuejs.org/zh/api/#router-构建选项)】 */
+  /*! 【other页路由配置(https://router.vuejs.org/zh/api/#router-构建选项)】
+   * meta: {
+   *  name 对应标题/位置导航
+   *  noCache 是否不缓存
+   *  refresh 是否需要刷新
+   *  pageAlive 最大缓存时间
+   * }
+   */
 
   mode: 'hash',
   meta: {
-    /*! 默认页 */
-    /** 默认页
-     */
-    home: '/home',
-
-    /*! 标题 */
-    /** 标题
-     */
-    name: 'vue-tpl',
+    /*! 默认页 */ home: '/home',
+    /*! 标题 */ name: 'vue-tpl',
   },
   routes: [
     {
       /*! 首页 */
 
       path: '/home',
-      meta: {
-        name: '首页', // 标题
-      },
+      meta: { name: '首页' },
       component: getAsync(() =>
         import(/* webpackChunkName: "oHome" */ '@other/views/Home')
       ),
@@ -64,9 +62,7 @@ export default {
       /*! 关于 */
 
       path: '/about',
-      meta: {
-        name: '关于',
-      },
+      meta: { name: '关于' },
       component: getAsync(() =>
         import(/* webpackChunkName: "oAbout" */ '@other/views/About')
       ),

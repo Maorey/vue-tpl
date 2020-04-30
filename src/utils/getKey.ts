@@ -10,6 +10,7 @@ function getKey(name?: string): string {
 }
 
 const CACHE_UUID: IObject<string> = {}
+const CHAR = 'qwertyuioplkjhgfdsazxcvbnm78965_41230MNBVCXZLKJHGFDSAPOIUYTREWQ'
 /** 获取客户端唯一标识(默认长度16)
  * @param key uuid标识
  * @param len uuid长度
@@ -26,11 +27,8 @@ function getUuid(
 
   refresh = Date.now().toString(36) // 时间戳(长度8)
   if ((len = (len || 16) - refresh.length) > 0) {
-    const CHAR =
-      'qwertyuioplkjhgfdsazxcvbnm7896541230MNBVCXZLKJHGFDSAPOIUYTREWQ'
-    const cLen = CHAR.length
     while (len--) {
-      refresh += CHAR[(Math.random() * cLen) | 0]
+      refresh += CHAR[(Math.random() * CHAR.length) | 0]
     }
   } else if (len < 0) {
     refresh = refresh.substring(0, refresh.length + len)

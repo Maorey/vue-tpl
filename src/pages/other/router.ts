@@ -4,14 +4,39 @@
  * @Date: 2019-06-18 15:58:46
  */
 import Vue from 'vue'
-import Router, { RouterOptions, RouteConfig, Route, Location } from 'vue-router'
+import Router, { RouteConfig, Route, Location } from 'vue-router'
 
+import CONFIG from '@/config'
 import configRoute from '@oRoute' // 使用别名
 import getKey from '@/utils/getKey'
 import { cancel } from '@/utils/ajax'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+
+export interface IMeta {
+  /** 标题/面包屑 */
+  name: string
+  /** 是否需要刷新 */
+  refresh?: boolean
+  /** 是否不缓存 */
+  noCache?: boolean
+  /** 滚动位置 */
+  y?: number
+  x?: number
+  /** 是否有权访问 */
+  _: boolean
+  /** pageAlive setTimeout id */
+  t?: number
+  /** 嵌套路由自动加key用以标识 */
+  k?: number
+}
+declare global {
+  /** 路由对象 */
+  interface IORoute extends Route {
+    meta: IMeta
+  }
+}
 
 const META = configRoute.meta
 /// 路由元数据 ///
@@ -28,11 +53,11 @@ const META = configRoute.meta
     meta._ = true // 有权访问 或者移除无权的
     hack(route.children)
   }
-})(configRoute.routes as RouteConfig[])
+})(configRoute.routes)
 
 // scrollBehavior 不能处理指定元素的滚动
-const router = new Router(configRoute as RouterOptions)
-;(router as any).$ = Vue.observable({ e: null }) // hack 刷新路由
+const router = new Router(configRoute)
+;(router as any).$ = Vue.observable({ e: 0 }) // hack 刷新路由
 
 /// 路由刷新 ///
 /**
@@ -57,7 +82,7 @@ function restoreName(this: any) {
     (temp = temp.Ctor.options) &&
     (temp.name = this._$a)
 }
-function refreshRoute(route: Route) {
+function refreshRoute(route: Route, noTop?: 1) {
   if (route.matched) {
     route = route.matched as any // 最后一个match一定是当前路由
     route = (route as any)[(route as any).length - 1]
@@ -65,10 +90,11 @@ function refreshRoute(route: Route) {
 
   let temp: any
   let instance: any
+  const instances = (route as any).instances
   const HOOK = 'hook:beforeDestroy'
-  for (temp in (route as any).instances) {
+  for (temp in instances) {
     if (
-      (instance = (route as any).instances[temp]) &&
+      (instance = instances[temp]) &&
       (temp = (temp = instance.$vnode.componentOptions) && temp.Ctor.options)
     ) {
       if (!instance._$a) {
@@ -79,11 +105,11 @@ function refreshRoute(route: Route) {
     }
   }
 
-  // 没实例 刷她爸爸/整个网页
+  // 没实例(已经渲染了,劫持render也没用) 刷她爸爸/整个网页
   instance ||
-    ((route as any).parent
-      ? refreshRoute((route as any).parent)
-      : location.reload())
+    ((temp = (route as any).parent) // eslint-disable-line no-cond-assign
+      ? refreshRoute(temp, noTop)
+      : noTop || location.reload())
 }
 
 /// 导航守卫 ///
@@ -91,20 +117,17 @@ const REG_REDIRECT = /\/r\//
 router.beforeEach((to, from, next) => {
   let temp
   if (!to.matched.length) {
-    // 没有匹配的路由
     if (!from.matched.length) {
-      next(META.home)
-      return
+      return next(META.home)
     }
     if (REG_REDIRECT.test((temp = to.redirectedFrom || to.fullPath))) {
       temp = temp.replace(REG_REDIRECT, '/')
       if (temp === (from.redirectedFrom || from.fullPath)) {
-        refreshRoute(from)
-        return
+        return refreshRoute(from)
       }
       // 重定向并刷新
       if ((to = router.resolve(temp).route).matched.length) {
-        refreshRoute(to)
+        refreshRoute(to, 1)
         next(to as Location) // 还是要再进一次beforeEach, 虽然都给解析出来了┐(: ´ ゞ｀)┌
       }
     }
@@ -115,8 +138,27 @@ router.beforeEach((to, from, next) => {
     from.matched.length || next(META.home)
     return
   }
+
   NProgress.start() // 开始进度条
   cancel('导航: 取消未完成请求')
+  // 缓存控制
+  if ((temp = to.meta).noCache) {
+    refreshRoute(to, 1)
+  } else {
+    if (temp.refresh) {
+      refreshRoute(to, 1)
+      temp.refresh = 0
+    }
+    if (temp.t) {
+      clearTimeout(temp.t)
+      temp.t = 0
+    }
+    temp = from.meta.pageAlive || CONFIG.pageAlive
+    temp &&
+      (from.meta.t = setTimeout(() => {
+        from.meta.refresh = 1
+      }, temp))
+  }
   // 关闭所有提示
   temp = router.app
   temp.$message.closeAll()
@@ -124,8 +166,8 @@ router.beforeEach((to, from, next) => {
   try {
     temp.$msgbox.close()
   } catch (error) {}
+  // 记录离开前的滚动位置
   // if ((temp = temp.$el) && (temp = temp.querySelector('.el-main'))) {
-  //   // 记录离开前的滚动位置
   //   from.meta.x = temp.scrollLeft
   //   from.meta.y = temp.scrollTop
   // }
@@ -142,7 +184,7 @@ router.beforeEach((to, from, next) => {
 // function restoreScrollPosition(this: Vue) {
 //   const container = this.$root.$el.querySelector('.el-main')
 //   if (container) {
-//     const meta = this.$route.meta
+//     const meta = ((this as any).route || this.$route).meta
 //     container.scrollLeft = meta.x
 //     container.scrollTop = meta.y
 //   }

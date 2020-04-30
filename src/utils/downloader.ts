@@ -39,12 +39,14 @@ function download(url: string, query?: IObject, name?: string) {
         name = (name as any)[(name as any).length - 1].split('=')
         name = (name as any)[(name as any).length - 1]
       }
-      const type = (name as string).split('.')
 
       return {
         name,
         size: res.data.size,
-        type: type[type.length - 1], // res.data.type, // application/x-msdownload
+        // res.data.type, // application/x-msdownload
+        type: (name as string).substring(
+          (name as string).lastIndexOf('.') + 1 || (name as string).length
+        ),
         src: window.URL.createObjectURL(res.data),
       }
     })

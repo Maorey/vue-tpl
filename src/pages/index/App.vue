@@ -23,7 +23,7 @@
       mode="out-in"
     >
       <KeepAlive
-        :max="9"
+        :max="max"
         :exclude="$router.$.e"
       >
         <RouterView />
@@ -62,6 +62,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
 
+import CONFIG from '@/config'
 import statePrefer from '@index/store/modules/prefer'
 
 @Component
@@ -70,7 +71,7 @@ export default class extends Vue {
   private showNav = false
 
   // computed
-  get LINK() {
+  private get LINK() {
     const LINK = []
 
     const ROUTE = (this.$router as any).options.routes as RouteConfig[]
@@ -85,16 +86,20 @@ export default class extends Vue {
     return LINK
   }
 
-  get SKIN() {
+  private get SKIN() {
     return ['light', 'dark']
   }
 
-  get skin() {
+  private get skin() {
     return statePrefer.skin
   }
 
-  set skin(skin: string) {
+  private set skin(skin: string) {
     statePrefer.SET_SKIN(skin)
+  }
+
+  private get max() {
+    return CONFIG.page > 1 ? CONFIG.page : 1
   }
 }
 </script>

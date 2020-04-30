@@ -1,9 +1,7 @@
-/*
- * @Description: vue 扩展
- * @Author: 毛瑞
- * @Date: 2019-07-09 17:15:16
- */
-import Vue, { VNode } from 'vue'
+/* vue 扩展申明 */
+
+import { VNode } from 'vue'
+import { Handler } from '@/utils/eventBus'
 
 type type = 'success' | 'warning' | 'info' | 'error'
 type action = 'confirm' | 'cancel' | 'close'
@@ -110,11 +108,63 @@ interface IMessage extends Message {
 declare module 'vue/types/vue' {
   // eslint-disable-next-line @typescript-eslint/interface-name-prefix
   interface Vue {
-    /** 默认绑定<style module> class名字典
-     */
+    /** .vue <style module> class名字典计算属性 */
     $style: IObject<string>
+    // /** 是否满足(全部)指定权限
+    //  * @param {...String} authKey 权限id
+    //  *
+    //  * @returns {Boolean}
+    //  */
+    // authFit: (...authKey: string[]) => boolean
+    // /** 是否包含指定权限(之一)
+    //  * @param {...String} authKey 权限id
+    //  *
+    //  * @returns {Boolean}
+    //  */
+    // authAny: (...authKey: string[]) => boolean
+    /** [eventBus]监听事件
+     * @param {String} eventName 事件名
+     * @param {String|Handler} nameSpace:String 命名空间 handler:Handler 事件处理函数
+     * @param {Handler} handler 事件处理函数
+     * @param {Boolean} isOnce 是否只监听一次
+     */
+    on: (
+      eventName: string,
+      nameSpace: string | Handler,
+      handler?: Handler,
+      isOnce?: boolean
+    ) => void
+    /** [eventBus]单次监听事件
+     * @param {String} eventName 事件名
+     * @param {String|Handler} nameSpace:String 命名空间 handler:Handler 事件处理函数
+     * @param {Handler} handler 事件处理函数
+     */
+    once: (
+      eventName: string,
+      nameSpace: string | Handler,
+      handler?: Handler
+    ) => void
+    /** [eventBus]取消监听事件
+     * 如果同时提供了事件与回调，则只移除这个回调的监听器
+     * ？如果只提供了事件，则移除该事件所有的监听器 (文档有写并未实现)
+     * ！如果没有提供参数(eventName === undefined)，则移除所有的事件监听器
+     * @param {String} eventName 事件名
+     * @param {String|Handler} String:nameSpace 命名空间 Handler:handler 事件处理函数
+     * @param {Handler} handler 事件处理函数
+     */
+    off: (
+      eventName?: string,
+      nameSpace?: string | Handler,
+      handler?: Handler
+    ) => void
+    /** [eventBus]触发事件
+     * @param {String} eventKey 事件标识 (= 命名空间.事件名)
+     * @param {...Any} args 事件参数列表
+     */
+    emit: (eventKey: string, ...args: any[]) => void
 
     /// element-UI 组件快速方法 ///
+    /** 加载 */
     $loading: (options: {
       target?: Element | Node | string
       body?: boolean
@@ -125,20 +175,22 @@ declare module 'vue/types/vue' {
       background?: string
       customClass?: string
     }) => { close: () => void }
+    /** 弹框消息 */
     $msgbox: IMsgbox
+    /** 弹框提示消息 */
     $alert: IMsgbox['alert']
+    /** 弹框确认消息 */
     $confirm: IMsgbox['confirm']
+    /** 弹框提示确认 */
     $prompt: IMsgbox['prompt']
+    /** 通知消息 */
     $notify: INotification
+    /** 提示消息 */
     $message: IMessage
   }
-  // interface VueConstructor {
-  //   store: any
-  //   router: any
-  // }
+  // interface VueConstructor { }
 }
 
 // declare module 'vue/types/options' {
-//   interface ComponentOptions<V extends Vue> {
-//   }
+//   interface ComponentOptions<V extends Vue> { }
 // }

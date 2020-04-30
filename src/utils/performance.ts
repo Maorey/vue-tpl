@@ -131,16 +131,11 @@ const factory = (fn: throttleDebounce): IThrottleDebounceDecorator => (
   descriptor?: any
 ) => {
   // for Class不同实例
-  const instanceMap = new WeakMap()
   const FN = function() {
     const args = arguments
     return function(this: any) {
-      let handledFN = instanceMap.get(this)
-      if (!handledFN) {
-        handledFN = fn.apply(this, args as any)
-        instanceMap.set(this, handledFN)
-      }
-      return handledFN.apply(this, arguments as any)
+      this._$e || (this._$e = fn.apply(this, args as any))
+      this._$e.apply(this, arguments as any)
     }
   } as throttleDebounce
 

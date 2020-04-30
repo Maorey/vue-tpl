@@ -29,7 +29,7 @@
       mode="out-in"
     >
       <KeepAlive
-        :max="9"
+        :max="max"
         :exclude="$router.$.e"
       >
         <RouterView />
@@ -173,23 +173,28 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 
+import CONFIG from '@/config'
 import statePrefer from '@other/store/modules/prefer'
 
 @Component
 export default class extends Vue {
-  get SKIN() {
+  private get SKIN() {
     return [
       { name: 'light', type: 'danger' },
       { name: 'dark', type: 'primary' },
     ]
   }
 
-  get skin() {
+  private get skin() {
     return statePrefer.skin
   }
 
-  set skin(skin: string) {
+  private set skin(skin: string) {
     statePrefer.SET_SKIN(skin)
+  }
+
+  private get max() {
+    return CONFIG.page > 1 ? CONFIG.page : 1
   }
 }
 </script>

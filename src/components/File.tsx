@@ -12,7 +12,9 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 // import { getAsync } from '@/utils/highOrder'
 // import STYLE from './index.module.scss'
 import ElLink from 'element-ui/lib/link'
+
 import storeFile, { STATE, ITask } from '@/store/file'
+import { isEqual } from '@/utils'
 
 /// 常量(UPPER_CASE),单例/变量(camelCase),函数(无副作用,camelCase) ///
 // const ModuleOne: any = getAsync(() =>
@@ -34,11 +36,11 @@ export default class extends Vue {
   @Prop() readonly text?: string
   /** 是否禁用 */
   @Prop() readonly disabled?: boolean
-  /** 图标(TODO: 默认取文件名后缀) */
-  @Prop({ default: 'el-icon-document' }) readonly icon!: string
+  /** 图标(默认取文件名后缀) */
+  @Prop() readonly icon?: string
   /// [data] (attr: string = '响应式属性' // 除了 undefined) ///
   private isSleep = false // 是否失活/休眠
-  private isDel = 0
+  private task = { state: STATE.pause } as ITask // 当前下载任务信息
   /// 非响应式属性 (attr?: string // undefined) ///
   private $_vnode?: VNode
   /// [computed] (get attr() {} set attr(){}) ///
@@ -47,22 +49,28 @@ export default class extends Vue {
     throw new Error('File: 必须重写store以提供文件管理数据仓库!')
   }
 
-  protected get task() {
-    let task: any = this.isDel
-    this.store.ADD_TASK({
-      task: {
-        task: {
-          url: this.href,
-          query: this.query,
-          name: this.fileName,
-        },
-        state: STATE.pause,
-      },
-      callback(t) {
-        task = t
-      },
-    })
-    return task as ITask
+  protected get $_icon() {
+    const icon = this.icon
+    if (icon) {
+      return icon
+    }
+
+    return 'el-icon-document'
+
+    // TODO: 文件类型图标
+    // !(icon = this.task.type) &&
+    //   (icon = this.fileName) &&
+    //   (icon = icon.substring(icon.lastIndexOf('.') + 1 || icon.length))
+
+    // switch (icon) {
+    //   case 'doc':
+    //   case 'docx':
+    //     return 'i-doc'
+    //   case 'pdf':
+    //     return 'i-pdf'
+    //   default:
+    //     return 'el-icon-document'
+    // }
   }
 
   /// [LifeCycle] (private beforeCreate(){}/.../destroyed(){}) ///
@@ -77,18 +85,30 @@ export default class extends Vue {
   /// [watch] (@Watch('attr') onAttrChange(val, oldVal) {}) ///
   /// [methods] (method(){}) ///
   protected load() {
-    this.store.SET_STATE({
-      task: this.task as ITask,
-      state: STATE.loading,
+    this.store.ADD_TASK({
+      task: {
+        url: this.href,
+        query: this.query,
+        name: this.fileName,
+      },
+      callback: task => {
+        if (task === this.task) {
+          this.store.SET_STATE({ task, state: STATE.loading })
+        } else {
+          this.task = task
+        }
+      },
     })
   }
 
   protected save() {
-    this.store.SAVE(this.task as ITask)
-  }
-
-  protected reLoad() {
-    this.isDel++
+    const task = this.task
+    // 不允许重命名文件 this.fileName === task.name
+    if (this.href === task.url && isEqual(this.query, task.query)) {
+      this.store.SAVE(task)
+    } else {
+      this.load()
+    }
   }
 
   // see: https://github.com/vuejs/jsx#installation
@@ -99,16 +119,14 @@ export default class extends Vue {
     }
 
     const text = this.text || this.$slots.default
-    const icon = this.icon // TODO: 未指定图标时根据文件名后缀设置图标
-
     switch (this.task.state) {
       case STATE.del:
         return (this.$_vnode = (
           <ElLink
             type="info"
-            icon={icon}
+            icon={this.$_icon}
             disabled={this.disabled}
-            on={{ click: this.reLoad }}
+            on={{ click: this.load }}
           >
             {text}
           </ElLink>
@@ -129,7 +147,7 @@ export default class extends Vue {
         return (this.$_vnode = (
           <ElLink
             type="primary"
-            icon={icon}
+            icon={this.$_icon}
             disabled={this.disabled}
             on={{ click: this.load }}
           >
@@ -151,7 +169,7 @@ export default class extends Vue {
       // eslint-disable-next-line no-fallthrough
       default:
         return (this.$_vnode = (
-          <ElLink icon={icon} on={{ click: this.save }}>
+          <ElLink icon={this.$_icon} on={{ click: this.save }}>
             {text}
           </ElLink>
         ))

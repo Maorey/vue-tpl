@@ -7,9 +7,8 @@ import Vue from 'vue'
 
 const BUS = new Vue()
 
-/** 事件处理函数
- */
-type Handler = (...args: any[]) => any
+/** 事件处理函数 */
+export type Handler = (...args: any[]) => any
 
 /** 监听事件
  * @test true

@@ -240,7 +240,7 @@ module.exports = function(config, ENV, pages) {
         chunks: 'all',
         priority: 66,
         reuseExistingChunk: true,
-        test: /[\\/]node_modules[\\/]echarts[\\/]/,
+        test: /[\\/]node_modules[\\/]echarts(?:-.+)?[\\/]/,
       },
       // d3.js
       d3: {

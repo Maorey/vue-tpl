@@ -229,8 +229,7 @@ function ADD_TASK(
   item = { state: STATE.del } as ITask // for watch
   tasks.push(item)
   item.id = getId('f')
-  item.key = key || task.id
-  item.query = task.query
+  item.key = key || item.id
   setDefault(item, task)
   SET_STATE.call(this, { task: item, state: state || STATE.loading })
   return item

@@ -143,32 +143,32 @@ function getAsync(
   config.delay || (config.delay = 250)
   config.timeout || (config.timeout = CONFIG.timeout)
 
-  const state = Vue.observable({ s: Status.init })
+  const store = Vue.observable({ s: Status.init })
   let component: Component | AsyncComponent
   let key: string | number
   let keyTimeout: number
   let keyDelay: number
   const onInit = () => {
-    state.s = Status.init
+    store.s = Status.init
   }
   const onLoad = () => {
     keyDelay = 0
-    state.s === Status.init && (state.s = Status.load)
+    store.s === Status.init && (store.s = Status.load)
   }
   const onTimeout = () => {
     keyTimeout = 0
-    if (state.s === Status.load) {
-      state.s = Status.fail
+    if (store.s === Status.load) {
+      store.s = Status.fail
       console.error('异步组件加载超时:', promiseFactory)
     }
   }
   const onFail = (err: Error) => {
-    state.s = Status.fail
+    store.s = Status.fail
     console.error('异步组件加载失败:', err)
   }
   const onDone = (comp: any) => {
     component = comp.default || comp
-    state.s = Status.done
+    store.s = Status.done
   }
 
   // 不缓存 VNode 以刷新自身
@@ -187,7 +187,7 @@ function getAsync(
         clearTimeout(keyTimeout)
         keyTimeout = 0
       }
-      switch (state.s) {
+      switch (store.s) {
         case Status.init:
           promiseFactory(context)
             .then(onDone)

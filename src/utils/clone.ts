@@ -66,7 +66,7 @@ function extend<T = any, U = any>(
 
   return current as T & U
 }
-/** 深克隆/扩展 对象/数组(不考虑原型和循环引用)
+/** 深克隆/扩展 对象/数组【含原型,不处理循环引用】
  * @test true
  *
  * @param {Filter} filter 可选，自定义过滤

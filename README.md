@@ -31,7 +31,7 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
 
 ## 环境要求
 
-- `Node.js`: v12 ([fibers](https://github.com/laverdet/node-fibers#supported-platforms) v4.0.2 不支持 Node v13)
+- `Node.js`: >= v12
 - `yarn`: 最新
 
 ### 建议开发环境
@@ -171,6 +171,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 │   │── api # http通信
 │   │── assets # 静态资源文件目录, 使用到的会被解析处理(比如图片等)
 │   │── components # 从views/pages提取的复用组件(建文件夹分类, 未分类的基本就是基础组件了)
+│   │── functions # 从views/pages提取的复用逻辑(建文件夹分类, 未分类的基本就是公用逻辑了)
 │   │── config # 配置目录
 │   │── enum # 枚举目录
 │   │── lang # 多语言目录
@@ -181,7 +182,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 │   │── store # 状态管理
 │   │   └── modules # 各模块状态管理
 │   │── types # ts 接口/申明文件
-│   │── utils # 工具集(一般为幂等函数/单例对象/Class)
+│   │── utils # 工具集(业务无关, 一般为幂等函数/单例对象/Class...)
 │   │── views # 视图
 │   │── pages # 【可选】多页时页面的存储目录
 │   │── html模板名 # 【可选】存放页面代码目录
@@ -827,6 +828,5 @@ http {
 ### 其他
 
 - 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
-- [fibers](https://github.com/laverdet/node-fibers#supported-platforms) v4.0.2 **不支持 Node v13**
 - `crypto-js` v4 **不支持 IE10**
 - `TypeScript`(3.8.2) `const enum` 编译为内联代码(`inline code`)的支持有限, 尽量使用常量成员, 然后等[更新](https://github.com/microsoft/TypeScript)吧

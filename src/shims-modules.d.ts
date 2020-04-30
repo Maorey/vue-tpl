@@ -1,8 +1,4 @@
-/*
- * @Description: 模块申明
- * @Author: 毛瑞
- * @Date: 2019-07-09 16:19:51
- */
+/* 模块申明 */
 
 declare module '*.module.scss' {
   /** css 模块
@@ -92,6 +88,13 @@ declare module '*.json' {
 // declare module '@luma.gl/addons'
 declare module '*'
 
+declare type Falsy = false | 0 | 0n | '' | null | undefined // | NaN
+/** 任意对象 */
+declare interface IObject<T = any> {
+  [key: string]: T
+  [key: number]: T
+}
+
 // hack ECharts for switch skin
 declare namespace echarts {
   // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -107,12 +110,3 @@ declare namespace echarts {
     ): void
   }
 }
-
-/** 任意对象
- */
-declare interface IObject<T = any> {
-  [key: string]: T
-  [key: number]: T
-}
-
-declare type Falsy = false | 0 | 0n | '' | null | undefined // | NaN
