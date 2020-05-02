@@ -114,10 +114,10 @@ function next(this: Image, updateUsageOnly?: boolean) {
     for (temp of tasks) {
       state = temp.state
       if (!updateUsageOnly && state === STATE.wait) {
-        setState.call(this, temp, STATE.loading)
+        SET_STATE.call(this, temp, STATE.loading)
         updateUsageOnly = true
         if (!shouldRemove) {
-          return true
+          return
         }
       }
 
@@ -125,16 +125,20 @@ function next(this: Image, updateUsageOnly?: boolean) {
     }
 
     if ((temp = tasksRemoveable.length)) {
-      while (temp-- && this.RAM > RAM) {
-        removeTask.call(this, tasksRemoveable[temp])
+      for (state = 0; state < temp && this.RAM > RAM; state++) {
+        REMOVE_TASK.call(this, tasksRemoveable[state])
       }
-      return true
+      return
     }
   }
 
   this.usage = (100 * this.RAM) / RAM
 }
-function setState(this: Image, task: ITask, state: STATE.wait | STATE.loading) {
+function SET_STATE(
+  this: Image,
+  task: ITask,
+  state: STATE.wait | STATE.loading
+) {
   if (task.t) {
     clearTimeout(task.t)
     task.t = 0
@@ -159,7 +163,7 @@ function setState(this: Image, task: ITask, state: STATE.wait | STATE.loading) {
         clearTimeout(temp.t)
         alive &&
           (temp.t = setTimeout(() => {
-            removeTask.call(this, task)
+            REMOVE_TASK.call(this, task)
           }, alive))
         task.src = temp.f.src
         task.state = STATE.success
@@ -170,7 +174,7 @@ function setState(this: Image, task: ITask, state: STATE.wait | STATE.loading) {
             temp.f = fileInfo
             alive &&
               (temp.t = setTimeout(() => {
-                removeTask.call(this, task)
+                REMOVE_TASK.call(this, task)
               }, alive))
             task.src = fileInfo.src
             task.state = STATE.success
@@ -194,7 +198,7 @@ function setState(this: Image, task: ITask, state: STATE.wait | STATE.loading) {
       break
   }
 }
-function removeTask(this: Image, task: ITask) {
+function REMOVE_TASK(this: Image, task: ITask) {
   this.RAM -= removeCache(task)
   const state = task.state
   task.state = STATE.drop
@@ -256,9 +260,9 @@ export default class Image extends VuexModule implements IImage {
         state = task.state
         if (shouldPause) {
           state === STATE.loading &&
-            (count < max ? count++ : setState.call(this, task, STATE.wait))
+            (count < max ? count++ : SET_STATE.call(this, task, STATE.wait))
         } else if (loading && state === STATE.wait) {
-          setState.call(this, task, STATE.loading)
+          SET_STATE.call(this, task, STATE.loading)
           if (!--loading && !shouldRemove) {
             return
           }
@@ -271,7 +275,7 @@ export default class Image extends VuexModule implements IImage {
       count = 0
       state = tasksRemoveable.length
       while (count++ < state && this.RAM > RAM) {
-        removeTask.call(this, tasksRemoveable[state - count])
+        REMOVE_TASK.call(this, tasksRemoveable[state - count])
       }
     }
   }
@@ -289,7 +293,7 @@ export default class Image extends VuexModule implements IImage {
     let item
     for (item of tasks) {
       if (task.url === item.url && isEqual(task.query, item.query)) {
-        setState.call(this, item, STATE.loading)
+        SET_STATE.call(this, item, STATE.loading)
         payload.callback(item)
         return
       }
@@ -301,7 +305,7 @@ export default class Image extends VuexModule implements IImage {
     item.url = task.url
     item.query = task.query
 
-    setState.call(this, item, STATE.loading)
+    SET_STATE.call(this, item, STATE.loading)
     payload.callback(item)
   }
 

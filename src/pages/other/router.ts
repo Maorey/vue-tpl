@@ -6,8 +6,8 @@
 import Vue from 'vue'
 import Router, { RouteConfig, Route, Location } from 'vue-router'
 
-import CONFIG from '@/config'
 import configRoute from '@oRoute' // 使用别名
+import CONFIG from '@/config'
 import getKey from '@/utils/getKey'
 import { cancel } from '@/utils/ajax'
 
@@ -17,16 +17,16 @@ import 'nprogress/nprogress.css'
 export interface IMeta {
   /** 标题/面包屑 */
   name: string
-  /** 是否需要刷新 */
-  refresh?: boolean
-  /** 是否不缓存 */
-  noCache?: boolean
+  /** 路由最大缓存时间 */
+  alive?: number
+  /** 下次访问路由是否需要重新加载 */
+  reload?: boolean
   /** 滚动位置 */
-  y?: number
   x?: number
+  y?: number
   /** 是否有权访问 */
   _: boolean
-  /** pageAlive setTimeout id */
+  /** alive setTimeout id */
   t?: number
   /** 嵌套路由自动加key用以标识 */
   k?: number
@@ -142,22 +142,22 @@ router.beforeEach((to, from, next) => {
   NProgress.start() // 开始进度条
   cancel('导航: 取消未完成请求')
   // 缓存控制
-  if ((temp = to.meta).noCache) {
+  if ((temp = to.meta).alive <= 0) {
     refreshRoute(to, 1)
   } else {
-    if (temp.refresh) {
+    if (temp.reload) {
       refreshRoute(to, 1)
-      temp.refresh = 0
+      temp.reload = 0
     }
     if (temp.t) {
       clearTimeout(temp.t)
       temp.t = 0
     }
-    temp = from.meta.pageAlive || CONFIG.pageAlive
-    temp &&
-      (from.meta.t = setTimeout(() => {
-        from.meta.refresh = 1
-      }, temp))
+    if (!((temp = from.meta.alive) <= 0)) {
+      from.meta.t = setTimeout(() => {
+        from.meta.reload = 1
+      }, temp || CONFIG.pageAlive)
+    }
   }
   // 关闭所有提示
   temp = router.app

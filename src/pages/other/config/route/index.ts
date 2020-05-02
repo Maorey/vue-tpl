@@ -10,9 +10,8 @@ export default {
   /*! 【other页路由配置(https://router.vuejs.org/zh/api/#router-构建选项)】
    * meta: {
    *  name 对应标题/位置导航
-   *  noCache 是否不缓存
-   *  refresh 是否需要刷新
-   *  pageAlive 最大缓存时间
+   *  alive 路由最大缓存时间
+   *  reload 下次访问路由是否需要重新加载
    * }
    */
 

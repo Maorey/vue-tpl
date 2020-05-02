@@ -180,7 +180,7 @@ function next(this: IFile, updateProgressOnly?: boolean) {
         SET_STATE.call(this, { task: temp, state: STATE.loading })
         updateProgressOnly = true
         if (!shouldRemove) {
-          return true
+          return
         }
       }
 
@@ -188,10 +188,10 @@ function next(this: IFile, updateProgressOnly?: boolean) {
     }
 
     if ((temp = tasksRemoveable.length)) {
-      while (temp-- && this.RAM > RAM) {
-        REMOVE_TASK.call(this, { task: tasksRemoveable[temp] })
+      for (state = 0; state < temp && this.RAM > RAM; state++) {
+        REMOVE_TASK.call(this, { task: tasksRemoveable[state] })
       }
-      return true
+      return
     }
   }
 
@@ -271,14 +271,15 @@ function SET_STATE(
 
     case STATE.loading:
       if ((temp = CACHE[task.key]) && temp.f) {
-        clearTimeout(temp.t)
-        this.config.alive &&
-          (temp.t = setTimeout(() => {
-            REMOVE_TASK.call(this, { task })
-          }, this.config.alive))
         if (task.state < STATE.saved) {
           task.state = STATE.success
           this.success++
+        } else {
+          clearTimeout(temp.t)
+          this.config.alive &&
+            (temp.t = setTimeout(() => {
+              REMOVE_TASK.call(this, { task })
+            }, this.config.alive))
         }
       } else if (this.loading < this.config.max && this.usage < 1) {
         ;(temp = download(task.url, task.query, task.name))
@@ -434,10 +435,12 @@ export default class File extends VuexModule implements IFile {
       }
 
       // 不用pop
-      count = 0
-      state = tasksRemoveable.length
-      while (count < state && (count < remove || this.RAM > RAM)) {
-        REMOVE_TASK.call(this, { task: tasksRemoveable[state - ++count] })
+      for (
+        count = 0, state = tasksRemoveable.length;
+        count < state && (count < remove || this.RAM > RAM);
+        count++
+      ) {
+        REMOVE_TASK.call(this, { task: tasksRemoveable[count] })
       }
     }
   }
@@ -482,7 +485,7 @@ export default class File extends VuexModule implements IFile {
       state = payload.tasks.state
     }
 
-    return payload.callback(
+    payload.callback(
       tasks.map(task =>
         ADD_TASK.call(
           this,
@@ -660,31 +663,22 @@ export default class File extends VuexModule implements IFile {
    */
   @Mutation
   SORT(payload?: {
-    field?: 'name' | 'type' | 'state' | 'id'
+    field?: Extract<keyof ITask, 'state' | 'id' | 'name' | 'type'>
     method?: 'ASC' | 'DES' | Compare
   }) {
-    let { field = 'id', method = 'ASC' } = payload || {}
+    payload || (payload = {})
+    const field = payload.field || 'id'
+    let method = payload.method as Compare
+    !method || (method as any) === 'ASC'
+      ? (method = ASC)
+      : (method as any) === 'DES' && (method = DES)
 
-    switch (method) {
-      case 'ASC':
-        method = ASC
-      // eslint-disable-next-line no-fallthrough
-      case 'DES':
-        method = DES
-      // eslint-disable-next-line no-fallthrough
-      default:
-        this.tasks = sort(this.tasks.slice(), (taskPrev, taskNext) =>
-          field === 'id'
-            ? (method as Compare)(
-              +taskPrev.id.substring(1),
-              +taskNext.id.substring(1)
-            )
-            : (method as Compare)(
-              taskPrev[field as keyof ITask],
-              taskNext[field as keyof ITask]
-            )
-        )
-    }
+    this.tasks = sort(
+      this.tasks.slice(),
+      field === 'id'
+        ? (t1, t2) => method(+t1.id.substring(1), +t2.id.substring(1))
+        : (t1, t2) => method(t1[field], t2[field])
+    )
   }
 
   /// Action ///
