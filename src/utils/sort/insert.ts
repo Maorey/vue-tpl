@@ -33,7 +33,7 @@ import { ASC, Compare } from '.'
 //       current = array[(pointer = anchor)]
 //       while (
 //         pointer > start &&
-//         Number(compare((temp = array[pointer - 1]), current)) > 0
+//         +(compare((temp = array[pointer - 1]), current) as any) > 0
 //       ) {
 //         array[pointer--] = temp
 //       }
@@ -82,28 +82,30 @@ import { ASC, Compare } from '.'
  */
 function findByBinary<T>(
   array: T[],
-  compare: Compare = ASC,
+  compare?: Compare,
   start?: number,
   end?: number
 ) {
-  start === undefined && (start = 0)
-  end === undefined && (end = array.length - 1)
+  compare || (compare = ASC)
+  start || (start = 0)
+  end || (end = array.length - 1)
 
   const current = array[end]
   // 先检查边界情况
-  if (Number(compare(array[start], current)) > 0) {
+  if (+(compare(array[start], current) as any) > 0) {
     return start
   }
-  if (!(Number(compare(array[end - 1], current)) > 0)) {
+  if (!(+(compare(array[end - 1], current) as any) > 0)) {
     return end
   }
+
   // 二分查找插入位置
   let mid: number
   let high = end - 2
   let low = start + 1
   while (low <= high) {
     mid = (low + high) >> 1 // 除2向下取整
-    if (Number(compare(array[mid], current)) > 0) {
+    if (+(compare(array[mid], current) as any) > 0) {
       high = mid - 1
     } else {
       low = mid + 1
@@ -147,12 +149,13 @@ function bubble<T>(array: T[], a: number, b: number): T[] {
  */
 function insertSortBinary<T>(
   array: T[],
-  compare: Compare<T> = ASC,
+  compare?: Compare<T>,
   start?: number,
   end?: number
 ): T[] {
-  start === undefined && (start = 0)
-  end === undefined && (end = array.length - 1)
+  compare || (compare = ASC)
+  start || (start = 0)
+  end || (end = array.length - 1)
 
   let low: number
   let mid: number
@@ -162,10 +165,11 @@ function insertSortBinary<T>(
   while (curr++ < end) {
     current = array[curr]
     // 先检查边界情况
-    if (!(Number(compare(array[curr - 1], current)) > 0)) {
+    if (!(+(compare(array[curr - 1], current) as any) > 0)) {
       continue
     }
-    if (Number(compare(array[start], current)) > 0) {
+
+    if (+(compare(array[start], current) as any) > 0) {
       low = start
     } else {
       // 二分查找插入位置
@@ -173,7 +177,7 @@ function insertSortBinary<T>(
       high = curr - 2
       while (low <= high) {
         mid = (low + high) >> 1 // 除2向下取整
-        if (Number(compare(array[mid], current)) > 0) {
+        if (+(compare(array[mid], current) as any) > 0) {
           high = mid - 1
         } else {
           low = mid + 1

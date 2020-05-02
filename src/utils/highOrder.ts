@@ -22,8 +22,7 @@ export type filter = (
   components?: IObject<Component>
 ) => string | Component | void
 
-/** 根据is属性选择组件
- */
+/** 根据is属性选择组件 */
 const filterByIS: filter = context => context.props.is || context.data.attrs?.is
 
 /** 获取选择器(函数式组件)

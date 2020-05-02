@@ -7,7 +7,7 @@
  *
  * @returns {string} 中文数字
  */
-function numToCN(
+export default function(
   number: string | number,
   describe?: 0 | 1 | 2,
   cases?: 0 | 1 | 2
@@ -119,5 +119,3 @@ function numToCN(
     }
   )
 }
-
-export default numToCN

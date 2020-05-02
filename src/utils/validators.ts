@@ -48,8 +48,7 @@ const CHAR_TYPE = [
   '0123456789',
 ]
 const random = (str: string) => str[(Math.random() * str.length) | 0]
-/** 获取随机密码
- */
+/** 获取随机密码 */
 function randomPassword() {
   let password = random(CHAR_TYPE[0]) // 第一位是字母
 

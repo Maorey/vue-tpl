@@ -3,23 +3,20 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 13:05:04
  */
+import { isNumber, isObj } from '.'
 
-/** 单位设置
- */
+/** 单位设置 */
 interface INumberUnit {
-  /** 位数，比如千=3 万=4
-   */
+  /** 位数，比如千=3 万=4 */
   len: number
-  /** 末尾单位文字
-   */
+  /** 末尾单位文字 */
   unit?: string
   /** 位数超过该值才处理单位,比如:len=4,limit=5,unit=万 时:12345 => 12345;123456 => 12.3456万
    */
   limit?: number
 }
 
-/** 匹配后面有三个数字的数字
- */
+/** 匹配后面有三个数字的数字 */
 const REG_NUMBER = /(\d)(?=(\d{3})+$)/g
 
 /** 格式化数字 每三位数字增加个逗号 （小数点后的除外）
@@ -36,14 +33,14 @@ function formatNumber(
   digit?: number | string | INumberUnit,
   unit?: string | INumberUnit
 ) {
-  !unit && typeof digit !== 'number' && (unit = digit)
+  !unit && !isNumber(digit) && (unit = digit)
 
   const numSplit = String(num || 0).split('.')
   let decimal = numSplit[1] || '' // 小数部分
   num = numSplit[0] // 整数部分
 
   // 处理单位
-  if (typeof unit === 'object') {
+  if (isObj(unit)) {
     const len = num.length
     const limit = unit.limit || unit.len
 

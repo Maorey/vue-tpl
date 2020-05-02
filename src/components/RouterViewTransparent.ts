@@ -25,10 +25,10 @@ const max = CONFIG.subPage > 1 ? CONFIG.subPage : 1
  */
 export default {
   name: 'RVT',
+  props: ['route'],
   data() {
     return { d: 0 } // 是否失活/离开
   },
-  props: ['route'],
   beforeRouteUpdate(this: any, to, from, next) {
     this.d = 0
     setTimeout(next)
@@ -45,18 +45,20 @@ export default {
   },
   render(this: any, h) {
     if (this.d) {
-      return this.c
+      return this.n
     }
 
-    const exclude = this.$router.$.e
     const meta = (this.route || this.$route).meta
-
-    return (this.c = h('KeepAlive', { props: { max, exclude } }, [
-      h(
-        'RouterView',
-        { key: meta.k || (meta.k = getKey('v')) },
-        this.$slots.default
-      ),
-    ]))
+    return (this.n = h(
+      'KeepAlive',
+      { props: { max, exclude: this.$router.$.e } },
+      [
+        h(
+          'RouterView',
+          { key: meta.k || (meta.k = getKey('v')) },
+          this.$slots.default
+        ),
+      ]
+    ))
   },
 } as Component

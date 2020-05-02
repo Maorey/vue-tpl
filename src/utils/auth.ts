@@ -2,6 +2,7 @@
  *    JavaScript的位运算只支持32bit数字(含符号位) 每位表示一种权限 0无权限 1有权限
  *    服务端应响应权限代码，计算方式相同，比如：{a: 0, b: 3} 或 [0, 3]
  */
+import { isNumber } from '.'
 /** 授权
  * @test true
  *
@@ -11,11 +12,12 @@
  * @returns {Number} 当前拥有的权限代码
  */
 function add(auth: number, items: number | number[]) {
-  if (typeof items === 'number') {
+  if (isNumber(items)) {
     return auth | items
   }
 
-  for (const item of items) {
+  let item
+  for (item of items) {
     auth |= item
   }
   return auth
@@ -30,11 +32,12 @@ function add(auth: number, items: number | number[]) {
  * @returns {Number} 当前拥有的权限代码
  */
 function toggle(auth: number, items: number | number[]) {
-  if (typeof items === 'number') {
+  if (isNumber(items)) {
     return auth ^ items
   }
 
-  for (const item of items) {
+  let item
+  for (item of items) {
     auth ^= item
   }
   return auth
@@ -49,11 +52,12 @@ function toggle(auth: number, items: number | number[]) {
  * @returns {Number} 当前拥有的权限代码
  */
 function del(auth: number, items: number | number[]) {
-  if (typeof items === 'number') {
+  if (isNumber(items)) {
     return auth & ~items
   }
 
-  for (const item of items) {
+  let item
+  for (item of items) {
     auth &= ~item
   }
   return auth
@@ -68,11 +72,12 @@ function del(auth: number, items: number | number[]) {
  * @returns {Boolean} 是否有权限
  */
 function fit(auth: number, items: number | number[]) {
-  if (typeof items === 'number') {
+  if (isNumber(items)) {
     return (auth & items) === items
   }
 
-  for (const item of items) {
+  let item
+  for (item of items) {
     if ((auth & item) !== item) {
       return false
     }
@@ -89,11 +94,12 @@ function fit(auth: number, items: number | number[]) {
  * @returns {Boolean} 是否有权限
  */
 function any(auth: number, items: number | number[]) {
-  if (typeof items === 'number') {
+  if (isNumber(items)) {
     return (auth & items) === items
   }
 
-  for (const item of items) {
+  let item
+  for (item of items) {
     if ((auth & item) === item) {
       return true
     }

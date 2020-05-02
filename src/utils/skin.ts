@@ -33,8 +33,7 @@ function set(skin?: string) {
   return skin
 }
 
-/** css 对象集合
- */
+/** css 对象集合 */
 const OBJS: IObject<string>[] = []
 
 /** 获取响应式CSS对象(根据皮肤改变)
@@ -117,7 +116,8 @@ function delObj(obj: IObject<string>) {
 
 /// 更新css对象 ///
 on(process.env.SKIN_FIELD, skin => {
-  for (const obj of OBJS) {
+  let obj
+  for (obj of OBJS) {
     Object.assign(obj, (obj.$ as any)[skin])
   }
 })

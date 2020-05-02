@@ -27,10 +27,8 @@ function set(key: string, val: string, expires?: number) {
   document.cookie = str
 }
 
-// 这点内存可以花
 const REG_REPLACE = /[-.+*]/g
 const REG_REPLACE_STRING = '\\$&'
-
 const REG_GET_BEFORE = '(?:(?:^|.*;)\\s*'
 const REG_GET_AFTER = '\\s*\\=\\s*([^;]*).*$)|^.*$'
 /** 获取指定key的cookie
@@ -70,14 +68,11 @@ function has(key: string) {
   ).test(document.cookie)
 }
 
-/** Cookie 键值对
- */
+/** Cookie 键值对 */
 export interface IEntry {
-  /** 键
-   */
+  /** 键 */
   k: string
-  /** 值
-   */
+  /** 值 */
   v: string
 }
 function stringToEntry(str: string): IEntry {

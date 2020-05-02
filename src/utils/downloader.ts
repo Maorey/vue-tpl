@@ -1,5 +1,4 @@
-/** 文件下载
- */
+/** 文件下载 */
 import { Canceler } from 'axios'
 import { get, CancelToken } from './ajax'
 

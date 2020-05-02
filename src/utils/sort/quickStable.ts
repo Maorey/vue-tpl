@@ -7,23 +7,16 @@
  */
 import { ASC, Compare } from '.'
 
-/** 数组长度低值:小于低值使用插入排序
- */
+/** 数组长度低值:小于低值使用插入排序 */
 const LOW = 6
 /** 数组长度高值 划分时:介于低值高值左中右3数取中值,大于高值左中右各3个数取中值(9数取中)
  */
 const HIGH = 40
 // 将这些变量放入执行上下文
-/** 待排序数组
- */
+/** 待排序数组 */
 let LIST: any[]
-/** 数组元素比较方法
- */
+/** 数组元素比较方法 */
 let contrast: Compare
-
-/** 用于释放引用
- */
-const empty: any = null
 
 /** 插入排序(稳定)
  * @param {Number} start 数组起始索引（含）
@@ -38,7 +31,7 @@ function insertSort(start: number, end: number) {
     current = LIST[(pointer = anchor)]
     while (
       pointer > start &&
-      Number(contrast((temp = LIST[pointer - 1]), current)) > 0
+      +(contrast((temp = LIST[pointer - 1]), current) as any) > 0
     ) {
       LIST[pointer--] = temp
     }
@@ -77,14 +70,14 @@ function mid3(a: number, b: number, c: number) {
   //   return b
   // }
   // /// 全都不相等 ///
-  // return Number(ab) > 0 // a > b
-  //   ? Number(bc) > 0
+  // return +(ab as any) > 0 // a > b
+  //   ? +(bc as any) > 0
   //     ? b // b > c && b < a
-  //     : Number(ac) > 0 // b最小
+  //     : +(ac as any) > 0 // b最小
   //       ? a
   //       : c
-  //   : Number(bc) > 0
-  //     ? Number(ac) > 0 // b最大
+  //   : +(bc as any) > 0
+  //     ? +(ac as any) > 0 // b最大
   //       ? c
   //       : a
   //     : b // b > a && b < c
@@ -101,10 +94,10 @@ function mid3(a: number, b: number, c: number) {
     return b
   }
 
-  bc = Number(bc) > 0
-  ab = Number(ab) > 0
+  bc = +(bc as any) > 0
+  ab = +(ab as any) > 0
   if (ab === bc) {
-    // (Number(ab) > 0) === bc 加括号格式化代码会去掉 ┐(：´ゞ｀)┌
+    // (+(ab as any) > 0) === bc 加括号格式化代码会去掉 ┐(：´ゞ｀)┌
     // 同号: b > c && a > b 或者 b < c && a < b
     return b
   }
@@ -115,9 +108,9 @@ function mid3(a: number, b: number, c: number) {
   }
 
   // b > c && a < b(bc=true,b最大) 或者 b < c && a > b(bc=false,b最小)
-  return Number(ab) > 0 ? (bc ? a : c) : bc ? c : a
+  return +(ab as any) > 0 ? (bc ? a : c) : bc ? c : a
   // 交换破坏稳定性
-  // ab = Number(ab) > 0
+  // ab = +(ab as any) > 0
   // if (ab === bc) {
   //   // 取a: (bc && ac) || (!bc && !ac)
   //   bc && swap(LIST, b, c)
@@ -179,7 +172,7 @@ function partition(start: number, end: number) {
           } else {
             break // 稳定
           }
-        } else if (Number(result) > 0) {
+        } else if (+(result as any) > 0) {
           leftHit = true
           break
         }
@@ -200,7 +193,7 @@ function partition(start: number, end: number) {
           } else {
             break // 稳定
           }
-        } else if (Number(result) > 0) {
+        } else if (+(result as any) > 0) {
           rightHit = true
           break
         }
@@ -269,12 +262,13 @@ function partition(start: number, end: number) {
  */
 function quickSort<T>(
   array: T[],
-  compare: Compare<T> = ASC,
+  compare?: Compare<T>,
   start?: number,
   end?: number
 ): T[] {
-  start === undefined && (start = 0)
-  end === undefined && (end = array.length - 1)
+  compare || (compare = ASC)
+  start || (start = 0)
+  end || (end = array.length - 1)
 
   if (end > start) {
     LIST = array
@@ -282,7 +276,7 @@ function quickSort<T>(
 
     partition(start, end)
 
-    LIST = contrast = empty // 释放引用
+    LIST = contrast = 0 as any // 释放引用
   }
 
   return array

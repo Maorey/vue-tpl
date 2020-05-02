@@ -51,7 +51,7 @@ export interface IStore {
   /** 类似 v-once, true:上述props未发生变化则[不重新渲染],此时slot将不响应外部状态改变 */
   once?: boolean
 
-  /// 私有状态 ///
+  /// 私有属性 ///
   /** Vue响应式数据 */
   i: {
     /** 当前组件 */
@@ -136,7 +136,7 @@ function getStore(vm: Vue, key: any) {
   let store: IStore = CACHE[key]
   if (!store) {
     store = CACHE[key] = {
-      i: Vue.observable({ i: status.loading, d: 0 as 0 | 1 }),
+      i: Vue.observable({ i: status.loading, d: 0 as 0 }),
       h: {
         $: () => {
           fetchData(store)
@@ -179,10 +179,9 @@ const EVENTS = {
   success: status.success,
 }
 function diff(store: IStore, context: RenderContext) {
-  const props = context.props
-  let attrs = context.data.attrs
   let maxChangedIndex = 0 // 有变化prop的最大索引
-
+  let props = context.props
+  let attrs = context.data.attrs
   let prop
   let target
   let index = PROPS.length
@@ -208,9 +207,10 @@ function diff(store: IStore, context: RenderContext) {
   }
 
   if ((target = context.data.on)) {
-    attrs = store.f || (store.f = {})
+    props = store.f || (store.f = {})
     for (prop in EVENTS) {
-      attrs[(EVENTS as any)[prop]] = target[prop]
+      props[(attrs = (EVENTS as any)[prop]) as any] === target[prop] ||
+        (props[attrs as any] = target[prop])
     }
   }
 
@@ -231,7 +231,8 @@ function diff(store: IStore, context: RenderContext) {
 }
 function trigger(hooks: hooks | undefined, context: RenderContext) {
   if (Array.isArray(hooks)) {
-    for (const fn of hooks) {
+    let fn
+    for (fn of hooks) {
       fn(context)
     }
   } else if (hooks) {
@@ -271,11 +272,11 @@ export const SLOTS = {
 export default (context: RenderContext) => {
   let temp // 大工具人
   let data // 小工具人
-  temp = context.parent
-  data = context.data
   const store = getStore(
-    temp,
-    hasOwnProperty(data, 'key') ? data.key : (data.key = DEFAULT_KEY)
+    (temp = context.parent),
+    hasOwnProperty((data = context.data), 'key')
+      ? data.key
+      : (data.key = DEFAULT_KEY)
   )
 
   if (store.i.d || (temp.$el && !temp.$el.parentNode) || diff(store, context)) {
@@ -331,8 +332,7 @@ export default (context: RenderContext) => {
       data.props = context.props
       store.d && (data.props.data = store.d.data)
 
-      slot = context.scopedSlots
-      slot = slot.success || slot.default
+      slot = (slot = context.scopedSlots).success || slot.default
       return (store.n = (
         <Comp {...data}>
           {slot

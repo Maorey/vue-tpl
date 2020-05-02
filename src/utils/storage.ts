@@ -4,37 +4,28 @@
  * @Date: 2019-06-04 16:07:30
  */
 interface IKeyVal {
-  /** 键
-   */
+  /** 键 */
   k: any
-  /** 值
-   */
+  /** 值 */
   v: any
 }
-/** 存储池
- */
+/** 存储池 */
 export interface IPool extends IKeyVal {
-  /** 使用计数
-   */
+  /** 使用计数 */
   c: number
 }
 
 /** 内存存储 key/value可以任意类型
  * @test true
- *
  */
 class Memory {
-  /** 存储池
-   */
+  /** 存储池 */
   pool: IPool[]
-  /** 最大缓存数量，默认30
-   */
+  /** 最大缓存数量，默认30 */
   protected max: number
-  /** 缓存存活时间 0为永久
-   */
+  /** 缓存存活时间 0为永久 */
   protected alive: number
-  /** timeout队列
-   */
+  /** timeout队列 */
   private out: IKeyVal[]
 
   /** 构造函数
@@ -130,8 +121,7 @@ class Memory {
     return this.get(key, 1)
   }
 
-  /** 清空存储
-   */
+  /** 清空存储 */
   clear() {
     // 清空timeout队列
     for (const item of this.out) {
@@ -169,17 +159,14 @@ class Memory {
   }
 }
 
-/** 本地存储
- */
+/** 本地存储 */
 const STORAGE = window.localStorage
-/** 提取时间戳
- */
+/** 提取时间戳 */
 const REG_TIMESPAN = /^(\d+)([^\d][\d\D]*)$/
 const ALIVE = 100 * 1000 // 防可能的内存溢出
 let CACHE: IObject<{ k?: number; v?: any; e?: number | null } | 0> = {}
 /** 本地存储 (localStorage 单例)
  * @test true
- *
  */
 const local = {
   /** 获取值
@@ -269,8 +256,7 @@ const local = {
     CACHE[key] = 0
     STORAGE.removeItem(key)
   },
-  /** 清空存储
-   */
+  /** 清空存储 */
   clear() {
     let temp: string | IObject | 0
     for (temp in CACHE) {

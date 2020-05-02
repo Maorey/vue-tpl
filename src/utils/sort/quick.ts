@@ -6,21 +6,14 @@
  */
 import { ASC, Compare } from '.'
 
-/** 使用插入排序阈值
- */
+/** 使用插入排序阈值 */
 const LOW = 6
 
 // 将这些变量放入执行上下文
-/** 待排序数组
- */
+/** 待排序数组 */
 let LIST: any[]
-/** 数组元素比较方法
- */
+/** 数组元素比较方法 */
 let contrast: Compare
-
-/** 用于释放引用
- */
-const empty: any = null
 
 /** 插入排序(稳定)
  * @param {Number} start 数组起始索引（含）
@@ -35,7 +28,7 @@ function insertSort(start: number, end: number) {
     current = LIST[(pointer = anchor)]
     while (
       pointer > start &&
-      Number(contrast((temp = LIST[pointer - 1]), current)) > 0
+      +(contrast((temp = LIST[pointer - 1]), current) as any) > 0
     ) {
       LIST[pointer--] = temp
     }
@@ -118,12 +111,13 @@ function partition(start: number, end: number) {
  */
 function quickSort<T>(
   array: T[],
-  compare: Compare<T> = ASC,
+  compare?: Compare<T>,
   start?: number,
   end?: number
 ): T[] {
-  start === undefined && (start = 0)
-  end === undefined && (end = array.length - 1)
+  compare || (compare = ASC)
+  start || (start = 0)
+  end || (end = array.length - 1)
 
   if (end > start) {
     LIST = array
@@ -131,7 +125,7 @@ function quickSort<T>(
 
     partition(start, end)
 
-    LIST = contrast = empty // 释放引用
+    LIST = contrast = 0 as any // 释放引用
   }
 
   return array

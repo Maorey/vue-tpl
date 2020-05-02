@@ -23,14 +23,11 @@ function getOffset(dom: any, flag?: boolean) {
   return flag === undefined ? { top, left } : flag ? top : left
 }
 
-/** html标签信息
- */
+/** html标签信息 */
 interface ITag {
-  /** 标签名
-   */
+  /** 标签名 */
   tagName: string
-  /** 标签属性, 比如: class、style...
-   */
+  /** 标签属性, 比如: class、style... */
   [attributeName: string]: string
 }
 const IS_EQUAL = (
@@ -45,8 +42,7 @@ const IS_EQUAL = (
       ? value === item[attributeName]
       : item[attributeName] !== undefined
     : Object.values(item).includes(value))
-/** 扩展数组方法
- */
+/** 扩展数组方法 */
 class HtmlInfo extends Array<ITag> {
   /** 获取满足条件的信息
    * @param {String} tagName 标签名 省略查找全部
@@ -81,11 +77,9 @@ class HtmlInfo extends Array<ITag> {
     }
   }
 }
-/** 全部html标签属性
- */
+/** 全部html标签属性 */
 const REG_ATTS = /<\s*(\w+)(.*?)\s*\/?>/g
-/** html标签属性
- */
+/** html标签属性 */
 const REG_ATT = /([\w|-]+)(?:\s*=\s*["|'](.*?)["|'])?/g
 /** 获取html字符串中标签属性（比如 style）
  *    建文档树啥的就算了

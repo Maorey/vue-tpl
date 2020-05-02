@@ -7,6 +7,7 @@ import AXIOS from 'axios'
 import combineURLs from 'axios/lib/helpers/combineURLs'
 
 import CONFIG from '@/config'
+import { isObj } from '@/utils'
 import sort from '@/utils/sort'
 import clone from '@/utils/clone'
 import { Memory } from '@/utils/storage'
@@ -106,12 +107,7 @@ function getUri(url: string, params?: IObject) {
 }
 
 function toString(value: any) {
-  switch (typeof value) {
-    case 'object':
-      return JSON.stringify(value)
-    default:
-      return String(value)
-  }
+  return isObj(value) ? JSON.stringify(value) : value + ''
 }
 function searchToObj(search: string) {
   const Obj: IObject<string> = {}
@@ -159,8 +155,9 @@ function request(
   method: string,
   params?: IObject,
   data?: any,
-  config: IObject = {}
+  config?: IObject
 ): Promise<any> {
+  config || (config = {})
   config.url = url
   config.method = method
   data && (config.data = data)
@@ -196,26 +193,27 @@ function request(
 
   cache = AXIOS.request(config)
     .then((res: any) => {
-      if (config.$_) {
-        res = config.$_ // 自定义取消标记
-        config.$_ = 0 // 只取消一次
+      if ((config as any).$_) {
+        res = (config as any).$_ // 自定义取消标记
+        ;(config as any).$_ = 0 // 只取消一次
         throw res
       }
 
       res.meta = config // 请求配置加到元数据
-      requestQueue.remove(config.key) // 移除请求队列
-      shouldCache && dataStore.set(config.key, res, config.alive) // 设置缓存
+      requestQueue.remove((config as any).key) // 移除请求队列
+      shouldCache &&
+        dataStore.set((config as any).key, res, (config as any).alive) // 设置缓存
 
       return success(res)
     })
     .catch((res: any) => {
       res.meta = config // 请求配置加到元数据
-      requestQueue.remove(config.key) // 移除请求队列
+      requestQueue.remove((config as any).key) // 移除请求队列
       if (isCancel(res)) {
         throw res
-      } else if (config.$_) {
-        res = config.$_ // 自定义取消标记
-        config.$_ = 0 // 只取消一次
+      } else if ((config as any).$_) {
+        res = (config as any).$_ // 自定义取消标记
+        ;(config as any).$_ = 0 // 只取消一次
         throw res
       } else {
         failed(res)
@@ -227,8 +225,8 @@ function request(
   // 经济版取消(不执行then)
   config.cancelToken ||
     (cache.cancel = (reason = '取消请求') => {
-      config.$_ = new Error(reason)
-      config.$_.__CANCEL__ = 1 // for AXIOS.isCancel
+      ;(config as any).$_ = new Error(reason)
+      ;(config as any).$_.__CANCEL__ = 1 // for AXIOS.isCancel
     })
 
   return requestQueue.set(config.key, cache)

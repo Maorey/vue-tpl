@@ -1,5 +1,4 @@
-/** 性能优化相关工具函数
- */
+/** 性能优化相关工具函数 */
 import { hasOwnProperty, isNumber } from '.'
 
 type throttleDebounce = <T extends Function>(

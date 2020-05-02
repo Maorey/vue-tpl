@@ -3,6 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-02 16:50:15
  */
+import { isString, isFn } from '.'
 import { camelToKebab } from '@/utils/case'
 
 const PREV_STRING = ';\\s*'
@@ -31,7 +32,7 @@ function getStyleByName(style: string | IObject<string>, name: string) {
   if (style && name) {
     const kebabName = camelToKebab(name)
 
-    if (typeof style === 'string') {
+    if (isString(style)) {
       style = `;${style};` // 补分号先
       return getValue(style, name) || getValue(style, kebabName)
     }
@@ -42,14 +43,11 @@ function getStyleByName(style: string | IObject<string>, name: string) {
   return ''
 }
 
-/** 提取样式正则 分组：key,value
- */
+/** 提取样式正则 分组：key,value */
 const REG_STYLE = / *(.*?) *: *(.*?) *;/g
-/** 双引号
- */
+/** 双引号 */
 const REG_QUOT = /"+/g
-/** 末尾逗号
- */
+/** 末尾逗号 */
 const REG_COMMA = /,*$/
 /** css样式字符串转为对象/JSON
  *  (不处理key 'margin-top: 2px' -> {'margin-top': '2px'})
@@ -76,7 +74,7 @@ function styleToObject(
     | boolean,
   isjson?: boolean
 ): IObject<string> | string {
-  if (typeof style === 'string') {
+  if (isString(style)) {
     style = style.trim()
 
     if (!style) {
@@ -86,7 +84,7 @@ function styleToObject(
     return style // 对象直接返回
   }
   // 筛选方法
-  if (typeof filter !== 'function') {
+  if (!isFn(filter)) {
     isjson = filter
     filter = false
   }
@@ -118,7 +116,7 @@ function styleToObject(
       if (temp) {
         if (temp === true) {
           continue
-        } else if (typeof temp === 'string') {
+        } else if (isString(temp)) {
           result[2] = temp
         } else {
           result[1] = temp[0]
@@ -148,8 +146,7 @@ function styleToObject(
   return isjson ? json : JSON.parse(json)
 }
 
-/** 值没有单位的样式
- */
+/** 值没有单位的样式 */
 const NO_UNIT = ['z-index']
 /** 样式对象还原为css样式（值为数字的默认单位px）
  * @test true
@@ -171,7 +168,7 @@ function objectToStyle(
     styleObject?: IObject<string>
   ) => [string, string] | string | boolean | void
 ) {
-  if (typeof styleObj === 'string') {
+  if (isString(styleObj)) {
     return styleObj // 原样返回
   }
 
@@ -211,7 +208,7 @@ function objectToStyle(
       if (temp) {
         if (temp === true) {
           continue
-        } else if (typeof temp === 'string') {
+        } else if (isString(temp)) {
           value = temp
         } else {
           key = temp[0]
@@ -270,7 +267,7 @@ function updateStyle(
         if (temp) {
           if (temp === true) {
             continue
-          } else if (typeof temp === 'string') {
+          } else if (isString(temp)) {
             value = temp
           } else {
             key = temp[0]

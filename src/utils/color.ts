@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-03 14:48:49
  */
-
+import { isNumber } from '.'
 /** 透明度回调
  * @param {Number} alpha 透明度
  *
@@ -18,15 +18,13 @@ type Alpha = (alpha: number) => number | any
  */
 type Filter = (rgb: number[], alpha: number) => number | any
 
-/** hex3/hex颜色
- */
+/** hex3/hex颜色 */
 const REG_HEX = /#([0-9a-f]{3,8})/i
-/** rgb/rgba颜色 先去空格?
- */
+/** rgb/rgba颜色 */
 const REG_RGB = /rgba?\s*\(\s*(\d+\s*,\s*\d+\s*,\s*\d+)\s*,?\s*(\d+\.?\d+?)?\s*\)/i
 /** 转为10进制整数
- * parseInt(string, radix)
- * Number.prototype.toString(radix) 数字toString可以设置进制,默认10
+ *    parseInt(string, radix)
+ *    Number.prototype.toString(radix) 数字toString可以设置进制,默认10
  */
 const PARSEINT = (str: string) => parseInt(str)
 /** 颜色转rgb(a)
@@ -34,7 +32,7 @@ const PARSEINT = (str: string) => parseInt(str)
  *
  * @param {String} color rgb\rgba\hex\hex3 颜色
  * @param {Number|Function} opacity 要设置的透明度，若回调则接受当前值返回新值
- * [0 - 1] 小于0视为0 大于等于1返回rgb 其它保留原透明度
+ *   [0 - 1] 小于0视为0 大于等于1返回rgb 其它保留原透明度
  * @param {Function} filter 自定义颜色处理方法 直接修改rgb数组 返回透明度
  *
  * @returns {String} rgb(a) 颜色
@@ -88,7 +86,7 @@ function toRGB(
   }
 
   // 透明度处理
-  if (typeof opacity === 'number') {
+  if (isNumber(opacity)) {
     alpha = opacity
   } else if (opacity) {
     alpha = opacity(isNaN(alpha) ? 1 : alpha)
@@ -101,11 +99,9 @@ function toRGB(
     isNaN(tmp) || (alpha = tmp)
   }
 
-  if (alpha < 1) {
-    // 有透明度
-    return 'rgba(' + rgb.toString() + ',' + alpha.toFixed(2) + ')'
-  }
-  return 'rgb(' + rgb.toString() + ')'
+  return alpha < 1
+    ? 'rgba(' + rgb.toString() + ',' + alpha.toFixed(2) + ')'
+    : 'rgb(' + rgb.toString() + ')'
 }
 
 /** 颜色是否透明
@@ -135,9 +131,10 @@ function isTransparent(color: string) {
  */
 function fitColor(
   color: string,
-  ratio = 0.25,
+  ratio?: number,
   opacity?: number | null | Alpha
 ) {
+  ratio || ratio === 0 || (ratio = 0.25)
   return toRGB(color, opacity, (rgb: number[]) => {
     let value: number
     let i = 3
@@ -146,8 +143,8 @@ function fitColor(
       rgb[i] =
         value +
         (value > 88
-          ? -Math.floor(value * ratio) // 加深
-          : Math.floor((255 - value) * ratio)) // 变浅
+          ? -Math.floor(value * (ratio as number)) // 加深
+          : Math.floor((255 - value) * (ratio as number))) // 变浅
     }
   })
 }
@@ -169,10 +166,10 @@ const FILLER_REVERSE = (rgb: number[]) => {
  */
 function reverseColor(
   color: string,
-  filter: Filter = FILLER_REVERSE,
+  filter?: Filter,
   opacity?: number | null | Alpha
 ) {
-  return toRGB(color, opacity, filter)
+  return toRGB(color, opacity, filter || FILLER_REVERSE)
 }
 
 export { toRGB, isTransparent, fitColor, reverseColor }

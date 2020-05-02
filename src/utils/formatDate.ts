@@ -3,7 +3,8 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  */
-import { Memory } from '@/utils/storage'
+import { isString } from '.'
+import { Memory } from './storage'
 
 /** 日期格式化字符串, 保留字如下(允许使用转义字符\来输出保留字):
  *
@@ -29,8 +30,7 @@ import { Memory } from '@/utils/storage'
  */
 type format = string
 
-/** 保留字枚举
- */
+/** 保留字枚举 */
 const enum Reserve {
   // 年月日星期
   year = 'y',
@@ -47,35 +47,26 @@ const enum Reserve {
   milliSecond = 'n',
 }
 
-/** 分组结果
- */
+/** 分组结果 */
 interface IGroup {
-  /** 保留字
-   */
+  /** 保留字 */
   k: string
-  /** 保留字重复次数
-   */
+  /** 保留字重复次数 */
   l: number
-  /** 在原format字符串的索引
-   */
+  /** 在原format字符串的索引 */
   i?: number
 }
-/** 格式处理结果
- */
+/** 格式处理结果 */
 interface IResult {
-  /** 正则表达式字符串
-   */
+  /** 正则表达式字符串 */
   t: string
-  /** 正则表达式
-   */
+  /** 正则表达式 */
   r: RegExp
-  /** 分组
-   */
+  /** 分组 */
   g: IGroup[]
 }
 
-/** 保留字串
- */
+/** 保留字串 */
 const RESERVED =
   Reserve.year +
   Reserve.month +
@@ -87,14 +78,11 @@ const RESERVED =
   Reserve.minute +
   Reserve.second +
   Reserve.milliSecond
-/** 正则表达式保留字
- */
+/** 正则表达式保留字 */
 const RESERVE_REG = '`|{}[]()*?+.^$!'
-/** 转义字符
- */
+/** 转义字符 */
 const ESCAPE = '\\'
-/** 格式处理结果缓存
- */
+/** 格式处理结果缓存 */
 const CACHE = new Memory()
 /** 获取保留字最大重复次数
  * @param {String} char 目标字符
@@ -283,9 +271,7 @@ function getDate(
   tryHistory?: boolean
 ): Date | void {
   const { r, g } =
-    !format || typeof format === 'string'
-      ? getFormat(format || ISO_DATE_FORMAT)
-      : format
+    !format || isString(format) ? getFormat(format || ISO_DATE_FORMAT) : format
   tryHistory = tryHistory !== false
 
   let info: IObject<number> | undefined
@@ -355,7 +341,7 @@ function getWeek(
   format?: format,
   toDate?: boolean
 ) {
-  date && typeof date === 'string' && (date = getDate(date, format))
+  date && isString(date) && (date = getDate(date, format))
   date || (date = new Date())
   format || (format = ISO_DATE_FORMAT)
 
@@ -391,7 +377,7 @@ function getMonth(
   format?: format,
   toDate?: boolean
 ) {
-  date && typeof date === 'string' && (date = getDate(date, format))
+  date && isString(date) && (date = getDate(date, format))
   date || (date = new Date())
   format || (format = ISO_DATE_FORMAT)
 
@@ -426,7 +412,7 @@ function getYear(
   format?: format,
   toDate?: boolean
 ) {
-  date && typeof date === 'string' && (date = getDate(date, format))
+  date && isString(date) && (date = getDate(date, format))
   date || (date = new Date())
   format || (format = ISO_DATE_FORMAT)
 

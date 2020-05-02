@@ -4,19 +4,15 @@
  * @Date: 2019-01-28 13:57:42
  */
 
-/** 存储池
- */
+/** 存储池 */
 let pool: any[] = []
-/** 下一个位置索引
- */
+/** 下一个位置索引 */
 let index = 0
-/** 最大记录数
- */
+/** 最大记录数 */
 let maxLength = 50
 
-/** 撤销重做【单例】
- */
-const undo = {
+/** 撤销重做【单例】 */
+export default {
   /** 移除当前位置之后的并添加指定项
    * @param {Object} obj 存入的对象
    */
@@ -38,8 +34,7 @@ const undo = {
   next(move?: boolean) {
     return pool[index < pool.length ? (move ? index++ : index) : index]
   },
-  /** 重置
-   */
+  /** 重置 */
   reset() {
     pool = []
     index = 0
@@ -51,5 +46,3 @@ const undo = {
     maxLength = max
   },
 }
-
-export default undo

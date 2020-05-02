@@ -7,16 +7,10 @@
 import { ASC, Compare } from '.'
 
 // 将这些变量放入执行上下文
-/** 待排序数组
- */
+/** 待排序数组 */
 let LIST: any[]
-/** 数组元素比较方法
- */
+/** 数组元素比较方法 */
 let contrast: Compare
-
-/** 用于释放引用
- */
-const empty: any = null
 
 /** 插入排序(稳定)
  * @deprecated 相比merge: 耗时更高，包括设置阈值切换
@@ -32,7 +26,7 @@ const empty: any = null
 //     current = LIST[(pointer = anchor)]
 //     while (
 //       pointer > start &&
-//       Number(contrast((temp = LIST[pointer - 1]), current)) > 0
+//       +(contrast((temp = LIST[pointer - 1]), current) as any) > 0
 //     ) {
 //       LIST[pointer--] = temp
 //     }
@@ -53,7 +47,7 @@ const empty: any = null
 //   while (left < right) {
 //     temp = LIST[middle]
 //     LIST.splice(middle++, 1)
-//     if (Number(contrast(LIST[left], temp)) > 0) {
+//     if (+(contrast(LIST[left], temp) as any) > 0) {
 //       // j在i前
 //       left ? LIST.splice(left - 1, 0, temp) : LIST.unshift(temp)
 //     } else {
@@ -84,14 +78,14 @@ const empty: any = null
 //   while (middle >= left && curr >= 0) {
 //     current = temp[curr]
 //     // 先检查边界情况
-//     if (Number(contrast(leftValue, current)) > 0) {
+//     if (+(contrast(leftValue, current) as any) > 0) {
 //       while (middle >= left) {
 //         LIST[right--] = LIST[middle--]
 //       }
 //       continue
 //     }
 //     curr--
-//     if (!(Number(contrast(LIST[middle], current)) > 0)) {
+//     if (!(+(contrast(LIST[middle], current) as any) > 0)) {
 //       LIST[right--] = current
 //       continue
 //     }
@@ -100,7 +94,7 @@ const empty: any = null
 //     high = middle - 1
 //     while (low <= high) {
 //       mid = (low + high) >> 1 // 除以2向下取整
-//       if (Number(contrast(LIST[mid], current)) > 0) {
+//       if (+(contrast(LIST[mid], current) as any) > 0) {
 //         high = mid - 1
 //       } else {
 //         low = mid + 1
@@ -152,7 +146,7 @@ const empty: any = null
 function merge(left: number, middle: number, right: number) {
   // // 尽量减小辅助数组大小【耗时会略增加，为啥】
   // while (right > middle) {
-  //   if (Number(contrast(LIST[middle], LIST[right])) > 0) {
+  //   if (+(contrast(LIST[middle], LIST[right]) as any) > 0) {
   //     break
   //   }
   //   right--
@@ -165,7 +159,7 @@ function merge(left: number, middle: number, right: number) {
 
   while (middle >= left && index >= 0) {
     LIST[right--] =
-      Number(contrast(LIST[middle], temp[index])) > 0
+      +(contrast(LIST[middle], temp[index]) as any) > 0
         ? LIST[middle--]
         : temp[index--]
   }
@@ -186,12 +180,13 @@ function merge(left: number, middle: number, right: number) {
  */
 function mergeSort<T>(
   array: T[],
-  compare: Compare<T> = ASC,
+  compare?: Compare<T>,
   start?: number,
   end?: number
 ): T[] {
-  start === undefined && (start = 0)
-  end === undefined && (end = array.length - 1)
+  compare || (compare = ASC)
+  start || (start = 0)
+  end || (end = array.length - 1)
 
   if (end > start) {
     LIST = array
@@ -211,7 +206,7 @@ function mergeSort<T>(
         //   insertSort(left, right)
         // } else {
         // if (size === 1) {
-        //   Number(contrast(LIST[left], LIST[++middle])) > 0 &&
+        //   +(contrast(LIST[left], LIST[++middle]) as any) > 0 &&
         //     ([LIST[left], LIST[middle]] = [LIST[middle], LIST[left]])
         //   left = middle + 1
         // } else {
@@ -224,7 +219,7 @@ function mergeSort<T>(
     } while (size < end)
     left > end || merge(0, left - 1, end) // 末尾捡漏
 
-    LIST = contrast = empty // 释放引用
+    LIST = contrast = 0 as any // 释放引用
   }
 
   return array

@@ -1,12 +1,8 @@
-/*
- * @description: 获取当前浏览器类型（type）及版本（version）
- * @Author: 毛瑞
- * @Date: 2018-12-29 11:32:52
- */
+/** 获取当前浏览器类型（type）及版本（version） */
 
 const userAgent = navigator.userAgent.toLowerCase()
 // 有序
-const BROWSERS: IObject<RegExp> = {
+const BROWSERS = {
   IE: /(?:msie|trident.*rv).([\d.]+)/,
   Edge: /edge.([\d.]+)/,
   Chrome: /chrome.([\d.]+)/,
@@ -14,18 +10,15 @@ const BROWSERS: IObject<RegExp> = {
   Opera: /opera.([\d.]+)/,
   Safari: /(?:safari|version).([\d.]+)/,
 }
+type browsers = keyof typeof BROWSERS
 
-/** 浏览器类型
- */
-let type: string | undefined
-/** 浏览器版本
- */
-let version: string | undefined
+/** 浏览器类型 */
+let type!: browsers | null
+/** 浏览器版本 */
+let version!: string | null
 
 for (type in BROWSERS) {
-  version = BROWSERS[type].exec(userAgent) as any
-
-  if (version) {
+  if ((version = BROWSERS[type as browsers].exec(userAgent) as any)) {
     version = version[1]
     break
   }
@@ -33,9 +26,13 @@ for (type in BROWSERS) {
 
 if (version) {
   // Fix: IE不缓存背景图片
-  type === 'IE' && document.execCommand('BackgroundImageCache', false, 'true')
+  if (type === 'IE') {
+    try {
+      document.execCommand('BackgroundImageCache', false, true as any)
+    } catch (error) {}
+  }
 } else {
-  type = version = undefined
+  type = version = null
 }
 
 export { type, version }

@@ -4,8 +4,6 @@
  * @Date: 2019-07-04 11:26:26
  */
 
-/** 匹配大写字母
- */
 const REG_UPPER = /([A-Z])/g
 const REPLACE_C2K = (match: string) => '-' + match.toLowerCase()
 /** camelCase 转 kebab-case，如: camelCase -> camel-case
@@ -19,13 +17,8 @@ function camelToKebab(str: string) {
   return str.replace(REG_UPPER, REPLACE_C2K)
 }
 
-/** 返回大写的第二个匹配字符
- */
 const REPLACE_2U = (match: string) => match[1].toUpperCase()
-/** 匹配短横小写字母
- */
 const REG_KEBAB = /-([a-z])/g
-
 /** kebab-case 转 camelCase 如: kebab-case -> kebabCase
  * @test true
  *

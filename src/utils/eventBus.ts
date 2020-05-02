@@ -4,7 +4,7 @@
  * @Date: 2019-06-03 12:12:12
  */
 import Vue from 'vue'
-
+import { isString } from '.'
 const BUS = new Vue()
 
 /** 事件处理函数 */
@@ -25,7 +25,7 @@ function on(
   isOnce?: boolean
 ) {
   // 参数处理
-  if (typeof nameSpace === 'string') {
+  if (isString(nameSpace)) {
     eventName = nameSpace + '.' + eventName
   } else {
     handler = nameSpace
@@ -68,7 +68,7 @@ function off(
     BUS.$off() // 注销全部事件
   } else {
     // 参数处理
-    if (typeof nameSpace === 'string') {
+    if (isString(nameSpace)) {
       eventName = nameSpace + '.' + eventName
     } else if (nameSpace) {
       handler = nameSpace
