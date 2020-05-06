@@ -1,5 +1,5 @@
 /** 性能优化相关工具函数 */
-import { hasOwnProperty, isNumber } from '.'
+import { hasOwn, isNumber } from '.'
 
 type throttleDebounce = <T extends Function>(
   fn: T,
@@ -143,7 +143,7 @@ const factory = (fn: throttleDebounce): IThrottleDebounceDecorator => (
     : (target: any, key: string, descriptor: PropertyDescriptor) => {
       descriptor.value = isNumber(targetOrParams)
         ? FN(target[key], targetOrParams)
-        : hasOwnProperty(targetOrParams, 'scope')
+        : hasOwn(targetOrParams, 'scope')
           ? FN(target[key], targetOrParams.interval, targetOrParams.scope)
           : FN(target[key], targetOrParams.interval)
       return descriptor

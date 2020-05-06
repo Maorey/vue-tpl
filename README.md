@@ -173,7 +173,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 │   │── components # 从views/pages提取的复用组件(建文件夹分类, 未分类的基本就是基础组件了)
 │   │── functions # 从views/pages提取的复用逻辑(建文件夹分类, 未分类的基本就是公用逻辑了)
 │   │── config # 配置目录
-│   │── enum # 枚举目录
+│   │── enums # 枚举目录
 │   │── lang # 多语言目录
 │   │── libs # 存储不(能)通过 npm 管理的第三方库/依赖库等相关
 │   │── scss # 样式/CSS 对象(.module).scss 文件
@@ -286,6 +286,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   (.vscode 文件夹为 VSCode 的工作区设置, 只在本工程生效, 已包含相关设置)
 
 - 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上** 和 [stylelint](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md) [配置](.stylelintrc.js)
+- 请直接使用`ES6+`, 除了`Proxy`等极少数不能shim和polyfill的(实际业务也极少用到), 不需要考虑兼容, 也不要做没必要/效果微弱的的优化(我检讨), 优先考虑代码**可读性**
 - 引用 `vue/tsx/ts/js/jsx` **不要加文件扩展名** 且省略 `/index`, 有利于重构代码
 - 在`tsx/jsx`中使用全局注册的组件时可以使用`kebab-case`, 否则会在控制台输出错误 ┐(: ´ ゞ｀)┌
 
@@ -306,7 +307,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   }
   ```
 
-- `enum/type/interface` 需要导出的直接 `export` (否则可能会得到 undefined), 其他的除了字典(硬编码)外, 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
+- `enum/type/interface` 需要导出的直接 `export` (否则可能会得到 undefined), 其他的除了字典(硬编码)和只有默认导出的外, 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
 - 不要使用 `$` 作为组件事件名, 该名字已被[异步组件刷新](src/utils/highOrder.ts)占用
 - Vue实例**私有属性**命名规则(避免 [属性名](https://cn.vuejs.org/v2/style-guide/#私有属性名-必要) 冲突):
   - `$_` 实例命名空间(在保证易维护的前提下可以使用单字母, 但应尽量避免)
@@ -490,25 +491,22 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 正确规范([JSDoc](https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html#supported-jsdoc))简洁适当的各种**注释**:
 
   ```TypeScript
-  /** 二维点
-   */
+  /** 二维点 */
   interface IPoint {
     x: number
     y: number
-    /** 描述
-     */
+    /** 描述 */
     desc?: string
   }
-  /** 角度转弧度常量
-   */
+  /** 角度转弧度常量 */
   const ANGLE_RADIAN = Math.PI / 180
   /** 计算圆上的点
    *
-   * @param {IPoint} center 圆心
-   * @param {Number} radius 半径
-   * @param {Number} angle 角度
+   * @param center 圆心
+   * @param radius 半径
+   * @param angle 角度
    *
-   * @returns {IPoint} 圆上的点坐标
+   * @returns 圆上的点坐标
    */
   function getPointOnCircle(center: IPoint, radius: number, angle: number): IPoint {
     const redian = angle * ANGLE_RADIAN // 弧度
@@ -560,7 +558,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   ```TypeScript
   // src/libs/somelib/index.ts
   /** 模块化异步引入somelib及其插件(全局类似)
-  * @param {Array<String>} plugins 需要加载的somelib插件名列表:
+  * @param plugins 需要加载的somelib插件名列表:
   *
   *   plugin1: 插件1
   *

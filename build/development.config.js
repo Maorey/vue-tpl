@@ -6,8 +6,7 @@
 // const COUNTER = {} // 重命名计数器
 // const REG_GLOBAL_VUE = /^([^\\/]+\.)(vue|tsx|jsx)$/ // 是否无路径vue组件
 
-// 开发环境配置
-/** webpack 配置
+/** 开发环境配置
  * @param {chainWebpack} config 配置对象
  *  https://github.com/neutrinojs/webpack-chain#getting-started
  */
@@ -36,6 +35,7 @@ module.exports = function(config) {
 
   //   return `webpack://${info.namespace}/${fileName}`
   // })
+  // config.output.ecmaVersion(+process.env.ES_VERSION || 6) // WIP
 
   /// 文件监听 ///
   config.watchOptions({ ignored: /node_modules/ })

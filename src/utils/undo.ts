@@ -1,48 +1,64 @@
 /*
- * @description: 撤销重做【单例】
+ * @description: 撤销重做
  * @Author: 毛瑞
  * @Date: 2019-01-28 13:57:42
  */
+/** 撤销重做 */
+export default class <T = any> {
+  /** 下一个位置索引 */
+  private i = 0
+  /** 最大记录数 */
+  private max!: number
+  /** 存储池 */
+  private pool: T[] = []
 
-/** 存储池 */
-let pool: any[] = []
-/** 下一个位置索引 */
-let index = 0
-/** 最大记录数 */
-let maxLength = 50
+  /**
+   * @param max 最大记录数[默认50]
+   */
+  constructor(max?: number) {
+    this.max = max || 50
+  }
 
-/** 撤销重做【单例】 */
-export default {
   /** 移除当前位置之后的并添加指定项
    * @param {Object} obj 存入的对象
    */
-  push(obj: any) {
+  push(obj: T) {
+    const max = this.max
+    const pool = this.pool
+
     // 综合试下来 splice+shift 最优 其实都差不多
-    pool.splice(index, maxLength, obj)
-    pool.length > maxLength && pool.shift()
-    index = pool.length
-  },
+    pool.splice(this.i, max, obj)
+    pool.length > max && pool.shift()
+    this.i = pool.length
+  }
+
   /** 前一个
    * @param {Boolean} move 是否移动指针
    */
   prev(move?: boolean) {
-    return pool[index < 0 ? index : move ? --index : index - 1]
-  },
+    const index = this.i
+    return this.pool[index < 0 ? index : move ? --this.i : index - 1]
+  }
+
   /** 后一个
    * @param {Boolean} move 是否移动指针
    */
   next(move?: boolean) {
-    return pool[index < pool.length ? (move ? index++ : index) : index]
-  },
+    const index = this.i
+    const pool = this.pool
+    return pool[index < pool.length ? (move ? this.i++ : index) : index]
+  }
+
   /** 重置 */
   reset() {
-    pool = []
-    index = 0
-  },
+    this.pool = []
+    this.i = 0
+  }
+
   /** 设置最大记录数
    * @param {Number} max
    */
   setMax(max: number) {
-    maxLength = max
-  },
+    this.max = max
+  }
 }

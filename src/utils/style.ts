@@ -267,7 +267,9 @@ function updateStyle(
         if (temp) {
           if (temp === true) {
             continue
-          } else if (isString(temp)) {
+          }
+
+          if (isString(temp)) {
             value = temp
           } else {
             key = temp[0]

@@ -1,84 +1,102 @@
-/** 响应式工具 (使用 Object.defineProperty)
- */
-import { debounce } from './performance'
-
-interface ISubscribe extends Function {
-  /** this */
-  _t?: any
-  /** arguments */
-  _a?: any[]
-  /** 原函数 */
-  _f?: Function
+/** 简版响应式系统 (使用 Object.defineProperty) */
+interface IEffect<T extends (...args: any[]) => any = (...args: any[]) => any> {
+  (): ReturnType<T>
+  _f: T
 }
 
-const targetMap = new WeakMap<IObject, IObject<Set<ISubscribe>>>()
-let effect: ISubscribe | undefined
+const targetMap = new WeakMap<IObject, IObject<Set<IEffect>>>()
+let activeEffect: IEffect | 0
 
-/** 订阅
+/** 订阅指定对象的指定属性
  * @test true
  *
- * @param {String} key 订阅属性
- * @param {Object} target 目标对象
+ * @param {String} key 目标属性[默认 value]
+ * @param {Object} target 目标对象[默认 {}]
  *
  * @returns {Object} 目标对象
  */
-function watch(key = 'value', target: IObject = {}) {
+function watch(key?: string, target?: IObject) {
+  key || (key = 'value')
+  target ? targetMap.delete(target) : (target = {})
+
   let local: any = target[key]
   try {
     Object.defineProperty(target, key, {
       enumerable: true,
+      configurable: true,
       get() {
-        // 收集依赖
-        if (effect) {
+        if (activeEffect) {
+          // 自动订阅(收集依赖)
           let depsMap = targetMap.get(this)
           depsMap || targetMap.set(this, (depsMap = {}))
-          if (depsMap[key]) {
-            depsMap[key].add(effect)
+          if (depsMap[key as string]) {
+            depsMap[key as string].add(activeEffect)
           } else {
-            depsMap[key] = new Set<ISubscribe>().add(effect)
+            depsMap[key as string] = new Set<IEffect>().add(activeEffect)
           }
-          effect = undefined
+          activeEffect = 0
         }
 
         return local
       },
       set(value: any) {
-        local = value
-        // 使用副作用
-        const depsMap = targetMap.get(this)
-        const depsSet = depsMap && depsMap[key]
-        if (depsSet) {
-          for (const effect of depsSet) {
-            effect.apply(effect._t, effect._a)
+        if (!Object.is(local, value)) {
+          local = value
+          // 发布/通知
+          const depsMap = targetMap.get(this)
+          const depsSet = depsMap && depsMap[key as string]
+          if (depsSet) {
+            let effect
+            for (effect of depsSet) {
+              effect()
+            }
           }
         }
       },
     })
-  } catch (error) {}
+  } catch (error) {
+    console.error('watch:', target, key, error)
+  }
 
   return target
 }
 
-/** 取消订阅
+/** 取消订阅指定对象的指定属性
  * @test true
  *
  * @param {Object} target 目标对象
- * @param {String} key 订阅属性
- * @param {Function} fn 副作用函数 缺省则移除全部
+ * @param {String} key 目标属性[默认 value]
+ * @param {Function} fn 回调函数 缺省则移除全部
  */
-function unWatch(target: IObject, key = 'value', fn?: Function) {
+function unWatch(target: IObject, key?: string, fn?: Function) {
+  key || (key = 'value')
+
   const depsMap = targetMap.get(target)
   const depsSet = depsMap && depsMap[key]
   if (depsSet) {
     if (fn) {
-      for (const FN of depsSet) {
-        if (fn === FN._f) {
-          depsSet.delete(FN)
-          return
+      let effect
+      for (effect of depsSet) {
+        if (fn === effect._f) {
+          depsSet.delete(effect)
+          if (depsSet.size) {
+            return true
+          } else {
+            fn = 0 as any
+            break
+          }
         }
       }
-    } else {
-      depsSet.clear()
+    }
+
+    if (!fn) {
+      Object.defineProperty(target, key, {
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      })
+      targetMap.delete(target)
+      return true
     }
   }
 }
@@ -88,12 +106,25 @@ function unWatch(target: IObject, key = 'value', fn?: Function) {
  *
  * @param {Function} fn 副作用函数
  */
-function run(fn: Function, _this?: any, _arguments?: any[]) {
-  effect = debounce(fn)
-  effect._f = fn
-  effect._t = _this
-  effect._a = _arguments
-  fn.apply(_this, _arguments)
+function run<T extends(...args: any[]) => any>(
+  fn: T,
+  scope?: any,
+  args?: any[]
+): T {
+  const hasScope = arguments.length > 1
+  const hasArgs = arguments.length > 2
+  function wrappedFn(this: any) {
+    activeEffect = wrappedFn as IEffect
+    activeEffect._f = fn
+
+    return fn.apply(
+      hasScope ? scope : this,
+      (hasArgs ? args : arguments) as any
+    )
+  }
+
+  wrappedFn() // 立即运行
+  return wrappedFn as T
 }
 
 export { watch, unWatch, run }

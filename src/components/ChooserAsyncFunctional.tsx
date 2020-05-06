@@ -11,7 +11,7 @@ import Vue, { Component, RenderContext, VNode } from 'vue'
 import Info from './Info'
 import Loading from './Loading'
 
-import { hasOwnProperty, isDef, isFn, isEqual, setHook } from '@/utils'
+import { hasOwn, isDef, isFn, isEqual, setHook } from '@/utils'
 import clone from '@/utils/clone'
 
 /// 常量(UPPER_CASE),单例/变量(camelCase),函数(无副作用,camelCase) ///
@@ -274,7 +274,7 @@ export default (context: RenderContext) => {
   let data // 小工具人
   const store = getStore(
     (temp = context.parent),
-    hasOwnProperty((data = context.data), 'key')
+    hasOwn((data = context.data), 'key')
       ? data.key
       : (data.key = DEFAULT_KEY)
   )

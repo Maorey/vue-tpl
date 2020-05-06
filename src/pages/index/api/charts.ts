@@ -1,5 +1,5 @@
 import { get as xhrGet } from '@/utils/ajax'
-import { charts as API } from '@index/enum/api'
+import { charts as API } from '@index/enums/api'
 
 /** 获取饼图数据
  * @param {boolean} noCache 禁用缓存

@@ -91,7 +91,7 @@ function plugin(config, ENV) {
     ])
 }
 
-/** webpack 配置
+/** 生产环境配置
  * @param {chainWebpack} config 配置对象
  * @param {Object} ENV 环境变量
  * @param {Object} pages 入口

@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  */
-import { hasOwnProperty, isObj, isFn } from '@/utils'
+import { hasOwn, isObj, isFn } from '@/utils'
 
 /** 自定义过滤函数
  * @param {String} key 待拷贝属性
@@ -49,7 +49,7 @@ function extend<T = any, U = any>(
     temp =
       filter && filter(key, targetValue, currentValue, current, target, deep)
     if (temp) {
-      hasOwnProperty(temp, 'value') && ((current as any)[key] = temp.value)
+      hasOwn(temp, 'value') && ((current as any)[key] = temp.value)
     } else if (targetValue && isObj(targetValue)) {
       ;(current as any)[key] = extend(
         (Array.isArray(currentValue) === (temp = Array.isArray(targetValue)) &&
@@ -114,7 +114,7 @@ function setDefault<T = any, U = any>(current: T, target: U): T & U {
   let key
   let temp
   for (key in target) {
-    if (hasOwnProperty(current, key)) {
+    if (hasOwn(current, key)) {
       ;(temp = (current as any)[key]) &&
         isObj(temp) &&
         (key = (target as any)[key]) &&

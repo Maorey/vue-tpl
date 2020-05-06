@@ -1,7 +1,7 @@
 /** 工具函数测试
  */
 import {
-  hasOwnProperty,
+  hasOwn,
   getType,
   is,
   isUndef,
@@ -23,12 +23,12 @@ import {
 } from '@/utils'
 
 describe('@/utils: 工具函数', () => {
-  it('hasOwnProperty: 对象自身是否存在指定属性', () => {
-    expect(hasOwnProperty(0)).toBe(false)
+  it('hasOwn: 对象自身是否存在指定属性', () => {
+    expect(hasOwn(0)).toBe(false)
     const test = { test: undefined }
-    expect(hasOwnProperty(test)).toBe(false)
-    expect(hasOwnProperty(test, 'test')).toBe(true)
-    expect(hasOwnProperty(test, 'hasOwnProperty')).toBe(false)
+    expect(hasOwn(test)).toBe(false)
+    expect(hasOwn(test, 'test')).toBe(true)
+    expect(hasOwn(test, 'hasOwn')).toBe(false)
   })
 
   it('getType: 获取精确类型', () => {

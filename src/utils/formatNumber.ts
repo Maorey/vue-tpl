@@ -28,7 +28,7 @@ const REG_NUMBER = /(\d)(?=(\d{3})+$)/g
  *
  * @returns {String} 格式化后的数字
  */
-function formatNumber(
+export default function(
   num: string | number,
   digit?: number | string | INumberUnit,
   unit?: string | INumberUnit
@@ -72,5 +72,3 @@ function formatNumber(
   // 每三位加逗号
   return num.replace(REG_NUMBER, '$1,') + decimal + (unit || '')
 }
-
-export default formatNumber

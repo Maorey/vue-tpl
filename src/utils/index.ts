@@ -9,7 +9,7 @@ import Vue, { VueConstructor, Component, AsyncComponent } from 'vue'
  *
  * @returns Boolean
  */
-function hasOwnProperty<T>(
+function hasOwn<T>(
   obj: T,
   key?: string | number | symbol
 ): key is keyof T {
@@ -437,7 +437,7 @@ function dev(Vue: VueConstructor) {
 }
 
 export {
-  hasOwnProperty,
+  hasOwn,
   getType,
   is,
   isUndef,
