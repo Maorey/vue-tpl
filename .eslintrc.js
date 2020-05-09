@@ -76,7 +76,7 @@ module.exports = {
       ENV,
       { functions: false, classes: false },
     ],
-    '@typescript-eslint/interface-name-prefix': ['error', 'always'], // 接口I开头
+    '@typescript-eslint/interface-name-prefix': 0,
     '@typescript-eslint/member-delimiter-style': [
       'error',
       {

@@ -4,7 +4,7 @@ const path = require('path')
 const loaderUtils = require('loader-utils')
 
 const PLUGIN_NAME = 'skin-loader'
-const DEFAULT_HANDLER = path.resolve('src/utils/skin')
+const DEFAULT_HANDLER = path.resolve('src/skin')
 
 const EXTENSION = '.scss'
 const INDEX = '/index.scss'
@@ -76,7 +76,8 @@ function init(ENV = process.env) {
       let name
       for (let file of fs.readdirSync(DIR_SKIN, { withFileTypes: true })) {
         file.isFile()
-          ? SKIN_NAME === (name = file.name.replace(REG_EXTENSION, '')) &&
+          ? ((name = file.name.replace(REG_EXTENSION, '') === file.name) ||
+              name === SKIN_NAME) &&
             (file = 0)
           : (SKIN_NAME !== (name = file.name) &&
               exists(DIR_SKIN, (file.name += INDEX))) ||

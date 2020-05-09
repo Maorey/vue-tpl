@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-09 16:08:07
  */
-import { getAsync } from '@/utils/highOrder' // 高阶组件工具
+import { getAsync } from '@com/hoc' // 高阶组件工具
 
 import PageHeader from '@indexCom/PageHeader' // 页面标题
 import ModuleContainer from '@indexCom/ModuleContainer' // 模块容器

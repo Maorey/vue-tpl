@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  */
-import { hasOwn, isObj, isFn } from '@/utils'
+import { hasOwn, isObj, isFn } from '.'
 
 /** 自定义过滤函数
  * @param {String} key 待拷贝属性

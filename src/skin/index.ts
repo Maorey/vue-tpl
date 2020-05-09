@@ -1,7 +1,7 @@
 /** 皮肤工具(getter & setter 发布订阅/依赖注入就不用了)
  */
 import Vue from 'vue'
-import { on, emit } from './eventBus'
+import { on, emit } from '@/utils/eventBus'
 
 /** 获取当前皮肤
  *

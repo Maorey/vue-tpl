@@ -9,9 +9,9 @@ import router from './router'
 import store from './store'
 import App from './App'
 
-import { dev } from '@/utils'
 import { on, off, once, emit } from '@/utils/eventBus'
 // import { throttle } from '@/utils/performance'
+import { dev } from '@/libs/vue'
 import './registerServiceWorker'
 
 /// 全局注册的组件，请尽量不要让这个列表变太长 ///
@@ -149,7 +149,16 @@ temp.emit = emit
 // }
 
 dev(Vue)
+
 // 防阻塞页面（defer的脚本已缓存时不会非阻塞执行bug:chromium#717979）
+// [消息总线]直接复用根实例 (vue之外也会用到)
+// const root = new Vue(App)
+// temp = Vue.prototype
+// temp.on = root.$on
+// temp.once = root.$once
+// temp.off = root.$off
+// temp.emit = root.$emit
+// setTimeout(() => { root.$mount('#app') })
 setTimeout(() => {
   // new Vue({
   //   store,

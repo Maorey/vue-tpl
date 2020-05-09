@@ -1,7 +1,7 @@
 /* vue 扩展申明 */
 
 import { VNode } from 'vue'
-import { Handler } from '@/utils/eventBus'
+import { on, off, once, emit } from '@/utils/eventBus'
 
 type type = 'success' | 'warning' | 'info' | 'error'
 type action = 'confirm' | 'cancel' | 'close'
@@ -110,58 +110,21 @@ declare module 'vue/types/vue' {
   interface Vue {
     /** .vue <style module> class名字典计算属性 */
     $style: IObject<string>
-    // /** 是否满足(全部)指定权限
-    //  * @param {...String} authKey 权限id
-    //  *
-    //  * @returns {Boolean}
-    //  */
-    // authFit: (...authKey: string[]) => boolean
-    // /** 是否包含指定权限(之一)
-    //  * @param {...String} authKey 权限id
-    //  *
-    //  * @returns {Boolean}
-    //  */
-    // authAny: (...authKey: string[]) => boolean
-    /** [eventBus]监听事件
-     * @param {String} eventName 事件名
-     * @param {String|Handler} nameSpace:String 命名空间 handler:Handler 事件处理函数
-     * @param {Handler} handler 事件处理函数
-     * @param {Boolean} isOnce 是否只监听一次
-     */
-    on: (
-      eventName: string,
-      nameSpace: string | Handler,
-      handler?: Handler,
-      isOnce?: boolean
-    ) => void
-    /** [eventBus]单次监听事件
-     * @param {String} eventName 事件名
-     * @param {String|Handler} nameSpace:String 命名空间 handler:Handler 事件处理函数
-     * @param {Handler} handler 事件处理函数
-     */
-    once: (
-      eventName: string,
-      nameSpace: string | Handler,
-      handler?: Handler
-    ) => void
-    /** [eventBus]取消监听事件
+    /** [消息总线]监听事件 */
+    on: typeof on
+    /** [消息总线]单次监听事件 */
+    once: typeof once
+    /** [消息总线]取消监听事件
      * 如果同时提供了事件与回调，则只移除这个回调的监听器
-     * ？如果只提供了事件，则移除该事件所有的监听器 (文档有写并未实现)
+     * ？如果只提供了事件，则移除该事件所有的监听器
+     * ？如果只提供了监听器，则移除所有该监听器
      * ！如果没有提供参数(eventName === undefined)，则移除所有的事件监听器
-     * @param {String} eventName 事件名
-     * @param {String|Handler} String:nameSpace 命名空间 Handler:handler 事件处理函数
-     * @param {Handler} handler 事件处理函数
      */
-    off: (
-      eventName?: string,
-      nameSpace?: string | Handler,
-      handler?: Handler
-    ) => void
-    /** [eventBus]触发事件
-     * @param {String} eventKey 事件标识 (= 命名空间.事件名)
-     * @param {...Any} args 事件参数列表
+    off: typeof off
+    /** [消息总线]触发事件
+     * @param eventKey string:事件标识 string[]:[事件名, 命名空间]
      */
-    emit: (eventKey: string, ...args: any[]) => void
+    emit: typeof emit
 
     /// element-UI 组件快速方法 ///
     /** 加载 */

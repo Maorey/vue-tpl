@@ -1,5 +1,10 @@
 import { get as xhrGet } from '@/utils/ajax'
-import { charts as API } from '@index/enums/api'
+
+/** 查询图表数据 */
+export const enum API {
+  pie = 'pie',
+  line = 'line',
+}
 
 /** 获取饼图数据
  * @param {boolean} noCache 禁用缓存

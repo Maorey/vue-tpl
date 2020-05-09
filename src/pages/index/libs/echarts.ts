@@ -4,8 +4,10 @@
  * @Date: 2019-07-31 15:13:54
  */
 import echarts from 'echarts/lib/echarts'
+
 // import CONFIG from '@/config'
-import { get } from '@/utils/skin'
+import { get } from '@/skin'
+import { isFn } from '@/utils'
 import { on } from '@/utils/eventBus'
 // import { watch, unWatch, run } from '@/utils/watch'
 
@@ -47,7 +49,7 @@ echarts.init = function(dom: any, theme?: string | IObject, opts?: IObject) {
         let args: IArguments | any[] = arguments
         idMap[this.id] = args
 
-        if (typeof args[0] === 'function') {
+        if (isFn(args[0])) {
           args = [...args]
           args[0] = args[0]()
         }
@@ -83,7 +85,7 @@ on(process.env.SKIN_FIELD, skin => {
 
       instance = echarts.init(id, skin, opts)
       newIdMap[(instance as any).id] = args
-      if (typeof args[0] === 'function') {
+      if (isFn(args[0])) {
         args = [...args]
         args[0] = args[0]()
       }

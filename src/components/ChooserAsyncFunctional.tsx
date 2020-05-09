@@ -6,13 +6,14 @@
 import Vue, { Component, RenderContext, VNode } from 'vue'
 
 /// [import] vue组件,其他,CSS Module ///
-// import { getAsync } from '@/utils/highOrder'
+// import { getAsync } from '@com/hoc'
 // import STYLE from './index.module.scss'
 import Info from './Info'
 import Loading from './Loading'
 
-import { hasOwn, isDef, isFn, isEqual, setHook } from '@/utils'
+import { hasOwn, isDef, isFn, isEqual } from '@/utils'
 import clone from '@/utils/clone'
+import { setHook } from '@/libs/vue'
 
 /// 常量(UPPER_CASE),单例/变量(camelCase),函数(无副作用,camelCase) ///
 // const ModuleOne: any = getAsync(() =>
@@ -274,9 +275,7 @@ export default (context: RenderContext) => {
   let data // 小工具人
   const store = getStore(
     (temp = context.parent),
-    hasOwn((data = context.data), 'key')
-      ? data.key
-      : (data.key = DEFAULT_KEY)
+    hasOwn((data = context.data), 'key') ? data.key : (data.key = DEFAULT_KEY)
   )
 
   if (store.i.d || (temp.$el && !temp.$el.parentNode) || diff(store, context)) {

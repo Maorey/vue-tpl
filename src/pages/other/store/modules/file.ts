@@ -13,9 +13,11 @@ export * from '@/store/file'
 
 /** 文件下载管理 */
 @Module({ dynamic: true, namespaced: true, name: 'file', store })
-class File extends RootFile {}
-
-// 覆盖本地存储信息
-File.prototype.local = PREFER.file || (PREFER.file = {} as ILocal)
+class File extends RootFile {
+  constructor(module: File) {
+    // 覆盖本地存储信息
+    super(module, PREFER.file || (PREFER.file = {} as ILocal))
+  }
+}
 
 export default getModule(File)

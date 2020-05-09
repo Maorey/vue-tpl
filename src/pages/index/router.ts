@@ -59,7 +59,7 @@ const META = configRoute.meta
 
 // scrollBehavior 不能处理指定元素的滚动
 const router = new Router(configRoute)
-;(router as any).$ = Vue.observable({ e: 0 }) // hack 刷新路由
+;(router as any).$ = Vue.observable({ e: null }) // hack 刷新路由
 
 /// 路由刷新 ///
 /**

@@ -12,15 +12,12 @@ interface IHandler {
   _once?: 1
 }
 
+// const BUS = new Vue()
+// const BUS = document.createElement('i')
 const BUS = new Map<string, Set<IHandler>>()
 
 /** 监听事件
  * @test true
- *
- * @param {String} eventName 事件名
- * @param {String|IHandler} nameSpace:String 命名空间 handler:IHandler 事件处理函数
- * @param {IHandler} handler 事件处理函数
- * @param {Boolean} isOnce 是否只监听一次
  */
 function on(
   eventName: string,
@@ -45,10 +42,6 @@ function on(eventName: any, nameSpace: any, handler?: any, isOnce?: any) {
 
 /** 单次监听事件
  * @test true
- *
- * @param {String} eventName 事件名
- * @param {String|IHandler} nameSpace:String 命名空间 handler:IHandler 事件处理函数
- * @param {IHandler} handler 事件处理函数
  */
 function once(eventName: string, nameSpace: string, handler: IHandler): void
 function once(eventName: string, handler: IHandler): void
@@ -63,9 +56,6 @@ function once(eventName: any, nameSpace: any, handler?: any) {
  * ？如果只提供了事件，则移除该事件所有的监听器
  * ？如果只提供了监听器，则移除所有该监听器
  * ！如果没有提供参数(eventName === undefined)，则移除所有的事件监听器
- * @param {String} eventName 事件名
- * @param {String|IHandler} String:nameSpace 命名空间 IHandler:handler 事件处理函数
- * @param {IHandler} handler 事件处理函数
  */
 function off(): void
 function off(handler: IHandler): void
@@ -102,8 +92,7 @@ function off(eventName?: any, nameSpace?: any, handler?: any) {
 /** 触发事件
  * @test true
  *
- * @param {String|String[]} eventKey String:事件标识 [事件名, 命名空间]
- * @param {...Any} args 事件参数列表
+ * @param eventKey string:事件标识 string[]:[事件名, 命名空间]
  */
 function emit(eventKey: string | string[], ...args: any[]) {
   eventKey = isString(eventKey) ? eventKey : eventKey[1] + '.' + eventKey[0]

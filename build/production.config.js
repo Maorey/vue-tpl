@@ -100,13 +100,12 @@ function plugin(config, ENV) {
 module.exports = function(config, ENV, pages) {
   // https://webpack.js.org/configuration/other-options/#recordspath
   config.merge({ recordsPath: require('path').resolve('build/~records') })
-  /// 多皮肤 ///
   const skinLoader = require('./skinLoader')
   if (skinLoader.init(ENV).SKINS) {
     const name = 'skin-loader'
     /** 选项
      * {
-     *   localHandler: String 默认: 'src/utils/skin.ts'
+     *   localHandler: String 默认: 'src/skin'
      *    ({[skin]:Object}) => Object
      * }
      */

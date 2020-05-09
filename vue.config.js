@@ -50,8 +50,8 @@ module.exports = {
 
     /// 环境变量 ///
     env = {}
-    const prefix = 'process.env.'
-    const REG_ENV = /^[A-Z][A-Z_]*$/
+    const prefix = 'process.env.' // 工具人二号
+    const REG_ENV = /^[A-Z]+(?:_[A-Z]+)?$/
     for (const att in ENV) {
       REG_ENV.test(att) && (env[prefix + att] = JSON.stringify(ENV[att]))
     }
@@ -62,6 +62,20 @@ module.exports = {
     // config.externals({
     //   global: 'global',
     // })
+
+    /// web workers 支持 ///
+    config.module
+      .rule('web workers')
+      .merge(config.module.rule('ts').toConfig()) // 需要 ts allowJs
+      .test(/(?:\.worker|[\\/]workers[\\/]\w+)\.[tj]s$/)
+      .use('worker-loader')
+      .loader('worker-loader')
+      .options({
+        name: 'js/[name].[hash:3].worker.js',
+        fallback: true,
+        publicPath: ENV.BASE_URL,
+      })
+      .after('0') // merge名字变数组索引了
 
     /// 【不同环境配置】 ///
     require(isProd

@@ -357,15 +357,31 @@ export default class File extends VuexModule implements IFile {
   RAM = 0
   usage = 0
 
-  /** 本地存储信息 */
-  local = {} as ILocal
-  constructor(module: File) {
+  constructor(module: File, local?: ILocal) {
     super(module)
 
-    const local = setDefault(this.local, DEFAULT_CONFIG)
+    local &&
+      hook(() => {
+        const tasks = this.tasks
+        for (let i = 0, len = tasks.length, task; i < len; i++) {
+          task = tasks[i]
+          if (!task.state || task.state === STATE.saved) {
+            tasks.splice(i--, 1)
+            len--
+          } else {
+            delete task.id
+            delete task.key
+            delete task.state
+          }
+        }
+
+        ;(local as ILocal).tasks = tasks
+        ;(local as ILocal).conf = this.config
+      })
+
+    local = setDefault(local || {}, DEFAULT_CONFIG)
     this.config = local.conf
     const tasks = (this.tasks = local.tasks as ITask[])
-
     if (tasks.length) {
       const state = this.config.auto ? STATE.loading : STATE.pause
       let task
@@ -374,24 +390,6 @@ export default class File extends VuexModule implements IFile {
         this.SET_STATE({ task, state })
       }
     }
-
-    hook(() => {
-      const tasks = this.tasks
-      for (let i = 0, len = tasks.length, task; i < len; i++) {
-        task = tasks[i]
-        if (!task.state || task.state === STATE.saved) {
-          tasks.splice(i--, 1)
-          len--
-        } else {
-          delete task.id
-          delete task.key
-          delete task.state
-        }
-      }
-      const local = this.local
-      local.tasks = tasks
-      local.conf = this.config
-    })
   }
 
   /// Mutation ///

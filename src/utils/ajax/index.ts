@@ -12,7 +12,7 @@ import sort from '@/utils/sort'
 import clone from '@/utils/clone'
 import { Memory } from '@/utils/storage'
 
-import { success, failed } from './interceptor'
+import { success, failed } from '@/functions/interceptor'
 import WS from './websocket'
 // import { emit } from '@/utils/eventBus' // 通知取消请求 以便自定义取消策略使用
 

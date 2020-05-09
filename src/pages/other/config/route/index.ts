@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-07-01 16:26:36
  */
-import { getAsync } from '@/utils/highOrder' // 高阶组件工具
+import { getAsync } from '@com/hoc' // 高阶组件工具
 // import RouterViewTransparent from '@com/RouterViewTransparent'
 
 export default {

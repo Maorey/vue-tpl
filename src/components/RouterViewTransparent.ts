@@ -6,7 +6,7 @@
 import { Component } from 'vue'
 
 /// [import] vue组件,其他,CSS Module ///
-// import { getAsync } from '@/utils/highOrder'
+// import { getAsync } from '@com/hoc'
 // import STYLE from './index.module.scss'
 import CONFIG from '@/config'
 import getKey from '@/utils/getKey'

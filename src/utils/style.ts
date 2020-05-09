@@ -4,7 +4,7 @@
  * @Date: 2019-07-02 16:50:15
  */
 import { isString, isFn } from '.'
-import { camelToKebab } from '@/utils/case'
+import { camelToKebab } from './case'
 
 const PREV_STRING = ';\\s*'
 const TAIL_STRING = '\\s*:\\s*(.*?)\\s*;'

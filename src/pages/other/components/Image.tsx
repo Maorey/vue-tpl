@@ -7,7 +7,7 @@
 import { Component } from 'vue-property-decorator'
 
 /// [import] vue组件,其他,CSS Module ///
-// import { getAsync } from '@/utils/highOrder'
+// import { getAsync } from '@com/hoc'
 // import STYLE from './index.module.scss'
 import Image from '@com/Image'
 import storeImage from '@index/store/modules/image'

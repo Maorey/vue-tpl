@@ -8,7 +8,7 @@ import { CreateElement, VNode } from 'vue'
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 /// [import] vue组件,其他,CSS Module ///
-// import { getAsync } from '@/utils/highOrder'
+// import { getAsync } from '@com/hoc'
 // import STYLE from './index.module.scss'
 import Info from './Info'
 
@@ -89,6 +89,10 @@ export default class extends Vue {
     this.isSleep = true
   }
 
+  private destroyed() {
+    this.store.DROP(this.task)
+  }
+
   /// [watch] (@Watch('attr') onAttrChange(val, oldVal) {}) ///
   /// [methods] (method(){}) ///
   @Watch('src')
@@ -111,16 +115,6 @@ export default class extends Vue {
     }
 
     switch (task.state) {
-      case STATE.drop:
-        return (this.$_vnode = (
-          <Info
-            icon="el-icon-picture-outline"
-            type="info"
-            msg={this.alt}
-            retry="重新加载图片"
-            on={{ $: this.load }}
-          />
-        ))
       case STATE.wait:
         return (this.$_vnode = (
           <Info

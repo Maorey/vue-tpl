@@ -60,10 +60,10 @@
     "@vue/cli-service": "~4.3.1",
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/eslint-config-typescript": "^5.0.2",
-    "@vue/test-utils": "^1.0.0",
+    "@vue/test-utils": "^1.0.2",
     "alternate-css-extract-plugin": "^0.9.4",
     "compression-webpack-plugin": "^3.1.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.0.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
@@ -86,7 +86,8 @@
     "unicode-match-property-value-ecmascript": "^1.2.0",
     "vue-template-compiler": "^2.6.11",
     "vue-tsx-support": "^2.3.3",
-    "webpack-remove-strict-mode-plugin": "^1.0.0"
+    "webpack-remove-strict-mode-plugin": "^1.0.0",
+    "worker-loader": "^2.0.0"
   },
   "bugs": {
     "url": "https://github.com/Maorey/vue-tpl/issues"

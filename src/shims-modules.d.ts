@@ -80,6 +80,15 @@ declare module '*.json' {
 //   export default plugin
 // }
 
+/// web workers ///
+declare function postMessage(message: any): void
+declare interface WebpackWorker {
+  new (): Worker
+}
+declare module 'worker-loader!*' {
+  export default WebpackWorker
+}
+
 /// hack 放最后 ///
 // declare module 'zrender/lib/*'
 // declare module 'zdog/js/*'

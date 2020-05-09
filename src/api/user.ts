@@ -6,14 +6,22 @@
 import { setHEAD, get, post } from '@/utils/ajax'
 import { local } from '@/utils/storage'
 import CONFIG from '@/config'
-import { user as API } from '@/enums/api'
 
 // 加密算法(token + RSA 加密)
 import Jsencrypt from 'jsencrypt'
 import md5 from 'crypto-js/md5'
 
-/** rsa加密公匙
- */
+/** 用户登录相关接口 */
+export const enum API {
+  /** 获取登陆验证码 */
+  verify = 'verify',
+  /** 用户登陆 */
+  login = 'login',
+  /** 用户注销登陆 */
+  logout = 'logout',
+}
+
+/** rsa加密公匙 */
 let publicKey: string
 
 /** 获取验证码(及publicKey)

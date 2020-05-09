@@ -13,9 +13,11 @@ export * from '@/store/image'
 
 /** 文件下载管理 */
 @Module({ dynamic: true, namespaced: true, name: 'image', store })
-class Image extends RootImage {}
-
-// 覆盖本地存储信息
-Image.prototype.config = PREFER.img || (PREFER.img = {} as ILocal)
+class Image extends RootImage {
+  constructor(module: Image) {
+    // 覆盖本地存储信息
+    super(module, PREFER.img || (PREFER.img = {} as ILocal))
+  }
+}
 
 export default getModule(Image)

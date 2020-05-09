@@ -4,12 +4,12 @@
  * @Date: 2019-07-02 14:32:33
  */
 import Vue, { Component, AsyncComponent, RenderContext } from 'vue'
+
+import Loading from './Loading' // 加载中
+import Info from './Info' // 加载失败
+
 import CONFIG from '@/config'
-
-import Loading from '@com/Loading' // 加载中
-import Info from '@com/Info' // 加载失败
-
-import getKey from './getKey'
+import getKey from '@/utils/getKey'
 
 /** 组件筛选器
  * @param {RenderContext} context vue渲染上下文
@@ -313,4 +313,4 @@ export default class extends Vue {
 */
 // 更多...
 
-export { filterByIS as filter, Chooser, getChooser, getAsync }
+export { Chooser as default, filterByIS as filter, getChooser, getAsync }

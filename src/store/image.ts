@@ -17,8 +17,6 @@ import {
 
 /** 任务状态 */
 export const enum STATE {
-  /** 已因栈/内存溢出丢弃 */
-  drop = 0,
   /** 等待下载 */
   wait = 1,
   /** 下载中 */
@@ -41,6 +39,8 @@ export interface ITask extends IParams {
   id: string
   /** 当前状态 */
   state: STATE
+  /** 引用计数, 为0时该任务可自动销毁 */
+  ref: number
   /** 图片地址 */
   src?: string
   /** setTimeout计时器 */
@@ -73,8 +73,6 @@ const DEFAULT_CONFIG: ILocal = {
   RAM: 2 << 27,
   alive: 2 << 17,
 }
-/** drop的任务自动移除间隔 */
-const DROP_TIME = 2 << 15
 /** 图片下载缓存 */
 const CACHE: IObject<{
   /** 下载Promise */
@@ -160,8 +158,9 @@ function SET_STATE(
 
     case STATE.loading:
       if ((temp = CACHE[task.id]) && temp.f) {
-        clearTimeout(temp.t)
+        temp.t && clearTimeout(temp.t)
         alive &&
+          !task.ref &&
           (temp.t = setTimeout(() => {
             REMOVE_TASK.call(this, task)
           }, alive))
@@ -173,6 +172,7 @@ function SET_STATE(
             temp = CACHE[task.id]
             temp.f = fileInfo
             alive &&
+              !task.ref &&
               (temp.t = setTimeout(() => {
                 REMOVE_TASK.call(this, task)
               }, alive))
@@ -199,22 +199,19 @@ function SET_STATE(
   }
 }
 function REMOVE_TASK(this: Image, task: ITask) {
-  this.RAM -= removeCache(task)
-  const state = task.state
-  task.state = STATE.drop
-  task.src = undefined
   task.t && clearTimeout(task.t)
-  task.t = setTimeout(() => {
-    const id = task.id
-    const tasks = this.tasks
-    for (let i = 0, len = tasks.length; i < len; i++) {
-      if (id === tasks[i].id) {
-        tasks.splice(i, 1)
-        return
-      }
+  for (
+    let i = 0, tasks = this.tasks, len = tasks.length, id = task.id;
+    i < len;
+    i++
+  ) {
+    if (id === tasks[i].id) {
+      tasks.splice(i, 1)
+      break
     }
-  }, DROP_TIME)
-  next.call(this, state !== STATE.loading)
+  }
+  this.RAM -= removeCache(task)
+  next.call(this, task.state !== STATE.loading)
 }
 
 /** 图片下载内存管理 */
@@ -226,18 +223,13 @@ export default class Image extends VuexModule implements IImage {
   usage = 0
   loading!: number
 
-  constructor(module: Image) {
+  constructor(module: Image, local?: ILocal) {
     super(module)
-    this.config = setDefault(
-      ((this as any).config || {}) as ILocal,
-      DEFAULT_CONFIG
-    )
+    this.config = setDefault(local || {}, DEFAULT_CONFIG)
   }
 
   /// Mutation ///
-  /** 更新设置
-   * @param config 设置
-   */
+  /** 更新设置 */
   @Mutation
   CONFIG(config: ILocal) {
     config = Object.assign(this.config, config)
@@ -280,11 +272,7 @@ export default class Image extends VuexModule implements IImage {
     }
   }
 
-  /** 加载图片
-   * @param payload 任务信息
-   *
-   * @returns 任务(直接修改原对象)
-   */
+  /** 加载图片 */
   @Mutation
   LOAD(payload: { task: IParams; callback: (task: ITask) => void }) {
     this.loading || (this.loading = 0)
@@ -293,6 +281,7 @@ export default class Image extends VuexModule implements IImage {
     let item
     for (item of tasks) {
       if (task.url === item.url && isEqual(task.query, item.query)) {
+        item.ref || (item.ref = 1)
         SET_STATE.call(this, item, STATE.loading)
         payload.callback(item)
         return
@@ -302,11 +291,16 @@ export default class Image extends VuexModule implements IImage {
     item = { state: STATE.wait } as ITask // for watch
     tasks.push(item)
     item.id = getId('i')
-    item.url = task.url
-    item.query = task.query
-
+    setDefault(item, task)
+    item.ref = (item.ref || 0) + 1
     SET_STATE.call(this, item, STATE.loading)
     payload.callback(item)
+  }
+
+  /** 标记不再使用指定图片 */
+  @Mutation
+  DROP(task: ITask) {
+    task.ref && task.ref--
   }
 
   /// Action ///

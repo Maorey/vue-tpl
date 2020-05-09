@@ -178,6 +178,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 │   │── libs # 存储不(能)通过 npm 管理的第三方库/依赖库等相关
 │   │── scss # 样式/CSS 对象(.module).scss 文件
 │   │── skin # 皮肤(scss变量) 文件
+│   │── route # 路由配置
 │   │── router # 路由设置
 │   │── store # 状态管理
 │   │   └── modules # 各模块状态管理
@@ -308,7 +309,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   ```
 
 - `enum/type/interface` 需要导出的直接 `export` (否则可能会得到 undefined), 其他的除了字典(硬编码)和只有默认导出的外, 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
-- 不要使用 `$` 作为组件事件名, 该名字已被[异步组件刷新](src/utils/highOrder.ts)占用
+- 不要使用 `$` 作为组件事件名, 该名字已被[异步组件刷新](src/components/hoc)占用
 - Vue实例**私有属性**命名规则(避免 [属性名](https://cn.vuejs.org/v2/style-guide/#私有属性名-必要) 冲突):
   - `$_` 实例命名空间(在保证易维护的前提下可以使用单字母, 但应尽量避免)
   - `_$` **全局/跨组件/hack**命名空间, 命名前应**先全局搜索**是否有重复
@@ -322,6 +323,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   - 基础组件样式(按照[BEM](https://en.bem.info)约定命名[参考链接](https://www.ibm.com/developerworks/cn/web/1512_chengfu_bem/))
 
   均应使用 [CSSModule](https://vue-loader-v14.vuejs.org/zh-cn/features/css-modules.html)(开发环境class名:`[folder]__[name]_[local]-[emoji]$`), 以更好的实现模块化(支持复用)
+
 - CSS Modules class 名使用 `camelCase`, 选择器嵌套**不应超过三层**
 - <a id="scss变量"></a>**皮肤文件**(scss变量) _(包含<a href="#别名">各别名</a>下[.env](.env) `GLOBAL_SCSS`变量指定的文件)_ 中不要出现具体样式, 也不要有[`:export{}`](https://github.com/css-modules/icss#export)(应在 `scss/export` 目录下或 `export*.scss` 中使用)
 - 为保证在`ts/js`中引入scss文件时, 变量注入正确(使用缓存会导致无法对相同文件注入不同变量，不用缓存显然不合理而且也不支持), 应在合适的位置新建 scss 文件来中转:
@@ -438,7 +440,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
     import './scss/f.scss?skin=light'
 
     // CSS Module
-    import getSkin from '@/utils/skin'
+    import getSkin from '@/skin'
     import styleDark from './scss/g.module.scss?skin=dark|foo.scss'
     import styleLight from './scss/g.module.scss?skin=light|bar.scss'
 
@@ -618,13 +620,15 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 对多个 js chunk 共同依赖的模块进行缓存/单独提取, 大模块只出现在一个chunk里(cacheGroups)
 - 相同chunk下的基础样式和各个皮肤样式文件分别合并 或 其他合理的合并策略【webpack 5 支持设置 css chunk 的 minSize/maxSize 啦】
 - [现代模式](https://cli.vuejs.org/zh/guide/browser-compatibility.html#现代模式)
-- 打包/热更新慢(已使用 `hard-source-webpack-plugin` 插件动态追踪缓存依赖):
-  1. (第三方)依赖静态化
-    - 优点: 静态化依赖只需一次构建; 支持CDN加载(可供多个应用使用)
-    - 缺点: 增加文件体积, 消耗浏览器资源; 需要更新维护工作
-  2. 开发调试时支持指定需要的模块, 比如指定路由
+- 打包/热更新慢:
+  1. [热更新]使 `hard-source-webpack-plugin` (动态缓存结果文件)在开发环境排除`src`文件夹生效
+  2. [热更新]开发环境减少js(ts必须编译)转码/编译工作量, 比如保留最新ES标准语法, 更进一步可以配合模块加载方式(`<script type="module">` 参考[vite](https://github.com/vuejs/vite)), 但这需要使用最新浏览器调试且调试时不会暴露兼容性问题
+  3. [热更新]开发时指定需要的模块, 比如指定路由
     - 优点: 只需构建指定模块, 提升热更新效率
-    - 缺点: 未解决打包慢问题
+    - 缺点: 需要其他模块时需要重新指定
+  4. (第三方)依赖静态化[不推荐]
+    - 优点: 静态化依赖只需一次构建; 支持CDN加载(可供多个应用使用)
+    - 缺点: 通常会增加文件体积(无法tree-shaking)/数量, 可能导致全局变量污染; CDN维护更新/版本管理
 
 ## 部署(nginx)
 

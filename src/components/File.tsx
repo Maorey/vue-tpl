@@ -9,7 +9,7 @@ import { CreateElement, VNode } from 'vue'
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
 /// [import] vue组件,其他,CSS Module ///
-// import { getAsync } from '@/utils/highOrder'
+// import { getAsync } from '@com/hoc'
 // import STYLE from './index.module.scss'
 import ElLink from 'element-ui/lib/link'
 

@@ -1,7 +1,7 @@
 /** 偏好管理 */
 import { VuexModule, Mutation } from 'vuex-module-decorators'
 import { local } from '@/utils/storage'
-import { set } from '@/utils/skin'
+import { set } from '@/skin'
 import CONFIG from '@/config'
 
 /** 偏好管理 */
