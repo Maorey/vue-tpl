@@ -41,10 +41,10 @@
         "src/pages/other/components/*"
       ],
       "@iRoute/*": [
-        "src/pages/index/config/route/*"
+        "src/pages/index/route/*"
       ],
       "@oRoute/*": [
-        "src/pages/other/config/route/*"
+        "src/pages/other/route/*"
       ]
     },
     "lib": [

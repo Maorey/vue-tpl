@@ -8,13 +8,17 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
   - [建议开发环境](#建议开发环境)
 - [浏览器支持](#浏览器支持)
 - [安装](#安装)
-- [命令参考(Terminal)](#命令参考(Terminal))
-  - [开发环境](#开发环境开发调试时使用)
-  - [构建](#生成部署包)
+- [命令参考(Terminal)](#命令参考Terminal)
+  - [启动开发环境](#启动开发环境)
   - [代码风格检查和修正](#代码风格检查和修正提交-git-时会自动执行)
-  - [e2e测试](#e2eend-to-end-测试)
   - [单元测试](#单元测试)
-  - [命令帮助](#命令帮助)
+  - [e2e测试](#e2eend-to-end-测试)
+  - [生成](#生成部署包)
+  - [其他命令](#其他命令)
+    - [指定入口](#指定入口SPA-逗号分隔)
+    - [指定路由配置](#指定路由配置通过别名)
+    - [命令帮助](#命令帮助)
+    - [联调](#联调)
 - [说明及注意事项](#说明及注意事项)
   - [目录结构](#目录结构)
   - [风格建议](#风格建议)
@@ -53,7 +57,7 @@ VSCode 插件
 
 > 推荐工具: [`@vue/cli`](https://cli.vuejs.org/zh/guide)(最新), 全局安装时可使用 `vue ui` 命令启动图形化界面管理工程
 
-> 推荐字体: [FiraCode](https://github.com/tonsky/FiraCode)
+> 推荐开发字体: [FiraCode](https://github.com/tonsky/FiraCode)
 
 ## 浏览器支持
 
@@ -67,7 +71,7 @@ VSCode 插件
 
 ```bash
 git config core.ignorecase false # 使git对文件名大小写敏感
-# 或者修改 .git/config [core] ignorecase = false
+# 或者修改 .git/config [core] ignorecase=false
 ```
 
 有 `.lock` 文件时**只需**执行 `yarn` (或`npm i`) 安装即可, 否则如下:
@@ -109,24 +113,10 @@ git config core.ignorecase false # 使git对文件名大小写敏感
 yarn dev # --port 9876 : 本次启动使用9876端口 (可以在 .env.development.local 文件中设置)
 ```
 
-### 构建(生成部署包)
-
-```bash
-yarn build # --watch: 跟踪文件变化 --report: 生成打包分析
-```
-
-同时会生成文件名/chunk名[映射文件](build/~fileName) (公共代码抽到`_`开头的文件里了)
-
 ### 代码风格检查和修正(提交 Git 时会自动执行)
 
 ```bash
 yarn lint
-```
-
-### e2e(end-to-end) 测试
-
-```bash
-yarn test:e2e
 ```
 
 ### 单元测试
@@ -135,30 +125,87 @@ yarn test:e2e
 yarn test:unit # --watch : 跟踪文件变化
 ```
 
-### 命令帮助
+### e2e(end-to-end) 测试
+
+```bash
+yarn test:e2e
+```
+
+### 生成(部署包)
+
+```bash
+yarn build # --watch: 跟踪文件变化 --report: 生成打包分析
+```
+
+同时会生成文件名/chunk名[映射文件](build/~fileName) (公共代码抽到`_`开头的文件里了)
+
+### 其他命令
+
+#### 指定入口(SPA 逗号分隔)
+
+  1. 使用 [.env](.env) `_ENTRIES` 配置, 示例: `_ENTRIES=foo,bar`
+  2. 通过cli命令: `entries` (覆盖1):
+
+  ```bash
+  yarn dev --entries=foo
+  yarn build --entries=foo,bar
+  ```
+
+#### 指定路由配置(通过别名):
+
+  1. `route` 目录结构
+
+  ```bash
+  ├── route # 全部路由配置文件夹(缺省指令)
+  ├── route.foo # foo配置 指令: foo
+  ├── route.bar # bar配置 指令: bar
+  # ...
+  ```
+
+  2. 配置 [.env](.env) `_ROUTES`, 示例:
+
+  ```bash
+  # 配置路由别名, json: [
+  #  [别名, 路径(相对根目录或入口), 默认指令(可省略)] 或者
+  #  [别名, 路径, [允许的指令, ...], 默认指令(可省略)]
+  #  ... ], 可使用cli命令指定指令(优先 --routes=foo.bar,bar.foo )
+  _ROUTES=[["@fRoute", "foo/route", "foo"], ["@bRoute", "src/pages/bar/route", ["foo", "bar"], "bar"]]
+  ```
+
+  3. 通过cli命令: `routes`: `入口.指令,...`
+
+  ```bash
+  yarn dev --routes=foo.bar
+  yarn build --routes=bar # 省略形式: 指令唯一时
+  yarn build --routes=foo.bar,bar.foo
+  ```
+
+#### 命令帮助
 
 ```bash
 yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 ```
 
-可配置和使用指定路由配置(请使用别名引用路由配置)进行开发/构建:
-  - 配置 [.env](.env) `_ROUTES`, 示例:
+### 联调
+
+支持通过浏览器地址栏动态传递调试参数
+
+- 环境变量`SEARCH_FIELD`: **所有**ajax请求将会把满足该正则的参数传递给服务端(开发环境代理服务器)
+
+- 动态代理字段, 通过`PROXY_FIELD`指定, 数字与静态代理(`BASE_PATH` + `PROXY_TARGET`)一致, 可以指定为环境变量名(比如 PROXY_TARGET)/ip/域名/完整url. 匹配的代理字段将**不会**传递给服务器
 
   ```bash
-  _ROUTES=[["@iRoute", "src/pages/index/config/route", ["iFoo", "iBar"]], ["@oRoute", "src/pages/other/config/route", ["oFoo", "oBar"]]]
-  ```
-
-  - `route` 目录结构
-
-  ```bash
-  ├── route # 全部路由配置文件夹(未指定时默认)
-  ├── route.foo # 路由配置文件夹: foo
-  ├── route.bar # 路由配置文件夹: bar
-  # ...
-
-  yarn dev --iFoo # 只加载foo配置
-  yarn build --oBar # 只加载foo配置
-  yarn dev --iBar --oFoo # 若多个html入口, 每个入口支持指定一个配置
+  # 若文件 .env.development 配置如下:
+  # 相对路径(hash router)
+  # BASE_PATH=foo
+  # PROXY_TARGET=http://foo.com:666/foo
+  # BASE_PATH1=bar
+  # PROXY_TARGET1=https://bar.com:999/bar
+  # PROXY_FIELD=proxy
+  # SEARCH_FIELD=$PROXY_FIELD\d*
+  http://{ip}:{port}/{path}?proxy=http://127.0.0.1/foo&proxy1=0.0.0.0
+  # 结果: BASE_PATH 为 foo 的接口代理到 http://127.0.0.1/foo
+  #      BASE_PATH 为 bar 的接口代理到 https://0.0.0.0:999/bar
   ```
 
 ## 说明及注意事项
@@ -214,7 +261,8 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
    - `@` -> `src`
    - `@com` -> `src/components`
    - `@{entry}` -> 页面入口文件所在目录, 如: `@index`
-   - `@{entry}Com` -> 页面入口文件所在目录下的 `components` 目录, 如: `@indexCom`
+   - `@{entry}Com` -> 页面入口文件所在目录下的 `components` 目录(若存在), 如: `@indexCom`
+   - [路由配置别名](#指定路由配置通过别名)
 
    **Tips**: 在 `scss` 中使用 `~` 解析 `别名`/`依赖包` 对应目录. 示例:
 
@@ -310,7 +358,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 - `enum/type/interface` 需要导出的直接 `export` (否则可能会得到 undefined), 其他的除了字典(硬编码)和只有默认导出的外, 先定义再`export`(IDE 提示更友好), 并且`export`语句放到最后
 - 不要使用 `$` 作为组件事件名, 该名字已被[异步组件刷新](src/components/hoc)占用
-- Vue实例**私有属性**命名规则(避免 [属性名](https://cn.vuejs.org/v2/style-guide/#私有属性名-必要) 冲突):
+- **私有属性**命名规则(避免 [属性名](https://cn.vuejs.org/v2/style-guide/#私有属性名-必要) 冲突):
   - `$_` 实例命名空间(在保证易维护的前提下可以使用单字母, 但应尽量避免)
   - `_$` **全局/跨组件/hack**命名空间, 命名前应**先全局搜索**是否有重复
   - `/^[$_]+_$/` 注入**vue data 选项**命名空间应满足该正则, 即以`_`结尾(因为以`$_`其中一个字符开头的Vue不会劫持), 命名前应**先全局搜索**是否有重复
@@ -607,7 +655,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   ```
 
 - 所有视图组件可接收props:`route`代替`this.$route`, 区别是: **只在首次进入当前视图或当前视图url发生变化时改变**
-- 路由视图不需要被缓存的, 可以在`deactivated`钩子销毁实例(`this.$destroy()`)或者`activated`钩子进行更新
+- 路由视图不需要被缓存的, 可以在meta申明/`deactivated`钩子销毁实例(`this.$destroy()`)或`activated`钩子进行更新
 - 为避免渲染错误, 请务必为<b style="color: red;">循环创建的组件</b>**加上 `key`**, 特别是 `tsx/ts/jsx/js` 中
 
 ### 配置和优化
@@ -817,6 +865,8 @@ http {
   2. 先执行 `yarn lint` 等相关命令, 待消除所有错误后, 再提交
   3. 确保开发时无相关报错(浏览器中页面遮罩显示错误, 控制台打印警告), 特别注意 `console.log` , `debugger` 和 `定义但未使用变量`, 只在开发环境是警告, 其他都是错误
 
+- 图标概率乱码: `scss` 压缩模式下 (compressed mode) 使用 UTF-8 byte order mark (UTF-8 with BOM) 代替 @charset 声明语句导致, 暂时先使用css `import 'element-ui/lib/theme-chalk/base.css'`
+
 ### 问题及思考
 
 - Vue 异步组件加载失败重试: 最好还是 Vue 对异步组件提供支持[#9788](https://github.com/vuejs/vue/issues/9788)
@@ -829,6 +879,6 @@ http {
 
 ### 其他
 
-- 期待 [vue3.0](https://github.com/vuejs/vue/projects/6) & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
+- 期待 [vue3.0](https://github.com/vuejs/vue/projects/6)及其生态正式版 & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
 - `crypto-js` v4 **不支持 IE10**
 - `TypeScript`(3.8.2) `const enum` 编译为内联代码(`inline code`)的支持有限, 尽量使用常量成员, 然后等[更新](https://github.com/microsoft/TypeScript)吧

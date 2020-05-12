@@ -203,7 +203,7 @@ function ip(str: string) {
   let pass: boolean | number = len === 4
   if (pass) {
     while (len--) {
-      pass = parseInt(result[len])
+      pass = +result[len]
       if (!(pass = pass >= 0 && pass <= 255)) {
         break
       }

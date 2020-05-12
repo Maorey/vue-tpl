@@ -6,17 +6,8 @@
 const fs = require('fs')
 const path = require('path')
 
-const rootDir = path.resolve()
-const publicDir = path.join(rootDir, 'public') // html模板只考虑放在根目录
-const srcDir = path.join(rootDir, 'src') // html对应入口代码路径
-const pagesName = 'pages' // 存放页面代码目录名
-const pagesDir = path.join(srcDir, pagesName) // 存放页面代码目录
-
-const REG_TEMPLATE = /\.htm(l?)$/ // html模板文件名正则
-const REG_DIR_FILE = /[\\/]\w+\.\w+$/ // 文件名带目录
-
-const ENTRY_FORMATS = ['.ts', '.tsx', '.js', '.jsx'] // 入口文件格式
 const ENTRY_NAMES = ['main', 'index', 'entry', 'app', 'page'] // 入口文件名
+const ENTRY_FORMATS = ['.ts', '.tsx', '.js', '.jsx'] // 入口文件格式
 
 // html模板压缩选项
 // https://github.com/jantimon/html-webpack-plugin
@@ -41,14 +32,18 @@ const MINIFY = {
   removeScriptTypeAttributes: true, // 去script type属性
 }
 
-/** 获取存在的文件
- *
- * @param {String} dir 文件夹路径
- * @param {Array<String>} files 文件名(不含文件格式后缀)
- *
- * @returns {String} 改文件夹下存在的文件名（含文件格式后缀）
- */
-function getEntry(dir, files) {
+function getAllowedEntries(entries) {
+  const REG_ENTRIES = /(?:--)?entries[= ](\w+(?:,\w+)*)/
+  let arg
+  for (arg of process.argv) {
+    if ((arg = REG_ENTRIES.exec(arg))) {
+      entries = arg[1]
+      break
+    }
+  }
+  return entries ? entries.split(',') : 0
+}
+function getEntryFile(dir, files) {
   let fileName
   for (const entry of files) {
     for (const format of ENTRY_FORMATS) {
@@ -65,8 +60,15 @@ function getEntry(dir, files) {
  *
  * @returns {Object} 页面入口配置
  */
-module.exports = function(isProd) {
-  const templates = fs.readdirSync(publicDir, { withFileTypes: true })
+module.exports = function(isProd, entries) {
+  const PAGRS_NAME = 'pages' // 存放页面代码目录名
+  const ROOT_DIR = path.resolve()
+  const SRC_DIR = path.join(ROOT_DIR, 'src') // html对应入口代码路径
+  const PUB_DIR = path.join(ROOT_DIR, 'public') // html模板只考虑放在根目录
+  const PAGRS_DIR = path.join(SRC_DIR, PAGRS_NAME) // 存放页面代码目录
+  const templates = fs.readdirSync(PUB_DIR, { withFileTypes: true })
+  const REG_DIR_FILE = /[\\/]\w+\.\w+$/
+  const REG_TEMPLATE = /\.html?$/
   const pages = {}
 
   let isEmpty = true
@@ -74,29 +76,35 @@ module.exports = function(isProd) {
   let entryNames
   let entryName
   const uesd = { undefined: true } // 已经被使用的入口
+  entries = getAllowedEntries(entries)
   for (const dirent of templates) {
     if (dirent.isFile() && dirent.name.match(REG_TEMPLATE)) {
-      isEmpty = false
-
       templateName = dirent.name.replace(REG_TEMPLATE, '')
+      if (entries.length && !entries.includes(templateName)) {
+        continue
+      }
 
+      isEmpty = false
       entryNames = [templateName, ...ENTRY_NAMES]
-
-      entryName = getEntry(srcDir, entryNames) // src下页面入口
+      entryName = getEntryFile(SRC_DIR, entryNames) // src下页面入口
       if (uesd[entryName]) {
         // src下页面文件夹
-        entryName = getEntry(path.join(srcDir, templateName), entryNames)
+        entryName = getEntryFile(path.join(SRC_DIR, templateName), entryNames)
         entryName = entryName && `${templateName}/${entryName}`
 
         if (uesd[entryName]) {
           // pages下页面入口
-          entryName = getEntry(pagesDir, entryNames)
-          entryName = entryName && `${pagesName}/${entryName}`
+          entryName = getEntryFile(PAGRS_DIR, entryNames)
+          entryName = entryName && `${PAGRS_NAME}/${entryName}`
 
           if (uesd[entryName]) {
             // pages下页面文件夹
-            entryName = getEntry(path.join(pagesDir, templateName), entryNames)
-            entryName = entryName && `${pagesName}/${templateName}/${entryName}`
+            entryName = getEntryFile(
+              path.join(PAGRS_DIR, templateName),
+              entryNames
+            )
+            entryName =
+              entryName && `${PAGRS_NAME}/${templateName}/${entryName}`
 
             if (uesd[entryName]) {
               continue
@@ -118,13 +126,13 @@ module.exports = function(isProd) {
         // 自定义目录别名
         alias:
           entryName.match(REG_DIR_FILE) &&
-          path.resolve(srcDir, entryName, '../'),
+          path.resolve(SRC_DIR, entryName, '../'),
       }
     }
   }
 
   if (isEmpty) {
-    return console.error('请在' + publicDir + '目录下提供html模板')
+    throw new Error('请在' + PUB_DIR + '目录下提供html模板')
   }
 
   return pages

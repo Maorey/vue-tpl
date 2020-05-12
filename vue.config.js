@@ -5,7 +5,7 @@
  */
 const ENV = process.env // 环境变量
 const isProd = ENV.NODE_ENV === 'production' // 是否生产环境
-const pages = require('./build/pages')(isProd) // 自动检测并返回页面入口设置
+const pages = require('./build/pages')(isProd, ENV._ENTRIES) // 自动检测并返回页面入口设置
 
 const ALIAS = {} // 别名字典
 // 输出图形

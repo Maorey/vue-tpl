@@ -3,8 +3,23 @@
  * @Author: 毛瑞
  * @Date: 2019-07-25 19:26:08
  */
+const fs = require('fs')
 const path = require('path')
 const updateJSON = require('./updateJSON')
+
+function getArgs() {
+  const REG_ROUTE = /(?:--)?routes[= ](\w+(?:\.\w+)?(?:,\w+(?:\.\w+)?)*)/
+  let args, i
+  for (args of process.argv) {
+    if ((args = REG_ROUTE.exec(args))) {
+      args = args[1].split(',')
+      for (i = 0; i < args.length; i++) {
+        args[i] = args[i].split('.')
+      }
+      return args // [ [入口, 指令]/[指令] ...]
+    }
+  }
+}
 
 /** 设置入口目录别名 (包含入口和入口下的components目录)
  * @param {Objects} pages 页面入口配置
@@ -13,68 +28,95 @@ const updateJSON = require('./updateJSON')
  * @param {Array} ROUTES 路由别名
  */
 module.exports = function(pages, config, ALIAS, ROUTES) {
-  const TS_PATHS = {
-    // ts 目录别名
-    '@/*': ['src/*'],
-  }
-  const CURRENT_DIR = path.resolve()
-  // 【应有序，先目录层级高的，scss变量才能正确注入】
-  // ALIAS['@'] = path.join(CURRENT_DIR, 'src')
-
-  let alias = '@com'
-  let folderName = path.join(CURRENT_DIR, 'src/components')
-
   const SUFFIX = '/*'
   const REG_BACKSLASH = /\\/g
+  const ROOT_DIR = path.resolve()
+  const TS_PATHS = { '@/*': ['src/*'] }
+
+  let alias = '@com'
+  let folderName = path.join(ROOT_DIR, 'src/components')
+
   const setAlias = () => {
     config.resolve.alias.set(alias, folderName)
-    ALIAS[alias] = folderName
+    ALIAS[alias] = folderName // 【目录层级高的在前，scss变量才能正确注入】
 
     TS_PATHS[alias + SUFFIX] = [
-      path.relative(CURRENT_DIR, folderName).replace(REG_BACKSLASH, '/') +
-        SUFFIX,
+      path.relative(ROOT_DIR, folderName).replace(REG_BACKSLASH, '/') + SUFFIX,
     ]
   }
-  setAlias()
+  fs.existsSync(folderName) && setAlias()
 
-  let tmp
-  for (const entryName in pages) {
-    tmp = pages[entryName]
+  let tmp, entry
+  for (entry in pages) {
+    tmp = pages[entry]
     if (tmp.alias) {
-      alias = '@' + entryName
+      alias = '@' + entry
       folderName = tmp.alias
       setAlias()
 
-      alias = '@' + entryName + 'Com'
+      alias = '@' + entry + 'Com'
       folderName = path.join(tmp.alias, 'components')
-      setAlias()
+      fs.existsSync(folderName) && setAlias()
     }
   }
 
-  /// 【路由别名及根据cli参数加载】 ///
+  /// 【路由别名配置】 ///
   if (ROUTES && ROUTES.length) {
-    const args = process.argv
-    let route, prefix, type, arg, i
-    for (route of ROUTES) {
-      alias = route[0]
-      folderName = path.join(CURRENT_DIR, route[1])
-      route = route[2]
+    const args = getArgs()
+    let page, arg, i, j
+    for (entry of ROUTES) {
+      alias = entry[1].split('/')
+      alias[0] || alias.shift()
+      if (pages[alias[0]]) {
+        page = alias.shift()
+        folderName = path.join(pages[page].alias, alias.join('/'))
+      } else {
+        page = ''
+        folderName = path.join(ROOT_DIR, entry[1])
+        if (args) {
+          for (tmp in pages) {
+            alias = pages[tmp].alias
+            if (
+              folderName.startsWith(
+                alias.endsWith(path.sep) ? alias : alias + path.sep
+              )
+            ) {
+              page = tmp
+              break
+            }
+          }
+        }
+      }
 
-      prefix = '--' // 兼职
-      for (i = 3; i < args.length; i++) {
-        arg = args[i]
-        for (type of route) {
-          if (!arg.indexOf(type) || !arg.indexOf(prefix + type)) {
-            folderName += '.' + type
-            prefix = false
+      if (entry[2] && typeof entry[2] === 'string') {
+        entry[3] = entry[2]
+        entry[2] = 0
+      }
+
+      if (args) {
+        for (i = arg = 0, j = args.length; i < args.length; i++) {
+          tmp = args[i]
+          if (!tmp[1]) {
+            j > i && (j = i)
+          } else if (page && page === tmp[0]) {
+            arg = tmp[1]
+            args.splice(i, 1)
             break
           }
         }
-        if (prefix === false) {
-          break
+        if (!arg && !(arg = entry[3]) && args[j]) {
+          arg = args[j][0]
+          args.splice(j, 1)
         }
+      } else {
+        arg = entry[3] || ''
       }
-      setAlias()
+
+      if (!entry[2] || (arg && entry[2].includes(arg))) {
+        alias = entry[0]
+        arg && (folderName += '.' + arg)
+        fs.existsSync(folderName) && setAlias()
+      }
     }
   }
 
