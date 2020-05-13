@@ -8,7 +8,7 @@ const path = require('path')
 const updateJSON = require('./updateJSON')
 
 function getArgs() {
-  const REG_ROUTE = /(?:--)?routes[= ](\w+(?:\.\w+)?(?:,\w+(?:\.\w+)?)*)/
+  const REG_ROUTE = /(?:--)?alias[= ](\w+(?:\.\w+)?(?:,\w+(?:\.\w+)?)*)/
   let args, i
   for (args of process.argv) {
     if ((args = REG_ROUTE.exec(args))) {
@@ -25,9 +25,9 @@ function getArgs() {
  * @param {Objects} pages 页面入口配置
  * @param {ChainWebpack} config
  * @param {Object} ALIAS 别名字典
- * @param {Array} ROUTES 路由别名
+ * @param {Array} ALIAS_CONFIG 别名配置
  */
-module.exports = function(pages, config, ALIAS, ROUTES) {
+module.exports = function(pages, config, ALIAS, ALIAS_CONFIG) {
   const SUFFIX = '/*'
   const REG_BACKSLASH = /\\/g
   const ROOT_DIR = path.resolve()
@@ -61,10 +61,11 @@ module.exports = function(pages, config, ALIAS, ROUTES) {
   }
 
   /// 【路由别名配置】 ///
-  if (ROUTES && ROUTES.length) {
+  const DIC = {} // for 环境变量
+  if (ALIAS_CONFIG && ALIAS_CONFIG.length) {
     const args = getArgs()
     let page, arg, i, j
-    for (entry of ROUTES) {
+    for (entry of ALIAS_CONFIG) {
       alias = entry[1].split('/')
       alias[0] || alias.shift()
       if (pages[alias[0]]) {
@@ -115,10 +116,13 @@ module.exports = function(pages, config, ALIAS, ROUTES) {
       if (!entry[2] || (arg && entry[2].includes(arg))) {
         alias = entry[0]
         arg && (folderName += '.' + arg)
+        ;(DIC[page] || (DIC[page] = [])).push(arg || '')
         fs.existsSync(folderName) && setAlias()
       }
     }
   }
 
   updateJSON('tsconfig.json', 'compilerOptions.paths', TS_PATHS)
+
+  return DIC
 }

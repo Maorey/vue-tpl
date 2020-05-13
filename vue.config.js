@@ -41,17 +41,20 @@ module.exports = {
   // https://github.com/neutrinojs/webpack-chain#getting-started
   chainWebpack(config) {
     config.cache(true) // 使用缓存
-    let env // 工具人
-    /// 设置目录别名 已有: @ => src ///
-    try {
-      env = JSON.parse(ENV._ROUTES)
-    } catch (error) {}
-    require('./build/alias')(pages, config, ALIAS, env)
 
-    /// 环境变量 ///
-    env = {}
-    const prefix = 'process.env.' // 工具人二号
+    /// 别名&环境变量 ///
+    const prefix = 'process.env.'
     const REG_ENV = /^[A-Z]+(?:_[A-Z]+)?$/
+    let env // 工具人
+    try {
+      env = JSON.parse(ENV._ALIAS)
+    } catch (error) {}
+    env = {
+      [prefix + 'ENTRIES']: JSON.stringify(Object.keys(pages)),
+      [prefix + 'ALIAS']: JSON.stringify(
+        require('./build/alias')(pages, config, ALIAS, env)
+      ),
+    }
     for (const att in ENV) {
       REG_ENV.test(att) && (env[prefix + att] = JSON.stringify(ENV[att]))
     }

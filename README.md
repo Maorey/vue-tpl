@@ -151,6 +151,8 @@ yarn build # --watch: 跟踪文件变化 --report: 生成打包分析
   yarn build --entries=foo,bar
   ```
 
+  可通过环境变量访问: `process.env.ENTRIES: string[]`
+
 #### 指定路由配置(通过别名):
 
   1. `route` 目录结构
@@ -162,23 +164,25 @@ yarn build # --watch: 跟踪文件变化 --report: 生成打包分析
   # ...
   ```
 
-  2. 配置 [.env](.env) `_ROUTES`, 示例:
+  2. 配置 [.env](.env) `_ALIAS`, 示例:
 
   ```bash
-  # 配置路由别名, json: [
+  # 配置别名, json: [
   #  [别名, 路径(相对根目录或入口), 默认指令(可省略)] 或者
   #  [别名, 路径, [允许的指令, ...], 默认指令(可省略)]
-  #  ... ], 可使用cli命令指定指令(优先 --routes=foo.bar,bar.foo )
-  _ROUTES=[["@fRoute", "foo/route", "foo"], ["@bRoute", "src/pages/bar/route", ["foo", "bar"], "bar"]]
+  #  ... ], 可使用cli命令指定指令(优先 --alias=foo.bar,bar.foo )
+  _ALIAS=[["@fRoute", "foo/route", "foo"], ["@bRoute", "src/pages/bar/route", ["foo", "bar"], "bar"]]
   ```
 
-  3. 通过cli命令: `routes`: `入口.指令,...`
+  3. 通过cli命令: `alias`: `入口.指令,...`
 
   ```bash
-  yarn dev --routes=foo.bar
-  yarn build --routes=bar # 省略形式: 指令唯一时
-  yarn build --routes=foo.bar,bar.foo
+  yarn dev --alias=foo.bar
+  yarn build --alias=bar # 省略形式: 指令唯一时
+  yarn build --alias=foo.bar,bar.foo
   ```
+
+  可通过环境变量访问: `process.env.ALIAS: { [key in process.env.ENTRIES]: string[] }`
 
 #### 命令帮助
 
@@ -239,8 +243,10 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 │   │── e2e # e2e 测试(cypress): https://www.cypress.io
 │   └── unit # unit 测试(jest): https://jestjs.io
 ├── build # 工具类脚本
-├── cypress.json # cypress 配置: https://docs.cypress.io/guides/references/configuration.html
-├── tsconfig.json # typeScript 配置: https://www.tslang.cn/docs/handbook/tsconfig-json.html
+├── .env # 所有环境的环境变量(可通过 process.env 访问)
+├── .env.[mode] # 指定环境的环境变量
+├── .env.*.local # 本地环境变量(git忽略)
+├── ... # 配置文件
 └── vue.config.js # 工程(vue cli)配置入口
 ```
 
