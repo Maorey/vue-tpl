@@ -36,6 +36,8 @@ export default class extends Vue {
   @Prop() readonly text?: string
   /** 是否禁用 */
   @Prop() readonly disabled?: boolean
+  /** 是否禁用缓存(比如导出文件) */
+  @Prop() readonly noCache?: boolean
   /** 图标(默认取文件名后缀) */
   @Prop() readonly icon?: string
   /// [data] (attr: string = '响应式属性' // 除了 undefined) ///
@@ -90,6 +92,7 @@ export default class extends Vue {
         url: this.href,
         query: this.query,
         name: this.fileName,
+        noCache: this.noCache,
       },
       callback: task => {
         if (task === this.task) {

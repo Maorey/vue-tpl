@@ -30,6 +30,8 @@ export default class extends Vue {
   @Prop() readonly src!: string
   /** 查询参数 */
   @Prop() readonly query?: IObject
+  /** 是否禁用缓存 */
+  @Prop() readonly noCache?: boolean
   /** 同 <img alt> */
   @Prop() readonly alt?: string
   /** 滚动容器选择器(document.querySelector), 若设置则懒加载【不响应prop变化】 */
@@ -99,7 +101,7 @@ export default class extends Vue {
   @Watch('query', { deep: true })
   protected load() {
     this.store.LOAD({
-      task: { url: this.src, query: this.query },
+      task: { url: this.src, query: this.query, noCache: this.noCache },
       callback: task => {
         this.task = task
       },

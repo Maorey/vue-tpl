@@ -46,6 +46,8 @@ export interface IParams {
   name?: string
   /** 文件类型 */
   type?: string
+  /** 不缓存 比如导出文件 */
+  noCache?: boolean
 }
 /** 任务 */
 export interface ITask extends IParams {
@@ -161,6 +163,18 @@ function removeCache(tasks: ITask[], task: ITask | string) {
 
   return 0
 }
+function insertRemoveableTask(removeableTasks: ITask[], task: ITask) {
+  if (task.noCache) {
+    for (let i = 0, len = removeableTasks.length; i < len; i++) {
+      if (!removeableTasks[i].noCache) {
+        removeableTasks.splice(i, 0, task)
+        return
+      }
+    }
+  } else {
+    removeableTasks.push(task)
+  }
+}
 
 /// for 互相调用 ///
 function next(this: IFile, updateProgressOnly?: boolean) {
@@ -184,7 +198,9 @@ function next(this: IFile, updateProgressOnly?: boolean) {
         }
       }
 
-      shouldRemove && state === STATE.saved && tasksRemoveable.push(temp)
+      shouldRemove &&
+        state === STATE.saved &&
+        insertRemoveableTask(tasksRemoveable, temp)
     }
 
     if ((temp = tasksRemoveable.length)) {
@@ -215,14 +231,16 @@ function ADD_TASK(
   const tasks = this.tasks
   let item
   let key
-  for (item of tasks) {
-    if (task.url === item.url && isEqual(task.query, item.query)) {
-      if (task.name === item.name && task.type === item.type) {
-        return item
-      }
+  if (!task.noCache) {
+    for (item of tasks) {
+      if (task.url === item.url && isEqual(task.query, item.query)) {
+        if (task.name === item.name && task.type === item.type) {
+          return item
+        }
 
-      key = item.key
-      break
+        key = item.key
+        break
+      }
     }
   }
 
@@ -402,12 +420,12 @@ export default class File extends VuexModule implements IFile {
     const tasks = this.tasks
 
     const max = config.max
-    let loading = max - this.loading
-
     const RAM = config.RAM
+
     const remove = tasks.length - config.size
     const shouldRemove = remove > 0 || this.RAM > RAM
 
+    let loading = max - this.loading
     if (loading || shouldRemove) {
       const shouldPause = loading < 0
       const tasksRemoveable: ITask[] = []
@@ -429,10 +447,11 @@ export default class File extends VuexModule implements IFile {
           }
         }
 
-        shouldRemove && state === STATE.saved && tasksRemoveable.push(task)
+        shouldRemove &&
+          state === STATE.saved &&
+          insertRemoveableTask(tasksRemoveable, task)
       }
 
-      // 不用pop
       for (
         count = 0, state = tasksRemoveable.length;
         count < state && (count < remove || this.RAM > RAM);
@@ -644,11 +663,15 @@ export default class File extends VuexModule implements IFile {
         // eslint-disable-next-line no-fallthrough
         case STATE.saved:
           save(cache.f as IFileInfo)
-          clearTimeout(cache.t)
-          ;(alive = this.config.alive) &&
-            (cache.t = setTimeout(() => {
-              REMOVE_TASK.call(this, { task })
-            }, alive))
+          if (task.noCache) {
+            REMOVE_TASK.call(this, { task })
+          } else {
+            clearTimeout(cache.t)
+            ;(alive = this.config.alive) &&
+              (cache.t = setTimeout(() => {
+                REMOVE_TASK.call(this, { task })
+              }, alive))
+          }
           next.call(this, this.usage <= 1)
           break
       }

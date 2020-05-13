@@ -6,16 +6,16 @@
   <meta charset="utf-8" />
   <title>other - <%= process.env.APP_NAME %></title>
 
-  <!-- 功能性元数据 -->
+  <!-- 优先使用 edge 最新版本和 Chrome -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <!-- 优先webkit内核（360等浏览器) -->
+  <meta name="renderer" content="webkit" />
+
   <!-- 缓存相关(不让百度转码) -->
   <meta http-equiv="Cache-Control" content="max-age=604800,no-siteapp" />
   <!-- <meta http-equiv="Pragma" content="max-age=604800" />
     <meta http-equiv="Expires" content="Thu, 03 Jan 2020 02:19:10 GMT" /> -->
 
-  <!-- 优先使用 edge 最新版本和 Chrome -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <!-- 优先webkit内核（360等浏览器) -->
-  <meta name="renderer" content="webkit" />
   <!-- 移动端网页可视区域 -->
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 

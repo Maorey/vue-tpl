@@ -32,6 +32,8 @@ export interface IParams {
   url: string
   /** 查询参数 */
   query?: IObject
+  /** 不缓存 比如导出文件 */
+  noCache?: boolean
 }
 /** 任务 */
 export interface ITask extends IParams {
@@ -96,6 +98,18 @@ function removeCache(task: ITask) {
 
   return 0
 }
+function insertRemoveableTask(removeableTasks: ITask[], task: ITask) {
+  if (task.noCache) {
+    for (let i = 0, len = removeableTasks.length; i < len; i++) {
+      if (!removeableTasks[i].noCache) {
+        removeableTasks.splice(i, 0, task)
+        return
+      }
+    }
+  } else {
+    removeableTasks.push(task)
+  }
+}
 
 /// for 互相调用 ///
 function next(this: Image, updateUsageOnly?: boolean) {
@@ -119,7 +133,9 @@ function next(this: Image, updateUsageOnly?: boolean) {
         }
       }
 
-      shouldRemove && state === STATE.success && tasksRemoveable.push(temp)
+      shouldRemove &&
+        state === STATE.success &&
+        insertRemoveableTask(tasksRemoveable, temp)
     }
 
     if ((temp = tasksRemoveable.length)) {
@@ -237,8 +253,8 @@ export default class Image extends VuexModule implements IImage {
     const max = config.max
     const RAM = config.RAM
 
-    let loading = max - (this.loading || 0)
     const shouldRemove = this.RAM > RAM
+    let loading = max - (this.loading || 0)
     if (loading || shouldRemove) {
       const shouldPause = loading < 0
 
@@ -260,14 +276,17 @@ export default class Image extends VuexModule implements IImage {
           }
         }
 
-        shouldRemove && state === STATE.success && tasksRemoveable.push(task)
+        shouldRemove &&
+          state === STATE.success &&
+          insertRemoveableTask(tasksRemoveable, task)
       }
 
-      // 不用pop
-      count = 0
-      state = tasksRemoveable.length
-      while (count++ < state && this.RAM > RAM) {
-        REMOVE_TASK.call(this, tasksRemoveable[state - count])
+      for (
+        count = 0, state = tasksRemoveable.length;
+        count < state && this.RAM > RAM;
+        count++
+      ) {
+        REMOVE_TASK.call(this, tasksRemoveable[count])
       }
     }
   }
@@ -279,12 +298,14 @@ export default class Image extends VuexModule implements IImage {
     const tasks = this.tasks
     const task = payload.task as ITask
     let item
-    for (item of tasks) {
-      if (task.url === item.url && isEqual(task.query, item.query)) {
-        item.ref || (item.ref = 1)
-        SET_STATE.call(this, item, STATE.loading)
-        payload.callback(item)
-        return
+    if (!task.noCache) {
+      for (item of tasks) {
+        if (task.url === item.url && isEqual(task.query, item.query)) {
+          item.ref || (item.ref = 1)
+          SET_STATE.call(this, item, STATE.loading)
+          payload.callback(item)
+          return
+        }
       }
     }
 
@@ -300,7 +321,16 @@ export default class Image extends VuexModule implements IImage {
   /** 标记不再使用指定图片 */
   @Mutation
   DROP(task: ITask) {
-    task.ref && task.ref--
+    if (!task.ref || !--task.ref) {
+      const cache = CACHE[task.id]
+      if (cache) {
+        const alive = this.config.alive
+        alive &&
+          (cache.t = setTimeout(() => {
+            REMOVE_TASK.call(this, task)
+          }, alive))
+      }
+    }
   }
 
   /// Action ///

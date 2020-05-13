@@ -6,7 +6,6 @@ compile
 
 .yarn
 .yarnrc
-yarn.lock
 .pnp.js
 
 # 测试
@@ -34,3 +33,4 @@ report.*.json
 
 # 其他忽略文件(夹)
 ~*
+*~
