@@ -106,7 +106,6 @@ interface IMessage extends Message {
 }
 
 declare module 'vue/types/vue' {
-  // eslint-disable-next-line @typescript-eslint/interface-name-prefix
   interface Vue {
     /** .vue <style module> class名字典计算属性 */
     $style: IObject<string>

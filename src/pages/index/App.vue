@@ -23,7 +23,7 @@
       mode="out-in"
     >
       <KeepAlive
-        :max="max"
+        :max="CONF.page > 1 ? CONF.page : 1"
         :exclude="$router.$.e"
       >
         <RouterView />
@@ -98,8 +98,8 @@ export default class extends Vue {
     statePrefer.SET_SKIN(skin)
   }
 
-  private get max() {
-    return CONFIG.page > 1 ? CONFIG.page : 1
+  private get CONF() {
+    return CONFIG
   }
 }
 </script>

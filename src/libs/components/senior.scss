@@ -1,0 +1,76 @@
+/// 【全局样式】 ///
+
+// [全局组件] ///
+
+// 常用
+@import '~element-ui/packages/theme-chalk/src/button';
+@import '~element-ui/packages/theme-chalk/src/button-group';
+@import '~element-ui/packages/theme-chalk/src/link';
+@import '~element-ui/packages/theme-chalk/src/divider';
+@import '~element-ui/packages/theme-chalk/src/Card';
+// 滚动面板【隐藏组件】
+@import '~element-ui/packages/theme-chalk/src/scrollbar';
+// 表单
+@import '~element-ui/packages/theme-chalk/src/form';
+@import '~element-ui/packages/theme-chalk/src/form-item';
+@import '~element-ui/packages/theme-chalk/src/input';
+@import '~element-ui/packages/theme-chalk/src/autocomplete';
+@import '~element-ui/packages/theme-chalk/src/select';
+@import '~element-ui/packages/theme-chalk/src/option';
+@import '~element-ui/packages/theme-chalk/src/option-group';
+@import '~element-ui/packages/theme-chalk/src/checkbox';
+@import '~element-ui/packages/theme-chalk/src/checkbox-group';
+// 弹窗
+@import '~element-ui/packages/theme-chalk/src/dialog';
+
+/// [覆盖上述全局组件样式] ///
+// 按钮
+.el-button {
+  text-decoration: none;
+}
+// input:text/textarea数字统计
+.el-range-editor .el-range-input {
+  background: $colorTransparent;
+}
+
+.el-input,
+.el-textarea {
+  .el-input__count {
+    line-height: $larger;
+  }
+}
+// 滚动条
+.el-scrollbar > .el-scrollbar__bar {
+  opacity: 1;
+  transition: 0.3s;
+
+  &.is-vertical {
+    width: $scrollBarSize;
+
+    > .el-scrollbar__thumb {
+      min-height: $scrollBarMinSize;
+      background: $colorScrollBarThumb;
+      border-radius: $scrollBarRadius;
+      transition: 0.3s;
+    }
+  }
+
+  &.is-horizontal {
+    height: $scrollBarSize;
+
+    > .el-scrollbar__thumb {
+      min-width: $scrollBarMinSize;
+      background: $colorScrollBarThumb;
+      border-radius: $scrollBarRadius;
+      transition: 0.3s;
+    }
+  }
+
+  > .el-scrollbar__thumb:hover {
+    background: $colorScrollBarThumbHover;
+  }
+
+  &:hover {
+    background: $colorScrollBarHover;
+  }
+}

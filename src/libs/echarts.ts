@@ -1,5 +1,5 @@
 /*
- * @Description: 统一设置ECharts皮肤等
+ * @Description: ECharts适配
  * @Author: 毛瑞
  * @Date: 2019-07-31 15:13:54
  */
@@ -10,26 +10,9 @@ import { get } from '@/skin'
 import { isFn } from '@/utils'
 import { on } from '@/utils/eventBus'
 // import { watch, unWatch, run } from '@/utils/watch'
+import registerTheme from '@/skin/echarts'
 
-/// 注册皮肤 (应与皮肤名一致 echarts内置:default/light/dark) ///
-// echarts.registerTheme('light', {
-//   // 自带皮肤 light 的颜色, 定制皮肤: https://echarts.baidu.com/theme-builder/
-//   color: [
-//     '#37A2DA',
-//     '#32C5E9',
-//     '#67E0E3',
-//     '#9FE6B8',
-//     '#FFDB5C',
-//     '#ff9f7f',
-//     '#fb7293',
-//     '#E062AE',
-//     '#E690D1',
-//     '#e7bcf3',
-//     '#9d96f5',
-//     '#8378EA',
-//     '#96BFFF',
-//   ],
-// })
+registerTheme(echarts)
 
 // const idSet = new Set<string>()
 // const instanceSet = new WeakSet()

@@ -1,5 +1,24 @@
 /* 模块申明 */
 
+declare namespace NodeJS {
+  interface Process extends __WebpackModuleApi.NodeProcess {
+    /** 环境变量, 定义常用的几个 */
+    env: {
+      /** 运行模式 */
+      NODE_ENV: 'development' | 'production' | 'test'
+      /** 静态资源路径 */
+      BASE_URL: string
+      /** 皮肤全局变量名, 同时也是消息总线事件名 */
+      SKIN_FIELD: string
+      /** 当前入口(SPA)名 */
+      ENTRIES: string[]
+      /** 入口及其指定的别名指令 */
+      ALIAS: { [key: string]: string[] }
+      [key: string]: any
+    }
+  }
+}
+
 declare module '*.module.scss' {
   /** css 模块
    */
@@ -106,11 +125,8 @@ declare interface IObject<T = any> {
 
 // hack ECharts for switch skin
 declare namespace echarts {
-  // eslint-disable-next-line @typescript-eslint/interface-name-prefix
   interface EChartOption {}
-  // eslint-disable-next-line @typescript-eslint/interface-name-prefix
   interface EChartsResponsiveOption {}
-  // eslint-disable-next-line @typescript-eslint/interface-name-prefix
   interface ECharts {
     setOption(
       option: () => EChartOption | EChartsResponsiveOption,

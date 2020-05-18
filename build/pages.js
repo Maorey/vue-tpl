@@ -68,7 +68,7 @@ module.exports = function(isProd, entries) {
   const PAGRS_DIR = path.join(SRC_DIR, PAGRS_NAME) // 存放页面代码目录
   const templates = fs.readdirSync(PUB_DIR, { withFileTypes: true })
   const REG_DIR_FILE = /[\\/]\w+\.\w+$/
-  const REG_TEMPLATE = /\.html?$/
+  const REG_TEMPLATE = /\.html$/
   const pages = {}
 
   let isEmpty = true

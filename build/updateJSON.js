@@ -72,9 +72,10 @@ module.exports = function(fileName, key, value) {
   } else {
     // 同步读
     try {
-      json = JSON.parse(fs.readFileSync(fileName).toString())
+      json = fs.readFileSync(fileName).toString()
+      json = JSON.parse(json)
     } catch (error) {
-      return
+      return json
     }
   }
 
@@ -97,7 +98,7 @@ module.exports = function(fileName, key, value) {
     fs.writeFile(
       fileName,
       JSON.stringify(json, null, 2),
-      error => error && console.error(`写入${fileName}失败`, error)
+      (error) => error && console.error(`写入${fileName}失败`, error)
     )
   }
 }

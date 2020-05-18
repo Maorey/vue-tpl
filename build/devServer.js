@@ -1,14 +1,8 @@
-/*
- * @Description: 开发服务器代理设置
- * @Author: 毛瑞
- * @Date: 2019-07-25 19:27:34
- */
-
 /** 获取开发服务器代理设置
- *
  * @param {Object} ENV 环境变量
+ * @param {String[]} PAGES SPA名字
  */
-module.exports = function(ENV) {
+module.exports = function(ENV, PAGES) {
   const PORT = 9000
   const HOST = '0.0.0.0'
   const TARGET = 'PROXY_TARGET'
@@ -79,6 +73,8 @@ module.exports = function(ENV) {
   }
 
   // http2 应该是不能配置了
+  const REG_SLASHES = /\/+/g
+  const REG_FILES = /\..+$/
   return {
     host,
     port,
@@ -87,5 +83,30 @@ module.exports = function(ENV) {
     clientLogLevel: 'warn',
     overlay: { errors: true }, // lint
     openPage: ENV.DEV_SERVER_PAGE || '',
+    historyApiFallback: {
+      rewrites: [
+        {
+          // SPA可省略.html 支持history路由(路径不能有'.', 因为用REG_FILES匹配文件)
+          // TODO: 精确匹配已有资源
+          from: /./,
+          to({ parsedUrl: { pathname, search } }) {
+            search || (search = '')
+            const paths = pathname.replace(ENV.BASE_URL, '').split('/')
+            paths[0] || paths.shift()
+            const entry = paths.shift()
+
+            return (
+              (PAGES.includes(entry)
+                ? `${ENV.BASE_URL}/${
+                  paths.length && REG_FILES.test(pathname)
+                    ? paths.join('/')
+                    : `${entry}.html`
+                }`.replace(REG_SLASHES, '/')
+                : pathname) + search
+            )
+          },
+        },
+      ],
+    },
   }
 }

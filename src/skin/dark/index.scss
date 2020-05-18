@@ -13,6 +13,7 @@
 @import '../parts/zIndexes'; // z-index层级划分 【zCase】: zMessage
 @import '../parts/layout'; // 固定布局尺寸 【(height|width)Case】: heightHeader、widthLfetColumn
 @import '../parts/scrollBar'; // 滚动条变量 【scrollBarCase】
+@import '../parts/element'; // 定制 element-ui 样式 【kebab-case】
 
 /* ---------------------- 我是一条分割线 (灬°ω°灬) ---------------------- */
 @import '../parts/extend'; // 扩展 @extend %{var};

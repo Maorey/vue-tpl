@@ -103,9 +103,7 @@ function sleep(component: Component | AsyncComponent) {
   }
 }
 
-/** 开发环境处理
- * @param Vue
- */
+/** 开发环境注入 */
 function dev(Vue: VueConstructor) {
   // 在浏览器开发工具的性能/时间线面板中启用Vue组件性能追踪 && 更友好的组件名(vue-devtool)
   ;(Vue.config.performance = process.env.NODE_ENV === 'development') &&

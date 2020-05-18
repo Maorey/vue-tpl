@@ -11,7 +11,7 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 import { EChartOption, ECharts } from 'echarts'
-import echarts from '@index/libs/echarts'
+import echarts from '@/libs/echarts'
 import 'echarts/lib/chart/line' // 折线图
 
 import 'echarts/lib/component/grid' // 直角坐标系

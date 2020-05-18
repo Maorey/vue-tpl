@@ -6,6 +6,7 @@
 const ENV = process.env // 环境变量
 const isProd = ENV.NODE_ENV === 'production' // 是否生产环境
 const pages = require('./build/pages')(isProd, ENV._ENTRIES) // 自动检测并返回页面入口设置
+const PAGE_NAMES = Object.keys(pages)
 
 const ALIAS = {} // 别名字典
 // 输出图形
@@ -35,7 +36,7 @@ module.exports = {
   css: require('./build/css')(isProd, ALIAS, ENV),
 
   /// 【开发服务器配置】 ///
-  devServer: require('./build/devServer')(ENV),
+  devServer: require('./build/devServer')(ENV, PAGE_NAMES),
 
   /// 【webpack配置】 ///
   // https://github.com/neutrinojs/webpack-chain#getting-started
@@ -50,11 +51,13 @@ module.exports = {
       env = JSON.parse(ENV._ALIAS)
     } catch (error) {}
     env = {
-      [prefix + 'ENTRIES']: JSON.stringify(Object.keys(pages)),
+      [prefix + 'ENTRIES']: JSON.stringify(PAGE_NAMES),
       [prefix + 'ALIAS']: JSON.stringify(
         require('./build/alias')(pages, config, ALIAS, env)
       ),
     }
+    ENV.APP_VERSION =
+      require('./build/updateJSON')('package.json', 'version') || ''
     for (const att in ENV) {
       REG_ENV.test(att) && (env[prefix + att] = JSON.stringify(ENV[att]))
     }

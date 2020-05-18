@@ -1,0 +1,68 @@
+/// 【全局样式】 ///
+
+/// [基础] ///
+@import '~@/scss/reset';
+
+// [全局组件] ///
+
+// 布局
+@import '~element-ui/packages/theme-chalk/src/row';
+@import '~element-ui/packages/theme-chalk/src/col';
+@import '~element-ui/packages/theme-chalk/src/container';
+@import '~element-ui/packages/theme-chalk/src/aside';
+@import '~element-ui/packages/theme-chalk/src/main';
+// loading和消息
+@import '~element-ui/packages/theme-chalk/src/loading';
+@import '~element-ui/packages/theme-chalk/src/tooltip';
+@import '~element-ui/packages/theme-chalk/src/popover';
+@import '~element-ui/packages/theme-chalk/src/message';
+@import '~element-ui/packages/theme-chalk/src/message-box';
+@import '~element-ui/packages/theme-chalk/src/notification';
+
+/// [覆盖上述全局组件样式] ///
+// 通知
+.el-notification {
+  position: fixed;
+  z-index: $zFixed !important;
+  margin-top: $heightHeader;
+}
+// loading & 遮罩
+.v-modal,
+.el-loading-mask {
+  z-index: $zFixed !important;
+  background-color: rgba($colorBackGround, 0.9);
+}
+// 弹窗
+.el-dialog__wrapper {
+  z-index: $zInfo !important;
+}
+// 对话框
+.el-message-box__wrapper {
+  z-index: $zDialog !important;
+}
+// 消息提示
+.el-message {
+  z-index: $zMessage !important;
+  margin-top: $heightHeader;
+}
+// 鼠标提示&弹出框
+.el-popper,
+.el-popover,
+.el-tooltip__popper {
+  z-index: $zTop !important;
+  max-width: 66%;
+}
+
+/// 【！覆！盖！全！局！样！式！】 ///
+// 表格
+.el-table tbody {
+  color: $colorTextCommon;
+}
+// 条纹
+.el-table__row--striped td {
+  background: rgba($colorTheme9, 0.3) !important;
+}
+// 选中行
+.current-row > td {
+  background: rgba($colorTheme6, 0.6) !important;
+}

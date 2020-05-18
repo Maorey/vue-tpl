@@ -12,7 +12,7 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 import { EChartOption, ECharts } from 'echarts'
-import echarts from '@index/libs/echarts'
+import echarts from '@/libs/echarts'
 import 'echarts/lib/chart/pie' // 饼图
 
 import 'echarts/lib/component/title' // 标题

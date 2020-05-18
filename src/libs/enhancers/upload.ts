@@ -1,7 +1,7 @@
 /** hack: 使ElUpload支持 props onFileChange 文件变化
  */
-export default (options: IObject) => {
-  options.options && (options = options.options)
+export default <T>(component: T) => {
+  let options = (component as any).options || component
   // hack props
   if ((options.props || (options.props = {})).onFileChange) {
     return
@@ -28,4 +28,6 @@ export default (options: IObject) => {
     vm.onFileChange && vm.onFileChange(event, vm)
     handleChange.apply(this, arguments)
   }
+
+  return component
 }

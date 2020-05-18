@@ -73,8 +73,8 @@ function handleDragable(this: IObject) {
 
 /** hack: 使ElDialog支持 props dragable (默认true) 允许拖拽
  */
-export default (options: IObject) => {
-  options.options && (options = options.options)
+export default <T>(component: T) => {
+  let options = (component as any).options || component
 
   // 增加 props: dragable
   if ((options.props || (options.props = {})).dragable) {
@@ -93,4 +93,6 @@ export default (options: IObject) => {
     type: Boolean,
   }
   options.closeOnClickModal.default = false // 默认禁止点击外部关闭弹窗
+
+  return component
 }

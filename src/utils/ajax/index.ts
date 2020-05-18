@@ -7,6 +7,7 @@ import AXIOS from 'axios'
 import combineURLs from 'axios/lib/helpers/combineURLs'
 
 import CONFIG from '@/config'
+// import { AUTH } from '@/enums'
 import { isObj } from '@/utils'
 import sort from '@/utils/sort'
 import clone from '@/utils/clone'
@@ -22,8 +23,8 @@ clone(AXIOS.defaults, {
   timeout: CONFIG.timeout, // 超时
 
   // 从cookie设置请求头
-  // xsrfCookieName: CONFIG.token,
-  // xsrfHeaderName: CONFIG.token,
+  // xsrfCookieName: AUTH.cookie,
+  // xsrfHeaderName: AUTH.head,
 
   // 允许跨域带cookie
   // 服务端需要设置响应头Allow-Credentials=true Allow-Origin不能为* 还得设置下Allow-Methods

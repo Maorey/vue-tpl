@@ -2,7 +2,7 @@
 import { VuexModule, Mutation } from 'vuex-module-decorators'
 import { local } from '@/utils/storage'
 import { set } from '@/skin'
-import CONFIG from '@/config'
+import { STORAGE } from '@/enums'
 
 /** 偏好管理 */
 export interface IPrefer {
@@ -19,7 +19,7 @@ export interface IPREFER extends IPrefer {
 }
 
 /** 本地存储的偏好信息对象 单例, 注意key是否冲突 */
-const PREFER = (local.get(CONFIG.prefer) || {}) as IPREFER
+const PREFER = (local.get(STORAGE.prefer) || {}) as IPREFER
 
 /** 偏好管理 */
 class Prefer extends VuexModule implements IPrefer {
@@ -71,7 +71,7 @@ window.addEventListener('beforeunload', () => {
   for (const fn of hook._h) {
     fn(PREFER)
   }
-  local.set(CONFIG.prefer, PREFER) // 允许多个标签多个号挺好的
+  local.set(STORAGE.prefer, PREFER) // 允许多个标签多个号挺好的
 })
 
 export { Prefer as default, PREFER, hook }

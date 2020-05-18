@@ -4,32 +4,26 @@ import { VuexModule, Action, Mutation } from 'vuex-module-decorators'
 
 import { ILogin, login, logout } from '@/api/user'
 import { local } from '@/utils/storage'
-import CONFIG from '@/config'
+import { STORAGE } from '@/enums'
 
-/** 本地存储的用户信息
- */
-const USER_INFO = local.get(CONFIG.token) || {}
+/** 本地存储的用户信息 */
+const USER_INFO = local.get(STORAGE.me) || {}
 
-/** 用户信息
- */
+/** 用户信息 */
 interface IInfo {
   name: string
   avatar: string
   // ***
 }
-/** 用户管理
- */
+/** 用户管理 */
 export interface IUser {
-  /** 用户信息
-   */
+  /** 用户信息 */
   info?: IInfo
-  /** 用户菜单访问权限
-   */
+  /** 用户菜单访问权限 */
   menu?: string[]
 }
 
-/** 用户状态管理
- */
+/** 用户状态管理 */
 class User extends VuexModule implements IUser {
   /// State & Getter(public) ///
   info = USER_INFO.info as IInfo | undefined
@@ -78,7 +72,7 @@ class User extends VuexModule implements IUser {
 /** 关闭窗口前写入本地
  */
 window.addEventListener('beforeunload', () => {
-  local.set(CONFIG.token, USER_INFO) // 允许多个标签多个号挺好的
+  local.set(STORAGE.me, USER_INFO) // 允许多个标签多个号挺好的
 })
 
 export default User

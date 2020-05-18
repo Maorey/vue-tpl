@@ -65,7 +65,7 @@ const Chooser: Component = {
   },
 }
 
-// 偶现一直在加载中的诡异状况, 原因未知
+// 偶现一直在加载中的诡异状况, 原因未知, key的问题?
 // function getAsync(
 //   promiseFactory: () => Promise<Component | AsyncComponent>,
 //   loading: Component = Loading,
@@ -113,9 +113,9 @@ const enum Status {
  *
  *      error: 加载失败展示的组件 默认:'com/Info'
  *
- *      delay: 展示loading延迟(ms) 默认:250
- *
  *      timeout: 加载组件超时时间 默认:'/config'.timeout
+ *
+ *      delay: 展示loading延迟(ms) 默认:250
  *
  *    }
  *
@@ -130,16 +130,15 @@ function getAsync(
     loading?: Component
     /** 加载失败展示的组件 默认:'@com/Info' */
     error?: Component
-    /** 展示loading延迟(ms) 默认:250 */
-    delay?: number
     /** 加载组件超时时间 默认:'@/config'.timeout */
     timeout?: number
+    /** 展示loading延迟(ms) */
+    delay?: number
   }
 ): Component {
   config || (config = {})
   config.loading || (config.loading = Loading)
   config.error || (config.error = Info)
-  config.delay || (config.delay = 250)
   config.timeout || (config.timeout = CONFIG.timeout)
 
   const store = Vue.observable({ s: Status.init })
@@ -174,10 +173,6 @@ function getAsync(
   return {
     functional: true,
     render(h, context) {
-      const data = context.data
-      ;(data.on || (data.on = {})).$ = onInit // event: $ 用于重新加载
-      key || (key = data.key || (data.key = getKey())) // 防缓存导致一直加载中
-
       if (keyDelay) {
         clearTimeout(keyDelay)
         keyDelay = 0
@@ -186,19 +181,25 @@ function getAsync(
         clearTimeout(keyTimeout)
         keyTimeout = 0
       }
+
+      const data = context.data
+      ;(data.on || (data.on = {})).$ = onInit // event: $ 用于重新加载
+      key || (key = data.key || (data.key = getKey())) // 防缓存导致一直加载中
+
       switch (store.s) {
         case Status.init:
           promiseFactory(context)
             .then(onDone)
             .catch(onFail)
-          keyTimeout = setTimeout(onTimeout, (config as any).timeout)
-          keyDelay = setTimeout(onLoad, (config as any).delay) // 默认延迟250ms显示loading
-          return h()
+          keyDelay = setTimeout(onLoad, (config as any).delay) // 延迟显示loading
+          ;(config as any).timeout > 0 &&
+            (keyTimeout = setTimeout(onTimeout, (config as any).timeout))
+          return h('i', { style: 'display:none', key: key + 'I' })
         case Status.load:
           data.key = key + 'L'
           return h((config as any).loading, data, context.children)
         case Status.fail:
-          data.key = key + 'R'
+          data.key = key + 'F'
           return h((config as any).error, data, context.children)
         default:
           data.key = key

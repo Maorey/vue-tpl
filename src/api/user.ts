@@ -6,6 +6,7 @@
 import { setHEAD, get, post } from '@/utils/ajax'
 import { local } from '@/utils/storage'
 import CONFIG from '@/config'
+import { STORAGE, AUTH } from '@/enums'
 
 // 加密算法(token + RSA 加密)
 import Jsencrypt from 'jsencrypt'
@@ -61,9 +62,9 @@ function login(formData: ILogin) {
     account,
     password,
   }).then(res => {
-    setHEAD(CONFIG.token, res.data.token, true)
+    setHEAD(AUTH.head, res.data.token, true)
     // 加密存token + 进入页面最先检查/设置token
-    local.set(CONFIG.token, res.data, CONFIG.tokenAlive)
+    local.set(STORAGE.me, res.data, CONFIG.tokenAlive)
     return res
   })
 }
@@ -74,8 +75,8 @@ function login(formData: ILogin) {
  */
 function logout() {
   return get(API.logout).then(res => {
-    setHEAD(CONFIG.token, '', true)
-    local.remove(CONFIG.token)
+    setHEAD(AUTH.head, '', true)
+    local.remove(STORAGE.me)
     return res
   })
 }

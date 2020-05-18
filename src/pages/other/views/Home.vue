@@ -6,10 +6,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import HelloWorld from '@com/HelloWorld'
 
-@Component({
-  components: {
-    HelloWorld,
-  },
-})
+@Component({ components: { HelloWorld } })
 export default class extends Vue {}
 </script>

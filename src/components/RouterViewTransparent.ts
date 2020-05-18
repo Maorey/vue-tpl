@@ -15,7 +15,6 @@ import getKey from '@/utils/getKey'
 // const ModuleOne: any = getAsync(() =>
 //  import(/* webpackChunkName: "ihOne" */ './ModuleOne')
 // )
-const max = CONFIG.subPage > 1 ? CONFIG.subPage : 1
 
 /** 透明分发路由(支持嵌套)
  *    可以给个key防止<RVT>复用:
@@ -51,7 +50,12 @@ export default {
     const meta = (this.route || this.$route).meta
     return (this.n = h(
       'KeepAlive',
-      { props: { max, exclude: this.$router.$.e } },
+      {
+        props: {
+          exclude: this.$router.$.e,
+          max: CONFIG.subPage > 1 ? CONFIG.subPage : 1,
+        },
+      },
       [
         h(
           'RouterView',
