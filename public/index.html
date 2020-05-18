@@ -16,7 +16,7 @@
   <!-- <meta http-equiv="Pragma" content="max-age=604800" />
     <meta http-equiv="Expires" content="Thu, 03 Jan 2020 02:19:10 GMT" /> -->
 
-  <!-- 移动端网页可视区域 -->
+  <!-- 视口(for 移动端) -->
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 
   <!-- 忽略数字被识别为电话号码 -->
@@ -71,10 +71,12 @@
 <!-- 手写页面骨架 -->
 <style>
   body {
+    margin: 0;
+    overflow: hidden;
     font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
-    background: #0d1a25;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background: #0d1a25;
   }
 </style>
 <p style="margin: 0; padding-top: 45vh; color: snow; font-size: x-large; text-align: center;">
