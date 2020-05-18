@@ -57,7 +57,9 @@ module.exports = {
       ),
     }
     ENV.APP_VERSION =
-      require('./build/updateJSON')('package.json', 'version') || ''
+      require('./build/updateJSON')('package.json', 'version') ||
+      ENV.APP_VERSION ||
+      ''
     for (const att in ENV) {
       REG_ENV.test(att) && (env[prefix + att] = JSON.stringify(ENV[att]))
     }
