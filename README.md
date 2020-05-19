@@ -344,6 +344,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   (.vscode 文件夹为 VSCode 的工作区设置, 只在本工程生效, 已包含相关设置)
 
 - 另请参考: [vue 风格指南](https://cn.vuejs.org/v2/style-guide/) **推荐(C)及以上** 和 [stylelint](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md) [配置](.stylelintrc.js)
+- `optional/OOP/functional`之争看来大趋势是`functional`了, 故推荐`optional`组件, 方便迁移到 Vue3
 - 请直接使用`ES6+`, 除了`Proxy`等极少数不能shim和polyfill的(实际业务也极少用到), 不需要考虑兼容, 也不要做没必要/效果微弱的的优化(我检讨), 优先考虑代码**可读性**
 - 引用 `vue/tsx/ts/js/jsx` **不要加文件扩展名** 且省略 `/index`, 有利于重构代码
 - 在`tsx/jsx`中使用**全局组件**时应使用`kebab-case`, 否则会在控制台输出错误 ┐(: ´ ゞ｀)┌
@@ -453,12 +454,16 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   ```
 
 - 尽量使用代码模板, 现有模板有(VSCode 输入左侧字符, 其他 IDE 查看[模板](.vscode/vue.code-snippets)):
-  - `ts`: `.vue` 文件中使用, `TypeScript`语言
-  - `vue`: `.tsx` 文件中使用, class语法
-  - `vuex`: `.ts` 文件中使用, `vuex module`模板
-  - `js`: `.vue` 文件中使用, `JavaScript`语言
-  - `vue`: `.jsx` 文件中使用, class语法
-  - `vuex`: `.js` 文件中使用, `vuex module`模板
+  - `ts`: `.vue` 文件中使用, `TypeScript + scss module`
+  - `vue`: `.tsx` 文件中使用, `TypeScript`
+  - `ts-class`: `.vue` 文件中使用, `TypeScript(Class) + scss module`
+  - `vue-class`: `.tsx` 文件中使用, `TypeScript(Class)`
+  - `vuex`: `.ts` 文件中使用, `dynamic vuex class module`
+  - `js`: `.vue` 文件中使用, `JavaScript + scss module`
+  - `vue`: `.jsx` 文件中使用, `JavaScript`
+  - `js-class`: `.vue` 文件中使用, `JavaScript(Class) + scss module`
+  - `vue-class`: `.jsx` 文件中使用, `JavaScript(Class)`
+  - `vuex`: `.js` 文件中使用, `dynamic vuex class module`
 - **Git 提交信息规范**参考 [vue](https://github.com/vuejs/vue/blob/dev/.github/COMMIT_CONVENTION.md) 规范 ([Angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular))
 
   - `Feat` 增加新功能
