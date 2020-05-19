@@ -3,13 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2019-06-18 16:18:18
  */
-const ENV = process.env // 环境变量
-const isProd = ENV.NODE_ENV === 'production' // 是否生产环境
-const pages = require('./build/pages')(isProd, ENV._ENTRIES) // 自动检测并返回页面入口设置
-const PAGE_NAMES = Object.keys(pages)
-
-const ALIAS = {} // 别名字典
-// 输出图形
 const FIGURE = require('./build/figure')
 // eslint-disable-next-line no-console
 console.log(
@@ -18,7 +11,11 @@ console.log(
     'm' +
     FIGURE[(Math.random() * FIGURE.length) | 0] +
     '\33[0m' // eslint-disable-line no-octal-escape
-)
+) // 输出图形
+const ENV = process.env
+const isProd = ENV.NODE_ENV === 'production'
+const pages = require('./build/pages')(isProd, ENV._ENTRIES) // SPAs
+const ALIAS = {} // 别名字典
 
 /// 【配置项】https://cli.vuejs.org/zh/config ///
 module.exports = {
@@ -36,7 +33,7 @@ module.exports = {
   css: require('./build/css')(isProd, ALIAS, ENV),
 
   /// 【开发服务器配置】 ///
-  devServer: require('./build/devServer')(ENV, PAGE_NAMES),
+  devServer: require('./build/devServer')(ENV, pages),
 
   /// 【webpack配置】 ///
   // https://github.com/neutrinojs/webpack-chain#getting-started
@@ -51,7 +48,7 @@ module.exports = {
       env = JSON.parse(ENV._ALIAS)
     } catch (error) {}
     env = {
-      [prefix + 'ENTRIES']: JSON.stringify(PAGE_NAMES),
+      [prefix + 'ENTRIES']: JSON.stringify(Object.keys(pages)),
       [prefix + 'ALIAS']: JSON.stringify(
         require('./build/alias')(pages, config, ALIAS, env)
       ),
@@ -64,12 +61,6 @@ module.exports = {
       REG_ENV.test(att) && (env[prefix + att] = JSON.stringify(ENV[att]))
     }
     config.plugin('define').use(require('webpack').DefinePlugin, [env])
-
-    /// 不处理的依赖库 ///
-    // 在html模板引入了会创建全局变量的js后可以设置以在src中使用这个全局变量
-    // config.externals({
-    //   global: 'global',
-    // })
 
     /// web workers 支持 ///
     config.module
@@ -84,6 +75,12 @@ module.exports = {
         publicPath: ENV.BASE_URL,
       })
       .after('0') // merge名字变数组索引了
+
+    /// 不处理的依赖库 ///
+    // 在html模板引入了会创建全局变量的js后可以设置以在src中使用这个全局变量
+    // config.externals({
+    //   global: 'global',
+    // })
 
     /// 【不同环境配置】 ///
     require(isProd

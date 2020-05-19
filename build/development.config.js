@@ -10,9 +10,9 @@
  * @param {chainWebpack} config 配置对象
  *  https://github.com/neutrinojs/webpack-chain#getting-started
  */
-module.exports = function(config) {
+module.exports = function(config, ENV) {
   // https://webpack.js.org/configuration/devtool/#devtool
-  config.devtool(process.env.DEV_TOOL || 'eval')
+  config.devtool(ENV.DEV_TOOL || 'eval')
   /// 避免同名.vue文件sourceMap冲突 ///
   // https://webpack.js.org/configuration/output/#outputdevtoolmodulefilenametemplate
   // config.output.devtoolFallbackModuleFilenameTemplate(
@@ -35,7 +35,7 @@ module.exports = function(config) {
 
   //   return `webpack://${info.namespace}/${fileName}`
   // })
-  // config.output.ecmaVersion(+process.env.ES_VERSION || 6) // WIP
+  // config.output.ecmaVersion(+ENV.ES_VERSION || 6) // WIP
 
   /// 文件监听 ///
   config.watchOptions({ ignored: /node_modules/ })

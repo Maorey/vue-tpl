@@ -8,7 +8,10 @@ import router from './router'
 import store from './store'
 import App from './App'
 
+import CONFIG from './config'
 import mount from '@/functions/main'
+import { setBase } from '@/utils/ajax'
 import './registerServiceWorker'
 
+setBase(CONFIG.baseUrl)
 mount(App, router, store)

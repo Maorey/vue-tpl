@@ -16,7 +16,7 @@ import getKey from '@/utils/getKey'
 //  import(/* webpackChunkName: "ihOne" */ './ModuleOne')
 // )
 
-/** 透明分发路由(支持嵌套)
+/** 透明分发路由(支持嵌套), props: { max: number }
  *    可以给个key防止<RVT>复用:
  *    <KeepAlive>
  *      <RouterView :key="$route.meta.code" />
@@ -24,9 +24,9 @@ import getKey from '@/utils/getKey'
  */
 export default {
   name: 'RVT',
-  props: ['route'],
+  props: ['route', 'max'],
   data() {
-    return { d: 0 } // 是否失活/离开
+    return { d: 0 } // d: 是否失活/离开
   },
   beforeRouteUpdate(this: any, to, from, next) {
     this.d = 0
@@ -47,22 +47,14 @@ export default {
       return this.n
     }
 
+    let max = this.max
+    max > 1 || (max = CONFIG.subPage > 1 ? CONFIG.subPage : 1)
     const meta = (this.route || this.$route).meta
+    meta.k || (meta.k = getKey('v'))
     return (this.n = h(
       'KeepAlive',
-      {
-        props: {
-          exclude: this.$router.$.e,
-          max: CONFIG.subPage > 1 ? CONFIG.subPage : 1,
-        },
-      },
-      [
-        h(
-          'RouterView',
-          { key: meta.k || (meta.k = getKey('v')) },
-          this.$slots.default
-        ),
-      ]
+      { props: { exclude: this.$router.$.e, max: max } },
+      [h('RouterView', { key: meta.k }, this.$slots.default)]
     ))
   },
 } as Component

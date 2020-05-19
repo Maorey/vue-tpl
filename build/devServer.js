@@ -8,7 +8,7 @@ module.exports = function(ENV, PAGES) {
   const TARGET = 'PROXY_TARGET'
   const FIELD = ENV.PROXY_FIELD
   const REG_BASE = /^BASE_PATH(\d*)$/
-  const REG_URL = /^((?:http|ws)s?:\/\/)[^:/]+(.*)/
+  const REG_URL = /^((?:http|ws)s?:\/\/)[^:/]+(.*)$/
 
   const removeField = (url, field) =>
     url.replace(
@@ -73,8 +73,11 @@ module.exports = function(ENV, PAGES) {
   }
 
   // http2 应该是不能配置了
-  const REG_SLASHES = /\/+/g
-  const REG_FILES = /\..+$/
+  const REG_SPA = /^\/([^/]+)(.*)$/
+  const REG_HTML = /\.html$/
+  const REG_FILES = /[^/]+\.[^/]+$/
+  const REG_PATH = /^(?:http|ws)s?:\/\/[^/]+(.*)$/
+  const REG_SLASHES = /\/+/
   return {
     host,
     port,
@@ -84,26 +87,35 @@ module.exports = function(ENV, PAGES) {
     overlay: { errors: true }, // lint
     openPage: ENV.DEV_SERVER_PAGE || '',
     historyApiFallback: {
+      // index: '/index.html',
       rewrites: [
         {
           // SPA可省略.html 支持history路由(路径不能有'.', 因为用REG_FILES匹配文件)
-          // TODO: 精确匹配已有资源
           from: /./,
-          to({ parsedUrl: { pathname, search } }) {
-            search || (search = '')
-            const paths = pathname.replace(ENV.BASE_URL, '').split('/')
-            paths[0] || paths.shift()
-            const entry = paths.shift()
+          to(context) {
+            const parsedUrl = context.parsedUrl
+            const search = parsedUrl.search || ''
+            let pathname = REG_SPA.exec(parsedUrl.pathname)
 
-            return (
-              (PAGES.includes(entry)
-                ? `${ENV.BASE_URL}/${
-                  paths.length && REG_FILES.test(pathname)
-                    ? paths.join('/')
-                    : `${entry}.html`
-                }`.replace(REG_SLASHES, '/')
-                : pathname) + search
-            )
+            const entry = pathname[1].replace(REG_HTML, '')
+            if (PAGES[entry]) {
+              pathname = pathname[2]
+              if (REG_FILES.test(pathname)) {
+                let referer = context.request.headers.referer
+                if (referer) {
+                  pathname = parsedUrl.pathname.split(REG_SLASHES)
+                  referer = referer.replace(REG_PATH, '$1').split(REG_SLASHES)
+                  while (pathname[0] === referer[0]) {
+                    pathname.shift()
+                    referer.shift()
+                  }
+                  return '/' + pathname.join('/') + search
+                }
+                return pathname + search
+              }
+              return `/${entry}.html${search}`
+            }
+            return parsedUrl.pathname + search
           },
         },
       ],

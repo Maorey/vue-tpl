@@ -5,7 +5,7 @@
  */
 import { RouterOptions } from 'vue-router'
 
-import CONFIG from '@/config'
+import CONFIG from '../config'
 import { home, about } from '@index/views'
 
 export default {

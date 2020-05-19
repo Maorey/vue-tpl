@@ -328,6 +328,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 尽量**不要使用全局注册**(插件/组件/指令/混入等)以优化性能并且代码更清晰、更易维护
 - 尽量**按照依赖库的文档描述**来使用她, 从其源码(src)引入模块(css/scss/.../js/mjs/ts/jsx/tsx/vue), 将可能**不会被处理**且更可能随版本更新改变, 需要时可以从其构建后的 lib/dist 等目录引入或者增加一些配置(需要了解模块解析及转码规则和相关插件, 不推荐)
 - 若开发环境出现缓存相关错误信息导致热更新慢, 可以删除 `node_modules/.cache` 文件夹再试
+- 路由路径不应出现符号 `.` , 以方便 `history 路由` 模式开发/部署
 
 ### 风格建议
 
@@ -656,8 +657,8 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   ```
 
 - 所有视图组件可接收props:`route`代替`this.$route`, 区别是: **只在首次进入当前视图或当前视图url发生变化时改变**
-- 路由视图不需要被缓存的, 可以在meta申明/`deactivated`钩子销毁实例(`this.$destroy()`)或`activated`钩子进行更新
-- 为避免渲染错误, 请务必为<b style="color: red;">循环创建的组件</b>**加上 `key`**, 特别是 `tsx/ts/jsx/js` 中
+- **路由视图**不需要被缓存的, 可以在`meta`申明/`deactivated`钩子销毁实例(`this.$destroy()`)或`activated`钩子进行更新
+- 为避免渲染错误, 请务必为 <b style="color: red;">循环创建的组件</b> **加上 `key`**, 需要特别注意 `tsx/ts/jsx/js` 文件(没有代码提示)
 
 ### 配置和优化
 
@@ -699,19 +700,21 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 - 开启 `gzip` 压缩, 并重用已有 `gz` 文件 `gzip_static on;`
 - 缓存静态资源(html 可减少缓存时间)
 - [HTTP2 Server Push](https://www.nginx.com/blog/nginx-1-13-9-http2-server-push) 服务器推送, 需要 `nginx` 版本**1.13.9**及以上, [文档链接](http://nginx.org/en/docs/http/ngx_http_v2_module.html#http2_push_preload)
-- 多个SPA history路由部署, 只能一个SPA一个location了么(待运维大佬解决)?
+- 多个SPA(即 `html` 文件)以**history路由**(访问url不以`#`号标识)部署:
+  - 一个 `html` 一个 location 或 待运维大佬完善(示例如下)
+  - 按照注释修改**每个** `html` 的配置, 其中 `base` 改为对应访问路径
 
 配置示例( `nginx.conf` 文件, `xxx` 换成对应值):
 
 ```bash
 http {
-  include       /etc/nginx/mime.types;
+  include       xxx/mime.types;
   default_type  application/octet-stream;
 
   # log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
   #                  '$status $body_bytes_sent "$http_referer" '
   #                  '"$http_user_agent" "$http_x_forwarded_for"';
-  # access_log  /var/log/nginx/access.log  main;
+  # access_log  xxx/access.log  main;
 
   sendfile        on;
   # tcp_nopush     on;
@@ -771,7 +774,7 @@ http {
     # error_page 404              /404.html; # 未知页
 
     location / {
-      # rewrite ^/(?:path|path-alias)/(.*)$ /$1 last; # 兼容某些路由
+      # rewrite ^/(?:path|path-alias)/(.*)$ /$1 last; # 兼容某些url
       # 设置静态资源缓存(文件名已带内容哈希了)
       if ($uri ~ .*\.(?:js|css|jpg|jpeg|gif|png|ico|gz|svg|svgz|ttf|eot|mp4)$) {
         expires 7d; # d: 天
@@ -787,7 +790,7 @@ http {
 
       set $u /; # for 多页history路由 其他location: ^/location([^/]+)
       if ($uri ~ ^/([^/]+)) {
-        set $u $1.html; # 待测试
+        set $u $1.html; # 待测试并完善
       }
       try_files $uri $uri/ $uri.html $u / =404;
       # try_files $uri $uri/ $uri.html /location$u /location =404;

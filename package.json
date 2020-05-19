@@ -1,6 +1,6 @@
 {
   "name": "vue-tpl",
-  "version": "1.2.17",
+  "version": "1.2.18",
   "private": false,
   "description": "vue + vuex + vue router + TypeScript(支持 JavaScript) 模板",
   "author": "毛瑞 <Maorey@Foxmail.com>",

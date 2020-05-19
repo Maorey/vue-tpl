@@ -19,7 +19,6 @@ import WS from './websocket'
 
 // 默认请求配置 https://github.com/axios/axios#config-defaults
 clone(AXIOS.defaults, {
-  baseURL: CONFIG.baseUrl, // 请求前缀（相对路径时添加）
   timeout: CONFIG.timeout, // 超时
 
   // 从cookie设置请求头
@@ -45,10 +44,17 @@ clone(AXIOS.defaults, {
   // alive: 0, // 该请求响应缓存最大存活时间 默认:CONFIG.apiCacheAlive
 })
 
-/** 请求队列 */
-const requestQueue = new Memory()
-/** 【get】响应缓存 */
-const dataStore = new Memory(CONFIG.apiMaxCache, CONFIG.apiCacheAlive)
+/** 【debug】带上特定查询字段 */
+let SEARCH: IObject | undefined
+location.search
+  .replace(/\/$/, '')
+  .replace(
+    new RegExp(`[?&](${process.env.SEARCH_FIELD})=([^&]*)`, 'g'),
+    (match, field, value) => {
+      value && ((SEARCH || (SEARCH = {}))[field] = value)
+      return match
+    }
+  )
 
 /** 取消请求 https://github.com/axios/axios#cancellation
  *    创建一次token只能用对应的cancel一次, 不能复用
@@ -56,6 +62,13 @@ const dataStore = new Memory(CONFIG.apiMaxCache, CONFIG.apiCacheAlive)
 const CancelToken = AXIOS.CancelToken
 /** 是否被取消 */
 const isCancel = AXIOS.isCancel
+
+/** 设置【全局】请求路径
+ * @param baseURL 所有非http开头的请求添加的前缀
+ */
+function setBase(baseURL: string) {
+  AXIOS.defaults.baseURL = baseURL
+}
 
 /** 全局请求头配置【只用于携带token等】 */
 let HEAD = AXIOS.defaults.headers || (AXIOS.defaults.headers = {})
@@ -80,18 +93,6 @@ function setHEAD(
     Object.assign(HEAD, headOrKey as IObject)
   }
 }
-
-/** 【debug】带上特定查询字段 */
-let SEARCH: IObject | undefined
-location.search
-  .replace(/\/$/, '')
-  .replace(
-    new RegExp(`[?&](${process.env.SEARCH_FIELD})=([^&]*)`, 'g'),
-    (match, field, value) => {
-      value && ((SEARCH || (SEARCH = {}))[field] = value)
-      return match
-    }
-  )
 
 /** 获取url (直接使用url的情况, 比如验证码、下载、上传等, 添加BaseUrl、调试参数等)
  * @param {string} url
@@ -141,6 +142,9 @@ function getKey(url: string, params?: IObject) {
 
   return part[0] + query
 }
+
+const requestQueue = new Memory()
+const dataStore = new Memory(CONFIG.apiMaxCache, CONFIG.apiCacheAlive)
 
 /** 发起请求
  * @param {String} url 请求地址
@@ -324,6 +328,7 @@ function cancel(reason?: string) {
 export {
   CancelToken,
   isCancel,
+  setBase,
   HEAD,
   setHEAD,
   getUri,
