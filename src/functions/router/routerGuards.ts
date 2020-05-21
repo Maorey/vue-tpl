@@ -52,7 +52,7 @@ export default (router: Router) => {
       ) {
         if (!instance._$a) {
           instance._$a = temp.name
-          instance.$on(HOOK, restoreName)
+          instance.$once(HOOK, restoreName)
         }
         ;(router as any).$.e = temp.name = getKey('r')
       }

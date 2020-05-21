@@ -68,7 +68,7 @@ export interface IStore {
     a: () => void
     /** 父/此组件 deactivated */
     d: () => void
-    // /** 父组件 destroyed */
+    // /** 父组件 beforeDestroy */
     // e: () => void
   }
   /** 触发的事件: status 枚举 */
@@ -131,7 +131,7 @@ function fetchData(store: IStore) {
 }
 const activated = 'hook:activated'
 const deactivated = 'hook:deactivated'
-const destroyed = 'hook:destroyed'
+const beforeDestroy = 'hook:beforeDestroy'
 function getStore(vm: Vue, key: any) {
   const CACHE = (vm as any)._$c || ((vm as any)._$c = {})
   let store: IStore = CACHE[key]
@@ -154,7 +154,7 @@ function getStore(vm: Vue, key: any) {
     // LifeCycle hooks for parent
     vm.$on(activated, store.h.a)
     vm.$on(deactivated, store.h.d)
-    vm.$on(destroyed, () => {
+    vm.$once(beforeDestroy, () => {
       delete (vm as any)._$c
     })
   }

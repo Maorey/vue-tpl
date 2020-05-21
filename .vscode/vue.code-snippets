@@ -39,7 +39,7 @@
     "prefix": "vue",
     "body": [
       "/** ${1:描述} */",
-      "import { CreateElement } from 'vue'",
+      "import { Component, CreateElement } from 'vue'",
       "/// import 顺序: 依赖库/vue组件/其他/CSS Module",
       "",
       "/// 常量(UPPER_CASE), 单例/变量(camelCase), 函数(无副作用,camelCase)",
@@ -64,7 +64,7 @@
       "      </div>",
       "    )",
       "  }",
-      "}",
+      "} as Component",
       ""
     ],
     "description": "vue tsx单文件组件代码模板"

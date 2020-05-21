@@ -108,7 +108,7 @@ module.exports = class {
     this._SA =
       option.defer === true ? 'defer' : option.async === true && 'async'
     /// 皮肤 ///
-    this._REG_SKIN = (this._T = option.skin) && /[\\/]([^\\/]+)@.+/
+    this._REG_SKIN = (this._T = option.skin) && /([^\\/]+)@[^\\/]+\.css/
     /// preload & prefetch ///
     this._L = option.noPreload && 'preload'
     this._F = option.noPrefetch && 'prefetch'

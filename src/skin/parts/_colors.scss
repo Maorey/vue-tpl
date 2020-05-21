@@ -9,7 +9,7 @@ $colorWhite: #fff; // 白色
 $colorTransparent: #0000; // 透明
 
 // 【主题色】
-$colorTheme: #409eff;
+$colorTheme: #f8902a;
 $colorTheme1: mix($colorWhite, $colorTheme, 10%);
 $colorTheme2: mix($colorWhite, $colorTheme, 20%);
 $colorTheme3: mix($colorWhite, $colorTheme, 30%);
@@ -33,21 +33,21 @@ $colorDanger: #f56c6c;
 $colorDanger1: mix($colorWhite, $colorDanger, 80%);
 $colorDanger2: mix($colorWhite, $colorDanger, 90%);
 
-$colorInfo: #909399;
+$colorInfo: #999590;
 $colorInfo1: mix($colorWhite, $colorInfo, 80%);
 $colorInfo2: mix($colorWhite, $colorInfo, 90%);
 
 // 【中性色】
 $colorTextStress: #222525; // 强调文字
-$colorTextMain: #303133; // 主要文字
-$colorTextCommon: #606266; // 常规文字
-$colorTextMinor: #909399; // 次要文字
-$colorTextHolder: #c0c4cc; // 占位文字
+$colorTextMain: #333; // 主要文字
+$colorTextCommon: #666; // 常规文字
+$colorTextMinor: #999; // 次要文字
+$colorTextHolder: #ccc; // 占位文字
 
-$colorBorderLv1: #dcdfe6; // 一级边框
-$colorBorderLv2: #e4e7ed; // 二级边框
-$colorBorderLv3: #ebeef5; // 三级边框
-$colorBorderLv4: #f2f6fc; // 四级边框
+$colorBorderLv1: #e5e5e5; // 一级边框
+$colorBorderLv2: $colorWhite; // 二级边框
+$colorBorderLv3: $colorWhite; // 三级边框
+$colorBorderLv4: $colorWhite; // 四级边框
 
 /// 背景色 ///
-$colorBackGround: #0d1a25;
+$colorBackGround: #f8f5f2;

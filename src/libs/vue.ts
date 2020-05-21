@@ -59,16 +59,17 @@ function onSleep(this: any, to: any, from: any, next: any) {
  * @param {Component} component 组件选项
  */
 function sleep(component: Component | AsyncComponent) {
-  component = (component as any).options || component
-  const originRender = (component as any).render
-  if (!originRender || (component as any)._$s) {
-    return
+  const options = (component as any).options || component
+  const originRender = options.render
+  if (!originRender || options._$s) {
+    return component
   }
-  ;(component as any)._$s = 1
-  if ((component as any).functional) {
+  options._$s = 1
+
+  if (options.functional) {
     const store = Vue.observable({ s_: 0 })
     let vnode: any
-    ;(component as any).render = function(h: any, context: any) {
+    options.render = function(h: any, context: any) {
       if (store.s_) {
         return vnode
       }
@@ -79,28 +80,29 @@ function sleep(component: Component | AsyncComponent) {
       setHook(on, 'hook:deactivated', onSleep, store)
       return (vnode = originRender.apply(this, arguments))
     }
-    return
+  } else {
+    // mixins这个阶段对class based api无效
+    const originData = options.data
+    options.data = function() {
+      const data =
+        (originData && originData.apply && originData.apply(this, arguments)) ||
+        {}
+      data.s_ = 0 // 满足/^[&_]/不能转化为响应式属性
+      return data
+    }
+    setHook(options, 'beforeRouteUpdate', onWake) // 非hook, 只能实例化前赋值
+    setHook(options, 'activated', onWake)
+    setHook(options, 'beforeRouteLeave', onSleep)
+    setHook(options, 'deactivated', onSleep)
+    options.render = function() {
+      if (this.s_) {
+        return this._$n
+      }
+      return (this._$n = originRender.apply(this, arguments))
+    }
   }
 
-  // mixins这个阶段对class based api无效
-  const originData = (component as any).data
-  ;(component as any).data = function() {
-    const data =
-      (originData && originData.apply && originData.apply(this, arguments)) ||
-      {}
-    data.s_ = 0 // 满足/^[&_]/不能转化为响应式属性
-    return data
-  }
-  setHook(component, 'beforeRouteUpdate', onWake) // 非hook, 只能实例化前赋值
-  setHook(component, 'activated', onWake)
-  setHook(component, 'beforeRouteLeave', onSleep)
-  setHook(component, 'deactivated', onSleep)
-  ;(component as any).render = function() {
-    if (this.s_) {
-      return this._$n
-    }
-    return (this._$n = originRender.apply(this, arguments))
-  }
+  return component
 }
 
 /** 开发环境注入 */

@@ -85,12 +85,34 @@ module.exports = {
       },
     ],
 
-    /// Vue https://eslint.vuejs.org/rules/ ///
+    /// Vue https://eslint.vuejs.org/rules ///
     'vue/component-name-in-template-casing': 'error',
     'vue/no-deprecated-scope-attribute': 'error',
     'vue/match-component-file-name': 'error',
     'vue/no-use-v-if-with-v-for': 'error',
     // 'vue/require-direct-export': 'error', // 不支持class语法
+    'vue/order-in-components': [
+      'error',
+      {
+        order: [
+          ['el', 'name', 'parent', 'functional', 'inheritAttrs'],
+          ['extends', 'mixins'],
+          ['props', 'propsData'],
+          ['provide', 'inject'],
+          'model',
+          ['components', 'directives', 'filters'],
+          ['delimiters', 'comments'],
+          ['fetch', 'asyncData', 'data'],
+          'computed',
+          'watch',
+          'methods',
+          'LIFECYCLE_HOOKS',
+          'head',
+          ['template', 'render'],
+          'renderError',
+        ],
+      },
+    ],
     'vue/valid-v-slot': 'error',
     'vue/v-slot-style': ['error', 'shorthand'],
     'vue/no-v-html': 'warn',

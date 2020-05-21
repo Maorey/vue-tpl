@@ -9,6 +9,7 @@ import echarts from 'echarts/lib/echarts'
 import { get } from '@/skin'
 import { isFn } from '@/utils'
 import { on } from '@/utils/eventBus'
+import { throttle } from '@/utils/performance'
 // import { watch, unWatch, run } from '@/utils/watch'
 import registerTheme from '@/skin/echarts'
 
@@ -80,13 +81,16 @@ on(process.env.SKIN_FIELD, skin => {
 })
 
 /// 响应窗口大小改变 ///
-window.addEventListener('resize', () => {
-  let id
-  let instance
-  for (id in idMap) {
-    ;(instance = (echarts as any).getInstanceById(id)) && instance.resize()
-  }
-})
+window.addEventListener(
+  'resize',
+  throttle(() => {
+    let id
+    let instance
+    for (id in idMap) {
+      ;(instance = (echarts as any).getInstanceById(id)) && instance.resize()
+    }
+  }, 250)
+)
 
 /** echarts实例会因主题切换而改变,请使用echarts.getInstanceByDom获取实例
  */

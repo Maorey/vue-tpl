@@ -76,7 +76,7 @@ export default class extends Vue {
           el.removeEventListener('scroll', onScroll)
         }
         el.addEventListener('scroll', onScroll, isPassive())
-        this.$on('hook:destroyed', removeListener)
+        this.$once('hook:beforeDestroy', removeListener)
         return this.$nextTick(onScroll)
       }
     }

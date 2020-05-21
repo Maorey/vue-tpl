@@ -1,4 +1,6 @@
 // 处理拖拽
+import { throttle } from '@/utils/performance'
+
 function handleDragable(this: IObject) {
   const domRoot = this.$el
   const dragable = this.dragable
@@ -26,10 +28,10 @@ function handleDragable(this: IObject) {
 
         const dx = event.clientX - domDrag.offsetLeft
         const dy = event.clientY - domDrag.offsetTop
-        const onmousemove = (event: MouseEvent) => {
+        const onmousemove = throttle((event: MouseEvent) => {
           domPos.style.top = event.clientY - dy + top + 'px'
           domPos.style.left = event.clientX - dx + left + 'px'
-        }
+        }, 33)
         const onmouseup = () => {
           body.removeEventListener('mousemove', onmousemove)
           body.removeEventListener('mouseup', onmouseup)
@@ -61,7 +63,7 @@ function handleDragable(this: IObject) {
       //     domPos.style.left = this._$l
       //   }
       // })
-      this.$on('hook:beforeDestroy', () => {
+      this.$once('hook:beforeDestroy', () => {
         domDrag.removeEventListener('mousedown', this._$d)
       })
     }
