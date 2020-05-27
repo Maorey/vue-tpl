@@ -84,14 +84,8 @@ export default (router: Router) => {
           next(to as Location) // 还是要再进一次beforeEach, 虽然都给解析出来了┐(: ´ ゞ｀)┌
         }
       }
-      return
+      return CONFIG.g(CONFIG.notFind)
     }
-    if (!to.meta._) {
-      // 没访问权限
-      from.matched.length || next(META.home)
-      return
-    }
-
     NProgress.start() // 开始进度条
     cancel('导航: 取消未完成请求')
     // 缓存控制
