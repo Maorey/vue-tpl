@@ -19,6 +19,7 @@ import {
   isFn,
   isReg,
   isDate,
+  isPromise,
   isEqual,
 } from '@/utils'
 
@@ -155,6 +156,17 @@ describe('@/utils: 工具函数', () => {
     expect(isDate([])).toBe(false)
     expect(isDate({})).toBe(false)
     expect(isDate(new Date())).toBe(true)
+  })
+
+  it('isPromise: 是否为 Promise', () => {
+    expect(isPromise()).toBe(false)
+    expect(isPromise([])).toBe(false)
+    expect(isPromise({})).toBe(false)
+    expect(isPromise(Promise)).toBe(false)
+    expect(isPromise(Promise.resolve())).toBe(true)
+    expect(isPromise(Promise.reject(new Error()))).toBe(true)
+    expect(isPromise(new Promise(() => 0))).toBe(true)
+    expect(isPromise({ then: () => 0, catch: () => 0 })).toBe(true)
   })
 
   it('isEqual: 比较两个值是否相等', () => {

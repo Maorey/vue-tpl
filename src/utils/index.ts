@@ -8,10 +8,7 @@
  *
  * @returns Boolean
  */
-function hasOwn<T>(
-  obj: T,
-  key?: string | number | symbol
-): key is keyof T {
+function hasOwn<T>(obj: T, key?: string | number | symbol): key is keyof T {
   return Object.prototype.hasOwnProperty.call(obj, key as any)
 }
 
@@ -207,6 +204,17 @@ function isDate(value?: unknown): value is Date {
   return getType(value) === 'date'
 }
 
+/** 值是否为: Promise
+ * @test true
+ *
+ * @param value 目标值
+ *
+ * @returns Boolean
+ */
+function isPromise(value?: unknown): value is Promise<any> {
+  return isDef(value) && isFn(value.then) && isFn(value.catch)
+}
+
 /** 两个变量是否相等
  *
  * @test true
@@ -325,6 +333,7 @@ export {
   isFn,
   isReg,
   isDate,
+  isPromise,
   isEqual,
   isPassive,
 }

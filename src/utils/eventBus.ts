@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-03 12:12:12
  */
-import { isString, isUndef } from '.'
+import { isUndef, isString, isPromise } from '.'
 
 /** 事件处理函数 */
 interface IHandler {
@@ -89,17 +89,46 @@ function off(eventName?: any, nameSpace?: any, handler?: any) {
   }
 }
 
+type errorHandler = (err: Error, event: string) => any
+const defaultErrorHandler = (err: Error, event: string) => {
+  console.error('emit: ' + event, err)
+}
 /** 触发事件
  * @test true
  *
- * @param eventKey string:事件标识 string[]:[事件名, 命名空间]
+ * @param eventKey string:事件标识 string[]:[事件名, 命名空间?|错误处理?, 错误处理?]
  */
-function emit(eventKey: string | string[], ...args: any[]) {
-  eventKey = isString(eventKey) ? eventKey : eventKey[1] + '.' + eventKey[0]
+function emit(eventKey: string, ...args: any[]): void
+function emit(eventKey: [string, string], ...args: any[]): void
+function emit(eventKey: [string, errorHandler], ...args: any[]): void
+function emit(eventKey: [string, string, errorHandler], ...args: any[]): void
+function emit(this: any, eventKey: any, ...args: any[]) {
+  let handleError!: errorHandler
+  if (!isString(eventKey)) {
+    if (isString(eventKey[1])) {
+      handleError = eventKey[2]
+      eventKey = eventKey[1] + '.' + eventKey[0]
+    } else {
+      handleError = eventKey[1]
+      eventKey = eventKey[0]
+    }
+  }
+  handleError || (handleError = defaultErrorHandler)
+
   const handlers = BUS.get(eventKey)
   handlers &&
     handlers.forEach(handler => {
-      handler.apply(null, args)
+      let res
+      try {
+        res = handler.apply(null, args)
+        if (res && !res._isVue && !res._handled && isPromise(res)) {
+          res.catch(error => handleError.call(this, error, eventKey))
+          ;(res as any)._handled = true
+        }
+      } catch (error) {
+        handleError.call(this, error, eventKey)
+      }
+
       if (handler._once) {
         handlers.delete(handler)
         handlers.size || BUS.delete(eventKey as string)

@@ -482,6 +482,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 ### 其他
 
+- 注意 IDE 使用的 TypeScript 版本, 应使用依赖的版本
 - 关于换肤方案, 本模板采用 `alternate stylesheet`[方案](https://developer.mozilla.org/en-US/docs/Web/CSS/Alternative_style_sheets), 基于`scss`变量注入同时构建多个皮肤. 可通过环境变量[.env](.env)进行相关配置, 在`import` **scss** 文件时可以指定皮肤和使用的 scss 变量
 
   ```html

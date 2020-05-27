@@ -3,8 +3,9 @@ import Vue from 'vue'
 import { Store } from 'vuex'
 import Router from 'vue-router'
 
-import { fit, any } from '@/functions/auth'
+import { isString } from '@/utils'
 import { on, off, once, emit } from '@/utils/eventBus'
+import { fit, any } from '@/functions/auth'
 // import { throttle } from '@/utils/performance'
 import { dev } from '@/libs/vue'
 
@@ -37,8 +38,11 @@ import '@/libs/components/senior.scss'
 //   }
 // }
 
-/** 挂载应用 */
-export default async <T>(App: any, router?: Router, store?: Store<T>) => {
+function emitErrorhandler(this: Vue, err: Error, event: string) {
+  this.$emit('hook:errorCaptured', err, this, 'emit:' + event)
+}
+
+export default <T>(App: any, router?: Router, store?: Store<T>) => {
   const proto = Vue.prototype
   if (router) {
     /// 注入 ///
@@ -49,7 +53,15 @@ export default async <T>(App: any, router?: Router, store?: Store<T>) => {
     proto.on = on
     proto.off = off
     proto.once = once
-    proto.emit = emit
+    proto.emit = function() {
+      const args = arguments as any
+      if (isString(args[0])) {
+        args[0] = [args[0], emitErrorhandler]
+      } else {
+        args[0].push(emitErrorhandler)
+      }
+      emit.apply(this, args)
+    }
     /// 路由环境 ///
     proto.getPathByCode = (code: string) => {
       for (const route of (router as any).options.routes) {

@@ -121,7 +121,7 @@ declare module 'vue/types/vue' {
      */
     off: typeof off
     /** [消息总线]触发事件
-     * @param eventKey string:事件标识 string[]:[事件名, 命名空间]
+     * @param eventKey string:事件标识 string[]:[事件名, 命名空间?|错误处理?, 错误处理?]
      */
     emit: typeof emit
 
