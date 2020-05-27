@@ -86,7 +86,11 @@ module.exports = {
     ],
 
     /// Vue https://eslint.vuejs.org/rules ///
-    'vue/component-name-in-template-casing': 'error',
+    'vue/component-name-in-template-casing': [
+      'error',
+      'PascalCase',
+      { registeredComponentsOnly: false },
+    ],
     'vue/no-deprecated-scope-attribute': 'error',
     'vue/match-component-file-name': 'error',
     'vue/no-use-v-if-with-v-for': 'error',
