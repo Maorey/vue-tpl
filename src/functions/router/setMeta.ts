@@ -1,22 +1,58 @@
 import { RouterOptions, RouteConfig } from 'vue-router'
 
+import CONFIG from '@/config'
 import getKey from '@/utils/getKey'
 
-/** 筛选 & 设置路由meta */
-export default function setMeta(config: RouterOptions, routes?: RouteConfig[]) {
-  const META = (config as any).meta || ((config as any).meta = {})
-  arguments.length > 1 || (routes = config.routes)
-  if (!routes || !routes.length) {
-    return
+function setMeta(route: RouteConfig, parent?: RouteConfig) {
+  const meta = route.meta || (route.meta = {})
+  /// 鉴权 ///
+  // ...
+
+  /// 设置元数据 ///
+  if (parent) {
+    meta.name || (parent.meta && (meta.name = parent.meta.name))
+    meta.parent = parent
   }
 
-  let route
-  let meta
-  for (route of routes) {
-    route.path || (route.path = getKey('/')) // 默认路径
-    META.home || (META.home = route.path) // 首页默认第一个路由
-    meta = route.meta || (route.meta = {})
-    meta._ = true // 有权访问 或者移除无权的
-    setMeta(META, route.children)
+  /// 子路由 ///
+  const children = route.children
+  if (children) {
+    const filteredChildren: RouteConfig[] = []
+    let child
+    for (child of children) {
+      setMeta(child, route)
+      child.meta.parent && filteredChildren.push(child)
+    }
+    filteredChildren.length
+      ? (route.children = filteredChildren)
+      : delete route.children
   }
+}
+
+/** 筛选 & 设置路由meta */
+export default (config: RouterOptions) => {
+  const META = (config as any).meta || ((config as any).meta = {})
+  const ALL_ROUTES = config.routes
+  const filteredRoutes: RouteConfig[] = []
+  function filterRoutes(routes?: RouteConfig[]) {
+    if (!routes || !routes.length) {
+      return
+    }
+
+    let route
+    for (route of routes) {
+      /// 筛选路由 ///
+      // ...
+
+      route.path || (route.path = getKey('/'))
+      META.home || (META.home = route.path)
+      setMeta(route)
+      filteredRoutes.push(route)
+    }
+  }
+
+  filterRoutes(ALL_ROUTES)
+  filteredRoutes.length
+    ? (config.routes = filteredRoutes)
+    : CONFIG.g(CONFIG.notFind)
 }

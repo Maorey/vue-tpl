@@ -1,21 +1,21 @@
 /** 路由公共逻辑 */
 import Vue from 'vue'
-import Router, { Route, RouterOptions } from 'vue-router'
+import Router, { Route, RouterOptions, RouteConfig } from 'vue-router'
 
 import setMeta from './setMeta'
 import routerGuards from './routerGuards'
 
 export interface RouteMeta {
-  /** 标题/面包屑 */
+  /** 标题 */
   name: string
+  /** 父路由 */
+  parent?: RouteConfig
   /** 缩略图 */
   thumb: string
   /** 路由最大缓存时间 */
   alive?: number
   /** 下次访问路由是否需要重新加载 */
   reload?: boolean
-  /** 是否有权访问 */
-  _: boolean
   /** alive setTimeout id */
   t?: number
   /** 嵌套路由自动加key用以标识 */
