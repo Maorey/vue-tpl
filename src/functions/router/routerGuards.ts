@@ -2,7 +2,7 @@
 import Vue from 'vue'
 import Router, { Route, Location } from 'vue-router'
 
-import CONFIG from '@/config'
+import CONFIG, { SPA } from '@/config'
 import getKey from '@/utils/getKey'
 import { cancel } from '@/utils/ajax'
 
@@ -84,7 +84,7 @@ export default (router: Router) => {
           next(to as Location) // 还是要再进一次beforeEach, 虽然都给解析出来了┐(: ´ ゞ｀)┌
         }
       }
-      return CONFIG.g(CONFIG.notFind)
+      return CONFIG.g(SPA.notFind)
     }
     NProgress.start() // 开始进度条
     cancel('导航: 取消未完成请求')

@@ -1,6 +1,6 @@
 import { RouterOptions, RouteConfig } from 'vue-router'
 
-import CONFIG from '@/config'
+import CONFIG, { SPA } from '@/config'
 import getKey from '@/utils/getKey'
 
 function setMeta(route: RouteConfig, parent?: RouteConfig) {
@@ -54,5 +54,5 @@ export default (config: RouterOptions) => {
   filterRoutes(ALL_ROUTES)
   filteredRoutes.length
     ? (config.routes = filteredRoutes)
-    : CONFIG.g(CONFIG.notFind)
+    : CONFIG.g(SPA.notFind)
 }

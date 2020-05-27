@@ -1,31 +1,41 @@
-/*
- * @Description: 项目全局配置
- * @Author: 毛瑞
- * @Date: 2019-06-19 12:52:09
- */
+/** SPA字典 */
+export const enum SPA {
+  /** 首页 */
+  index = 'index',
+  /** 登录页 */
+  login = 'login',
+  /** 其他页 */
+  other = 'other',
+  /** 未知页 */
+  notFind = 'notFind',
+  /** 错误页 */
+  error = 'error',
+}
+
+/** 全局配置 */
 export default {
   /*! 【全局配置(时间单位ms)】 */
 
   /*! 【↓ SPA配置 ↓】history路由必须绝对路径 */
   /*! 首页 */
   /** 首页 */
-  index: './',
+  [SPA.index]: './',
 
   /*! 登录页 */
   /** 登录页 */
-  login: 'login',
+  [SPA.login]: 'login',
 
   /*! 其他页 */
   /** 其他页 */
-  other: 'other',
+  [SPA.other]: 'other',
 
   /*! 未知页 */
   /** 未知页 */
-  notFind: '404',
+  [SPA.notFind]: '404',
 
   /*! 错误页 */
   /** 错误页 */
-  error: '50x',
+  [SPA.error]: '50x',
   /*! 【↑ SPA配置 ↑】 */
 
   /** 去指定SPA
@@ -38,12 +48,12 @@ export default {
    *  不存在的id: 未知页
    * @param query 查询参数 自己拼 ?foo=0&bar=1#hash...
    */
-  g(id?: string, search?: string) {
+  g(id?: SPA, search?: string) {
     try {
       window.stop() // 停止加载资源
     } catch (error) {}
     location.href =
-      (id ? (this as any)[id] || this.notFind : this.login) + (search || '')
+      (id ? this[id] || this.notFind : this.login) + (search || '')
     throw 0 // eslint-disable-line no-throw-literal
   },
 
