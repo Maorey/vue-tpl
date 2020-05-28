@@ -19,4 +19,7 @@
 @import '../parts/extend'; // 扩展 @extend %{var};
 
 /* ---------------------- 我也是一条分割线 (*❦ω❦) ---------------------- */
-@import '../parts/mixin'; // 混入@include name(args);
+@import '../parts/mixin'; // 混入 @include name(args);
+
+/* ---------------------- 我还是一条分割线 (o°ω°o) ---------------------- */
+@import '../parts/function'; // 函数 name(args);

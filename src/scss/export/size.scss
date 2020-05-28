@@ -1,0 +1,7 @@
+// 窗口尺寸
+:export {
+  sm: trimUnit($sm);
+  md: trimUnit($md);
+  lg: trimUnit($lg);
+  xl: trimUnit($xl);
+}

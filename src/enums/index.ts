@@ -1,3 +1,12 @@
+/** 窗口尺寸 */
+export const enum SIZE {
+  xSmall = 'xs',
+  small = 'sm',
+  medium = 'md',
+  large = 'lg',
+  xLarge = 'xl',
+}
+
 /** 本地存储 */
 export const enum STORAGE {
   /** 用户信息 */

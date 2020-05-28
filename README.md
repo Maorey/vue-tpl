@@ -214,6 +214,11 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
   #      BASE_PATH 为 bar 的接口代理到 https://0.0.0.0:999/bar
   ```
 
+## TODO
+
+- 偶现 `tsconfig.json` 被清空
+- `@typescript-eslint` 升级到 v3 (ESLint v7 & TypeScript v3.9+ 完整支持)
+
 ## 说明及注意事项
 
 ### 目录结构

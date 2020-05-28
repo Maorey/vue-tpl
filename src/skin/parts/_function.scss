@@ -1,0 +1,29 @@
+/// 单位移除
+/// @param {Number} $number - 需要移除单位的
+/// @return {Number} - 无单位的数字
+@function trimUnit($number) {
+
+  @if type-of($number) == 'number' and not unitless($number) {
+
+    @return $number / ($number * 0 + 1);
+  }
+
+  @return $number;
+}
+
+/// px 转 em
+/// @param {Number} $targetSize px 值
+/// @param {Number} $context 继承的字体大小
+/// @return {Number} 对应以em单位的值
+@function pxToem($targetSize, $context: $medium) {
+
+  @if not unitless($targetSize) {
+    $targetSize: strip-unit($targetSize);
+  }
+
+  @if not unitless($context) {
+    $context: strip-unit($context);
+  }
+
+  @return ($targetSize / $context) * 1em;
+}
