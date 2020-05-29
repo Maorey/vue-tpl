@@ -54,15 +54,3 @@
 }
 
 /// 【！覆！盖！全！局！样！式！】 ///
-// 表格
-.el-table tbody {
-  color: $colorTextCommon;
-}
-// 条纹
-.el-table__row--striped td {
-  background: rgba($colorTheme9, 0.3) !important;
-}
-// 选中行
-.current-row > td {
-  background: rgba($colorTheme6, 0.6) !important;
-}

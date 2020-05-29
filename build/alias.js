@@ -8,7 +8,7 @@ const path = require('path')
 const updateJSON = require('./updateJSON')
 
 function getArgs() {
-  const REG_ROUTE = /(?:--)?alias[= ](\w+(?:\.\w+)?(?:,\w+(?:\.\w+)?)*)/
+  const REG_ROUTE = /(?:--)?alias[= ](~?\w+(?:\.\w+)?~?(?:,~?\w+(?:\.\w+)?~?)*)/
   let args, i
   for (args of process.argv) {
     if ((args = REG_ROUTE.exec(args))) {
