@@ -224,20 +224,24 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 ### 目录结构
 
 ```bash
+├── build # 脚本
+│   └── ~fileName # 部署文件chunk名字典
+├── dist # 生成的部署文件目录
 ├── public # 静态文件目录, 除SPA模板(*.html)外, 直接复制到输出目录下
 ├── src # 源码目录
 │   │── api # http通信
 │   │── assets # 静态资源文件目录, 使用到的会被解析处理(比如图片等)
 │   │── components # 提取的复用组件(文件夹分类, 未分类的基本就是基础组件了)
-│   │── functions # 提取的复用逻辑(文件夹分类, 未分类的基本就是公用逻辑了)
 │   │── config # 配置目录(输出到内联js, 可以直接修改而不用重新打包)
 │   │── enums # 枚举目录
+│   │── functions # 提取的复用逻辑(文件夹分类, 未分类的基本就是公用逻辑了)
 │   │── lang # 多语言目录
 │   │── libs # 存储不(能)通过 npm 管理的第三方库/依赖库等相关
-│   │── scss # 样式/CSS 对象(.module).scss 文件
-│   │── skin # 皮肤文件(夹)
 │   │── route # 路由配置
 │   │── router # 路由逻辑
+│   │── pipe # 数据管道, 用于处理数据流(比如api响应的数据)
+│   │── scss # 样式/CSS 对象(.module).scss 文件
+│   │── skin # 皮肤文件(夹)
 │   │── store # 状态管理
 │   │   └── modules # 各模块状态管理
 │   │── types # ts 接口/申明文件
@@ -249,9 +253,6 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 ├── tests # 测试用例目录
 │   │── e2e # e2e 测试(cypress): https://www.cypress.io
 │   └── unit # unit 测试(jest): https://jestjs.io
-├── build # 脚本
-│   └── ~fileName # 部署文件chunk名字典
-├── dist # 生成的部署文件目录
 ├── .env # 所有环境的环境变量(满足正则/^[A-Z]+(?:_[A-Z]+)?$/的可通过process.env访问)
 ├── .env.[mode] # 指定环境的环境变量(mode: development/production/test)
 ├── .env.local/env.[mode].local # 本地环境变量(git忽略)
@@ -302,7 +303,8 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
    ```
 
 3. `config` 目录下的所有内容都会被内联到对应`html`中(需要保留的注释请使用: `/*! 注释内容 */`), 用于支持直接修改配置而不必重新打包代码
-4. 测试用例目录层级与文件名应尽量与源码对应
+4. `api` 层统一按照微服务划分, 放到 `src/api` 目录下, 有不同交互逻辑的, 就近添加 `api` 目录 (接口数据类型可从文档复制然后正则替换)
+5. 测试用例目录层级与文件名应尽量与源码对应
 
 > **提示和建议**
 
