@@ -1,28 +1,28 @@
-/** 复用视图 统一类型: (options?: Object) => RouteConfig
- * meta: {
- *  name 对应标题/位置导航
- *  alive 路由最大缓存时间
- *  reload 下次访问路由是否需要重新加载
- * }
- */
-// import { RouteConfig } from 'vue-router'
-
+/** 全局复用模块索引 */
 // import { getAsync } from '@com/hoc'
-// import RVT from '@com/RouterViewTransparent'
+// import DistributeRoute, { ModuleFactory } from '@/functions/router/module'
 
-// /** foo 视图 */
-// export const foo = () =>
-//   ({
-//     path: '',
-//     meta: {},
-//     component: RVT,
-//     children: [
-//       {
-//         path: '',
-//         meta: {},
-//         component: getAsync(() =>
-//           import(/* webpackChunkName: "foo" */ './Foo')
-//         ),
-//       },
-//     ],
-//   } as RouteConfig)
+/** foo */
+// export const foo: ModuleFactory = meta => ({
+//   meta,
+//   component: DistributeRoute,
+//   children: [
+//     {
+//       path: '',
+//       component: getAsync(() =>
+//         import(/* webpackChunkName: "foo" */ './foo/List')
+//       ),
+//     },
+//     {
+//       path: ':id/detail',
+//       component: getAsync(() =>
+//         import(/* webpackChunkName: "foo" */ './foo/Detail')
+//       ),
+//     },
+//   ],
+// })
+/** foo */
+// export const bar: ModuleFactory = meta => ({
+//   meta,
+//   component: getAsync(() => import(/* webpackChunkName: "bar" */ './Bar')),
+// })

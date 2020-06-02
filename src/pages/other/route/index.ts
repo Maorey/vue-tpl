@@ -16,5 +16,5 @@ export default {
   scrollBehavior(to, from, savedPosition) {
     return to.hash ? { selector: to.hash } : savedPosition
   },
-  routes: [home(), about()],
+  routes: [home({ id: '0', name: '首页' }), about({ id: '1', name: '关于' })],
 } as RouterOptions

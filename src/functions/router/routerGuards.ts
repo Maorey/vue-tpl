@@ -113,11 +113,6 @@ export default (router: Router) => {
       temp.$notify.closeAll()
       temp.$msgbox.close()
     } catch (error) {}
-    // 记录离开前的滚动位置
-    // if ((temp = temp.$el) && (temp = temp.querySelector('.el-main'))) {
-    //   from.meta.x = temp.scrollLeft
-    //   from.meta.y = temp.scrollTop
-    // }
     // 为每个路由对应的组件添加 props:route (路由配置props只允许对象 不然报错给你看)
     if ((temp = to.matched) && (temp = temp[temp.length - 1])) {
       temp = temp.props as any
@@ -128,34 +123,12 @@ export default (router: Router) => {
     next()
   })
 
-  // function restoreScrollPosition(this: Vue) {
-  //   const container = this.$root.$el.querySelector('.el-main')
-  //   if (container) {
-  //     const meta = ((this as any).route || this.$route).meta
-  //     container.scrollLeft = meta.x
-  //     container.scrollTop = meta.y
-  //   }
-  // }
   router.afterEach((to: any) => {
     // 设置页面标题
     const meta = to.meta
-    let temp: any = META.name || ''
+    let temp = META.name || ''
     temp = meta.name ? meta.name + (temp && ' - ' + temp) : temp
     temp && (document.title = temp)
-    // 还原滚动位置
-    // if ((meta = to.matched)) {
-    //   const HOOK = 'hook:activated'
-    //   for (temp of meta) {
-    //     if ((temp = temp.instances)) {
-    //       for (to in temp) {
-    //         if ((to = temp[to]) && !to._$b) {
-    //           to._$b = restoreScrollPosition
-    //           to.$on(HOOK, to._$b)
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
 
     NProgress.done() // 结束进度条
   })

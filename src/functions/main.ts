@@ -5,7 +5,7 @@ import Router from 'vue-router'
 
 import { isString } from '@/utils'
 import { on, off, once, emit } from '@/utils/eventBus'
-import { fit, any } from '@/functions/auth'
+import { fit, has } from '@/functions/auth'
 // import { throttle } from '@/utils/performance'
 import { dev } from '@/libs/vue'
 
@@ -48,7 +48,7 @@ export default <T>(App: any, router?: Router, store?: Store<T>) => {
     /// 注入 ///
     /// 权限方法(指令就没必要了) ///
     proto.authFit = fit
-    proto.authAny = any
+    proto.authHas = has
     /// 消息总线  ///
     proto.on = on
     proto.off = off
@@ -63,17 +63,17 @@ export default <T>(App: any, router?: Router, store?: Store<T>) => {
       emit.apply(this, args)
     }
     /// 路由环境 ///
-    proto.getPathByCode = (code: string) => {
+    proto.getPathById = (id: string) => {
       for (const route of (router as any).options.routes) {
-        if (code === route.meta.code) {
+        if (id === route.meta.id) {
           return route.path as string
         }
       }
       return ''
     }
-    proto.reloadRouteByCode = (code: string) => {
+    proto.reloadRouteById = (id: string) => {
       for (const route of (router as any).options.routes) {
-        if (code === route.meta.code) {
+        if (id === route.meta.id) {
           return (route.meta.reload = true)
         }
       }

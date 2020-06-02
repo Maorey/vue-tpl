@@ -2,16 +2,16 @@
 import Vue from 'vue'
 import Router, { Route, RouterOptions, RouteConfig } from 'vue-router'
 
-import setMeta from './setMeta'
+import authenticate from './authenticate'
 import routerGuards from './routerGuards'
 
 export interface RouteMeta {
+  /** 唯一标识 */
+  id: string
   /** 标题 */
-  name: string
+  title: string
   /** 父路由 */
-  parent?: RouteConfig
-  /** 缩略图 */
-  thumb: string
+  parent?: IRouteConfig
   /** 路由最大缓存时间 */
   alive?: number
   /** 下次访问路由是否需要重新加载 */
@@ -20,9 +20,6 @@ export interface RouteMeta {
   t?: number
   /** 嵌套路由自动加key用以标识 */
   k?: number
-  /** 滚动位置 */
-  // x?: number
-  // y?: number
 }
 
 declare global {
@@ -30,10 +27,13 @@ declare global {
   interface IRoute extends Route {
     meta: RouteMeta
   }
+  interface IRouteConfig extends RouteConfig {
+    meta: RouteMeta
+  }
 }
 
 export default (config: RouterOptions) => {
-  setMeta(config)
+  authenticate(config)
 
   const router = new Router(config)
   routerGuards(router)

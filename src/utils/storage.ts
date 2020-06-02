@@ -3,6 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-04 16:07:30
  */
+import { isFn } from '.'
 interface IKeyVal {
   /** 键 */
   k: any
@@ -85,7 +86,7 @@ class Memory {
    *
    * @returns {Any} val 存储值
    */
-  set(key: any, value: any, expires?: number) {
+  set<T = any>(key: any, value: T, expires?: number): T {
     expires === undefined && (expires = this.alive)
     clearTimeout(this.get(key, 1, this.out)) // 先清除该key的timeout
 
@@ -159,6 +160,14 @@ class Memory {
   }
 }
 
+type encoder = (json: string, orgin: any) => string
+type decoder = (json: string) => string
+interface Setter {
+  <T>(key: string, value: T, expires?: number, encoder?: encoder): T
+}
+interface Setter {
+  <T>(key: string, value: T, encoder?: encoder, expires?: number): T
+}
 /** 本地存储 */
 const STORAGE = window.localStorage
 /** 提取时间戳 */
@@ -171,14 +180,14 @@ let CACHE: IObject<{ k?: number; v?: any; e?: number | null } | 0> = {}
 const local = {
   /** 获取值
    * @param {String} key 存储键
+   * @param {Function} decoder 解码器
    *
    * @returns {Object} key对应的值
    */
-  get(key: string): IObject | undefined {
+  get(key: string, decoder?: decoder) {
     let item: IObject | string | null | 0 = CACHE[key]
     if (item) {
       if (item.e && Date.now() > item.e) {
-        // 过期
         STORAGE.removeItem(key)
         clearTimeout(item.k)
         CACHE[key] = 0
@@ -188,54 +197,74 @@ const local = {
     }
 
     if ((item = STORAGE.getItem(key))) {
+      if (decoder) {
+        try {
+          item = decoder(item)
+        } catch (error) {
+          console.error(error)
+          return
+        }
+      }
       let execArray: string[] | null | number = REG_TIMESPAN.exec(item) // 提取数据
 
       if (execArray) {
         item = execArray[2]
         if (Date.now() > (execArray = parseInt(execArray[1]))) {
-          // 过期
           STORAGE.removeItem(key)
           return
         }
       }
 
       try {
-        item = JSON.parse(item) as IObject
-        CACHE[key] = {
-          v: item,
-          e: execArray,
-          k: setTimeout(() => {
-            CACHE[key] = 0
-          }, ALIVE),
-        }
-        return item
-      } catch (e) {}
+        item = JSON.parse(item)
+      } catch (error) {
+        return
+      }
+      CACHE[key] = {
+        v: item,
+        e: execArray,
+        k: setTimeout(() => {
+          CACHE[key] = 0
+        }, ALIVE),
+      }
+      return item
     }
   },
   /** 设置值
    * @param {String} key 存储键
    * @param {Object} value 存储值
-   * @param {Number|undefined} expires 过期时间(ms) undefined: 更新
+   * @param {Number|Function} encoder/expires 加密/过期时间(ms) undefined: 更新
+   * @param {Number|Function} expires/encoder 过期时间(ms) undefined: 更新/加密
    *
    * @returns {Object} value 存储值
    */
-  set(key: string, value: IObject, expires?: number) {
-    let str: string
-    try {
-      str = JSON.stringify(value)
-    } catch (e) {
-      return
+  set: function(key: string, value: any, encoder?: any, expires?: any) {
+    let str
+    if (!isFn(encoder)) {
+      str = encoder
+      encoder = expires
+      expires = str
     }
+    str = JSON.stringify(value)
     // 加时间戳
     const temp = (CACHE[key] = CACHE[key] || {})
-    expires === undefined
-      ? (str =
+    expires >= 0
+      ? expires && (str = (temp.e = Date.now() + expires) + str)
+      : (str =
           (temp.e ||
             (temp.e = parseInt(
               (REG_TIMESPAN.exec(STORAGE.getItem(key) || '') || [])[1]
             )) ||
             '') + str)
-      : expires && (str = (temp.e = Date.now() + expires) + str)
+
+    if (encoder) {
+      try {
+        str = encoder(str, value)
+      } catch (error) {
+        console.error(error)
+        return
+      }
+    }
 
     clearTimeout(temp.k)
     temp.v = value
@@ -246,7 +275,7 @@ const local = {
     STORAGE.setItem(key, str)
 
     return value
-  },
+  } as Setter,
   /** 移除值
    * @param {String} key 存储键
    */

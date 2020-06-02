@@ -39,6 +39,10 @@
     line-height: $larger;
   }
 }
+
+.el-form-item .el-form-item {
+  margin-bottom: $gapNormal / 2;
+}
 // 滚动条
 .el-scrollbar > .el-scrollbar__bar {
   opacity: 1;

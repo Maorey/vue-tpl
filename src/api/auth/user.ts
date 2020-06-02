@@ -38,28 +38,28 @@ function getVerify() {
 
 /** 登陆表单
  */
-export interface ILogin {
+export interface Login {
   verify: string
-  account: string
+  username: string
   password: string
   remember: boolean
 }
 /** 登陆
- * @param {ILogin} formData 登陆表单
+ * @param {Login} formData 登陆表单
  *
  * @returns {Promise}
  */
-function login(formData: ILogin) {
+function login(formData: Login) {
   const rsa = new Jsencrypt()
   rsa.setPublicKey(publicKey)
   const password = rsa.encrypt(formData.password.trim())
-  const account = formData.account.trim()
+  const username = formData.username.trim()
   const verify = formData.verify.trim()
 
   return post(API.login, {
-    sign: md5(account + password + verify).toString(), // md5签名
+    sign: md5(username + password + verify).toString(), // md5签名
     verify,
-    account,
+    username,
     password,
   }).then(res => {
     setHEAD(AUTH.head, res.data.token, true)

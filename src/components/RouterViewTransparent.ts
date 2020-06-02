@@ -13,7 +13,7 @@ import { sleep } from '@/libs/vue'
 /** 透明分发路由(支持嵌套), props: { max: number }
  *    可以给个key防止<RVT>复用:
  *    <KeepAlive>
- *      <RouterView :key="$route.meta.code" />
+ *      <RouterView :key="$route.meta.id" />
  *    <KeepAlive />
  */
 export default sleep({

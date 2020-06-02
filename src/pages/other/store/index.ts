@@ -5,7 +5,6 @@
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { IUser } from './modules/user'
 import { IPrefer } from './modules/prefer'
 import { IDynamic } from './modules/dynamic'
 import { IFile } from './modules/file'
@@ -17,7 +16,6 @@ Vue.use(Vuex) // 只能全局注册
  *    先声明空 Store 再动态注册
  */
 export default new Vuex.Store<{
-  user: IUser
   prefer: IPrefer
   dynamic: IDynamic
   file: IFile

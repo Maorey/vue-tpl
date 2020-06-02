@@ -2,6 +2,7 @@
 
 import { VNode } from 'vue'
 import { on, off, once, emit } from '@/utils/eventBus'
+import { fit, has } from '@/functions/auth'
 
 type type = 'success' | 'warning' | 'info' | 'error'
 type action = 'confirm' | 'cancel' | 'close'
@@ -124,6 +125,26 @@ declare module 'vue/types/vue' {
      * @param eventKey string:事件标识 string[]:[事件名, 命名空间?|错误处理?, 错误处理?]
      */
     emit: typeof emit
+    /** 是否满足(全部)指定权限
+     * @param authInfo 权限信息
+     */
+    authFit: typeof fit
+    /** 是否包含指定权限(之一)
+     * @param authInfo 权限信息
+     */
+    authHas: typeof has
+    /** 获取目标菜单模块访问路径
+     * @params id 目标菜单模块唯一标识
+     *
+     * @returns {string} 访问路径, ''为没找到
+     */
+    getPathById: (id: string) => string
+    /** 刷新指定菜单模块
+     * @params id 目标菜单模块唯一标识
+     *
+     * @returns {true|undefined} undefined为没找到
+     */
+    reloadRouteById: (id: string) => string
 
     /// element-UI 组件快速方法 ///
     /** 加载 */
