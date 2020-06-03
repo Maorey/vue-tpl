@@ -23,8 +23,10 @@ tests/e2e/screenshots
 report.*.json
 
 # IDE
-.idea
 # .vscode
+.idea
+target
+*.ilm
 *.suo
 *.ntvs*
 *.njsproj

@@ -40,9 +40,14 @@
   }
 }
 
-.el-form-item .el-form-item {
-  margin-bottom: $gapNormal / 2;
+.el-select-dropdown {
+  z-index: $zMenu !important;
 }
+
+.el-form-item .el-form-item {
+  margin-top: $gapNormal / 2;
+}
+
 // 滚动条
 .el-scrollbar > .el-scrollbar__bar {
   opacity: 1;
