@@ -218,6 +218,8 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 - 偶现 `tsconfig.json` 被清空
 - `@typescript-eslint` 升级到 v3 (ESLint v7 & TypeScript v3.9+ 完整支持)
+- 复杂路由返回上级, 比如: `/foo/:bar/:id`
+- 图标概率乱码: `scss` 压缩模式下 (compressed mode) 使用 UTF-8 byte order mark (UTF-8 with BOM) 代替 @charset 声明语句导致, 暂时先使用 css `import 'element-ui/lib/theme-chalk/base.css'`
 
 ## 说明及注意事项
 
@@ -903,8 +905,6 @@ http {
   1. 确保未暂存的文件里没有新增的, 或者在编辑器打开或手动备份新增的文件用以恢复. 最好能控制好提交粒度, 全部暂存后再提交
   2. 先执行 `yarn lint` 等相关命令, 待消除所有错误后, 再提交
   3. 确保开发时无相关报错(浏览器中页面遮罩显示错误, 控制台打印警告), 特别注意 `console.log` , `debugger` 和 `定义但未使用变量`, 只在开发环境是警告, 其他都是错误
-
-- 图标概率乱码: `scss` 压缩模式下 (compressed mode) 使用 UTF-8 byte order mark (UTF-8 with BOM) 代替 @charset 声明语句导致, 暂时先使用css `import 'element-ui/lib/theme-chalk/base.css'`
 
 ### 问题及思考
 

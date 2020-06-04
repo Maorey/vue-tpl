@@ -1,11 +1,12 @@
 /** 入口挂载公共逻辑, 手工控制入口大小 */
 import Vue from 'vue'
 import { Store } from 'vuex'
-import Router from 'vue-router'
+import Router, { RouteRecord } from 'vue-router'
 
 import { isString } from '@/utils'
 import { on, off, once, emit } from '@/utils/eventBus'
 import { fit, has } from '@/functions/auth'
+import { GLOBAL } from '@/enums/events'
 // import { throttle } from '@/utils/performance'
 import { dev } from '@/libs/vue'
 
@@ -44,27 +45,28 @@ function emitErrorhandler(this: Vue, err: Error, event: string) {
 
 export default <T>(App: any, router?: Router, store?: Store<T>) => {
   const proto = Vue.prototype
+  /// 注入 ///
+  /// 消息总线  ///
+  proto.on = on
+  proto.off = off
+  proto.once = once
+  proto.emit = function() {
+    const args = arguments as any
+    if (isString(args[0])) {
+      args[0] = [args[0], emitErrorhandler]
+    } else {
+      args[0].push(emitErrorhandler)
+    }
+    emit.apply(this, args)
+  }
   if (router) {
-    /// 注入 ///
-    /// 权限方法(指令就没必要了) ///
+    /// 鉴权(指令就没必要了) ///
     proto.authFit = fit
     proto.authHas = has
-    /// 消息总线  ///
-    proto.on = on
-    proto.off = off
-    proto.once = once
-    proto.emit = function() {
-      const args = arguments as any
-      if (isString(args[0])) {
-        args[0] = [args[0], emitErrorhandler]
-      } else {
-        args[0].push(emitErrorhandler)
-      }
-      emit.apply(this, args)
-    }
     /// 路由环境 ///
     proto.getPathById = (id: string) => {
-      for (const route of (router as any).options.routes) {
+      let route
+      for (route of (router as any).options.routes) {
         if (id === route.meta.id) {
           return route.path as string
         }
@@ -72,12 +74,27 @@ export default <T>(App: any, router?: Router, store?: Store<T>) => {
       return ''
     }
     proto.reloadRouteById = (id: string) => {
-      for (const route of (router as any).options.routes) {
+      let route
+      for (route of (router as any).options.routes) {
         if (id === route.meta.id) {
           return (route.meta.reload = true)
         }
       }
     }
+    /// 全局事件 ///
+    on(GLOBAL.refresh, () => {
+      router.replace('/r' + router.currentRoute.fullPath)
+    })
+    on(GLOBAL.return, (refresh?: boolean) => {
+      let parent: RouteRecord | RouteRecord[] = router.currentRoute.matched
+      if ((parent = parent[parent.length - 2])) {
+        // TODO: 复杂路由 比如: /foo/:bar/:id
+        router.replace((refresh ? '/r' : '') + parent.path)
+      }
+    })
+    on(GLOBAL.jump, (id: string, path?: string) => {
+      router.push(proto.getPathById(id) + (path || ''))
+    })
   }
 
   // collection()

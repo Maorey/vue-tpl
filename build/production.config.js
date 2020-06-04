@@ -281,6 +281,15 @@ module.exports = function(config, ENV, pages) {
         reuseExistingChunk: true,
         test: /[\\/]node_modules[\\/](?:@?luma|math)\.gl[\\/]/,
       },
+      // tinymce
+      tmc: {
+        name: 'tmc',
+        chunks: 'all',
+        priority: 66,
+        minChunks: 2,
+        reuseExistingChunk: true,
+        test: /[\\/]node_modules[\\/]tinymce[\\/]/,
+      },
     },
   })
 

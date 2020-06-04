@@ -1,6 +1,6 @@
 /** 鉴权 */
 import Vue from 'vue'
-import { hasOwn, isObj, isFn } from '@/utils'
+import { hasOwn, isObj } from '@/utils'
 import { STORAGE } from '@/enums'
 
 import { local } from '@/utils/storage'
@@ -33,6 +33,8 @@ export interface Auth extends Menu {
 /** 权限信息 */
 const AUTH = (local.get(STORAGE.auth, decode) || {}) as Auth
 AUTH.AUTH || (AUTH.AUTH = {})
+
+const trim = (v: any) => v && { v }
 /** 权限信息过滤规则 */
 const rule = {
   childInfo(v: string) {
@@ -41,11 +43,11 @@ const rule = {
     } catch (error) {
       return
     }
-    return { k: 'child', v }
+    return v && { k: 'child', v }
   },
-  children: 1 as const,
+  children: (v: any) => v && v.length && { v },
   elementList(filteredValue: any, obj: any) {
-    if (!filteredValue.length) {
+    if (!filteredValue || !filteredValue.length) {
       return
     }
 
@@ -57,11 +59,11 @@ const rule = {
       temp[element.elementCode] = 1
     }
   },
-  elementCode: 1 as const,
-  icon: 1 as const,
-  menuCode: (v: string) => ({ k: 'id', v }),
-  path: 1 as const,
-  title: 1 as const,
+  elementCode: trim,
+  icon: trim,
+  menuCode: (v: string) => v && { k: 'id', v },
+  path: trim,
+  title: trim,
 }
 
 /** 加密传输 */
@@ -70,57 +72,6 @@ function encrypt(form: Login) {
     username: encode(form.username),
     password: pwd(form.password, form.username),
   }
-}
-/** 去掉falsy属性/空对象/空数组拷贝 */
-function trim<T extends object>(obj: T, deep?: boolean): T
-function trim<T extends object>(
-  obj: T,
-  whileList?: {
-    [attr: string]:
-      | 1
-      | ((filteredValue: any, obj: T) => { k: string; v: any } | void)
-  },
-  deep?: boolean
-): T
-function trim(obj: any, whileList?: any, deep?: any) {
-  if (!obj) {
-    return obj
-  }
-  isObj(whileList) || (deep = whileList)
-
-  const result: any = Array.isArray(obj) ? [] : {}
-  let attr
-  let value
-  let temp
-  for (attr in obj) {
-    if (
-      !(value = obj[attr]) ||
-      (!result.pop && deep !== whileList && !(temp = whileList[attr]))
-    ) {
-      continue
-    }
-
-    if (deep && isObj(value)) {
-      value = trim(value, whileList, deep)
-      if (isFn(temp)) {
-        temp = temp(value, obj)
-        if (temp && (value = temp.v)) {
-          attr = temp.k
-        } else {
-          // temp = 0
-          break
-        }
-      }
-      for (temp in value) {
-        result[attr] = value
-        // temp = 0
-        break
-      }
-    } else {
-      result[attr] = value
-    }
-  }
-  return result
 }
 
 function getId(this: Vue): string | undefined {
@@ -222,4 +173,4 @@ function has(this: Vue) {
   return authHas(getId.call(this) as string, arguments as any)
 }
 
-export { AUTH, rule, encode, encrypt, pwd, trim, fit, has, authFit, authHas }
+export { AUTH, rule, encode, encrypt, pwd, fit, has, authFit, authHas }
