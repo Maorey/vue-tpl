@@ -92,11 +92,14 @@ declare module '*.json' {
 //   export = content
 // }
 
-// declare module 'element-ui/lib/*' {
-//   import Vue, { PluginFunction, PluginObject } from 'vue'
+// declare module '*.vue' {
+//   import Vue from 'vue'
+//   export default Vue
+// }
 
-//   const plugin: PluginObject<Vue> | PluginFunction<Vue>
-//   export default plugin
+// declare module '*.tsx' {
+//   import Vue from 'vue'
+//   export default Vue
 // }
 
 /// web workers ///
@@ -108,7 +111,12 @@ declare module 'worker-loader!*' {
   export default WebpackWorker
 }
 
-/// hack 放最后 ///
+// declare module 'element-ui/lib/*' {
+//   import Vue, { PluginFunction, PluginObject } from 'vue'
+
+//   const plugin: PluginObject<Vue> | PluginFunction<Vue>
+//   export default plugin
+// }
 // declare module 'zrender/lib/*'
 // declare module 'zdog/js/*'
 // declare module 'luma.gl'

@@ -5,6 +5,7 @@ import { STORAGE } from '@/enums'
 
 import { local } from '@/utils/storage'
 import { Login } from '@/api/auth/user'
+import { Rule } from '@/pipe'
 import { pwd, encode, decode } from './cipher'
 
 /** 子页面信息 */
@@ -36,7 +37,7 @@ AUTH.AUTH || (AUTH.AUTH = {})
 
 const trim = (v: any) => v && { v }
 /** 权限信息过滤规则 */
-const rule = {
+const rule: Rule = {
   childInfo(v: string) {
     try {
       v = JSON.parse(v)

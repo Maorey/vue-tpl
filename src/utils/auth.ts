@@ -85,7 +85,7 @@ function fit(auth: number, items: number | number[]) {
   return true
 }
 
-/** 是否满足指定权限（之一）
+/** 是否包含指定权限（之一）
  * @test true
  *
  * @param {Number} auth 当前拥有的权限代码
@@ -93,7 +93,7 @@ function fit(auth: number, items: number | number[]) {
  *
  * @returns {Boolean} 是否有权限
  */
-function any(auth: number, items: number | number[]) {
+function has(auth: number, items: number | number[]) {
   if (isNumber(items)) {
     return (auth & items) === items
   }
@@ -107,4 +107,4 @@ function any(auth: number, items: number | number[]) {
   return false
 }
 
-export { add, toggle, del, fit, any }
+export { add, toggle, del, fit, has }

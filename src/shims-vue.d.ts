@@ -171,9 +171,16 @@ declare module 'vue/types/vue' {
     /** 提示消息 */
     $message: IMessage
   }
-  // interface VueConstructor { }
 }
 
 // declare module 'vue/types/options' {
-//   interface ComponentOptions<V extends Vue> { }
+//   interface ComponentOptions<V extends Vue> {
+//     // 不允许覆盖...
+//     components?: {
+//       [key: string]:
+//         | Component
+//         | AsyncComponent
+//         | ((context: RenderContext) => VNode)
+//     }
+//   }
 // }

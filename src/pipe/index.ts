@@ -1,20 +1,12 @@
 import { isObj, isFn, isBool, isString } from '@/utils'
 
+type handler<T = any> = (
+  filteredValue: any,
+  obj: T
+) => void | Falsy | { /** 键 */ k?: string; /** 值 */ v: any }
 interface Handler<T = any> {
   /** filter: 返回对象更新key:value, 否则略过该属性 */
-  [key: string]:
-    | 1
-    | true
-    | ((
-        filteredValue: any,
-        obj: T
-      ) => {
-        /** 键 */
-        k?: string
-        /** 值 */
-        v: any
-      } | void)
-    | Rule<T>
+  [key: string]: 1 | true | handler<T> | Rule<T>
 }
 /** 过滤规则 */
 export type Rule<T = any> = (string | Handler<T>)[] | Handler<T>
@@ -98,7 +90,7 @@ function trim(obj: any, rules?: any, mode?: any, deep?: any) {
       isDeeped = deep && value && isObj(value)
       isDeeped && (value = trim(value, isObj(temp) ? temp : rules, mode, deep))
       if (isFn(temp)) {
-        if ((temp = temp(value, obj))) {
+        if ((temp = temp(value, obj) as any)) {
           result[isString(temp.k) ? temp.k : key] = temp.v
           temp = 0
         }

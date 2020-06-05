@@ -5,6 +5,7 @@
     "pretty": true,
     "strict": true,
     "allowJs": true,
+    "checkJs": true,
     "sourceMap": true,
     "jsx": "preserve",
     "outDir": "compile",
