@@ -1,9 +1,5 @@
-/*
- * @Description: ajax通信
- * @Author: 毛瑞
- * @Date: 2019-06-19 15:56:35
- */
-import AXIOS from 'axios'
+/* ajax 通信 */
+import AXIOS, { AxiosRequestConfig, Method } from 'axios'
 import combineURLs from 'axios/lib/helpers/combineURLs'
 
 import CONFIG from '@/config'
@@ -37,12 +33,17 @@ clone(AXIOS.defaults, {
   //     'Content-Type': 'application/json;charset=utf-8',
   //   },
   // },
-
-  // 缓存配置[避免使用axios的配置项]
-  // key?: string, // 请求标识【相同key视为相同请求】
-  // noCache: true, // 该请求不缓存响应 默认:false
-  // alive: 0, // 该请求响应缓存最大存活时间 默认:CONFIG.apiCacheAlive
 })
+
+/** 请求配置 */
+interface RequestConfig extends AxiosRequestConfig {
+  /** 请求标识【相同key视为相同请求】 */
+  key?: string
+  /** 是否【不缓存响应】, get默认false, 其他默认true */
+  noCache?: boolean
+  /** 响应缓存最大存活时间, 默认:CONFIG.apiCacheAlive */
+  alive?: number
+}
 
 /** 【debug】带上特定查询字段 */
 let SEARCH: IObject | undefined
@@ -96,14 +97,14 @@ function setHEAD(
 
 /** 获取url (直接使用url的情况, 比如验证码、下载、上传等, 添加BaseUrl、调试参数等)
  * @param {string} url
- * @param {IObject} params 查询参数
+ * @param {IObject} query 查询参数
  */
-function getUri(url: string, params?: IObject) {
+function getUri(url: string, query?: IObject) {
   return combineURLs(
     AXIOS.defaults.baseURL,
     AXIOS.getUri({
       url,
-      params: SEARCH ? Object.assign(params || {}, SEARCH) : params,
+      params: SEARCH ? Object.assign(query || {}, SEARCH) : query,
     })
   )
 }
@@ -124,23 +125,23 @@ function searchToObj(search: string) {
 
 /** 获取请求标识
  * @param url 请求地址
- * @param params 查询参数
+ * @param query 查询参数
  */
-function getKey(url: string, params?: IObject) {
+function getKey(url: string, query?: IObject) {
   const part = url.split('?') // 提取查询参数
-  // 处理查询参数
-  let query = part[1]
-  query && (params = clone(searchToObj(query), params))
-  query = '.'
+  let params = part[1]
+  params && (query = clone(searchToObj(params), query))
+  params = '.'
 
   // 按key升序排列 拼接字符
-  if (params) {
-    for (const key of sort(Object.keys(params))) {
-      query += `${key}.${toString(params[key])}.`
+  if (query) {
+    let key
+    for (key of sort(Object.keys(query))) {
+      params += `${key}.${toString(query[key])}.`
     }
   }
 
-  return part[0] + query
+  return part[0] + params
 }
 
 const requestQueue = new Memory()
@@ -148,25 +149,25 @@ const dataStore = new Memory(CONFIG.apiMaxCache, CONFIG.apiCacheAlive)
 
 /** 发起请求
  * @param {String} url 请求地址
- * @param {String} method http方法
- * @param {Object} params 查询参数
+ * @param {Method} method http方法
+ * @param {Object} query 查询参数
  * @param {Object} data 请求数据
- * @param {Object} config [复用]请求配置【===响应.meta】
+ * @param {RequestConfig} config [引用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
 function request(
   url: string,
-  method: string,
-  params?: IObject,
+  method: Method,
+  query?: IObject | null,
   data?: any,
-  config?: IObject
+  config?: RequestConfig | null
 ): Promise<any> {
   config || (config = {})
   config.url = url
   config.method = method
   data && (config.data = data)
-  params && (config.params = params)
+  query && (config.params = query)
   config.key || (config.key = getKey(config.url, config.params)) // 请求标识
 
   // 在请求队列
@@ -177,9 +178,8 @@ function request(
 
   const shouldCache =
     !(SEARCH && Object.assign(config.params || (config.params = {}), SEARCH)) &&
-    !config.noCache &&
-    config.method === 'get'
-  // 使用缓存的get请求
+    (config.method === 'get' ? !config.noCache : config.noCache === false)
+  // 使用缓存的请求
   if (shouldCache) {
     cache = dataStore.get(config.key)
     if (cache) {
@@ -240,71 +240,79 @@ function request(
 /// http 方法: https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods ///
 /** get请求(获取资源)
  * @param {String} url 请求地址
- * @param {Object} params 查询参数
- * @param {Object} config [复用]请求配置【===响应.meta】
+ * @param {Object} query 查询参数
+ * @param {RequestConfig} config [引用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
-function get(url: string, params?: IObject, config?: IObject): Promise<any> {
-  return request(url, 'get', params, null, config)
+function get(
+  url: string,
+  query?: IObject | null,
+  config?: RequestConfig | null
+): Promise<any> {
+  return request(url, 'get', query, null, config)
 }
 /** delete请求(删除资源)
  * @param {String} url 请求地址
- * @param {Object} params 查询参数
- * @param {Object} config [复用]请求配置【===响应.meta】
+ * @param {Object} query 查询参数
+ * @param {RequestConfig} config [引用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
-function del(url: string, params?: IObject, config?: IObject): Promise<any> {
-  return request(url, 'delete', params, null, config)
+function del(
+  url: string,
+  query?: IObject | null,
+  config?: RequestConfig | null
+): Promise<any> {
+  return request(url, 'delete', query, null, config)
 }
 /** put请求(覆盖资源)
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
- * @param {Object} params 查询参数
- * @param {Object} config [复用]请求配置【===响应.meta】
+ * @param {Object} query 查询参数
+ * @param {RequestConfig} config [引用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
 function put(
   url: string,
-  data: any,
-  params?: IObject,
-  config?: IObject
+  data?: any,
+  query?: IObject | null,
+  config?: RequestConfig | null
 ): Promise<any> {
-  return request(url, 'put', params, data, config)
+  return request(url, 'put', query, data, config)
 }
 /** post请求(创建资源)
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
- * @param {Object} params 查询参数
- * @param {Object} config [复用]请求配置【===响应.meta】
+ * @param {Object} query 查询参数
+ * @param {RequestConfig} config [引用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
 function post(
   url: string,
-  data: any,
-  params?: IObject,
-  config?: IObject
+  data?: any,
+  query?: IObject | null,
+  config?: RequestConfig | null
 ): Promise<any> {
-  return request(url, 'post', params, data, config)
+  return request(url, 'post', query, data, config)
 }
 /** patch请求(部分覆盖资源)
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
- * @param {Object} params 查询参数
- * @param {Object} config [复用]请求配置【===响应.meta】
+ * @param {Object} query 查询参数
+ * @param {RequestConfig} config [引用]请求配置【===响应.meta】
  *
  * @returns {Promise} 响应
  */
 function patch(
   url: string,
-  data: any,
-  params?: IObject,
-  config?: IObject
+  data?: any,
+  query?: IObject | null,
+  config?: RequestConfig | null
 ): Promise<any> {
-  return request(url, 'patch', params, data, config)
+  return request(url, 'patch', query, data, config)
 }
 
 /** 取消所有队列中的请求(自定义取消的除外) [经济版(不执行then)]

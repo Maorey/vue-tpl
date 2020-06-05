@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-27 12:58:37
  */
-import { isString } from '.'
+import { isString, isNumber } from '.'
 import { Memory } from './storage'
 
 /** 日期格式化字符串, 保留字如下(允许使用转义字符\来输出保留字):
@@ -87,7 +87,7 @@ const CACHE = new Memory()
 /** 获取保留字最大重复次数
  * @param {String} char 目标字符
  *
- * @returns {Number}
+ * @returns {number}
  */
 const getReserveMaxRepeat = (char: string) => {
   switch (char) {
@@ -175,12 +175,13 @@ const REG_RESERVE = new RegExp(
 /** 获得指定格式的日期字符串
  * @test true
  *
- * @param {Date} date 日期对象
+ * @param {Date|number} date 日期对象|时间戳
  * @param {format} format 日期格式
  *
  * @returns {String} 格式化的日期
  */
-function formatDate(date: Date, format?: format) {
+function formatDate(date: Date | number, format?: format) {
+  const DATE = isNumber(date) ? new Date(date) : date
   const { t, g } = getFormat(format || ISO_DATE_FORMAT)
 
   let index = 0
@@ -196,43 +197,43 @@ function formatDate(date: Date, format?: format) {
       switch (item.k) {
         case Reserve.year:
           // 从末尾开始取指定位数
-          value = String(date.getFullYear()).substring(4 - item.l)
+          value = (DATE.getFullYear() + '').substring(4 - item.l)
           break
         case Reserve.month:
-          value = date.getMonth() + 1 // 0~11
+          value = DATE.getMonth() + 1 // 0~11
           item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.day:
-          value = date.getDate()
+          value = DATE.getDate()
           item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.week:
-          value = (item.l > 1 ? '星期' : '周') + WEEK[date.getDay()]
+          value = (item.l > 1 ? '星期' : '周') + WEEK[DATE.getDay()]
           break
 
         case Reserve.hour:
-          value = date.getHours()
+          value = DATE.getHours()
           value > 12 && (value -= 12)
           item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.Hour:
-          value = date.getHours()
+          value = DATE.getHours()
           item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.slot:
-          value = date.getHours() > 12 ? '下' : '上'
+          value = DATE.getHours() > 12 ? '下' : '上'
           item.l > 1 && (value += '午')
           break
         case Reserve.minute:
-          value = date.getMinutes()
+          value = DATE.getMinutes()
           item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.second:
-          value = date.getSeconds()
+          value = DATE.getSeconds()
           item.l > 1 && value < 10 && (value = '0' + value)
           break
         case Reserve.milliSecond:
-          value = String(date.getMilliseconds())
+          value = DATE.getMilliseconds() + ''
           switch (value.length) {
             case 1:
               value = '00' + value
@@ -269,7 +270,7 @@ function getDate(
   dateString: string,
   format?: format | IResult,
   tryHistory?: boolean
-): Date | void {
+): Date | undefined {
   const { r, g } =
     !format || isString(format) ? getFormat(format || ISO_DATE_FORMAT) : format
   tryHistory = tryHistory !== false
@@ -330,22 +331,25 @@ function getDate(
 /** 获取本周起止日期
  * @test true
  *
- * @param {Date|string} date 指定日期对象/字符串
+ * @param {Date|string|number} date 指定日期对象/字符串
  * @param {format} format 日期格式
  * @param {boolean} toDate 是否截止到指定日期
  *
  * @returns {Array<String>} 格式化的日期数组
  */
 function getWeek(
-  date?: Date | string | void,
+  date?: Date | string | number,
   format?: format,
   toDate?: boolean
 ) {
-  date && isString(date) && (date = getDate(date, format))
-  date || (date = new Date())
   format || (format = ISO_DATE_FORMAT)
+  date = isNumber(date)
+    ? new Date(date || 0)
+    : isString(date)
+      ? (date && getDate(date, format)) || new Date()
+      : date || new Date()
 
-  let target = new Date((date as Date).getTime()) // 复制日期对象
+  let target = new Date(date.getTime()) // 复制日期对象
   const result = []
 
   const week = target.getDay()
@@ -377,9 +381,12 @@ function getMonth(
   format?: format,
   toDate?: boolean
 ) {
-  date && isString(date) && (date = getDate(date, format))
-  date || (date = new Date())
   format || (format = ISO_DATE_FORMAT)
+  date = isNumber(date)
+    ? new Date(date || 0)
+    : isString(date)
+      ? (date && getDate(date, format)) || new Date()
+      : date || new Date()
 
   let target = new Date((date as Date).getTime()) // 复制日期对象
   const result = []
@@ -412,9 +419,12 @@ function getYear(
   format?: format,
   toDate?: boolean
 ) {
-  date && isString(date) && (date = getDate(date, format))
-  date || (date = new Date())
   format || (format = ISO_DATE_FORMAT)
+  date = isNumber(date)
+    ? new Date(date || 0)
+    : isString(date)
+      ? (date && getDate(date, format)) || new Date()
+      : date || new Date()
 
   let target = new Date((date as Date).getTime()) // 复制日期对象
   const result = []

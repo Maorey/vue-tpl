@@ -96,6 +96,10 @@ export default <T>(App: any, router?: Router, store?: Store<T>) => {
       router.push(proto.getPathById(id) + (path || ''))
     })
   }
+  // 全局点击事件
+  window.addEventListener('click', e => {
+    emit(GLOBAL.click, e)
+  })
 
   // collection()
   dev(Vue)
