@@ -23,6 +23,8 @@ export interface Menu {
   path?: string
   /** 模块名称 */
   title?: string
+  /** 模块描述 */
+  desc?: string
 }
 type AuthDic = { [authKey: string]: 1 }
 /** 存储的权限信息 */
@@ -47,6 +49,7 @@ const rule: Rule = {
     return v && { k: 'child', v }
   },
   children: (v: any) => v && v.length && { v },
+  description: (v: string) => v && { k: 'desc', v },
   elementList(filteredValue: any, obj: any) {
     if (!filteredValue || !filteredValue.length) {
       return
@@ -65,6 +68,44 @@ const rule: Rule = {
   menuCode: (v: string) => v && { k: 'id', v },
   path: trim,
   title: trim,
+}
+
+/** 根据id获取权限信息 */
+function getById(id: string, auth?: Auth | Menu): Menu | undefined {
+  auth || (auth = AUTH)
+  if (id === auth.id) {
+    return auth
+  }
+
+  // 深度优先
+  const children = auth.children
+  if (children && children.length) {
+    let child
+    let node
+    for (child of children) {
+      if ((node = getById(id, child))) {
+        return node
+      }
+    }
+  }
+}
+
+/** 获取兄弟节点(包括自身) */
+function siblings(id: string, auth?: Auth | Menu): Menu[] | undefined {
+  auth || (auth = AUTH)
+  // 深度优先
+  const children = auth.children
+  if (children && children.length) {
+    let child
+    for (child of children) {
+      if (id === child.id) {
+        return children
+      }
+      if ((child = siblings(id, child))) {
+        return child
+      }
+    }
+  }
 }
 
 /** 加密传输 */
@@ -174,4 +215,16 @@ function has(this: Vue) {
   return authHas(getId.call(this) as string, arguments as any)
 }
 
-export { AUTH, rule, encode, encrypt, pwd, fit, has, authFit, authHas }
+export {
+  AUTH,
+  rule,
+  getById,
+  siblings,
+  encode,
+  encrypt,
+  pwd,
+  fit,
+  has,
+  authFit,
+  authHas,
+}

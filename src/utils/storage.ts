@@ -199,7 +199,7 @@ class Memory {
   }
 
   // 去掉使用次数最低的
-  private elim() {
+  protected elim() {
     const pool = this.pool
     let index = 0
     let item = pool[0]
@@ -242,9 +242,9 @@ const local = {
    * @param key 存储键
    * @param decoder 解码器
    *
-   * @returns key对应的值
+   * @returns key对应的值, 转对象/数组失败的将返回字符串
    */
-  get(key: string, decoder?: decoder) {
+  get<T = any>(key: string, decoder?: decoder): T | string | undefined {
     let item: IObject | string | null | 0 = CACHE[key]
     if (item) {
       if (item.e && Date.now() > item.e) {
@@ -265,8 +265,8 @@ const local = {
           return
         }
       }
-      let execArray: string[] | null | number = REG_TIMESPAN.exec(item) // 提取数据
 
+      let execArray: string[] | null | number = REG_TIMESPAN.exec(item) // 提取数据
       if (execArray) {
         item = execArray[2]
         if (Date.now() > (execArray = parseInt(execArray[1]))) {
@@ -285,7 +285,8 @@ const local = {
           CACHE[key] = 0
         }, ALIVE),
       }
-      return item
+
+      return item as T | string
     }
   },
   /** 设置值
