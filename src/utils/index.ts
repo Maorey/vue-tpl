@@ -215,6 +215,8 @@ function isPromise(value?: unknown): value is Promise<any> {
   return isDef(value) && isFn(value.then) && isFn(value.catch)
 }
 
+/** 比较值最大调用栈栈深度 */
+const maxEqualStack = 100
 /** 两个变量是否相等
  *
  * @test true
@@ -226,7 +228,8 @@ function isPromise(value?: unknown): value is Promise<any> {
  *
  * @returns Boolean
  */
-function isEqual(x?: any, y?: any, noRef?: boolean) {
+function isEqual(x?: any, y?: any, noRef?: boolean): boolean
+function isEqual(x?: any, y?: any, noRef?: boolean, deep?: number) {
   if (x === y) {
     return x !== 0 || 1 / x === 1 / y // isEqual(0, -0) => false
   }
@@ -240,6 +243,10 @@ function isEqual(x?: any, y?: any, noRef?: boolean) {
     return false
   }
 
+  if ((deep = (deep || 0) + 1) > maxEqualStack) {
+    return true
+  }
+
   // noRef: 工具人 非array/object/regexp只执行一次getType
   if ((noRef = getType(x) as any) === 'object') {
     if ((noRef as any) !== getType(y)) {
@@ -248,7 +255,7 @@ function isEqual(x?: any, y?: any, noRef?: boolean) {
 
     const KEYS: IObject<1> = {}
     for (noRef as any in x) {
-      if (!isEqual(x[noRef as any], y[noRef as any])) {
+      if (!(isEqual as any)(x[noRef as any], y[noRef as any], false, deep)) {
         return false
       }
       KEYS[noRef as any] = 1
@@ -269,7 +276,7 @@ function isEqual(x?: any, y?: any, noRef?: boolean) {
     }
 
     while ((noRef as any)--) {
-      if (!isEqual(x[noRef as any], y[noRef as any])) {
+      if (!(isEqual as any)(x[noRef as any], y[noRef as any], false, deep)) {
         return false
       }
     }

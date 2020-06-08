@@ -1,0 +1,51 @@
+/** 颜色 */
+:export {
+  /// 常用颜色 ///
+  black: $colorBlack; // 黑色
+  white: $colorWhite; // 白色
+  transparent: $colorTransparent; // 透明
+
+  // 【主题色】
+  theme: $colorTheme;
+  theme1: $colorTheme1;
+  theme2: $colorTheme2;
+  theme3: $colorTheme3;
+  theme4: $colorTheme4;
+  theme5: $colorTheme5;
+  theme6: $colorTheme6;
+  theme7: $colorTheme7;
+  theme8: $colorTheme8;
+  theme9: $colorTheme9;
+
+  // 【辅助色】
+  success: $colorSuccess;
+  success1: $colorSuccess1;
+  success2: $colorSuccess2;
+
+  warn: $colorWarn;
+  warn1: $colorWarn1;
+  warn2: $colorWarn2;
+
+  danger: $colorDanger;
+  danger1: $colorDanger1;
+  danger2: $colorDanger2;
+
+  info: $colorInfo;
+  info1: $colorInfo1;
+  info2: $colorInfo2;
+
+  // 【中性色】
+  textStress: $colorTextStress; // 强调文字
+  textMain: $colorTextMain; // 主要文字
+  textCommon: $colorTextCommon; // 常规文字
+  textMinor: $colorTextMinor; // 次要文字
+  textHolder: $colorTextHolder; // 占位文字
+
+  borderLv1: $colorBorderLv1; // 一级边框
+  borderLv2: $colorBorderLv2; // 二级边框
+  borderLv3: $colorBorderLv3; // 三级边框
+  borderLv4: $colorBorderLv4; // 四级边框
+
+  /// 背景色 ///
+  backGround: $colorBackGround;
+}

@@ -3,18 +3,21 @@
  * @Author: 毛瑞
  * @Date: 2019-06-04 16:07:30
  */
-import { isFn } from '.'
-interface IKeyVal {
+import { isFn, isString, isNumber, isEqual } from '.'
+
+/** 存储池 */
+export interface IPool {
   /** 键 */
   k: any
   /** 值 */
   v: any
-}
-/** 存储池 */
-export interface IPool extends IKeyVal {
   /** 使用计数 */
   c: number
+  /** setTimeout id */
+  t?: number
 }
+/** 存储键比较方式 引用|值 */
+export type CompareMode = 'ref' | 'value'
 
 /** 内存存储 key/value可以任意类型
  * @test true
@@ -26,137 +29,194 @@ class Memory {
   protected max: number
   /** 缓存存活时间 0为永久 */
   protected alive: number
-  /** timeout队列 */
-  private out: IKeyVal[]
+  /** 是否不比较存储键的值 */
+  protected noRef: boolean
 
   /** 构造函数
-   * @param {Number} max 最大缓存数量，默认30
-   * @param {Number} alive 缓存存活时间 0为永久
-   *
-   * @returns {Object} Memory实例
+   * @param max 最大缓存数量，默认30
+   * @param alive 缓存存活时间 0为永久
+   * @param compareMode 存储键比较方式, 默认:比较值
    */
-  constructor(max = 30, alive = 0) {
-    this.max = max
-    this.alive = alive
-
+  constructor(max?: number, alive?: number, compareMode?: CompareMode) {
     this.pool = []
-    this.out = []
+    this.noRef = compareMode === 'ref'
+    this.max = (max as number) > 0 ? (max as number) : 30
+    this.alive = (alive as number) > 0 ? (alive as number) : 0
   }
 
   /** 获取值
-   * @param {Any} key 缓存关键字
-   * @param {Number} option 操作：
-   * 0 返回{key, val}
-   * 1 移除该key, 返回val
-   * 其它 返回val (计引用次数)【默认】
-   * @param {Array} pool 存储池
+   * @param key 缓存关键字
+   * @param operation 操作：
    *
-   * @returns {Any} 见option
+   *  0: 仅返回IPool
+   *
+   *  1: 移除并返回IPool
+   *
+   *  其它: 返回 value | undefined 【默认】
+   * @param compareMode 存储键比较方式, 默认: 构造函数指定
    */
-  get(key: any, option?: number, pool?: IPool[] | IKeyVal[]) {
-    pool || (pool = this.pool)
+  get<T = any>(
+    key: any,
+    operation?: number,
+    compareMode?: CompareMode
+  ): T | IPool | undefined
 
-    // 从后往前找
-    let tmp: IPool | IKeyVal
+  /** 获取值
+   * @param key 缓存关键字
+   * @param compareMode 存储键比较方式, 默认: 构造函数指定
+   * @param operation 操作：
+   *
+   *  0: 仅返回IPool
+   *
+   *  1: 移除并返回IPool
+   *
+   *  其它: 返回 value | undefined 【默认】
+   */
+  get<T = any>(
+    key: any,
+    compareMode?: CompareMode,
+    operation?: number
+  ): T | IPool | undefined
+
+  get<T = any>(
+    key: any,
+    operation?: number | CompareMode,
+    compareMode?: CompareMode | number
+  ): T | IPool | undefined {
+    let item
+    if (isNumber(compareMode) || isString(operation)) {
+      item = operation
+      operation = compareMode as number | undefined
+      compareMode = item as CompareMode
+    }
+    const pool = this.pool
+    const noRef = compareMode ? compareMode === 'ref' : this.noRef
     let index = pool.length
     while (index--) {
-      tmp = pool[index]
+      item = pool[index]
 
-      if (tmp.k === key) {
-        // 找到缓存
-        switch (option) {
-          case 0: // 获取kv
-            return tmp
-          case 1: // 移除
+      if (isEqual(item.k, key, noRef)) {
+        switch (operation) {
+          case 0:
+            return item
+          case 1:
             pool.splice(index, 1)
-            break
+            return item
           default:
-            ;(tmp as IPool).c++ // 计数
+            item.c++
         }
 
-        return tmp.v // 返回值
+        return item.v
       }
     }
   }
 
   /** 设置值
-   * @param {Any} key 存储键
-   * @param {Any} value 存储值
-   * @param {Number} expires 过期时间(ms)
+   * @param key 存储键
+   * @param value 存储值
+   * @param expires 过期时间(ms)
+   * @param compareMode 存储键比较方式, 默认: 构造函数指定
    *
-   * @returns {Any} val 存储值
+   * @returns value 存储值
    */
-  set<T = any>(key: any, value: T, expires?: number): T {
-    expires === undefined && (expires = this.alive)
-    clearTimeout(this.get(key, 1, this.out)) // 先清除该key的timeout
+  set<T = any>(
+    key: any,
+    value: T,
+    expires?: number,
+    compareMode?: CompareMode
+  ): T
 
-    const tmp = this.get(key, 0) // 获取{key, val}
-    if (tmp) {
-      // 更新值
-      tmp.v = value
+  /** 设置值
+   * @param key 存储键
+   * @param value 存储值
+   * @param compareMode 存储键比较方式, 默认: 构造函数指定
+   * @param expires 过期时间(ms)
+   *
+   * @returns value 存储值
+   */
+  set<T = any>(
+    key: any,
+    value: T,
+    compareMode?: CompareMode,
+    expires?: number
+  ): T
+
+  set<T = any>(
+    key: any,
+    value: T,
+    expires?: number | CompareMode,
+    compareMode?: CompareMode | number
+  ): T {
+    let item
+    if (isNumber(compareMode) || isString(expires)) {
+      item = expires
+      expires = compareMode as number | undefined
+      compareMode = item as CompareMode
+    }
+    item = this.get<IPool>(key, 0, compareMode)
+    if (item) {
+      if (item.t) {
+        clearTimeout(item.t)
+        item.t = 0
+      }
+      item.v = value
     } else {
-      // 添加值到末尾 && 超长处理
-      this.pool.push({ k: key, v: value, c: 0 }) > this.max && this.elim()
+      item = { k: key, v: value, c: 0 }
+      this.pool.push(item) > this.max && this.elim()
     }
 
-    // 设置过期时间 放末尾
-    expires &&
-      this.out.push({
-        k: key,
-        v: setTimeout(() => {
-          this.remove(key)
-        }, expires),
-      })
+    ;((expires as number) >= 0
+      ? (expires as number)
+      : (expires = this.alive)) &&
+      (item.t = setTimeout(() => {
+        this.remove(key)
+      }, expires))
 
     return value
   }
 
   /** 移除并返回key对应的值
-   * @param {Any} key 存储键
+   * @param key 存储键
+   * @param compareMode 存储键比较方式, 默认: 构造函数指定
    *
-   * @returns {Any} key对应的val
+   * @returns value 存储值 | undefined
    */
-  remove(key: any) {
-    clearTimeout(this.get(key, 1, this.out)) // 同时移除timeout队列
-
-    return this.get(key, 1)
+  remove<T = any>(key: any, compareMode?: CompareMode): T | undefined {
+    const item = this.get<IPool>(key, 1, compareMode)
+    if (item) {
+      clearTimeout(item.t)
+      return item.v
+    }
   }
 
   /** 清空存储 */
   clear() {
-    // 清空timeout队列
-    for (const item of this.out) {
-      clearTimeout(item.v)
+    let item
+    for (item of this.pool) {
+      clearTimeout(item.t)
     }
-
-    this.out = []
     this.pool = []
   }
 
   // 去掉使用次数最低的
   private elim() {
     const pool = this.pool
-
-    let index = 0 // 待移除项下标
-    let item = pool[0] // 待移除项
-
-    // 只从前一半里找
-    for (let i = 1, LEN = pool.length / 2, count = item.c; i < LEN; i++) {
-      if (!count) {
-        // 使用次数为0(没有get过)
+    let index = 0
+    let item = pool[0]
+    for (let i = 1, LEN = pool.length / 2, temp; i < LEN; i++) {
+      if (!item.c) {
         break
       }
 
-      if (pool[i].c < count) {
-        // 记录使用次数更少的
+      temp = pool[i]
+      if (temp.c < item.c) {
         index = i
-        item = pool[i]
-        count = item.c
+        item = temp
       }
     }
 
-    pool.splice(index, 1) // 移除该项
-    clearTimeout(this.get(item.k, 1, this.out)) // 同时移除timeout
+    pool.splice(index, 1)
+    clearTimeout(item.t)
   }
 }
 
@@ -179,10 +239,10 @@ let CACHE: IObject<{ k?: number; v?: any; e?: number | null } | 0> = {}
  */
 const local = {
   /** 获取值
-   * @param {String} key 存储键
-   * @param {Function} decoder 解码器
+   * @param key 存储键
+   * @param decoder 解码器
    *
-   * @returns {Object} key对应的值
+   * @returns key对应的值
    */
   get(key: string, decoder?: decoder) {
     let item: IObject | string | null | 0 = CACHE[key]
@@ -217,9 +277,7 @@ const local = {
 
       try {
         item = JSON.parse(item)
-      } catch (error) {
-        return
-      }
+      } catch (error) {}
       CACHE[key] = {
         v: item,
         e: execArray,
@@ -231,28 +289,33 @@ const local = {
     }
   },
   /** 设置值
-   * @param {String} key 存储键
-   * @param {Object} value 存储值
-   * @param {Number|Function} encoder/expires 加密/过期时间(ms) undefined: 更新
-   * @param {Number|Function} expires/encoder 过期时间(ms) undefined: 更新/加密
+   * @param key 存储键
+   * @param value 存储值
+   * @param expires/encoder 过期时间(ms) undefined: 更新/加密
+   * @param encoder/expires 加密/过期时间(ms) undefined: 更新
    *
-   * @returns {Object} value 存储值
+   * @returns value 存储值
    */
-  set: function(key: string, value: any, encoder?: any, expires?: any) {
+  set: function(
+    key: string,
+    value: any,
+    expires?: number | encoder,
+    encoder?: encoder | number
+  ) {
     let str
-    if (!isFn(encoder)) {
+    if (isFn(expires) || isNumber(encoder)) {
       str = encoder
-      encoder = expires
-      expires = str
+      encoder = expires as encoder
+      expires = str as number
     }
     str = JSON.stringify(value)
     // 加时间戳
-    const temp = (CACHE[key] = CACHE[key] || {})
-    expires >= 0
-      ? expires && (str = (temp.e = Date.now() + expires) + str)
+    const item = (CACHE[key] = CACHE[key] || {})
+    ;(expires as number) >= 0
+      ? expires && (str = (item.e = Date.now() + expires) + str)
       : (str =
-          (temp.e ||
-            (temp.e = parseInt(
+          (item.e ||
+            (item.e = parseInt(
               (REG_TIMESPAN.exec(STORAGE.getItem(key) || '') || [])[1]
             )) ||
             '') + str)
@@ -266,9 +329,9 @@ const local = {
       }
     }
 
-    clearTimeout(temp.k)
-    temp.v = value
-    temp.k = setTimeout(() => {
+    clearTimeout(item.k)
+    item.v = value
+    item.k = setTimeout(() => {
       CACHE[key] = 0
     }, ALIVE)
 
@@ -277,20 +340,22 @@ const local = {
     return value
   } as Setter,
   /** 移除值
-   * @param {String} key 存储键
+   * @param key 存储键
    */
   remove(key: string) {
-    const temp = CACHE[key]
-    temp && clearTimeout(temp.k)
-    CACHE[key] = 0
+    const item = CACHE[key]
+    if (item) {
+      clearTimeout(item.k)
+      CACHE[key] = 0
+    }
     STORAGE.removeItem(key)
   },
   /** 清空存储 */
   clear() {
-    let temp: string | IObject | 0
-    for (temp in CACHE) {
-      temp = CACHE[temp]
-      temp && clearTimeout(temp.k)
+    let item: string | IObject | 0
+    for (item in CACHE) {
+      item = CACHE[item]
+      item && clearTimeout(item.k)
     }
     CACHE = {}
     STORAGE.clear()

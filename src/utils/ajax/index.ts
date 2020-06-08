@@ -4,14 +4,12 @@ import combineURLs from 'axios/lib/helpers/combineURLs'
 
 import CONFIG from '@/config'
 // import { AUTH } from '@/enums'
-import { isObj } from '@/utils'
-import sort from '@/utils/sort'
-import clone from '@/utils/clone'
-import { Memory } from '@/utils/storage'
-
 import { success, failed } from '@/functions/interceptor'
+
+import clone from '../clone'
+import { Memory } from '../storage'
 import WS from './websocket'
-// import { emit } from '@/utils/eventBus' // 通知取消请求 以便自定义取消策略使用
+// import { emit } from '../eventBus' // 通知取消请求 以便自定义取消策略使用
 
 // 默认请求配置 https://github.com/axios/axios#config-defaults
 clone(AXIOS.defaults, {
@@ -37,8 +35,8 @@ clone(AXIOS.defaults, {
 
 /** 请求配置 */
 interface RequestConfig extends AxiosRequestConfig {
-  /** 请求标识【相同key视为相同请求】 */
-  key?: string
+  /** 请求标识【相同key视为相同请求, 默认:[url, method, query, data]】 */
+  key?: any
   /** 是否【不缓存响应】, get默认false, 其他默认true */
   noCache?: boolean
   /** 响应缓存最大存活时间, 默认:CONFIG.apiCacheAlive */
@@ -109,41 +107,6 @@ function getUri(url: string, query?: IObject) {
   )
 }
 
-function toString(value: any) {
-  return isObj(value) ? JSON.stringify(value) : value + ''
-}
-function searchToObj(search: string) {
-  const Obj: IObject<string> = {}
-  let param: string | string[]
-  for (param of search.split('&')) {
-    // param = decodeURIComponent(param)
-    param = param.split('=')
-    Obj[param[0]] = param[1]
-  }
-  return Obj
-}
-
-/** 获取请求标识
- * @param url 请求地址
- * @param query 查询参数
- */
-function getKey(url: string, query?: IObject) {
-  const part = url.split('?') // 提取查询参数
-  let params = part[1]
-  params && (query = clone(searchToObj(params), query))
-  params = '.'
-
-  // 按key升序排列 拼接字符
-  if (query) {
-    let key
-    for (key of sort(Object.keys(query))) {
-      params += `${key}.${toString(query[key])}.`
-    }
-  }
-
-  return part[0] + params
-}
-
 const requestQueue = new Memory()
 const dataStore = new Memory(CONFIG.apiMaxCache, CONFIG.apiCacheAlive)
 
@@ -168,9 +131,8 @@ function request(
   config.method = method
   data && (config.data = data)
   query && (config.params = query)
-  config.key || (config.key = getKey(config.url, config.params)) // 请求标识
+  config.key || (config.key = [url, method, query, data]) // 请求标识
 
-  // 在请求队列
   let cache = requestQueue.get(config.key)
   if (cache) {
     return cache
@@ -179,7 +141,6 @@ function request(
   const shouldCache =
     !(SEARCH && Object.assign(config.params || (config.params = {}), SEARCH)) &&
     (config.method === 'get' ? !config.noCache : config.noCache === false)
-  // 使用缓存的请求
   if (shouldCache) {
     cache = dataStore.get(config.key)
     if (cache) {
@@ -340,7 +301,6 @@ export {
   HEAD,
   setHEAD,
   getUri,
-  getKey,
   get,
   del,
   put,
