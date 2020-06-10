@@ -1,3 +1,5 @@
+import { isString, isBool } from '@/utils'
+
 /** SPA字典 */
 export const enum SPA {
   /** 首页 */
@@ -10,6 +12,13 @@ export const enum SPA {
   notFind = 'notFind',
   /** 错误页 */
   error = 'error',
+}
+
+interface Jump {
+  (id?: SPA, params?: string, open?: boolean): never
+}
+interface Jump {
+  (id?: SPA, open?: boolean, params?: string): never
 }
 
 /** 全局配置 */
@@ -38,6 +47,9 @@ export default {
   [SPA.error]: '50x',
   /*! 【↑ SPA配置 ↑】 */
 
+  /* 路由模式 */
+  mode: 'hash',
+
   /** 去指定SPA
    * @param id SPA ID, 见this键值
    *
@@ -46,16 +58,37 @@ export default {
    *  string: 去指定页
    *
    *  不存在的id: 未知页
-   * @param query 查询参数 自己拼 ?foo=0&bar=1#hash...
+   * @param params url参数 自己拼 ?foo=0&bar=1#hash...
+   * @param open 是否新窗口打开
    */
-  g(id?: SPA, search?: string) {
+  g: function(
+    this: any,
+    id?: any,
+    params?: string | boolean,
+    open?: boolean | string
+  ) {
     try {
       window.stop() // 停止加载资源
     } catch (error) {}
-    location.href =
-      (id ? this[id] || this.notFind : this.login) + (search || '')
+    let url
+    if (isString(open) || isBool(params)) {
+      url = params
+      params = open
+      open = url
+    }
+
+    url =
+      (id ? this[id] || this.notFind : this.login) +
+      (params
+        ? this.mode === 'hash'
+          ? (params as string)[0] === '/'
+            ? '#' + params
+            : '#/' + params
+          : params
+        : '')
+    open ? window.open(url) : (location.href = url)
     throw 0 // eslint-disable-line no-throw-literal
-  },
+  } as Jump,
 
   /*! 接口请求超时 0表示不限制 */
   /** 接口请求超时 0表示不限制 */

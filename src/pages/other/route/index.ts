@@ -1,15 +1,12 @@
-/*
- * @Description: other页路由配置
- * @Author: 毛瑞
- * @Date: 2019-07-01 16:26:36
- */
+/** 路由配置 */
 import { RouterOptions } from 'vue-router'
 
-import CONFIG from '../config'
+import CONF from '@/config'
+import CONFIG from '@other/config'
 import { home, about } from '@other/views'
 
 export default {
-  mode: 'hash',
+  mode: CONF.mode,
   base: CONFIG.base,
   meta: { home: '/home', name: 'vue-tpl' },
   /** 滚动行为, 仅<body>, 不能处理指定元素的滚动 */

@@ -3,7 +3,7 @@
  * @Author: 毛瑞
  * @Date: 2019-06-04 16:07:30
  */
-import { isFn, isString, isNumber, isEqual } from '.'
+import { isFn, isString, isNumber, isUndef, isEqual } from '.'
 
 /** 存储池 */
 export interface IPool {
@@ -230,9 +230,9 @@ interface Setter {
 }
 /** 本地存储 */
 const STORAGE = window.localStorage
-/** 提取时间戳 */
-const REG_TIMESPAN = /^(\d+)([^\d][\d\D]*)$/
 const ALIVE = 100 * 1000 // 防可能的内存溢出
+const SEPARATOR = String.fromCharCode(0)
+const REG_TIMESPAN = new RegExp(`^(\\d+)${SEPARATOR}([\\d\\D]+)$`)
 let CACHE: IObject<{ k?: number; v?: any; e?: number | null } | 0> = {}
 /** 本地存储 (localStorage 单例)
  * @test true
@@ -266,10 +266,10 @@ const local = {
         }
       }
 
-      let execArray: string[] | null | number = REG_TIMESPAN.exec(item) // 提取数据
+      let execArray: string[] | null | number = REG_TIMESPAN.exec(item)
       if (execArray) {
         item = execArray[2]
-        if (Date.now() > (execArray = parseInt(execArray[1]))) {
+        if (Date.now() > (execArray = +execArray[1])) {
           STORAGE.removeItem(key)
           return
         }
@@ -309,17 +309,17 @@ const local = {
       encoder = expires as encoder
       expires = str as number
     }
-    str = JSON.stringify(value)
-    // 加时间戳
+
     const item = (CACHE[key] = CACHE[key] || {})
-    ;(expires as number) >= 0
-      ? expires && (str = (item.e = Date.now() + expires) + str)
-      : (str =
-          (item.e ||
-            (item.e = parseInt(
-              (REG_TIMESPAN.exec(STORAGE.getItem(key) || '') || [])[1]
-            )) ||
-            '') + str)
+    str = JSON.stringify(value)
+
+    if ((expires as number) >= 0) {
+      expires && (str = (item.e = Date.now() + expires) + SEPARATOR + str)
+    } else {
+      isUndef(item.e) &&
+        (item.e = +(REG_TIMESPAN.exec(STORAGE.getItem(key) as string) || '')[1])
+      str = (item.e ? item.e + SEPARATOR : '') + str
+    }
 
     if (encoder) {
       try {
@@ -330,8 +330,8 @@ const local = {
       }
     }
 
-    clearTimeout(item.k)
     item.v = value
+    item.k && clearTimeout(item.k)
     item.k = setTimeout(() => {
       CACHE[key] = 0
     }, ALIVE)

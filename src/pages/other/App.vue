@@ -162,7 +162,7 @@
       <ElButton
         type="success"
         icon="el-icon-refresh"
-        @click="$router.replace('/r' + $route.fullPath)"
+        @click="refresh"
       >
         刷新
       </ElButton>

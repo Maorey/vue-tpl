@@ -1,11 +1,12 @@
 /** 鉴权 */
 import Vue from 'vue'
-import { hasOwn, isObj } from '@/utils'
-import { STORAGE } from '@/enums'
 
-import { local } from '@/utils/storage'
-import { Login } from '@/api/auth/user'
+import { STORAGE } from '@/enums'
+import { hasOwn, isObj } from '@/utils'
 import { Rule } from '@/pipe'
+import { local } from '@/utils/storage'
+
+import { Login } from '@/api/auth/user'
 import { pwd, encode, decode } from './cipher'
 
 /** 子页面信息 */
@@ -25,6 +26,8 @@ export interface Menu {
   title?: string
   /** 模块描述 */
   desc?: string
+  /** 是否隐藏节点 */
+  hide?: 1
 }
 type AuthDic = { [authKey: string]: 1 }
 /** 存储的权限信息 */
@@ -67,7 +70,35 @@ const rule: Rule = {
   icon: trim,
   menuCode: (v: string) => v && { k: 'id', v },
   path: trim,
+  rootNode: (v: any) => v && { k: 'hide', v },
   title: trim,
+}
+
+/** 重建菜单树 */
+function rebuild(menu: any) {
+  // 深度优先
+  const children = menu.children
+  let index = (children && children.length) as number
+  let child
+  let cLen
+  while (index--) {
+    child = children[index]
+    if ((cLen = child.children?.length)) {
+      if (child.rootNode) {
+        if (child.menuCode) {
+          children.splice(index - 1, 0, ...child.children)
+          index += cLen
+          delete child.children
+        } else {
+          children.splice(index, 1, ...child.children)
+          index += cLen - 1
+        }
+        child = children[index]
+      }
+      rebuild(child)
+    }
+  }
+  return menu
 }
 
 /** 根据id获取权限信息 */
@@ -218,6 +249,7 @@ function has(this: Vue) {
 export {
   AUTH,
   rule,
+  rebuild,
   getById,
   siblings,
   encode,

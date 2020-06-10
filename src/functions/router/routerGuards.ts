@@ -10,7 +10,7 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
 export default (router: Router) => {
-  ;(router as any).$ = Vue.observable({ e: null }) // hack 刷新路由
+  ;(router as any).$ = Vue.observable({ e: null }) // hack 路由刷新
 
   /// 路由刷新 ///
   /**
@@ -66,28 +66,48 @@ export default (router: Router) => {
   }
 
   const REG_REDIRECT = /\/r\//
+  const REG_REPEAT = /\/{2,}/i
   const META = (router as any).options.meta
   router.beforeEach((to, from, next) => {
+    if (REG_REPEAT.test(to.path)) {
+      return next({
+        path: to.path.replace(REG_REPEAT, '/'),
+        query: to.query,
+        hash: to.hash,
+        replace: true,
+      })
+    }
+
     let temp
     if (!to.matched.length) {
+      if (REG_REDIRECT.test((temp = to.redirectedFrom || to.path))) {
+        temp = temp.replace(REG_REDIRECT, '/')
+        if (temp === (from.redirectedFrom || from.path)) {
+          return refreshRoute(from)
+        }
+
+        if ((to = router.resolve(temp).route).matched.length) {
+          refreshRoute(to, 1)
+          return next(to as Location) // 还是会再进一次beforeEach ┐(: ´ ゞ｀)┌
+        }
+      }
+
       if (!from.matched.length) {
         return next(META.home)
       }
-      if (REG_REDIRECT.test((temp = to.redirectedFrom || to.fullPath))) {
-        temp = temp.replace(REG_REDIRECT, '/')
-        if (temp === (from.redirectedFrom || from.fullPath)) {
-          return refreshRoute(from)
-        }
-        // 重定向并刷新
-        if ((to = router.resolve(temp).route).matched.length) {
-          refreshRoute(to, 1)
-          next(to as Location) // 还是要再进一次beforeEach, 虽然都给解析出来了┐(: ´ ゞ｀)┌
-        }
+
+      if (to.path === '/') {
+        return META.home === from.fullPath
+          ? refreshRoute(from)
+          : next(META.home)
       }
+
       return CONFIG.g(SPA.notFind)
     }
-    NProgress.start() // 开始进度条
+
+    NProgress.start()
     cancel('导航: 取消未完成请求')
+
     // 缓存控制
     if ((temp = to.meta).alive <= 0) {
       refreshRoute(to, 1)
@@ -96,6 +116,7 @@ export default (router: Router) => {
         refreshRoute(to, 1)
         temp.reload = 0
       }
+
       if (temp.t) {
         clearTimeout(temp.t)
         temp.t = 0
@@ -106,6 +127,7 @@ export default (router: Router) => {
         }, temp || CONFIG.pageAlive)
       }
     }
+
     // 关闭所有提示
     temp = router.app
     try {
@@ -113,6 +135,7 @@ export default (router: Router) => {
       temp.$notify.closeAll()
       temp.$msgbox.close()
     } catch (error) {}
+
     // 为每个路由对应的组件添加 props:route (路由配置props只允许对象 不然报错给你看)
     if ((temp = to.matched) && (temp = temp[temp.length - 1])) {
       temp = temp.props as any
@@ -124,12 +147,11 @@ export default (router: Router) => {
   })
 
   router.afterEach((to: any) => {
-    // 设置页面标题
     const meta = to.meta
     let temp = META.name || ''
     temp = meta.name ? meta.name + (temp && ' - ' + temp) : temp
     temp && (document.title = temp)
 
-    NProgress.done() // 结束进度条
+    NProgress.done()
   })
 }

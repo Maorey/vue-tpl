@@ -1,7 +1,7 @@
 /** 入口挂载公共逻辑, 手工控制入口大小 */
 import Vue from 'vue'
 import { Store } from 'vuex'
-import Router, { RouteRecord } from 'vue-router'
+import Router, { RouteRecord, RawLocation } from 'vue-router'
 
 import { isString } from '@/utils'
 import { on, off, once, emit } from '@/utils/eventBus'
@@ -20,7 +20,7 @@ import '@/libs/components/junior.scss'
 import '@/libs/components/senior.scss'
 
 /** 埋点(日志采集) */
-// function collection() {
+// function collection(id: string) {
 //   if (process.env.NODE_ENV === 'production') {
 //     Vue.config.errorHandler = function(err, vm, info) {
 //       // 采集并上传错误日志
@@ -43,9 +43,89 @@ function emitErrorhandler(this: Vue, err: Error, event: string) {
   this.$emit('hook:errorCaptured', err, this, 'emit:' + event)
 }
 
-export default <T>(App: any, router?: Router, store?: Store<T>) => {
-  const proto = Vue.prototype
-  /// 注入 ///
+function routerEnvironment(proto: any, router: Router) {
+  /// 鉴权(指令就没必要了) ///
+  proto.authFit = fit
+  proto.authHas = has
+  /// 路由相关 ///
+  proto.jump = (
+    location: RawLocation,
+    options?: {
+      id?: string
+      replace?: boolean
+      onComplete?: Function
+      onAbort?: (err: Error) => void
+    }
+  ) => {
+    options || (options = {})
+
+    let path = ''
+    if (options.id) {
+      const routes = (router as any).options.routes
+      let route
+      for (route of routes) {
+        if (options.id === route.meta.id) {
+          path = route.path
+          break
+        }
+      }
+    }
+
+    if (isString(location)) {
+      location = path + (location || '')
+    } else {
+      location.path = path + (location.path || '')
+    }
+
+    return router[options.replace ? 'replace' : 'push'](
+      location,
+      options.onComplete,
+      options.onAbort
+    )
+  }
+  proto.return = (refresh?: boolean) => {
+    const route = router.currentRoute
+    let current: RouteRecord | RouteRecord[] = route.matched
+    current = current[current.length - 1]
+    const parent = current && current.parent
+    if (parent) {
+      const result = new RegExp(
+        '(' + parent.regex.source.replace('(?:\\/(?=$))?$', ')(?:/)?'),
+        'i'
+      ).exec(route.fullPath)
+      if (result) {
+        router.push((refresh ? '/r' : '') + result[1])
+      } else {
+        router.resolve(parent.path).route.matched.length
+          ? router.push((refresh ? '/r' : '') + parent.path)
+          : router.back()
+      }
+    } else {
+      router.push(refresh ? '/r/' : '/')
+    }
+  }
+  proto.refresh = () => {
+    router.replace('/r' + router.currentRoute.fullPath)
+  }
+  proto.purge = (id: string) => {
+    const routes = (router as any).options.routes
+    let route
+    for (route of routes) {
+      if (id === route.meta.id) {
+        return (route.meta.reload = true)
+      }
+    }
+  }
+  /// 全局事件 ///
+  on(GLOBAL.jump, proto.jump)
+  on(GLOBAL.return, proto.return)
+  on(GLOBAL.refresh, proto.refresh)
+  on(GLOBAL.purge, proto.purge)
+}
+
+function inject(proto: any, id: string, router?: Router) {
+  /// 标识 ///
+  proto._$SPA = id
   /// 消息总线  ///
   proto.on = on
   proto.off = off
@@ -59,49 +139,18 @@ export default <T>(App: any, router?: Router, store?: Store<T>) => {
     }
     emit.apply(this, args)
   }
-  if (router) {
-    /// 鉴权(指令就没必要了) ///
-    proto.authFit = fit
-    proto.authHas = has
-    /// 路由环境 ///
-    proto.getPathById = (id: string) => {
-      let route
-      for (route of (router as any).options.routes) {
-        if (id === route.meta.id) {
-          return route.path as string
-        }
-      }
-      return ''
-    }
-    proto.reloadRouteById = (id: string) => {
-      let route
-      for (route of (router as any).options.routes) {
-        if (id === route.meta.id) {
-          return (route.meta.reload = true)
-        }
-      }
-    }
-    /// 全局事件 ///
-    on(GLOBAL.refresh, () => {
-      router.replace('/r' + router.currentRoute.fullPath)
-    })
-    on(GLOBAL.return, (refresh?: boolean) => {
-      let parent: RouteRecord | RouteRecord[] = router.currentRoute.matched
-      if ((parent = parent[parent.length - 2])) {
-        // TODO: 复杂路由 比如: /foo/:bar/:id
-        router.replace((refresh ? '/r' : '') + parent.path)
-      }
-    })
-    on(GLOBAL.jump, (id: string, path?: string) => {
-      router.push(proto.getPathById(id) + (path || ''))
-    })
-  }
-  // 全局点击事件
+  /// 全局事件 ///
   window.addEventListener('click', e => {
     emit(GLOBAL.click, e)
   })
+  /// 路由环境 ///
+  router && routerEnvironment(proto, router)
+}
 
-  // collection()
+export default <T>(id: string, App: any, router?: Router, store?: Store<T>) => {
+  inject(Vue.prototype, id, router)
+
+  // collection(id)
   dev(Vue)
 
   // 防阻塞页面（defer的脚本已缓存时不会非阻塞执行bug:chromium#717979）

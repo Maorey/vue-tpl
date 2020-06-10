@@ -127,7 +127,7 @@ function email(str: string) {
 }
 
 // url http/https(/ftp/ws)...
-const REG_URL = /^https?:\/\/.+/
+const REG_URL = /^(?:https?:)?\/\/.+/
 /** 验证url
  * @param {String} str url
  *

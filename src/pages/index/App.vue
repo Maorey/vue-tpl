@@ -6,7 +6,7 @@
 <template>
   <body>
     <form :class="$style.skin">
-      <a @click="$router.replace('/r' + $route.fullPath)">刷新</a>
+      <a @click="refresh">刷新</a>
       <input
         v-for="val in SKIN"
         :key="val"

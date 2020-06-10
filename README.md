@@ -673,6 +673,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 - 所有视图组件可接收props:`route`代替`this.$route`, 区别是: **只在首次进入当前视图或当前视图url发生变化时改变**
 - **路由视图**不需要被缓存的, 可以在`meta`申明/`deactivated`钩子销毁实例(`this.$destroy()`)或`activated`钩子进行更新
+- **url 地址跳转**, `SPA间` 使用 `@/config` 的 `g` 方法进行跳转, `SPA内` 跳转 `this.jump`(或`eventBus`)
 - 为避免渲染错误, 请务必为 <b style="color: red;">循环创建的组件</b> **加上 `key`**, 需要特别注意 `tsx/ts/jsx/js` 文件(没有代码提示)
 
 ### 配置和优化

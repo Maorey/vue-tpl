@@ -1,6 +1,7 @@
 /* vue 扩展申明 */
 
 import { VNode } from 'vue'
+import { RawLocation } from 'vue-router'
 import { on, off, once, emit } from '@/utils/eventBus'
 import { fit, has } from '@/functions/auth'
 
@@ -108,6 +109,8 @@ interface IMessage extends Message {
 
 declare module 'vue/types/vue' {
   interface Vue {
+    /** 当前SPA */
+    _$SPA: string
     /** .vue <style module> class名字典计算属性 */
     $style: IObject<string>
     /** [消息总线]监听事件 */
@@ -133,18 +136,33 @@ declare module 'vue/types/vue' {
      * @param authInfo 权限信息
      */
     authHas: typeof has
-    /** 获取目标菜单模块访问路径
-     * @params id 目标菜单模块唯一标识
-     *
-     * @returns {string} 访问路径, ''为没找到
+    /** 跳转页面
+     * @param location 跳转地址信息 支持相对路径
+     * @param options 选项
+     *  {
+     *    id?: string 目标菜单模块唯一标识
+     *    replace?: boolean 使用 router.replace 默认:router.push
+     *    onComplete?: 同 router.replace/router.push
+     *    onAbort?: 同 router.replace/router.push
+     *  }
      */
-    getPathById: (id: string) => string
-    /** 刷新指定菜单模块
-     * @params id 目标菜单模块唯一标识
-     *
-     * @returns {true|undefined} undefined为没找到
+    jump: (
+      location: RawLocation,
+      options?: {
+        id?: string
+        replace?: boolean
+        onComplete?: Function
+        onAbort?: (err: Error) => void
+      }
+    ) => void
+    /** 返回父级页面 (fallback:back|首页)
+     * @param refresh 是否刷新父级页面
      */
-    reloadRouteById: (id: string) => string
+    return: (refresh?: boolean) => void
+    /** 刷新当前页 */
+    refresh: () => void
+    /** 销毁指定id的页面(下次访问时不会有缓存) */
+    purge: (id: string) => void
 
     /// element-UI 组件快速方法 ///
     /** 加载 */
