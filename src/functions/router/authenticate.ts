@@ -23,17 +23,22 @@ function filterChildren(route: RouteConfig, childInfo?: ChildInfo[]) {
 
   const metaRoute = route.meta
   const filteredChildren: RouteConfig[] = []
-  let info: ChildInfo | undefined
+  let info: ChildInfo
   let child: RouteConfig
   let metaChild
+  let cLen = childInfo && childInfo.length
   while (len--) {
     child = (children as any)[len]
     metaChild = child.meta || (child.meta = {})
+    info = (cLen && (childInfo as ChildInfo[])[--cLen]) as ChildInfo
     if (isAuthorized(metaRoute.id, metaChild)) {
-      info = childInfo && childInfo[len]
       metaChild.id = metaRoute.id
-      metaChild.title = (info && info.title) || ''
-      metaChild.parent = route
+      if (child.path) {
+        metaChild.parent = route
+        metaChild.title = (info && info.title) || ''
+      } else {
+        metaChild.title = metaRoute.title
+      }
       metaChild.alive >= 0 ||
         (metaRoute.alive >= 0 && (metaChild.alive = metaRoute.alive))
 

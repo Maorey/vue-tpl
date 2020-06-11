@@ -60,6 +60,27 @@ function routerEnvironment(proto: any, router: Router) {
   proto.authFit = fit
   proto.authHas = has
   /// 路由相关 ///
+  proto.up = (refresh?: boolean) => {
+    const route = router.currentRoute
+    let current: RouteRecord | RouteRecord[] = route.matched
+    current = current[current.length - 1]
+    const parent = current && current.parent
+    if (parent) {
+      const result = new RegExp(
+        '(' + parent.regex.source.replace('(?:\\/(?=$))?$', ')(?:/)?'),
+        'i'
+      ).exec(route.fullPath)
+      if (result) {
+        router.push((refresh ? '/r' : '') + result[1])
+      } else {
+        router.resolve(parent.path).route.matched.length
+          ? router.push((refresh ? '/r' : '') + parent.path)
+          : router.back()
+      }
+    } else {
+      router.push(refresh ? '/r/' : '/')
+    }
+  }
   proto.jump = (
     location: RawLocation,
     options?: {
@@ -84,27 +105,6 @@ function routerEnvironment(proto: any, router: Router) {
       options.onAbort
     )
   }
-  proto.return = (refresh?: boolean) => {
-    const route = router.currentRoute
-    let current: RouteRecord | RouteRecord[] = route.matched
-    current = current[current.length - 1]
-    const parent = current && current.parent
-    if (parent) {
-      const result = new RegExp(
-        '(' + parent.regex.source.replace('(?:\\/(?=$))?$', ')(?:/)?'),
-        'i'
-      ).exec(route.fullPath)
-      if (result) {
-        router.push((refresh ? '/r' : '') + result[1])
-      } else {
-        router.resolve(parent.path).route.matched.length
-          ? router.push((refresh ? '/r' : '') + parent.path)
-          : router.back()
-      }
-    } else {
-      router.push(refresh ? '/r/' : '/')
-    }
-  }
   proto.refresh = () => {
     router.replace('/r' + router.currentRoute.fullPath)
   }
@@ -118,8 +118,8 @@ function routerEnvironment(proto: any, router: Router) {
     }
   }
   /// 全局事件 ///
+  on(GLOBAL.up, proto.up)
   on(GLOBAL.jump, proto.jump)
-  on(GLOBAL.return, proto.return)
   on(GLOBAL.refresh, proto.refresh)
   on(GLOBAL.purge, proto.purge)
 }

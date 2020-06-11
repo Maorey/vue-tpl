@@ -136,6 +136,10 @@ declare module 'vue/types/vue' {
      * @param authInfo 权限信息
      */
     authHas: typeof has
+    /** 返回父级页面 (fallback:back|首页)
+     * @param refresh 是否刷新父级页面
+     */
+    up: (refresh?: boolean) => void
     /** 跳转页面
      * @param location 跳转地址信息 支持相对路径
      * @param options 选项
@@ -156,10 +160,6 @@ declare module 'vue/types/vue' {
         onAbort?: (err: Error) => void
       }
     ) => void
-    /** 返回父级页面 (fallback:back|首页)
-     * @param refresh 是否刷新父级页面
-     */
-    return: (refresh?: boolean) => void
     /** 刷新当前页 */
     refresh: () => void
     /** 销毁指定id的页面(下次访问时不会有缓存) */

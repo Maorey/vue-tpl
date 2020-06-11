@@ -3,6 +3,8 @@
 /** 全局事件 [参数:描述, ...] */
 export const enum GLOBAL {
   // skinchanged = process.env.SKIN_FIELD,
+  /** 返回父级页面 (fallback:back|首页) [refresh:是否刷新父级页面] */
+  up = 'b',
   /** 跳转页面
    * [
    *  location 跳转地址信息 支持相对路径,
@@ -17,8 +19,6 @@ export const enum GLOBAL {
    * ]
    */
   jump = 'a',
-  /** 返回父级页面 (fallback:back|首页) [refresh:是否刷新父级页面] */
-  return = 'b',
   /** 刷新当前页 */
   refresh = 'c',
   /** 销毁指定id的页面(下次访问时不会有缓存) */
