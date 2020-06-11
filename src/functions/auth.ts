@@ -6,7 +6,7 @@ import { hasOwn, isObj } from '@/utils'
 import { Rule } from '@/pipe'
 import { local } from '@/utils/storage'
 
-import { Login } from '@/api/auth/user'
+import { Login } from '@/api/authServer/user'
 import { pwd, encode, decode } from './cipher'
 
 /** 子页面信息 */

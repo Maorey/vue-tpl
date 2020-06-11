@@ -81,7 +81,7 @@ function resolveRelativePath(
   )
 }
 
-const REG_QUERY = /^([^?#]+)([?#].*)?$/
+const REG_URL = /^([^?#]+)([?#].*)?$/
 export function resolveUrl<T = RawLocation>(
   path: string,
   location: T,
@@ -104,7 +104,7 @@ export function resolveUrl<T = RawLocation>(
     return location
   }
 
-  relativePath = REG_QUERY.exec(relativePath) as RegExpExecArray
+  relativePath = REG_URL.exec(relativePath) as RegExpExecArray
   relativePath =
     resolveRelativePath(path, relativePath[1], (location as Location).append) +
     (refresh ? '/r/' : '') +

@@ -71,9 +71,7 @@ export default (config: RouterOptions) => {
 
       for (route of ALL_ROUTES) {
         meta = route.meta || (route.meta = {})
-        if (!(route as any)._ && id === meta.id) {
-          ;(route as any)._ = 1 // 标记
-
+        if (id === meta.id) {
           auth.path = route.path = auth.path || route.path || getKey('/')
           meta.title = auth.title
           META.home || (META.home = auth.path)
