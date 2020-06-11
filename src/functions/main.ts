@@ -71,26 +71,15 @@ function routerEnvironment(proto: any, router: Router) {
     }
   ) => {
     options || (options = {})
-
     const path = options.id && getPathById(router, options.id)
-    if (path || options.refresh) {
-      if (isString(location)) {
-        location = resolveUrl(
-          path || router.currentRoute.path,
-          location || '',
-          options.refresh
-        )
-      } else {
-        location.path = resolveUrl(
-          path || router.currentRoute.path,
-          location.path || '',
-          options.refresh
-        )
-      }
-    }
-
     return router[options.replace ? 'replace' : 'push'](
-      location,
+      path || options.refresh
+        ? resolveUrl(
+          path || router.currentRoute.path,
+          location,
+          options.refresh
+        )
+        : location,
       options.onComplete,
       options.onAbort
     )
