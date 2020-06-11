@@ -43,7 +43,11 @@ function upper(path: string) {
   return path && path.substring(0, path.lastIndexOf('/'))
 }
 // const REG_REPEAT = /(^|\/)\.{3,}\//i
-function mergePath(path: string, relativePath: string, isAppend?: boolean) {
+function resolveRelativePath(
+  path: string,
+  relativePath: string,
+  isAppend?: boolean
+) {
   // relativePath.replace(REG_REPEAT, '$1../')
   path[path.length - 1] === '/' && (path = path.substring(0, path.length - 1))
   let index = 0
@@ -77,52 +81,65 @@ function mergePath(path: string, relativePath: string, isAppend?: boolean) {
   )
 }
 
+const REG_QUERY = /^([^?#]+)([?#].*)?$/
+export function resolveUrl<T = RawLocation>(
+  path: string,
+  location: T,
+  refresh?: boolean
+) {
+  const isStr = isString(location)
+  let relativePath: string | RegExpExecArray = (isStr
+    ? location
+    : (location as Location).path) as string
+
+  if (!relativePath || relativePath[0] === '/') {
+    if (refresh) {
+      relativePath = '/r/' + (relativePath || path)
+      if (isStr) {
+        location = (relativePath as any) as T
+      } else {
+        ;(location as Location).path = relativePath
+      }
+    }
+    return location
+  }
+
+  relativePath = REG_QUERY.exec(relativePath) as RegExpExecArray
+  relativePath =
+    resolveRelativePath(path, relativePath[1], (location as Location).append) +
+    (refresh ? '/r/' : '') +
+    (relativePath[2] || '')
+
+  if (isStr) {
+    return (relativePath as any) as T
+  }
+
+  ;(location as Location).append = false
+  ;(location as Location).path = relativePath
+  return location
+}
+
 export default (config: RouterOptions, authority?: boolean) => {
   authority && authenticate(config)
 
   const router = new Router(config)
 
   // 相对路径支持 '' './' '../'
-  const REG_QUERY = /[?#].*$/
-  function resolveRelativePath(location: RawLocation) {
-    const isStr = isString(location)
-    let relativePath = isStr
-      ? (location as string).replace(REG_QUERY, '')
-      : (location as Location).path
-
-    if (!relativePath || relativePath[0] === '/') {
-      return location
-    }
-
-    relativePath = mergePath(
-      router.currentRoute.path,
-      relativePath,
-      (location as Location).append
-    )
-    if (isStr) {
-      return relativePath
-    }
-
-    ;(location as Location).append = false
-    ;(location as Location).path = relativePath
-    return location
-  }
-
   const originPush = router.push
   router.push = (function(this: any, location: RawLocation) {
-    arguments[0] = resolveRelativePath(location)
+    arguments[0] = resolveUrl(router.currentRoute.path, location)
     return originPush.apply(this, arguments as any)
   } as any) as typeof originPush
 
   const originReplace = router.replace
   router.replace = (function(this: any, location: RawLocation) {
-    arguments[0] = resolveRelativePath(location)
+    arguments[0] = resolveUrl(router.currentRoute.path, location)
     return originReplace.apply(this, arguments as any)
   } as any) as typeof originReplace
 
   const originResolve = router.resolve
   router.resolve = (function(this: any, location: RawLocation) {
-    arguments[0] = resolveRelativePath(location)
+    arguments[0] = resolveUrl(router.currentRoute.path, location)
     return originResolve.apply(this, arguments as any)
   } as any) as typeof originResolve
 

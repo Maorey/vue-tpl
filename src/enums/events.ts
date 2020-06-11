@@ -9,6 +9,7 @@ export const enum GLOBAL {
    *  options 选项
    *    {
    *      id?: string 目标菜单模块唯一标识
+   *      refresh?: boolean 是否刷新
    *      replace?: boolean 使用 router.replace 默认:router.push
    *      onComplete?: 同 router.replace/router.push
    *      onAbort?: 同 router.replace/router.push

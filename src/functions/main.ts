@@ -1,7 +1,7 @@
 /** 入口挂载公共逻辑, 手工控制入口大小 */
 import Vue from 'vue'
 import { Store } from 'vuex'
-import Router, { RouteRecord, RawLocation } from 'vue-router'
+import Router, { RouteRecord, RawLocation, RouteConfig } from 'vue-router'
 
 import { isString } from '@/utils'
 import { on, off, once, emit } from '@/utils/eventBus'
@@ -9,6 +9,7 @@ import { fit, has } from '@/functions/auth'
 import { GLOBAL } from '@/enums/events'
 // import { throttle } from '@/utils/performance'
 import { dev } from '@/libs/vue'
+import { resolveUrl } from './router'
 
 import '@/libs/components/junior'
 import '@/libs/components/senior'
@@ -43,6 +44,17 @@ function emitErrorhandler(this: Vue, err: Error, event: string) {
   this.$emit('hook:errorCaptured', err, this, 'emit:' + event)
 }
 
+function getPathById(router: Router, id: string) {
+  const routes = (router as any).options.routes as RouteConfig[]
+  let route
+  for (route of routes) {
+    if (id === route.meta.id) {
+      return route.path
+    }
+  }
+  return ''
+}
+
 function routerEnvironment(proto: any, router: Router) {
   /// 鉴权(指令就没必要了) ///
   proto.authFit = fit
@@ -52,6 +64,7 @@ function routerEnvironment(proto: any, router: Router) {
     location: RawLocation,
     options?: {
       id?: string
+      refresh?: boolean
       replace?: boolean
       onComplete?: Function
       onAbort?: (err: Error) => void
@@ -59,22 +72,21 @@ function routerEnvironment(proto: any, router: Router) {
   ) => {
     options || (options = {})
 
-    let path = ''
-    if (options.id) {
-      const routes = (router as any).options.routes
-      let route
-      for (route of routes) {
-        if (options.id === route.meta.id) {
-          path = route.path
-          break
-        }
+    const path = options.id && getPathById(router, options.id)
+    if (path || options.refresh) {
+      if (isString(location)) {
+        location = resolveUrl(
+          path || router.currentRoute.path,
+          location || '',
+          options.refresh
+        )
+      } else {
+        location.path = resolveUrl(
+          path || router.currentRoute.path,
+          location.path || '',
+          options.refresh
+        )
       }
-    }
-
-    if (isString(location)) {
-      location = path + (location || '')
-    } else {
-      location.path = path + (location.path || '')
     }
 
     return router[options.replace ? 'replace' : 'push'](
