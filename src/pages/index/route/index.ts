@@ -1,7 +1,7 @@
 /** 路由配置 */
 import { RouterOptions } from 'vue-router'
 
-import CONF from '@/config'
+import CONF, { SPA } from '@/config'
 import CONFIG from '@index/config'
 import { home, about } from '@index/views'
 
@@ -17,6 +17,14 @@ export default {
     return to.hash ? { selector: to.hash } : savedPosition
   },
   routes: [
+    // 子站跳转
+    {
+      path: '/other',
+      meta: { id: SPA.other },
+      redirect() {
+        CONF.g(SPA.other)
+      },
+    },
     home({ id: '0', name: '首页', thumb: IMG_HOME }),
     about({ id: '1', name: '关于', thumb: IMG_ABOUT }),
   ],

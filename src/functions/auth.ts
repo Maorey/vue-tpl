@@ -130,7 +130,7 @@ function siblings(id: string, auth?: Auth | Menu): Menu[] | undefined {
     let child
     for (child of children) {
       if (id === child.id) {
-        return children
+        return (auth !== AUTH && children) as any
       }
       if ((child = siblings(id, child))) {
         return child
