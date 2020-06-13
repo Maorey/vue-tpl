@@ -2,6 +2,7 @@ import { isObj, isFn, isBool, isString } from '@/utils'
 
 type handler<T = any> = (
   filteredValue: any,
+  attribute: string,
   obj: T
 ) => void | Falsy | { /** 键 */ k?: string; /** 值 */ v: any }
 interface Handler<T = any> {
@@ -9,11 +10,15 @@ interface Handler<T = any> {
   [key: string]: 1 | true | handler<T> | Rule<T>
 }
 /** 过滤规则 */
-export type Rule<T = any> = (string | Handler<T>)[] | Handler<T>
+export type Rule<T = any> = handler<T> | (string | Handler<T>)[] | Handler<T>
 /** 模式 白名单/黑名单 */
 export type Mode = 'white' | 'black'
 
 function matchRule<T = any>(rules: Rule<T>, key: string, mode?: Mode) {
+  if (isFn(rules)) {
+    return rules
+  }
+
   const isWhile = mode !== 'black'
   let rule
   if (Array.isArray(rules)) {
@@ -66,17 +71,14 @@ function trim(obj: any, rules?: any, mode?: any, deep?: any) {
   }
 
   let temp
-  if (isObj(rules)) {
-    if (isBool(mode) || isString(deep)) {
-      temp = deep
-      deep = mode
-      mode = temp
-      temp = 0
-    }
-    // mode || (mode = 'white')
-  } else {
+  if (isBool(rules)) {
     deep = rules
     rules = mode = null
+  } else if (isBool(mode) || isString(deep)) {
+    temp = deep
+    deep = mode
+    mode = temp
+    temp = 0
   }
 
   const isArray = Array.isArray(obj)
@@ -90,7 +92,7 @@ function trim(obj: any, rules?: any, mode?: any, deep?: any) {
       isDeeped = deep && value && isObj(value)
       isDeeped && (value = trim(value, isObj(temp) ? temp : rules, mode, deep))
       if (isFn(temp)) {
-        if ((temp = temp(value, obj) as any)) {
+        if ((temp = temp(value, key, obj) as any)) {
           result[isString(temp.k) ? temp.k : key] = temp.v
           temp = 0
         }

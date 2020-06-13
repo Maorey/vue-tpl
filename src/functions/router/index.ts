@@ -139,7 +139,14 @@ export default (config: RouterOptions, authority?: boolean) => {
 
   const originResolve = router.resolve
   router.resolve = (function(this: any, location: RawLocation) {
-    arguments[0] = resolveUrl(router.currentRoute.path, location)
+    arguments[0] = resolveUrl(
+      router.currentRoute.path,
+      arguments[2]
+        ? isString(location)
+          ? { path: location, append: true }
+          : ((location.append = true), location)
+        : location
+    )
     return originResolve.apply(this, arguments as any)
   } as any) as typeof originResolve
 

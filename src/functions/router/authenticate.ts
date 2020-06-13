@@ -33,12 +33,8 @@ function filterChildren(route: RouteConfig, childInfo?: ChildInfo[]) {
     info = (cLen && (childInfo as ChildInfo[])[--cLen]) as ChildInfo
     if (isAuthorized(metaRoute.id, metaChild)) {
       metaChild.id = metaRoute.id
-      if (child.path) {
-        metaChild.parent = route
-        metaChild.title = (info && info.title) || ''
-      } else {
-        metaChild.title = metaRoute.title
-      }
+      child.path && (metaChild.parent = route)
+      metaChild.title = info ? info.title || '' : metaRoute.title
       metaChild.alive >= 0 ||
         (metaRoute.alive >= 0 && (metaChild.alive = metaRoute.alive))
 
