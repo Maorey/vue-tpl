@@ -1,4 +1,4 @@
-import { isObj, isFn, isBool, isString } from '@/utils'
+import { hasOwn, isBool, isString, isObj, isFn } from '@/utils'
 
 /** 过滤器 (返回{k,v}对象以替换, 非对象真值表示匹配) */
 type Handler<T = any> = (
@@ -9,20 +9,47 @@ type Handler<T = any> = (
 /** 过滤器字典 除过滤规则外, 真值表示匹配 */
 type Records<T = any> = { [key: string]: Falsy | true | 1 | Rule<T> }
 /** 过滤规则, 应用匹配的规则 */
-export type Rule<T = any> = Handler<T> | Records<T> | string[]
+export type Rule<T = any> =
+  | RegExp
+  | Handler<T>
+  | Records<T>
+  | (string | RegExp | Records<T>)[]
 /** 模式 白名单/黑名单 */
 export type Mode = 'white' | 'black'
 
-function matchRule<T = any>(rules: Rule<T>, key: string, isWhile?: boolean) {
+function matchRule<T = any>(
+  rules: Rule<T>,
+  key: string,
+  isWhile: boolean
+): boolean | Handler<T> | Records<T> {
   let rule
   switch (true) {
     case isFn(rules):
-      return rules
+      return rules as Handler<T>
+    case isFn(((rules as RegExp) || 0).test):
+      return (rules as RegExp).test(key) ? isWhile : !isWhile
     case isObj(rules):
       rule = (rules as Records<T>)[key]
-      return rule ? (isFn(rule) || isObj(rule) ? rule : isWhile) : !isWhile
+      return rule
+        ? isFn(rule) || isObj(rule)
+          ? (rule as Handler<T> | Records<T>)
+          : isWhile
+        : !isWhile
     default:
-      return (rules as string[]).includes(key) ? isWhile : !isWhile
+      for (rule of rules as (string | RegExp | Records<T>)[]) {
+        if (rule === key) {
+          return isWhile
+        } else if (rule && isObj(rule)) {
+          if (isFn((rule as RegExp).test)) {
+            if ((rules as RegExp).test(key)) {
+              return isWhile
+            }
+          } else if (hasOwn(rule, key)) {
+            return matchRule(rule, key, isWhile)
+          }
+        }
+      }
+      return !isWhile
   }
 }
 /** 去掉falsy属性/空对象/空数组拷贝
