@@ -39,7 +39,7 @@ function filterChildren(route: RouteConfig, childInfo?: ChildInfo[]) {
         (metaRoute.alive >= 0 && (metaChild.alive = metaRoute.alive))
 
       filterChildren(child, info && info.child)
-      filteredChildren.push(child)
+      filteredChildren.unshift(child)
     }
   }
   filteredChildren.length
