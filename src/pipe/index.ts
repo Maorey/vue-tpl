@@ -28,14 +28,7 @@ function matchRule<T = any>(
       return rules as Handler<T>
     case isFn(((rules as RegExp) || 0).test):
       return (rules as RegExp).test(key) ? isWhile : !isWhile
-    case isObj(rules):
-      rule = (rules as Records<T>)[key]
-      return rule
-        ? isFn(rule) || isObj(rule)
-          ? (rule as Handler<T> | Records<T>)
-          : isWhile
-        : !isWhile
-    default:
+    case Array.isArray(rules):
       for (rule of rules as (string | RegExp | Records<T>)[]) {
         if (rule === key) {
           return isWhile
@@ -50,6 +43,13 @@ function matchRule<T = any>(
         }
       }
       return !isWhile
+    default:
+      rule = ((rules as Records<T>) || 0)[key]
+      return rule
+        ? isFn(rule) || isObj(rule)
+          ? (rule as Handler<T> | Records<T>)
+          : isWhile
+        : !isWhile
   }
 }
 /** 去掉falsy属性/空对象/空数组拷贝
