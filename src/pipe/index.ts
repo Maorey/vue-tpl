@@ -1,73 +1,62 @@
 import { isObj, isFn, isBool, isString } from '@/utils'
 
-type handler<T = any> = (
+/** 过滤器 (返回{k,v}对象以替换, 非对象真值表示匹配) */
+type Handler<T = any> = (
   filteredValue: any,
-  attribute: string,
-  obj: T
-) => void | Falsy | { /** 键 */ k?: string; /** 值 */ v: any }
-interface Handler<T = any> {
-  /** filter: 返回对象更新key:value, 否则略过该属性 */
-  [key: string]: 1 | true | handler<T> | Rule<T>
-}
-/** 过滤规则 */
-export type Rule<T = any> = handler<T> | (string | Handler<T>)[] | Handler<T>
+  key: string,
+  object: T
+) => Falsy | true | 1 | { /** 键 */ k?: string; /** 值 */ v: any }
+/** 过滤器字典 除过滤规则外, 真值表示匹配 */
+type Records<T = any> = { [key: string]: Falsy | true | 1 | Rule<T> }
+/** 过滤规则, 应用匹配的规则 */
+export type Rule<T = any> = Handler<T> | Records<T> | string[]
 /** 模式 白名单/黑名单 */
 export type Mode = 'white' | 'black'
 
-function matchRule<T = any>(rules: Rule<T>, key: string, mode?: Mode) {
-  if (isFn(rules)) {
-    return rules
-  }
-
-  const isWhile = mode !== 'black'
+function matchRule<T = any>(rules: Rule<T>, key: string, isWhile?: boolean) {
   let rule
-  if (Array.isArray(rules)) {
-    for (rule of rules) {
-      if (isObj(rule)) {
-        if ((rule = rule[key])) {
-          return isWhile ? rule : isFn(rule) && rule
-        }
-      } else if (rule === key) {
-        return isWhile
-      }
-    }
-  } else if ((rule = rules[key])) {
-    return isWhile ? rule : isFn(rule) && rule
+  switch (true) {
+    case isFn(rules):
+      return rules
+    case isObj(rules):
+      rule = (rules as Records<T>)[key]
+      return rule ? (isFn(rule) || isObj(rule) ? rule : isWhile) : !isWhile
+    default:
+      return (rules as string[]).includes(key) ? isWhile : !isWhile
   }
-  return !isWhile
 }
 /** 去掉falsy属性/空对象/空数组拷贝
- * @param obj 目标对象/数组
+ * @param object 目标对象/数组
  * @param deep 是否深拷贝
  */
-function trim<T extends object>(obj: T, deep?: boolean): T
+function trim<T extends object>(object: T, deep?: boolean): T
 /** 去掉falsy属性/空对象/空数组拷贝
- * @param obj 目标对象/数组
+ * @param object 目标对象/数组
  * @param rules 自定义规则
  * @param deep 是否深拷贝
  * @param mode 模式 白名单(默认)/黑名单
  */
 function trim<T extends object>(
-  obj: T,
+  object: T,
   rules: Rule<T>,
   deep?: boolean,
   mode?: Mode
 ): T
 /** 去掉falsy属性/空对象/空数组拷贝
- * @param obj 目标对象/数组
+ * @param object 目标对象/数组
  * @param rules 自定义规则
  * @param mode 模式 白名单(默认)/黑名单
  * @param deep 是否深拷贝
  */
 function trim<T extends object>(
-  obj: T,
+  object: T,
   rules: Rule<T>,
   mode?: Mode,
   deep?: boolean
 ): T
-function trim(obj: any, rules?: any, mode?: any, deep?: any) {
-  if (!obj) {
-    return obj
+function trim(object: any, rules?: any, mode?: any, deep?: any) {
+  if (!object) {
+    return object
   }
 
   let temp
@@ -81,29 +70,40 @@ function trim(obj: any, rules?: any, mode?: any, deep?: any) {
     temp = 0
   }
 
-  const isArray = Array.isArray(obj)
+  const isWhile = mode !== 'black'
+  const isArray = Array.isArray(object)
   const result: any = isArray ? [] : {}
   let key
   let value
-  let isDeeped
-  for (key in obj) {
-    value = obj[key]
-    if (isArray || !rules ? value : (temp = matchRule(rules, key, mode))) {
-      isDeeped = deep && value && isObj(value)
-      isDeeped && (value = trim(value, isObj(temp) ? temp : rules, mode, deep))
-      if (isFn(temp)) {
-        if ((temp = temp(value, key, obj) as any)) {
-          result[isString(temp.k) ? temp.k : key] = temp.v
-          temp = 0
-        }
-      } else if (isDeeped && !temp) {
-        for (temp in value) {
+  for (key in object) {
+    value = object[key]
+    if (isArray || !rules ? value : (temp = matchRule(rules, key, isWhile))) {
+      deep &&
+        value &&
+        isObj(value) &&
+        (value = trim(value, isObj(temp) ? temp : rules, mode, deep))
+
+      if (temp) {
+        if (isFn(temp)) {
+          if ((temp = temp(value, key, object))) {
+            if (isObj(temp)) {
+              result[isString(temp.k) ? temp.k : key] = temp.v
+            } else if (isWhile) {
+              result[key] = value
+            }
+          }
+        } else {
           result[key] = value
+        }
+        temp = 0
+      } else if (value && isObj(value)) {
+        for (temp in value) {
+          isArray ? result.push(value) : (result[key] = value)
           temp = 0
           break
         }
       } else {
-        result[key] = value
+        isArray ? result.push(value) : (result[key] = value)
       }
     }
   }

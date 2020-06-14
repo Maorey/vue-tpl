@@ -215,8 +215,22 @@ function isPromise(value?: unknown): value is Promise<any> {
   return isDef(value) && isFn(value.then) && isFn(value.catch)
 }
 
-/** 比较值最大调用栈栈深度 */
-const maxEqualStack = 100
+/** 是否空对象/数组
+ * @test true
+ * @param value 对象或数组
+ */
+function isEmpty(value: object | any[]) {
+  if (value) {
+    let key
+    for (key in value) {
+      return true
+    }
+  }
+  return false
+}
+
+/** 比较值最大调用栈深度 */
+const maxEqualStack = 32
 /** 两个变量是否相等
  *
  * @test true
@@ -253,7 +267,7 @@ function isEqual(x?: any, y?: any, noRef?: boolean, deep?: number) {
       return false // 先比较Object.keys()长度不太划算
     }
 
-    const KEYS: IObject<1> = {}
+    const KEYS: { [key: string]: 1 } = {}
     for (noRef as any in x) {
       if (!(isEqual as any)(x[noRef as any], y[noRef as any], false, deep)) {
         return false
@@ -341,6 +355,7 @@ export {
   isReg,
   isDate,
   isPromise,
+  isEmpty,
   isEqual,
   isPassive,
 }

@@ -159,22 +159,20 @@ function request(
 
   cache = AXIOS.request(config)
     .then((res: any) => {
+      shouldCache &&
+        dataStore.set((config as any).key, res, (config as any).alive) // 设置缓存
       if ((config as any).$_) {
         res = (config as any).$_ // 自定义取消标记
         ;(config as any).$_ = 0 // 只取消一次
         throw res
       }
-
-      res.meta = config // 请求配置加到元数据
       requestQueue.remove((config as any).key) // 移除请求队列
-      shouldCache &&
-        dataStore.set((config as any).key, res, (config as any).alive) // 设置缓存
-
+      res.meta = config // 请求配置加到元数据
       return success(res)
     })
     .catch((res: any) => {
-      res.meta = config // 请求配置加到元数据
       requestQueue.remove((config as any).key) // 移除请求队列
+      res.meta = config // 请求配置加到元数据
       if (isCancel(res)) {
         throw res
       } else if ((config as any).$_) {

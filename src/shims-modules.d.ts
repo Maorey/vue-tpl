@@ -124,7 +124,7 @@ declare module 'worker-loader!*' {
 // declare module '@luma.gl/addons'
 declare module '*'
 
-declare type Falsy = false | 0 | 0n | '' | null | undefined // | NaN
+declare type Falsy = false | 0 | 0n | '' | null | undefined | void // | NaN
 /** 任意对象 */
 declare interface IObject<T = any> {
   [key: string]: T

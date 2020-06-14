@@ -71,7 +71,7 @@ export default {
       window.stop() // 停止加载资源
     } catch (error) {}
     let url
-    if (isString(open) || isBool(params)) {
+    if (isBool(params) || isString(open)) {
       url = params
       params = open
       open = url

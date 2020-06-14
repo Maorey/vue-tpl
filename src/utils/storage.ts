@@ -84,7 +84,7 @@ class Memory {
     compareMode?: CompareMode | number
   ): T | IPool | undefined {
     let item
-    if (isNumber(compareMode) || isString(operation)) {
+    if (isString(operation) || isNumber(compareMode)) {
       item = operation
       operation = compareMode as number | undefined
       compareMode = item as CompareMode
@@ -148,7 +148,7 @@ class Memory {
     compareMode?: CompareMode | number
   ): T {
     let item
-    if (isNumber(compareMode) || isString(expires)) {
+    if (isString(expires) || isNumber(compareMode)) {
       item = expires
       expires = compareMode as number | undefined
       compareMode = item as CompareMode
