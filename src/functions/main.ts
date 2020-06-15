@@ -1,7 +1,7 @@
 /** 入口挂载公共逻辑, 手工控制入口大小 */
 import Vue from 'vue'
 import { Store } from 'vuex'
-import Router, { RouteRecord, RawLocation, RouteConfig } from 'vue-router'
+import Router, { RouteRecord } from 'vue-router'
 
 import { isString } from '@/utils'
 import { on, off, once, emit } from '@/utils/eventBus'
@@ -9,7 +9,7 @@ import { fit, has } from '@/functions/auth'
 import { GLOBAL } from '@/enums/events'
 // import { throttle } from '@/utils/performance'
 import { dev } from '@/libs/vue'
-import { resolveUrl } from './router'
+import { RawLocation } from './router'
 
 import '@/libs/components/junior'
 import '@/libs/components/senior'
@@ -44,17 +44,6 @@ function emitErrorhandler(this: Vue, err: Error, event: string) {
   this.$emit('hook:errorCaptured', err, this, 'emit:' + event)
 }
 
-function getPathById(router: Router, id: string) {
-  const routes = (router as any).options.routes as RouteConfig[]
-  let route
-  for (route of routes) {
-    if (id === route.meta.id) {
-      return route.path
-    }
-  }
-  return ''
-}
-
 function routerEnvironment(proto: any, router: Router) {
   /// 鉴权(指令就没必要了) ///
   proto.authFit = fit
@@ -70,15 +59,15 @@ function routerEnvironment(proto: any, router: Router) {
         '(' + parent.regex.source.replace('(?:\\/(?=$))?$', ')(?:/)?'),
         'i'
       ).exec(route.fullPath)
-      if (result) {
-        router.push((refresh ? '/r' : '') + result[1])
+      if (result && result[1] !== route.path) {
+        router.push(result[1] + (refresh ? '/r/' : ''))
       } else {
         router.resolve(parent.path).route.matched.length
-          ? router.push((refresh ? '/r' : '') + parent.path)
+          ? router.push(parent.path + (refresh ? '/r/' : ''))
           : router.back()
       }
     } else {
-      router.push(refresh ? '/r/' : '/')
+      router.push(refresh || route.path === '/' ? '/r/' : '/')
     }
   }
   proto.jump = (
@@ -92,15 +81,20 @@ function routerEnvironment(proto: any, router: Router) {
     }
   ) => {
     options || (options = {})
-    const path = options.id && getPathById(router, options.id)
+    if (options.id || options.refresh) {
+      if (isString(location)) {
+        location = {
+          id: options.id,
+          path: location,
+          refresh: options.refresh,
+        }
+      } else {
+        location.id = options.id
+        location.refresh = options.refresh
+      }
+    }
     return router[options.replace ? 'replace' : 'push'](
-      path || options.refresh
-        ? resolveUrl(
-          path || router.currentRoute.path,
-          location,
-          options.refresh
-        )
-        : location,
+      location,
       options.onComplete,
       options.onAbort
     )

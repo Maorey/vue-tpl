@@ -1,9 +1,9 @@
 /** 鉴权 */
 import Vue from 'vue'
 
+import { trim } from '@/pipe'
 import { STORAGE } from '@/enums'
 import { hasOwn, isObj } from '@/utils'
-import { Rule } from '@/pipe'
 import { local } from '@/utils/storage'
 
 import { Login } from '@/api/authServer/user'
@@ -40,65 +40,73 @@ export interface Auth extends Menu {
 const AUTH = (local.get(STORAGE.auth, decode) || {}) as Auth
 AUTH.AUTH || (AUTH.AUTH = {})
 
-const trim = (v: any) => v && { v }
-/** 权限信息过滤规则 */
-const rule: Rule = {
-  childInfo(v: string) {
-    try {
-      v = JSON.parse(v)
-    } catch (error) {
-      return
-    }
-    return v && { k: 'child', v }
-  },
-  children: (v: any) => v && v.length && { v },
-  description: (v: string) => v && { k: 'desc', v },
-  elementList(filteredValue: any, obj: any) {
-    if (!filteredValue || !filteredValue.length) {
-      return
-    }
-
-    const auth = AUTH.AUTH
-    let element
-    let temp
-    for (element of filteredValue) {
-      temp = auth[obj.menuCode] || (auth[obj.menuCode] = {})
-      temp[element.elementCode] = 1
-    }
-  },
-  elementCode: trim,
-  icon: trim,
-  menuCode: (v: string) => v && { k: 'id', v },
-  path: trim,
-  rootNode: (v: any) => v && { k: 'hide', v },
-  title: trim,
-}
-
 /** 重建菜单树 */
-function rebuild(menu: any) {
+function restructure(menu: any): any {
   // 深度优先
   const children = menu.children
   let index = (children && children.length) as number
   let child
   let cLen
   while (index--) {
-    child = children[index]
+    child = (children as any[])[index]
     if ((cLen = child.children?.length)) {
       if (child.rootNode) {
         if (child.menuCode) {
-          children.splice(index - 1, 0, ...child.children)
+          ;(children as any[]).splice(index - 1, 0, ...child.children)
           index += cLen
           delete child.children
         } else {
-          children.splice(index, 1, ...child.children)
+          ;(children as any[]).splice(index, 1, ...child.children)
           index += cLen - 1
         }
-        child = children[index]
+        child = (children as any[])[index]
       }
-      rebuild(child)
+      restructure(child)
     }
   }
   return menu
+}
+
+/** 重建权限信息 */
+function rebuild(menu: any) {
+  const remove = (v: any) => v && { v }
+  menu = trim(
+    restructure(menu),
+    {
+      childInfo(v: string) {
+        try {
+          v = JSON.parse(v)
+        } catch (error) {
+          return
+        }
+        return v && { k: 'child', v }
+      },
+      children: (v: any) => v && v.length && { v },
+      description: (v: string) => v && { k: 'desc', v },
+      elementList(filteredValue: any, key: string, obj: any) {
+        if (!filteredValue || !filteredValue.length) {
+          return
+        }
+
+        const auth = AUTH.AUTH
+        let element
+        for (element of filteredValue) {
+          ;(auth[obj.menuCode] || (auth[obj.menuCode] = {}))[
+            element.elementCode
+          ] = 1
+        }
+      },
+      elementCode: remove,
+      icon: remove,
+      menuCode: (v: string) => v && { k: 'id', v },
+      path: remove,
+      rootNode: (v: any) => v && { k: 'hide', v },
+      title: remove,
+    },
+    true
+  )
+  ;(menu as any).AUTH = AUTH.AUTH
+  return menu as Auth
 }
 
 /** 根据id获取权限信息 */
@@ -248,7 +256,6 @@ function has(this: Vue) {
 
 export {
   AUTH,
-  rule,
   rebuild,
   getById,
   siblings,

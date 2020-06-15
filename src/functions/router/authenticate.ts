@@ -75,7 +75,9 @@ export default (config: RouterOptions) => {
         if (id === meta.id) {
           auth.path = route.path = auth.path || route.path || getKey('/')
           meta.title = auth.title
-          META.home || (META.home = auth.path)
+          auth.path === '/'
+            ? (META.home = '/')
+            : META.home || (META.home = auth.path)
 
           filterChildren(route, auth.child)
           filteredRoutes.push(route)

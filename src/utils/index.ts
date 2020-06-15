@@ -216,17 +216,16 @@ function isPromise(value?: unknown): value is Promise<any> {
 }
 
 /** 是否空对象/数组
- * @test true
  * @param value 对象或数组
  */
 function isEmpty(value: object | any[]) {
   if (value) {
     let key
     for (key in value) {
-      return true
+      return false
     }
   }
-  return false
+  return true
 }
 
 /** 比较值最大调用栈深度 */

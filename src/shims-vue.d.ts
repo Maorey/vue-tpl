@@ -1,9 +1,9 @@
 /* vue 扩展申明 */
 
 import { VNode } from 'vue'
-import { RawLocation } from 'vue-router'
 import { on, off, once, emit } from '@/utils/eventBus'
 import { fit, has } from '@/functions/auth'
+import { RawLocation } from '@/functions/router'
 
 type type = 'success' | 'warning' | 'info' | 'error'
 type action = 'confirm' | 'cancel' | 'close'
@@ -156,6 +156,7 @@ declare module 'vue/types/vue' {
       options?: {
         id?: string
         replace?: boolean
+        refresh?: boolean
         onComplete?: Function
         onAbort?: (err: Error) => void
       }

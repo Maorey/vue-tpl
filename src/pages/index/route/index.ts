@@ -17,6 +17,8 @@ export default {
     return to.hash ? { selector: to.hash } : savedPosition
   },
   routes: [
+    home({ id: '0', name: '首页', thumb: IMG_HOME }),
+    about({ id: '1', name: '关于', thumb: IMG_ABOUT }),
     // 子站跳转
     {
       path: '/other',
@@ -25,7 +27,5 @@ export default {
         CONF.g(SPA.other)
       },
     },
-    home({ id: '0', name: '首页', thumb: IMG_HOME }),
-    about({ id: '1', name: '关于', thumb: IMG_ABOUT }),
   ],
 } as RouterOptions

@@ -14,6 +14,8 @@ export default {
     return to.hash ? { selector: to.hash } : savedPosition
   },
   routes: [
+    home({ id: '0', name: '首页' }),
+    about({ id: '1', name: '关于' }),
     // 子站跳转
     {
       path: '/index',
@@ -22,7 +24,5 @@ export default {
         CONF.g(SPA.index)
       },
     },
-    home({ id: '0', name: '首页' }),
-    about({ id: '1', name: '关于' }),
   ],
 } as RouterOptions

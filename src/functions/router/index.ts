@@ -1,12 +1,6 @@
 /** 路由公共逻辑 */
 import Vue from 'vue'
-import Router, {
-  Route,
-  RouterOptions,
-  RouteConfig,
-  RawLocation,
-  Location,
-} from 'vue-router'
+import Router, { Route, RouterOptions, RouteConfig, Location } from 'vue-router'
 
 import { isString } from '@/utils'
 import authenticate from './authenticate'
@@ -38,6 +32,16 @@ declare global {
     meta: RouteMeta
   }
 }
+
+/** 跳转地址对象 */
+export interface ILocation extends Location {
+  /** 模块id */
+  id?: string
+  /** 是否刷新 */
+  refresh?: boolean
+}
+/** 跳转地址 */
+export type RawLocation = string | ILocation
 
 function upper(path: string) {
   return path && path.substring(0, path.lastIndexOf('/'))
@@ -93,7 +97,7 @@ export function resolveUrl<T = RawLocation>(
     : (location as Location).path) as string
 
   if (!relativePath || relativePath[0] === '/') {
-    if (refresh) {
+    if (refresh || (location as any).refresh) {
       relativePath = '/r/' + (relativePath || path)
       if (isStr) {
         location = (relativePath as any) as T
@@ -107,7 +111,7 @@ export function resolveUrl<T = RawLocation>(
   relativePath = REG_URL.exec(relativePath) as RegExpExecArray
   relativePath =
     resolveRelativePath(path, relativePath[1], (location as Location).append) +
-    (refresh ? '/r/' : '') +
+    (refresh || (location as any).refresh ? '/r/' : '') +
     (relativePath[2] || '')
 
   if (isStr) {
@@ -124,23 +128,42 @@ export default (config: RouterOptions, authority?: boolean) => {
 
   const router = new Router(config)
 
+  function getPathById(id?: string) {
+    if (id) {
+      const routes = config.routes as RouteConfig[]
+      let route
+      for (route of routes) {
+        if (id === route.meta.id) {
+          return route.path
+        }
+      }
+    }
+    return ''
+  }
+
   // 相对路径支持 '' './' '../'
   const originPush = router.push
   router.push = (function(this: any, location: RawLocation) {
-    arguments[0] = resolveUrl(router.currentRoute.path, location)
+    arguments[0] = resolveUrl(
+      getPathById((location as ILocation).id) || router.currentRoute.path,
+      location
+    )
     return originPush.apply(this, arguments as any)
   } as any) as typeof originPush
 
   const originReplace = router.replace
   router.replace = (function(this: any, location: RawLocation) {
-    arguments[0] = resolveUrl(router.currentRoute.path, location)
+    arguments[0] = resolveUrl(
+      getPathById((location as ILocation).id) || router.currentRoute.path,
+      location
+    )
     return originReplace.apply(this, arguments as any)
   } as any) as typeof originReplace
 
   const originResolve = router.resolve
   router.resolve = (function(this: any, location: RawLocation) {
     arguments[0] = resolveUrl(
-      router.currentRoute.path,
+      getPathById((location as ILocation).id) || router.currentRoute.path,
       arguments[2]
         ? isString(location)
           ? { path: location, append: true }
