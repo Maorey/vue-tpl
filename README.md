@@ -218,7 +218,6 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 - 偶现 `tsconfig.json` 被清空
 - `@typescript-eslint` 升级到 v3 (ESLint v7 & TypeScript v3.9+ 完整支持)
-- 复杂路由返回上级, 比如: `/foo/:bar/:id`
 - 图标概率乱码: `scss` 压缩模式下 (compressed mode) 使用 UTF-8 byte order mark (UTF-8 with BOM) 代替 @charset 声明语句导致, 暂时先使用 css `import 'element-ui/lib/theme-chalk/base.css'`
 
 ## 说明及注意事项

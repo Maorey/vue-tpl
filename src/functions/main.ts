@@ -15,6 +15,7 @@ import '@/libs/components/junior'
 import '@/libs/components/senior'
 
 /// 全局样式(使用全局皮肤 src/skin) ///
+import '@/scss/icon.css' // 项目字体
 import 'element-ui/lib/theme-chalk/base.css' // element-ui字体+过渡动画
 import '@/scss/base.scss?skin=' // 基础样式
 import '@/libs/components/junior.scss'

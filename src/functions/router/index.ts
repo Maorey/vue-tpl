@@ -98,14 +98,17 @@ export function resolveUrl<T = RawLocation>(
 
   if (!relativePath || relativePath[0] === '/') {
     if (refresh || (location as any).refresh) {
-      relativePath = '/r/' + (relativePath || path)
-      if (isStr) {
-        location = (relativePath as any) as T
-      } else {
-        ;(location as Location).path = relativePath
-      }
+      relativePath = '/r' + (relativePath || path)
+      return isStr
+        ? ((relativePath as any) as T)
+        : (((location as Location).path = relativePath), location)
     }
-    return location
+
+    return isStr
+      ? location || path
+      : (location as Location).path
+        ? location
+        : (((location as Location).path = path), location)
   }
 
   relativePath = REG_URL.exec(relativePath) as RegExpExecArray
@@ -128,11 +131,11 @@ export default (config: RouterOptions, authority?: boolean) => {
 
   const router = new Router(config)
 
+  config = (router as any).options.routes
   function getPathById(id?: string) {
     if (id) {
-      const routes = config.routes as RouteConfig[]
       let route
-      for (route of routes) {
+      for (route of config as any) {
         if (id === route.meta.id) {
           return route.path
         }
@@ -143,25 +146,28 @@ export default (config: RouterOptions, authority?: boolean) => {
 
   // 相对路径支持 '' './' '../'
   const originPush = router.push
-  router.push = (function(this: any, location: RawLocation) {
+  router.push = (function(this: any) {
+    const location = arguments[0]
     arguments[0] = resolveUrl(
-      getPathById((location as ILocation).id) || router.currentRoute.path,
+      getPathById((location || 0).id) || router.currentRoute.path,
       location
     )
     return originPush.apply(this, arguments as any)
   } as any) as typeof originPush
 
   const originReplace = router.replace
-  router.replace = (function(this: any, location: RawLocation) {
+  router.replace = (function(this: any) {
+    const location = arguments[0]
     arguments[0] = resolveUrl(
-      getPathById((location as ILocation).id) || router.currentRoute.path,
+      getPathById((location || 0).id) || router.currentRoute.path,
       location
     )
     return originReplace.apply(this, arguments as any)
   } as any) as typeof originReplace
 
   const originResolve = router.resolve
-  router.resolve = (function(this: any, location: RawLocation) {
+  router.resolve = (function(this: any) {
+    const location = arguments[0]
     arguments[0] = resolveUrl(
       getPathById((location as ILocation).id) || router.currentRoute.path,
       arguments[2]

@@ -14,11 +14,11 @@ import md5 from 'crypto-js/md5'
 
 /** 用户登录相关接口 */
 export const enum API {
-  /** 获取登陆验证码 */
+  /** 获取登录验证码 */
   verify = 'verify',
-  /** 用户登陆 */
+  /** 用户登录 */
   login = 'login',
-  /** 用户注销登陆 */
+  /** 用户注销登录 */
   logout = 'logout',
 }
 
@@ -36,7 +36,7 @@ function getVerify() {
   })
 }
 
-/** 登陆表单
+/** 登录表单
  */
 export interface Login {
   verify: string
@@ -44,8 +44,8 @@ export interface Login {
   password: string
   remember: boolean
 }
-/** 登陆
- * @param {Login} formData 登陆表单
+/** 登录
+ * @param {Login} formData 登录表单
  *
  * @returns {Promise}
  */
