@@ -1,6 +1,13 @@
-<!-- 彩色图标 -->
+<!-- 彩色/图片图标 -->
 <template>
+  <img
+    v-if="imgIcon"
+    :width="size"
+    :height="size"
+    :src="imgIcon"
+  >
   <svg
+    v-else-if="icon"
     :class="$style.icon"
     :style="style"
   >
@@ -11,7 +18,7 @@
 <script lang="ts">
 // @ts-nocheck
 /// import 顺序: 依赖库/vue组件/其他/CSS Module
-import '@/scss/font/iconfont.min'
+import(/* webpackChunkName: "icon" */ '@/scss/font/iconfont.min')
 
 /// 常量(UPPER_CASE), 单例/变量(camelCase), 函数(无副作用,camelCase)
 const REG_NUM = /\s*([\d.]+)(\w+)/
@@ -25,8 +32,10 @@ export default {
   ///      beforeCreate/created/beforeMount/mounted/beforeUpdate/updated
   ///      activated/deactivated/beforeDestroy/destroyed/errorCaptured
   props: {
-    /** 图标 */
+    /** 字体图标, 与imgIcon(优先)二选一 */
     icon: { type: String, default: '' },
+    /** 图片图标(svg/png...) */
+    imgIcon: { type: String, default: '' },
     /** 字体大小 */
     size: { type: String, default: '' },
   },

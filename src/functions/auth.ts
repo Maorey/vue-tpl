@@ -70,6 +70,7 @@ function restructure(menu: any): any {
 /** 重建权限信息 */
 function rebuild(menu: any) {
   const remove = (v: any) => v && { v }
+  const auth: { [key: string]: { [key: string]: 1 } } = {}
   menu = trim(
     restructure(menu),
     {
@@ -88,7 +89,6 @@ function rebuild(menu: any) {
           return
         }
 
-        const auth = AUTH.AUTH
         let element
         for (element of filteredValue) {
           ;(auth[obj.menuCode] || (auth[obj.menuCode] = {}))[
@@ -105,7 +105,7 @@ function rebuild(menu: any) {
     },
     true
   )
-  ;(menu as any).AUTH = AUTH.AUTH
+  ;(menu as any).AUTH = auth
   return menu as Auth
 }
 
