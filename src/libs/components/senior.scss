@@ -47,6 +47,20 @@
 .el-form-item .el-form-item {
   margin-top: $gapNormal / 2;
 }
+// inline form
+.el-form.el-form--inline {
+  .el-form-item__label {
+    width: 125px;
+  }
+
+  .el-form-item__content {
+    margin: 0 $gapNormal $gapNormal / 2 0;
+
+    .el-input {
+      width: 220px;
+    }
+  }
+}
 
 // 滚动条
 .el-scrollbar > .el-scrollbar__bar {

@@ -8,11 +8,12 @@ import router from './router'
 import store from './store'
 import App from './App'
 
-import { SPA } from '@/config'
+import CONF, { SPA } from '@/config'
 import CONFIG from './config'
 import mount from '@/functions/main'
 import { setBase } from '@/utils/ajax'
 import './registerServiceWorker'
 
 setBase(CONFIG.baseUrl)
+Object.assign(CONF, CONFIG)
 mount(SPA.other, App, router, store)

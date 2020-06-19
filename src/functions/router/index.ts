@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Router, { Route, RouterOptions, RouteConfig, Location } from 'vue-router'
 
+import CONFIG, { SPA } from '@/config'
 import { isString } from '@/utils'
 import authenticate from './authenticate'
 import routerGuards from './routerGuards'
@@ -37,6 +38,8 @@ declare global {
 export interface ILocation extends Location {
   /** 模块id */
   id?: string
+  /** 目标SPA */
+  SPA?: SPA
   /** 是否刷新 */
   refresh?: boolean
 }
@@ -152,6 +155,7 @@ export default (config: RouterOptions, authority?: boolean) => {
       getPathById((location || 0).id) || router.currentRoute.path,
       location
     )
+    ;(location || 0).SPA && CONFIG.g((location || 0).SPA, (arguments[0] || 0).path)
     return originPush.apply(this, arguments as any)
   } as any) as typeof originPush
 
@@ -162,6 +166,7 @@ export default (config: RouterOptions, authority?: boolean) => {
       getPathById((location || 0).id) || router.currentRoute.path,
       location
     )
+    ;(location || 0).SPA && CONFIG.g((location || 0).SPA, arguments[0])
     return originReplace.apply(this, arguments as any)
   } as any) as typeof originReplace
 
@@ -169,7 +174,7 @@ export default (config: RouterOptions, authority?: boolean) => {
   router.resolve = (function(this: any) {
     const location = arguments[0]
     arguments[0] = resolveUrl(
-      getPathById((location as ILocation).id) || router.currentRoute.path,
+      getPathById((location as ILocation || 0).id) || router.currentRoute.path,
       arguments[2]
         ? isString(location)
           ? { path: location, append: true }

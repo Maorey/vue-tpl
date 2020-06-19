@@ -3,6 +3,7 @@ import Vue from 'vue'
 import { Store } from 'vuex'
 import Router, { RouteRecord } from 'vue-router'
 
+import CONFIG, { SPA } from '@/config'
 import { isString } from '@/utils'
 import { on, off, once, emit } from '@/utils/eventBus'
 import { fit, has } from '@/functions/auth'
@@ -75,6 +76,7 @@ function routerEnvironment(proto: any, router: Router) {
     location: RawLocation,
     options?: {
       id?: string
+      SPA?: SPA
       refresh?: boolean
       replace?: boolean
       onComplete?: Function
@@ -82,15 +84,17 @@ function routerEnvironment(proto: any, router: Router) {
     }
   ) => {
     options || (options = {})
-    if (options.id || options.refresh) {
+    if (options.id || options.refresh || options.SPA) {
       if (isString(location)) {
         location = {
           id: options.id,
+          SPA: options.SPA,
           path: location,
           refresh: options.refresh,
         }
       } else {
         location.id = options.id
+        location.SPA = options.SPA
         location.refresh = options.refresh
       }
     }
@@ -122,6 +126,8 @@ function routerEnvironment(proto: any, router: Router) {
 function inject(proto: any, id: string, router?: Router) {
   /// 标识 ///
   proto._$SPA = id
+  /// 全局配置 ///
+  proto.CONFIG = CONFIG
   /// 消息总线  ///
   proto.on = on
   proto.off = off
@@ -141,6 +147,8 @@ function inject(proto: any, id: string, router?: Router) {
   })
   /// 路由环境 ///
   router && routerEnvironment(proto, router)
+  /// 全局配置 ///
+  proto.CONFIG = CONFIG
 }
 
 export default <T>(id: string, App: any, router?: Router, store?: Store<T>) => {

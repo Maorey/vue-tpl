@@ -1,6 +1,7 @@
 /* vue 扩展申明 */
 
 import { VNode } from 'vue'
+import CONFIG, { SPA } from '@/config'
 import { on, off, once, emit } from '@/utils/eventBus'
 import { fit, has } from '@/functions/auth'
 import { RawLocation } from '@/functions/router'
@@ -111,6 +112,8 @@ declare module 'vue/types/vue' {
   interface Vue {
     /** 当前SPA */
     _$SPA: string
+    /** 全局配置 */
+    CONFIG: typeof CONFIG
     /** .vue <style module> class名字典计算属性 */
     $style: IObject<string>
     /** [消息总线]监听事件 */
@@ -145,6 +148,7 @@ declare module 'vue/types/vue' {
      * @param options 选项
      *  {
      *    id?: string 目标菜单模块唯一标识
+     *    SPA?: SPA 跳转目标SPA
      *    refresh?: boolean 是否刷新
      *    replace?: boolean 使用 router.replace 默认:router.push
      *    onComplete?: 同 router.replace/router.push
@@ -155,6 +159,7 @@ declare module 'vue/types/vue' {
       location: RawLocation,
       options?: {
         id?: string
+        SPA?: SPA
         replace?: boolean
         refresh?: boolean
         onComplete?: Function
