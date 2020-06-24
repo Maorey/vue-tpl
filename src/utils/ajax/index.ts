@@ -99,7 +99,7 @@ function setHEAD(
  */
 function getUri(url: string, query?: IObject) {
   return combineURLs(
-    AXIOS.defaults.baseURL,
+    AXIOS.defaults.baseURL || '',
     AXIOS.getUri({
       url,
       params: SEARCH ? Object.assign(query || {}, SEARCH) : query,

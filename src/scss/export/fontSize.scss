@@ -1,0 +1,12 @@
+/** 字号 */
+:export {
+  smaller: $smaller;
+  small: $small;
+  medium: $medium;
+  larger: $larger;
+  large: $large;
+  xLarge: $xLarge;
+  xxLarge: $xxLarge;
+  xxxLarge: $xxxLarge;
+  xxxxLarge: $xLarge * 2;
+}

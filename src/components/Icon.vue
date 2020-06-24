@@ -6,7 +6,7 @@ import Vue, { CreateElement } from 'vue'
 
 /// 常量(UPPER_CASE), 单例/变量(camelCase), 函数(无副作用,camelCase)
 const REG_NUM = /\s*([\d.]+)(\w+)/
-const loadingStatus = Vue.observable({ state: 0 })
+const loadingState = Vue.observable({ value: 0 })
 import(/* webpackChunkName: "icon" */ '@/scss/font/fonts')
   .then(res => {
     const container = document.createElement('i')
@@ -14,15 +14,13 @@ import(/* webpackChunkName: "icon" */ '@/scss/font/fonts')
       '<svg aria-hidden=true style=position:absolute;width:0;height:0;overflow:hidden>' +
       res.default +
       '</svg>'
-    res.default = null
-    document.querySelector('html').appendChild(container.firstChild)
-    setTimeout(() => {
-      loadingStatus.state = 1
-    })
+    res.default = ''
+    document.querySelector('html').insertBefore(container.firstChild, document.body)
+    loadingState.value = 1
   })
   .catch(err => {
     console.error(err)
-    loadingStatus.state = 2
+    loadingState.value = 2
   })
 
 function isSymbol(id: string) {
@@ -70,10 +68,11 @@ export default {
   // see: https://github.com/vuejs/jsx
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   render(h: CreateElement) {
+    const size = this.size
     const STYLE = this.$style
+
     const imgIcon = this.imgIcon
     if (imgIcon) {
-      const size = this.size
       return (
         <img
           width={size}
@@ -85,22 +84,23 @@ export default {
     }
 
     let icon = this.icon
-    if (isSymbol(icon)) {
-      switch (loadingStatus.state) {
-        case 1:
-          return (
-            <svg class={STYLE.svg + ' ' + STYLE.i} style={this.style}>
-              {h('use', { attrs: { 'xlink:href': '#' + icon } })}
-            </svg>
-          )
-        case 2:
+    switch (loadingState.value) {
+      case 1:
+        if (isSymbol(icon)) {
+          return (<svg class={STYLE.svg + ' ' + STYLE.i} style={this.style}>
+            {h('use', { attrs: { 'xlink:href': '#' + icon } })}
+          </svg>)
+        }
+        break
+      case 2:
+        if (isSymbol(icon)) {
           return
-        default:
-          icon = 'el-icon-loading'
-      }
+        }
+        break
+      default:
+        icon = 'el-icon-loading'
     }
-
-    return <i class={icon + ' ' + STYLE.i} style={'font-size:' + this.size} />
+    return <i class={icon + ' ' + STYLE.i} style={'font-size:' + size} />
   },
 }
 </script>

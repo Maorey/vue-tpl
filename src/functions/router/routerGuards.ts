@@ -58,7 +58,7 @@ export default (router: Router) => {
       }
     }
 
-    // 没实例(已经渲染了,劫持render也没用) 刷她爸爸/整个网页
+    // 没实例(已经渲染了, 劫持render也没用) 刷她爸爸/整个网页
     instance ||
       ((temp = (route as any).parent) // eslint-disable-line no-cond-assign
         ? refreshRoute(temp, noTop)
@@ -87,7 +87,7 @@ export default (router: Router) => {
         }
 
         if ((to = router.resolve(temp).route).matched.length) {
-          refreshRoute(to, 1)
+          to.meta.reload = 1
           return next(to as Location) // 还是会再进一次beforeEach ┐(: ´ ゞ｀)┌
         }
       }
@@ -112,29 +112,27 @@ export default (router: Router) => {
     if ((temp = to.meta).alive <= 0) {
       refreshRoute(to, 1)
     } else {
-      if (temp.reload) {
-        refreshRoute(to, 1)
-        temp.reload = 0
-      }
-
+      temp.reload && refreshRoute(to, 1)
       if (temp.t) {
         clearTimeout(temp.t)
         temp.t = 0
       }
-      if (!((temp = from.meta.alive) <= 0)) {
+      if (!(from.meta.alive <= 0)) {
         from.meta.t = setTimeout(() => {
           from.meta.reload = 1
-        }, temp || CONFIG.pageAlive)
+        }, from.meta.alive || CONFIG.pageAlive)
       }
     }
 
     // 关闭所有提示
-    temp = router.app
-    try {
-      temp.$message.closeAll()
-      temp.$notify.closeAll()
-      temp.$msgbox.close()
-    } catch (error) {}
+    if ((!temp.reload || (temp.reload = 0)) && from.matched.length) {
+      temp = router.app
+      try {
+        temp.$message.closeAll()
+        temp.$notify.closeAll()
+        temp.$msgbox.close()
+      } catch (error) {}
+    }
 
     // 为每个路由对应的组件添加 props:route (路由配置props只允许对象 不然报错给你看)
     if ((temp = to.matched) && (temp = temp[temp.length - 1])) {

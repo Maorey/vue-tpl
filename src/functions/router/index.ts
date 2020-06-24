@@ -4,6 +4,7 @@ import Router, { Route, RouterOptions, RouteConfig, Location } from 'vue-router'
 
 import CONFIG, { SPA } from '@/config'
 import { isString } from '@/utils'
+import { getById } from '../auth'
 import authenticate from './authenticate'
 import routerGuards from './routerGuards'
 
@@ -134,28 +135,17 @@ export default (config: RouterOptions, authority?: boolean) => {
 
   const router = new Router(config)
 
-  config = (router as any).options.routes
-  function getPathById(id?: string) {
-    if (id) {
-      let route
-      for (route of config as any) {
-        if (id === route.meta.id) {
-          return route.path
-        }
-      }
-    }
-    return ''
-  }
-
   // 相对路径支持 '' './' '../'
   const originPush = router.push
   router.push = (function(this: any) {
     const location = arguments[0]
     arguments[0] = resolveUrl(
-      getPathById((location || 0).id) || router.currentRoute.path,
+      ((location || 0).id && (getById((location || 0).id) || {}).path) ||
+        router.currentRoute.path,
       location
     )
-    ;(location || 0).SPA && CONFIG.g((location || 0).SPA, (arguments[0] || 0).path)
+    ;(location || 0).SPA &&
+      CONFIG.g((location || 0).SPA, (arguments[0] || 0).path)
     return originPush.apply(this, arguments as any)
   } as any) as typeof originPush
 
@@ -163,7 +153,8 @@ export default (config: RouterOptions, authority?: boolean) => {
   router.replace = (function(this: any) {
     const location = arguments[0]
     arguments[0] = resolveUrl(
-      getPathById((location || 0).id) || router.currentRoute.path,
+      ((location || 0).id && (getById((location || 0).id) || {}).path) ||
+        router.currentRoute.path,
       location
     )
     ;(location || 0).SPA && CONFIG.g((location || 0).SPA, arguments[0])
@@ -174,7 +165,8 @@ export default (config: RouterOptions, authority?: boolean) => {
   router.resolve = (function(this: any) {
     const location = arguments[0]
     arguments[0] = resolveUrl(
-      getPathById((location as ILocation || 0).id) || router.currentRoute.path,
+      ((location || 0).id && (getById((location || 0).id) || {}).path) ||
+        router.currentRoute.path,
       arguments[2]
         ? isString(location)
           ? { path: location, append: true }

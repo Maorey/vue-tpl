@@ -12,6 +12,8 @@ describe('@/utils/formatNumber: 格式化数字', () => {
   })
   it('formatNumber 指定小数位数格式化', () => {
     expect(formatNumber(1234567890.9876, 2)).toBe('1,234,567,890.99')
+    expect(formatNumber(0, 1)).toBe('0.0')
+    expect(formatNumber(1234567890, 2)).toBe('1,234,567,890.00')
   })
   it('formatNumber 指定单位格式化', () => {
     expect(formatNumber(1234567890.9876, '万')).toBe('1,234,567,890.9876万')

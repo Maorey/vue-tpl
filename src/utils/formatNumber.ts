@@ -67,6 +67,8 @@ export default function(
         decimal = decimal.replace('0.', '.')
       }
     }
+  } else if (!isNaN(digit as number)) {
+    decimal = (0).toFixed(2).substring(1)
   }
 
   // 每三位加逗号

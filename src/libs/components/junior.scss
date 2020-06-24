@@ -23,18 +23,19 @@
 // 通知
 .el-notification {
   position: fixed;
-  z-index: $zFixed !important;
+  z-index: $zInfo !important;
   margin-top: $heightHeader;
 }
 // loading & 遮罩
 .v-modal,
 .el-loading-mask {
   z-index: $zFixed !important;
-  background-color: rgba($colorBackGround, 0.9);
+  background-color: rgba($colorBackGround, 0.6);
 }
 // 弹窗
 .el-dialog__wrapper {
   z-index: $zInfo !important;
+  background-color: rgba($colorBackGround, 0.6);
 }
 // 对话框
 .el-message-box__wrapper {
