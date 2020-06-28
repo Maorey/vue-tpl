@@ -231,7 +231,7 @@ interface Setter {
 /** 本地存储 */
 const STORAGE = window.localStorage
 const ALIVE = 100 * 1000 // 防可能的内存溢出
-const SEPARATOR = String.fromCharCode(0)
+const SEPARATOR = String.fromCharCode(9) // 0及控制字符等 IE 有问题
 const REG_TIMESPAN = new RegExp(`^(\\d+)${SEPARATOR}([\\d\\D]+)$`)
 let CACHE: IObject<{ k?: number; v?: any; e?: number | null } | 0> = {}
 /** 本地存储 (localStorage 单例)

@@ -23,7 +23,7 @@ export type filter = (
 ) => string | Component | void
 
 /** 根据is属性选择组件 */
-const filterByIS: filter = context => context.props.is || context.data.attrs?.is
+const filterByBe: filter = context => context.props.be || context.data.attrs?.be
 
 /** 获取选择器(函数式组件)
  * @param {IObject<Component>} components 组件字典
@@ -33,7 +33,7 @@ const filterByIS: filter = context => context.props.is || context.data.attrs?.is
  */
 function getChooser(
   components?: IObject<Component>,
-  filter: filter = filterByIS
+  filter: filter = filterByBe
 ): Component {
   return {
     functional: true,
@@ -53,7 +53,7 @@ function getChooser(
 const Chooser: Component = {
   functional: true,
   render(h, context) {
-    const { components, filter = filterByIS } = context.props as {
+    const { components, filter = filterByBe } = context.props as {
       components?: IObject<Component>
       filter?: filter
     }
@@ -213,7 +213,7 @@ function getAsync(
 <template>
   <Transition name="fade">
     <KeepAlive>
-      <Chooser :is="is" :type="type"/>
+      <Chooser :be="be" :type="type"/>
     </KeepAlive>
   </Transition>
 </template>
@@ -236,7 +236,7 @@ const Chooser = getChooser({
 
 @Component({ components: { Chooser } })
 export default class extends Vue {
-  get is() {
+  get be() {
     return 'B'
   }
   get type() {
@@ -266,7 +266,7 @@ export default class extends Vue {}
 <template>
   <Transition name="fade">
     <KeepAlive>
-      <Chooser :is="is"/>
+      <Chooser :be="be"/>
     </KeepAlive>
   </Transition>
 </template>
@@ -279,7 +279,7 @@ const Chooser = getChooser({
 
 @Component({ components: { Chooser } })
 export default class extends Vue {
-  get is() {
+  get be() {
     return 'A'
   }
 }
@@ -295,7 +295,7 @@ export default Chooser // 异步加载的时候必须是default
 
 // SomeComponent.vue
 <template>
-  <AsyncComponent :is="is"/>
+  <AsyncComponent :be="be"/>
 </template>
 
 <script lang="ts">
@@ -306,7 +306,7 @@ export default Chooser // 异步加载的时候必须是default
   },
 })
 export default class extends Vue {
-  get is() {
+  get be() {
     return 'A'
   }
 }
@@ -314,4 +314,4 @@ export default class extends Vue {
 */
 // 更多...
 
-export { Chooser as default, filterByIS as filter, getChooser, getAsync }
+export { Chooser as default, filterByBe as filter, getChooser, getAsync }
