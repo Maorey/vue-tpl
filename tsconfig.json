@@ -12,6 +12,7 @@
     "incremental": true,
     "diagnostics": true,
     "alwaysStrict": false,
+    "skipLibCheck": true,
     "noEmitHelpers": true,
     "importHelpers": true,
     "esModuleInterop": true,
@@ -19,6 +20,7 @@
     "moduleResolution": "node",
     "noErrorTruncation": true,
     "resolveJsonModule": true,
+    "allowUnusedLabels": true,
     "strictBindCallApply": true,
     "noImplicitUseStrict": true,
     "skipDefaultLibCheck": true,
@@ -70,6 +72,7 @@
     "tests/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "**/node_modules/**",
+    "**/__tests__/**"
   ]
 }

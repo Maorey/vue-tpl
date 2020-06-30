@@ -4,7 +4,7 @@
  * @Date: 2019-07-08 16:57:33
  -->
 <template>
-  <div @mouseenter="refresh" />
+  <div @mouseenter="update" />
 </template>
 
 <script lang="ts">
@@ -146,10 +146,10 @@ export default class extends Vue {
       } as EChartOption
     }
 
-    this.refresh()
+    this.update()
   }
 
-  private refresh() {
+  private update() {
     const option = this.option
     const chart = echarts.getInstanceByDom(this.$el as HTMLDivElement)
 
@@ -158,7 +158,7 @@ export default class extends Vue {
       chart.setOption(option)
 
       this.clear()
-      this.interval = setInterval(() => this.refresh(), INTERVAL)
+      this.interval = setInterval(() => this.update(), INTERVAL)
     }
   }
 

@@ -47,6 +47,7 @@ export default {
   [SPA.error]: '50x',
   /*! 【↑ SPA配置 ↑】 */
 
+  /*! 路由模式 */
   /* 路由模式 */
   mode: 'hash',
 

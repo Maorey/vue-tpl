@@ -14,7 +14,7 @@ export interface RouteMeta {
   /** 标题 */
   title: string
   /** 父路由 */
-  parent?: IRouteConfig
+  parent?: RouteConfig
   /** 路由最大缓存时间 */
   alive?: number
   /** 下次访问路由是否需要重新加载 */
@@ -28,9 +28,6 @@ export interface RouteMeta {
 declare global {
   /** 路由对象 */
   interface IRoute extends Route {
-    meta: RouteMeta
-  }
-  interface IRouteConfig extends RouteConfig {
     meta: RouteMeta
   }
 }

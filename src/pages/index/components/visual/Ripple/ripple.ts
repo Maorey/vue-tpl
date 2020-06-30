@@ -97,6 +97,7 @@ class Ripple extends AnimationLoop {
         // Move the eye around the plane
         uView: () =>
           new Matrix4().lookAt({
+            up: [],
             center: [0, 0, 0],
             eye: [
               (Math.cos(this.timeline.getTime(eyeXChannel)) * SIDE) / 2,
