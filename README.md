@@ -790,8 +790,13 @@ http {
     add_header X-Content-Type-Options nosniff; # 禁止服务器自动解析资源类型
     add_header X-Xss-Protection 1; # 防XSS攻擊
 
-    # error_page 500 502 503 504  /50x.html; # 错误页
-    # error_page 404              /404.html; # 未知页
+    fastcgi_intercept_errors on;               # 捕获代理服务的错误, 如下
+    error_page 500 502 503 504 413  /50x.html; # 错误页
+    error_page 404 403              /404.html; # 未知页
+    location /(50x|404).html {
+      expires 7d;
+      root /xxx;
+    }
 
     location / {
       # rewrite ^/(?:path|path-alias)/(.*)$ /$1 last; # 兼容某些url
@@ -815,12 +820,18 @@ http {
       try_files $uri $uri/ $uri.html $u / =404;
       # try_files $uri $uri/ $uri.html /location$u /location =404;
     }
+    # 服务接口代理
     location /api {
       proxy_pass https?://xxx:xxx/xxx;
       # http2_push_preload on; # 转发 Link 响应头
       # 缓存策略...
     }
-
+    # iframe 集成外部网站
+    location /foo/ {
+      add_header X-Frame-Options SAMEORIGIN;
+      proxy_cookie_path /bar /foo;
+      proxy_pass https?://xxx:xxx/bar/;
+    }
   }
 
   # 根据cookie映射变量res

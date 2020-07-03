@@ -42,7 +42,7 @@ module.exports = {
 
     /// 别名&环境变量 ///
     const prefix = 'process.env.'
-    const REG_ENV = /^[A-Z]+(?:_[A-Z]+)?$/
+    const REG_ENV = /^[A-Z]+(?:_[A-Z]+\d*)?$/
     let env // 工具人
     try {
       env = JSON.parse(ENV._ALIAS)
