@@ -728,18 +728,18 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
 ```bash
 http {
-  include       xxx/mime.types;
-  default_type  application/octet-stream;
+  include xxx/mime.types;
+  default_type application/octet-stream;
 
-  # log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-  #                  '$status $body_bytes_sent "$http_referer" '
-  #                  '"$http_user_agent" "$http_x_forwarded_for"';
-  # access_log  xxx/access.log  main;
+  # log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+  #                 '$status $body_bytes_sent "$http_referer" '
+  #                 '"$http_user_agent" "$http_x_forwarded_for"';
+  # access_log xxx/access.log  main;
 
-  sendfile        on;
-  # tcp_nopush     on;
+  sendfile on;
+  # tcp_nopush on;
 
-  keepalive_timeout  90;
+  keepalive_timeout 90;
   # underscores_in_headers on; # 允许带下划线的请求头
 
   # 开启gZip(图片除外)
@@ -754,45 +754,44 @@ http {
 
   # server {
       # http 跳转到 https
-  #   server_name  xxx;
-  #   listen       80;
-  #   listen       [::]:80;
+      # server_name  xxx;
+      # listen       80;
+      # listen       [::]:80;
 
-  #   return 301 https://$host$request_uri; # 得用 $host,不造为啥 $server_name 不行
+      # return 301 https://$host$request_uri; # 得用 $host,不造为啥 $server_name 不行
   # }
 
   server {
-    # server_name  xxx;
+    # server_name xxx;
     # http
-    listen       80;
-    listen       [::]:80;
+    listen 80;
+    listen [::]:80;
     # https + http2
-    listen       443 ssl http2;
-    listen       [::]:443 ssl http2;
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
 
-    ssl_certificate      xxx.crt; # 证书
-    ssl_certificate_key  xxx.key; # 私匙
-    ssl_session_cache    shared:SSL:5m; # 共享会话缓存大小
-    ssl_session_timeout  15m; # 会话超时时间
-    # ssl_protocols        TLSv1 TLSv1.1 TLSv1.2;
-    # ssl_ciphers          HIGH:!aNULL:!MD5; # 定义算法
-    # ssl_prefer_server_ciphers  on; # 优先采取服务器算法
-
-    client_max_body_size 10m; # 请求体大小限制 for上传文件
+    ssl_certificate xxx.crt; # 证书
+    ssl_certificate_key xxx.key; # 私匙
+    ssl_session_cache shared:SSL:5m; # 共享会话缓存大小
+    ssl_session_timeout 15m; # 会话超时时间
+    # ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    # ssl_ciphers HIGH:!aNULL:!MD5; # 定义算法
+    # ssl_prefer_server_ciphers on; # 优先采取服务器算法
 
     # http2_push_preload on; # 开启服务器推送
     # add_header Set-Cookie "session=1"; # 添加cookie标识首次访问
     # add_header Link $res; # 添加响应头 Link 指定要推送的文件, 使用自定义变量 res
 
-    # 安全性
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always; # HSTS策略
     add_header X-Frame-Options DENY; # 减少点击劫持
     add_header X-Content-Type-Options nosniff; # 禁止服务器自动解析资源类型
     add_header X-Xss-Protection 1; # 防XSS攻擊
 
-    fastcgi_intercept_errors on;               # 捕获代理服务的错误, 如下
-    error_page 500 502 503 504 413  /50x.html; # 错误页
-    error_page 404 403              /404.html; # 未知页
+    client_max_body_size 10m; # 请求体大小限制 for上传文件
+    fastcgi_intercept_errors on; # 拦截(替换)代理服务的错误页
+
+    error_page 500 502 503 504 413 /50x.html; # 错误页
+    error_page 404 403 /404.html; # 未知页
     location /(50x|404).html {
       expires 7d;
       root /xxx;
@@ -812,7 +811,6 @@ http {
 
       index index.html;
       alias xxx/;
-
       set $u /; # for 多页history路由 其他location: ^/location([^/]+)
       if ($uri ~ ^/([^/]+)) {
         set $u $1.html; # 待测试并完善

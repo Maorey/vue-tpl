@@ -108,6 +108,7 @@ function updateState(store: IStore) {
 }
 function fetchData(store: IStore) {
   function onError(err?: Error) {
+    store.c = status.error
     store.i.i =
       (isFn(store.error) ? store.error(err) : store.error) || status.error
   }
@@ -278,7 +279,11 @@ export default (context: RenderContext) => {
     hasOwn((data = context.data), 'key') ? data.key : (data.key = DEFAULT_KEY)
   )
 
-  if (store.i.d || (temp.$el && !temp.$el.parentNode) || diff(store, context)) {
+  if (
+    store.i.d ||
+    (temp.$el && !temp.$el.parentNode) ||
+    (store.c !== status.error && diff(store, context))
+  ) {
     return store.n // 父/此组件失活/离开,自身未变化&once等
   }
 
