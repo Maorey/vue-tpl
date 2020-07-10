@@ -25,32 +25,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
 import MSG from '@/config/message'
 import STYLE from '@/scss/status.module.scss'
 
-@Component
-export default class extends Vue {
-  /** 图标 默认 el-icon-error
-   */
-  @Prop({ default: 'el-icon-error' }) icon!: string
-  /** 图标颜色 默认 danger
-   */
-  @Prop({ default: 'danger' }) type!: string
-  /** 文字 MSG[msg] || msg 默认 fail
-   */
-  @Prop({ default: 'fail' }) msg!: string
-  /** 重试消息 触发$事件(父组件监听以刷新)
-   */
-  @Prop({ default: 'retry' }) retry!: string | Falsy
-
-  private get MSG() {
-    return MSG
-  }
-
-  private get STYLE() {
-    return STYLE
-  }
+export default {
+  props: {
+    /** 图标 */
+    icon: { type: String, default: 'el-icon-error' },
+    /** 图标颜色 */
+    type: { type: String, default: 'danger' },
+    /** 文字 MSG[msg] || msg */
+    msg: { type: String, default: 'fail' },
+    /** 重试消息 触发$事件(父组件监听以刷新) */
+    retry: { type: null as any, default: 'retry' },
+  },
+  computed: { MSG: () => MSG, STYLE: () => STYLE },
 }
 </script>
 

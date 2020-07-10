@@ -31,7 +31,7 @@ export type component = status | string | Component
 export type filter =
   | ((data: any) => { data: any; comp: component })
   | ((data: any) => any)
-type hook = (context: RenderContext) => any
+type hook = (context: RenderContext, data: any) => any
 type hooks = hook | hook[]
 export interface IStore {
   /// props ///
@@ -85,6 +85,14 @@ export interface IStore {
   n?: VNode
 }
 
+/** 状态-名称 映射 */
+export const MAP: { [key in status]?: string } = {
+  [status.none]: 'none',
+  [status.loading]: 'loading',
+  [status.error]: 'error',
+  [status.empty]: 'empty',
+}
+
 function updateState(store: IStore) {
   let data = store.o
   if (isDef(data)) {
@@ -108,7 +116,6 @@ function updateState(store: IStore) {
 }
 function fetchData(store: IStore) {
   function onError(err?: Error) {
-    store.c = status.error
     store.i.i =
       (isFn(store.error) ? store.error(err) : store.error) || status.error
   }
@@ -126,7 +133,7 @@ function fetchData(store: IStore) {
   } else if (store.error) {
     onError()
   } else {
-    store.o = 1
+    store.o = 1 // 兼容同步
     updateState(store)
   }
 }
@@ -218,7 +225,8 @@ function diff(store: IStore, context: RenderContext) {
 
   switch (maxChangedIndex) {
     case 0: // 无改变
-      return store.c === store.i.i ? store.once : updateState(store)
+      prop = (target = store.i.i as status) === store.c
+      return MAP[target] ? prop : prop ? store.once : updateState(store)
     case 6: // fetch + args
       store.g = isFn(store.fetch) ? 2 : isFn(store.get) && 1
       return fetchData(store)
@@ -231,30 +239,23 @@ function diff(store: IStore, context: RenderContext) {
       return updateState(store)
   }
 }
-function trigger(hooks: hooks | undefined, context: RenderContext) {
+function trigger(hooks: hooks | undefined, context: RenderContext, data: any) {
   if (Array.isArray(hooks)) {
     let fn
     for (fn of hooks) {
-      fn(context)
+      fn(context, data)
     }
   } else if (hooks) {
-    hooks(context)
+    hooks(context, data)
   }
 }
 
-const DEFAULT_KEY = String.fromCharCode(0)
-export const SLOTS = {
-  [status.none]: 'none',
-  [status.loading]: 'loading',
-  [status.error]: 'error',
-  [status.empty]: 'empty',
-}
-/** 异步选择器组件(functional), 最终渲染组件将得到一个prop: data, 即异步结果
+/** 异步选择器组件(functional, 兼容同步), 最终渲染组件将得到一个prop: data (同步时值为1), 即异步结果
  *  【相同父组件(functional当然不算)存在多个选择器时, 必须提供key作为唯一标识】
  *
  *  props: 见: interface IStore 注释 【注意】: 响应任意prop变化
  *
- *  slots: 见: const enum status 键值, 支持对应作用域插槽/插槽【二选一】作用域插槽优先(二者都有时无法确定顺序, 故)
+ *  slots: 见: const enum status 键值, 支持对应作用域插槽(优先)/插槽【二选一】(二者都有时无法确定顺序, 故)
  *
  *  events: 见: const enum status 键值
  *
@@ -262,8 +263,8 @@ export const SLOTS = {
  *  <template>
  *    <Async :key="key" :fetch="fetch" :args="args" @error="handleError">
  *      <template #error>出错了</template>
- *      <!-- 与#success二选一 -->
- *      <template #default="{ data }">
+ *      <!-- 同 #default 【二选一】 -->
+ *      <template #success="{ data }">
  *        <textarea>{{ JSON.stringify(data) }}</textarea>
  *      </template>
  *    </Async>
@@ -275,15 +276,11 @@ export default (context: RenderContext) => {
   let temp // 大工具人
   let data // 小工具人
   const store = getStore(
-    (temp = context.parent),
-    hasOwn((data = context.data), 'key') ? data.key : (data.key = DEFAULT_KEY)
+    (temp = context.parent), // 默认key: String.fromCharCode(1)
+    hasOwn((data = context.data), 'key') ? data.key : (data.key = '')
   )
 
-  if (
-    store.i.d ||
-    (temp.$el && !temp.$el.parentNode) ||
-    (store.c !== status.error && diff(store, context))
-  ) {
+  if (store.i.d || (temp.$el && !temp.$el.parentNode) || diff(store, context)) {
     return store.n // 父/此组件失活/离开,自身未变化&once等
   }
 
@@ -292,12 +289,18 @@ export default (context: RenderContext) => {
   setHook(temp, activated, store.h.a)
   setHook(temp, deactivated, store.h.d)
 
-  let Comp: any = (store.c = store.i.i)
+  let Comp: any = store.i.i
   store.f &&
-    trigger(store.f[Comp as status] || store.f[status.success], context)
+    store.c !== Comp &&
+    trigger(
+      store.f[Comp as status] || store.f[status.success],
+      context,
+      store.d
+    )
+  store.c = Comp
 
   let slot
-  if ((slot = (SLOTS as any)[Comp])) {
+  if ((slot = MAP[Comp as status])) {
     slot = context.scopedSlots[slot]
       ? context.scopedSlots[slot](store.d)
       : context.slots()[slot]

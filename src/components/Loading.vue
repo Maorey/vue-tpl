@@ -27,25 +27,48 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
 import MSG from '@/config/message'
 
-@Component
-export default class extends Vue {
-  get msg() {
-    return MSG.load
-  }
-}
+export default { computed: { msg: () => MSG.load } }
 </script>
 
 <style lang="scss" module>
+// 渐变
+@keyframes hue {
+  0% {
+    filter: hue-rotate(0);
+  }
+
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+// 转圈
+@keyframes dash {
+  0% {
+    stroke-dasharray: 0, 250%;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 250%, 250%;
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dasharray: 250%, 250%;
+    stroke-dashoffset: -250%;
+  }
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   height: 100%;
   // height: -webkit-fill-available;
-  min-height: 70px;
+  min-height: 120px;
   text-align: center;
 
   div {
@@ -74,33 +97,9 @@ export default class extends Vue {
       stroke-linecap: round;
     }
   }
-}
-// 渐变
-@keyframes hue {
-  0% {
-    filter: hue-rotate(0);
-  }
 
-  100% {
-    filter: hue-rotate(360deg);
-  }
-}
-
-// 转圈
-@keyframes dash {
-  0% {
-    stroke-dasharray: 0, 250%;
-    stroke-dashoffset: 0;
-  }
-
-  50% {
-    stroke-dasharray: 250%, 250%;
-    stroke-dashoffset: 0;
-  }
-
-  100% {
-    stroke-dasharray: 250%, 250%;
-    stroke-dashoffset: -250%;
+  p {
+    margin: 0;
   }
 }
 </style>

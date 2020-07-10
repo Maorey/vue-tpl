@@ -12,7 +12,7 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 // import STYLE from './index.module.scss'
 import Info from './Info'
 import Loading from './Loading'
-import { status, component, filter, SLOTS } from './ChooserAsyncFunctional'
+import { status, component, filter, MAP } from './ChooserAsyncFunctional'
 
 import { isDef, isFn, isEqual } from '@/utils'
 
@@ -22,11 +22,11 @@ import { isDef, isFn, isEqual } from '@/utils'
 // )
 export { status, component, filter }
 
-/** 异步选择器组件, 最终渲染组件将得到一个prop: data, 即异步结果
+/** 异步选择器组件(兼容同步), 最终渲染组件将得到一个prop: data(同步时值为1), 即异步结果
  *
  *  props: 见: Prop 【注意】: 响应任意prop变化
  *
- *  slots: 见: const enum status 键值, 支持对应作用域插槽/插槽【二选一】作用域插槽优先(二者都有时无法确定顺序, 故)
+ *  slots: 见: const enum status 键值, 支持对应作用域插槽(优先)/插槽【二选一】(二者都有时无法确定顺序, 故)
  *
  *  events: 见: const enum status 键值
  *
@@ -34,8 +34,8 @@ export { status, component, filter }
  *  <template>
  *    <Async :fetch="fetch" :args="args" @error="handleError">
  *      <template #error>出错了</template>
- *      <!-- 与#success二选一 -->
- *      <template #default="{ data }">
+ *      <!-- 同 #default 【二选一】 -->
+ *      <template #success="{ data }">
  *        <textarea>{{ JSON.stringify(data) }}</textarea>
  *      </template>
  *    </Async>
@@ -140,7 +140,7 @@ export default class extends Vue {
     } else if (this.error) {
       onError()
     } else {
-      this.$_response = 1
+      this.$_response = 1 // 兼容同步
       this.w()
     }
   }
@@ -171,7 +171,7 @@ export default class extends Vue {
 
     let Comp: any = this.is // for 依赖收集
     let slot
-    if ((slot = (SLOTS as any)[Comp])) {
+    if ((slot = (MAP as any)[Comp])) {
       this.$emit(slot)
       slot = this.$scopedSlots[slot]
         ? (this.$scopedSlots[slot] as any)(this.$_data)
