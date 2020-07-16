@@ -133,36 +133,32 @@ export default (config: RouterOptions, authority?: boolean) => {
   const router = new Router(config)
 
   // 相对路径支持 '' './' '../'
-  const originPush = router.push
-  router.push = (function(this: any) {
-    const location = arguments[0]
-    arguments[0] = resolveUrl(
-      ((location || 0).id && (getById((location || 0).id) || {}).path) ||
+  function resolveArguments(args: any) {
+    const location = args[0]
+    args[0] = resolveUrl(
+      ((location || 0).id && (getById(location.id) || (0 as any)).path) ||
         router.currentRoute.path,
       location
     )
-    ;(location || 0).SPA &&
-      CONFIG.g((location || 0).SPA, (arguments[0] || 0).path)
-    return originPush.apply(this, arguments as any)
+    ;(location || 0).SPA && CONFIG.g(location.SPA, (args[0] || 0).path)
+    return args
+  }
+
+  const originPush = router.push
+  router.push = (function(this: any, ...args: any[]) {
+    return originPush.apply(this, resolveArguments(args))
   } as any) as typeof originPush
 
   const originReplace = router.replace
-  router.replace = (function(this: any) {
-    const location = arguments[0]
-    arguments[0] = resolveUrl(
-      ((location || 0).id && (getById((location || 0).id) || {}).path) ||
-        router.currentRoute.path,
-      location
-    )
-    ;(location || 0).SPA && CONFIG.g((location || 0).SPA, arguments[0])
-    return originReplace.apply(this, arguments as any)
+  router.replace = (function(this: any, ...args: any[]) {
+    return originReplace.apply(this, resolveArguments(args))
   } as any) as typeof originReplace
 
   const originResolve = router.resolve
   router.resolve = (function(this: any) {
     const location = arguments[0]
     arguments[0] = resolveUrl(
-      ((location || 0).id && (getById((location || 0).id) || {}).path) ||
+      ((location || 0).id && (getById(location.id) || (0 as any)).path) ||
         router.currentRoute.path,
       arguments[2]
         ? isString(location)
@@ -170,7 +166,10 @@ export default (config: RouterOptions, authority?: boolean) => {
           : ((location.append = true), location)
         : location
     )
-    return originResolve.apply(this, arguments as any)
+    const resolvedUrl = originResolve.apply(this, arguments as any)
+    ;(location || 0).SPA &&
+      (resolvedUrl.href = CONFIG.g(location.SPA, resolvedUrl.href, null))
+    return resolvedUrl
   } as any) as typeof originResolve
 
   routerGuards(router)

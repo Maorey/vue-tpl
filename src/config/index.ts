@@ -1,4 +1,4 @@
-import { isString, isBool } from '@/utils'
+import { isString, isBool, isNull } from '@/utils'
 
 /** SPA字典 */
 export const enum SPA {
@@ -15,10 +15,10 @@ export const enum SPA {
 }
 
 interface Jump {
-  (id?: SPA, params?: string, open?: boolean): never
+  (id?: SPA, params?: string, open?: boolean | null): never
 }
 interface Jump {
-  (id?: SPA, open?: boolean, params?: string): never
+  (id?: SPA, open?: boolean | null, params?: string): never
 }
 
 /** 全局配置 */
@@ -60,33 +60,38 @@ export default {
    *
    *  不存在的id: 未知页
    * @param params url参数 自己拼 ?foo=0&bar=1#hash...
-   * @param open 是否新窗口打开
+   * @param open 是否新窗口打开(为null时返回url不跳转)
    */
   g: function(
     this: any,
     id?: any,
     params?: string | boolean,
-    open?: boolean | string
+    open?: boolean | null | string
   ) {
     try {
       window.stop() // 停止加载资源
     } catch (error) {}
     let url
-    if (isBool(params) || isString(open)) {
+    if (isBool(params) || isNull(params) || isString(open)) {
       url = params
-      params = open
+      params = open as string
       open = url
     }
 
     url =
       (id ? this[id] || this.notFind : this.login) +
       (params
-        ? this.mode === 'hash'
-          ? (params as string)[0] === '/'
+        ? this.mode === 'hash' && (id = (params as string)[0]) !== '#'
+          ? id === '/'
             ? '#' + params
             : '#/' + params
           : params
         : '')
+
+    if (isNull(open)) {
+      return url
+    }
+
     open ? window.open(url) : (location.href = url)
     throw 0 // eslint-disable-line no-throw-literal
   } as Jump,

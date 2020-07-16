@@ -66,6 +66,7 @@ export default (router: Router) => {
   }
 
   const REG_REDIRECT = /\/r\//
+  const REG_REDIRECT_END = /\/r\/$/
   const REG_REPEAT = /\/{2,}/i
   const META = (router as any).options.meta
   router.beforeEach((to, from, next) => {
@@ -79,8 +80,11 @@ export default (router: Router) => {
     }
 
     let temp
-    if (!to.matched.length) {
-      if (REG_REDIRECT.test((temp = to.redirectedFrom || to.path))) {
+    if (
+      !to.matched.length ||
+      REG_REDIRECT_END.test((temp = to.redirectedFrom || to.path))
+    ) {
+      if (temp || REG_REDIRECT.test((temp = to.redirectedFrom || to.path))) {
         temp = temp.replace(REG_REDIRECT, '/')
         if (temp === (from.redirectedFrom || from.path)) {
           return refreshRoute(from)
