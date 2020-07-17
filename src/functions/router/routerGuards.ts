@@ -154,6 +154,15 @@ export default (router: Router) => {
     temp = meta.name ? meta.name + (temp && ' - ' + temp) : temp
     temp && (document.title = temp)
 
+    // 下级页面始终滚动到顶部
+    if (!meta.parent) {
+      if (document.body.scrollTop) {
+        document.body.scrollTop = 0
+      } else if (document.documentElement.scrollTop) {
+        document.documentElement.scrollTop = 0
+      }
+    }
+
     NProgress.done()
   })
 }
