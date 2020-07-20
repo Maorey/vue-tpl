@@ -147,8 +147,6 @@ function inject(proto: any, id: string, router?: Router) {
   })
   /// 路由环境 ///
   router && routerEnvironment(proto, router)
-  /// 全局配置 ///
-  proto.CONFIG = CONFIG
 }
 
 export default <T>(id: string, App: any, router?: Router, store?: Store<T>) => {

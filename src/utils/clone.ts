@@ -74,8 +74,8 @@ function extend<T = any, U = any>(
  *
  * @returns {Array|Object} 克隆/扩展的后的对象
  */
-function clone<T = any, U = any>(current?: T, target?: U, ...args: any[]): T & U
-function clone<T = any, U = any>(
+function clone<T = any, U = T>(current?: T, target?: U, ...args: any[]): T & U
+function clone<T = any, U = T>(
   filter?: Filter,
   current?: T,
   target?: U,
