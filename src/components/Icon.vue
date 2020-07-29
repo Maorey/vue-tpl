@@ -3,6 +3,8 @@
 // @ts-nocheck
 /// import 顺序: 依赖库/vue组件/其他/CSS Module
 import Vue, { CreateElement } from 'vue'
+import { on } from '@/utils/eventBus'
+import COLOR from '@/scss/export/color.scss'
 
 /// 常量(UPPER_CASE), 单例/变量(camelCase), 函数(无副作用,camelCase)
 const REG_NUM = /\s*([\d.]+)(\w+)/
@@ -10,13 +12,39 @@ const loadingState = Vue.observable({ value: 0 })
 import(/* webpackChunkName: "icon" */ '@/scss/font/fonts')
   .then(res => {
     const container = document.createElement('i')
-    container.innerHTML =
-      '<svg aria-hidden=true style=position:absolute;width:0;height:0;overflow:hidden>' +
-      res.default +
-      '</svg>'
-    res.default = ''
-    document.querySelector('html').insertBefore(container.firstChild, document.body)
+
+    const COLOR_MAP: { [key: string]: RegExp } = {}
+    let key
+    for (key in COLOR) {
+      COLOR_MAP[key] = new RegExp(
+        '\\$color' + key[0].toUpperCase() + key.substring(1) + '(?!\\w)',
+        'g'
+      )
+    }
+
+    let svg
+    const updateSvg = () => {
+      let svgData = res.default
+      let key
+      for (key in COLOR_MAP) {
+        svgData = svgData.replace(COLOR_MAP[key], COLOR[key])
+      }
+
+      if (svg) {
+        svg.innerHTML = svgData
+      } else {
+        container.innerHTML =
+          '<svg aria-hidden=true style=position:absolute;width:0;height:0;overflow:hidden>' +
+          svgData +
+          '</svg>'
+        svg = container.firstChild
+      }
+    }
+
+    updateSvg()
+    document.querySelector('html').insertBefore(svg, document.body)
     loadingState.value = 1
+    on(process.env.SKIN_FIELD, updateSvg)
   })
   .catch(err => {
     console.error(err)
@@ -87,9 +115,11 @@ export default {
     switch (loadingState.value) {
       case 1:
         if (isSymbol(icon)) {
-          return (<svg class={STYLE.svg + ' ' + STYLE.i} style={this.style}>
-            {h('use', { attrs: { 'xlink:href': '#' + icon } })}
-          </svg>)
+          return (
+            <svg class={STYLE.svg + ' ' + STYLE.i} style={this.style}>
+              {h('use', { attrs: { 'xlink:href': '#' + icon } })}
+            </svg>
+          )
         }
         break
       case 2:

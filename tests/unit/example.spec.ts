@@ -1,6 +1,6 @@
 // node-sass is missing ┐(：´ゞ｀)┌
 // import { shallowMount } from '@vue/test-utils'
-// import HelloWorld from '@/components/HelloWorld'
+// import HelloWorld from '@com/HelloWorld'
 
 // describe('HelloWorld.vue', () => {
 //   it('renders props.msg when passed', () => {
