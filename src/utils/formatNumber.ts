@@ -68,7 +68,7 @@ export default function(
       }
     }
   } else if (!isNaN(digit as number)) {
-    decimal = (0).toFixed(2).substring(1)
+    decimal = (0).toFixed(digit as number).substring(1)
   }
 
   // 每三位加逗号

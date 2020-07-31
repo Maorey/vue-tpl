@@ -21,6 +21,7 @@ import {
   isDate,
   isPromise,
   isEqual,
+  trim,
 } from '@/utils'
 
 describe('@/utils: 工具函数', () => {
@@ -208,5 +209,36 @@ describe('@/utils: 工具函数', () => {
     expect(isEqual(/t/i, /t/i)).toBe(false)
     expect(isEqual(/t/i, /t/gi)).toBe(false)
     expect(isEqual({}, {}, true)).toBe(false)
+  })
+
+  it('trim: 去首尾空格(对象/数组直接修改)', () => {
+    expect(trim()).toBe(undefined)
+    expect(trim(undefined)).toBe(undefined)
+    expect(trim(0)).toBe(0)
+    expect(trim(null)).toBe(null)
+    expect(trim(false)).toBe(false)
+    expect(trim('')).toBe('')
+    expect(trim(' ')).toBe('')
+    expect(trim('  ')).toBe('')
+    expect(trim('   ')).toBe('')
+    expect(trim('a ')).toBe('a')
+    expect(trim('  a')).toBe('a')
+    expect(trim(' a   ')).toBe('a')
+    expect(trim('  a a  a ')).toBe('a a  a')
+    expect(trim([])).toEqual([])
+    expect(trim({})).toEqual({})
+    expect(trim({ a: ' a ', b: ['  a  '], c: { a: ' a ' } })).toEqual({
+      a: 'a',
+      b: ['a'],
+      c: { a: 'a' },
+    })
+    expect(
+      trim([
+        '  ',
+        ' a',
+        ['a ', ' '],
+        { a: ' a ', b: ['  a  '], c: { a: ' a ' } },
+      ])
+    ).toEqual(['', 'a', ['a', ''], { a: 'a', b: ['a'], c: { a: 'a' } }])
   })
 })

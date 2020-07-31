@@ -308,6 +308,20 @@ function isEqual(x?: any, y?: any, noRef?: boolean, deep?: number) {
   return false
 }
 
+/** 去首尾空格(对象/数组直接修改) */
+function trim<T = string | object | any[]>(object?: T): T {
+  if (isString(object)) {
+    object = object.trim() as any
+  } else if (object && isObj(object)) {
+    let key
+    for (key in object) {
+      ;(object as any)[key] = trim((object as any)[key])
+    }
+  }
+
+  return object as T
+}
+
 let passive: any = 0
 /** 浏览器是否支持passive事件监听
  *    see: https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
@@ -357,4 +371,5 @@ export {
   isEmpty,
   isEqual,
   isPassive,
+  trim,
 }
