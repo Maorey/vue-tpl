@@ -77,7 +77,7 @@ git config core.ignorecase false # 使git对文件名大小写敏感
 有 `.lock` 文件时**只需**执行 `yarn` (或`npm i`) 安装即可, 否则如下:
 
 1. `yarn` (安装慢可以使用淘宝镜像 `yarn config set registry 'https://registry.npm.taobao.org'`)
-2. 修改 `yarn.lock` ( `package-lock.json` 类似) 文件:
+2. 修改 `yarn.lock` ( `package-lock.json` 类似) 文件(推荐 package.json resolution 咋写的忘了):
 
   ```diff
   - mini-css-extract-plugin@^0.9.0:

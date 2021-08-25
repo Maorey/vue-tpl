@@ -21,7 +21,8 @@ function filterChildren(route: RouteConfig, childInfo?: ChildInfo[]) {
     return
   }
 
-  const metaRoute = route.meta
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const metaRoute = route.meta!
   const filteredChildren: RouteConfig[] = []
   let info: ChildInfo
   let child: RouteConfig

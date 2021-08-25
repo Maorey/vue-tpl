@@ -1,4 +1,4 @@
-import { hasOwn, isBool, isString, isObj, isFn } from '@/utils'
+import { hasOwn, isBool, isFn, isObj, isString } from '@/utils'
 
 /** 过滤器 (返回{k,v}对象以替换, 非对象真值表示匹配) */
 type Handler<T = any> = (
@@ -124,6 +124,7 @@ function trim(object: any, rules?: any, mode?: any, deep?: any) {
         }
         temp = 0
       } else if (value && isObj(value)) {
+        // eslint-disable-next-line no-unreachable-loop
         for (temp in value) {
           isArray ? result.push(value) : (result[key] = value)
           temp = 0

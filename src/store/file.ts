@@ -3,20 +3,14 @@
  * @Author: 毛瑞
  * @Date: 2020-02-11 14:43:12
  */
-import { VuexModule, Mutation } from 'vuex-module-decorators'
-
-import getId from '@/utils/getKey'
 import { isEqual, isNumber } from '@/utils'
 import { setDefault } from '@/utils/clone'
-import sort, { Compare, ASC, DES } from '@/utils/sort'
 import {
-  download,
-  save,
-  free,
-  IPromiseCancelable,
-  IFile as IFileInfo,
+  download, free, IFile as IFileInfo, IPromiseCancelable, save,
 } from '@/utils/downloader'
-
+import getId from '@/utils/getKey'
+import sort, { ASC, Compare, DES } from '@/utils/sort'
+import { Mutation, VuexModule } from 'vuex-module-decorators'
 import { hook } from './prefer'
 
 /** 任务状态 */
@@ -387,9 +381,9 @@ export default class File extends VuexModule implements IFile {
             tasks.splice(i--, 1)
             len--
           } else {
-            delete task.id
-            delete task.key
-            delete task.state
+            delete (task as any).id
+            delete (task as any).key
+            delete (task as any).state
           }
         }
 

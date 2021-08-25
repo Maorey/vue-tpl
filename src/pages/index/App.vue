@@ -76,10 +76,13 @@ export default class extends Vue {
 
     const ROUTE = (this.$router as any).options.routes as RouteConfig[]
     for (const config of ROUTE) {
-      config.meta.thumb && LINK.push({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      config.meta!.thumb && LINK.push({
         to: config.path, // uri
-        src: config.meta.thumb, // 缩略图
-        name: config.meta.name, // 描述
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        src: config.meta!.thumb, // 缩略图
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        name: config.meta!.name, // 描述
       })
     }
 

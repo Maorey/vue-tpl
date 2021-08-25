@@ -1,9 +1,8 @@
-/** 路由配置 */
-import { RouterOptions } from 'vue-router'
-
 import CONF, { SPA } from '@/config'
 import CONFIG from '@other/config'
-import { home, about } from '@other/views'
+import { about, home } from '@other/views'
+/** 路由配置 */
+import { RouterOptions } from 'vue-router'
 
 export default {
   mode: CONF.mode,
@@ -11,7 +10,8 @@ export default {
   meta: { home: '/home', name: 'vue-tpl' },
   /** 滚动行为, 仅<body>, 不能处理指定元素的滚动 */
   scrollBehavior(to, from, savedPosition) {
-    return !to.meta.parent && (to.hash ? { selector: to.hash } : savedPosition)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return !to.meta!.parent && (to.hash ? { selector: to.hash } : savedPosition)
   },
   routes: [
     home({ id: '0', name: '首页' }),

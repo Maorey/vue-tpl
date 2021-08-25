@@ -221,6 +221,7 @@ function isPromise(value?: unknown): value is Promise<any> {
 function isEmpty(value: object | any[]) {
   if (value) {
     let key
+    // eslint-disable-next-line no-unreachable-loop
     for (key in value) {
       return false
     }
