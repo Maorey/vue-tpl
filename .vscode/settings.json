@@ -15,17 +15,8 @@
   "files.trimTrailingWhitespace": true,
 
   "typescript.tsdk": "./node_modules/typescript/lib",
-  /// 代码风格 ///
-  "vetur.completion.tagCasing": "initial",
-  "vetur.useWorkspaceDependencies": true,
-  // "vetur.experimental.templateInterpolationService": true, // 卡
-  "vetur.format.defaultFormatterOptions": {
-    "prettier": {
-      "semi": false, // 不要句尾分号
-      "singleQuote": true, // 使用单引号
-      "trailingComma": "es5", // 多行末尾保留逗号
-    }
-  },
+  "volar.preferredAttrNameCase": "auto-pascal",
+  "volar.tsPlugin": true,
   "javascript.implicitProjectConfig.experimentalDecorators": true,
 
   "eslint.format.enable": true,

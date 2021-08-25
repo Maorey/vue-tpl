@@ -221,6 +221,7 @@ function isPromise(value?: unknown): value is Promise<any> {
 function isEmpty(value: object | any[]) {
   if (value) {
     let key
+    // eslint-disable-next-line no-unreachable-loop
     for (key in value) {
       return false
     }
@@ -315,7 +316,7 @@ function trim<T = string | object | any[]>(object?: T): T {
   } else if (object && isObj(object)) {
     let key
     for (key in object) {
-      ;(object as any)[key] = trim((object as any)[key])
+      (object as any)[key] = trim((object as any)[key])
     }
   }
 

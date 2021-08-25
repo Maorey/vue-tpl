@@ -44,7 +44,7 @@ function insertSort(start: number, end: number) {
  * @param {Number} p2
  */
 function swap(p1: number, p2: number) {
-  ;[LIST[p1], LIST[p2]] = [LIST[p2], LIST[p1]]
+  [LIST[p1], LIST[p2]] = [LIST[p2], LIST[p1]]
 }
 
 /** 得到数组里 指定3个递增的索引 的中值索引 (最多比较三次,优先中间)

@@ -165,7 +165,7 @@ class Memory {
       this.pool.push(item) > this.max && this.elim()
     }
 
-    ;((expires as number) >= 0
+    ((expires as number) >= 0
       ? (expires as number)
       : (expires = this.alive)) &&
       (item.t = setTimeout(() => {

@@ -189,7 +189,7 @@ function request(
   // 经济版取消(不执行then)
   config.cancelToken ||
     (cache.cancel = (reason = '取消请求') => {
-      ;(config as any).$_ = new Error(reason)
+      (config as any).$_ = new Error(reason)
       ;(config as any).$_.__CANCEL__ = 1 // for AXIOS.isCancel
     })
 

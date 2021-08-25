@@ -25,9 +25,9 @@ export default class extends Vue {
   /// private instance attributes (private name?: string // 非响应式属性) ///
   /// computed (get name() { return this.name } set name()... ///
   /// watch (@Watch) ///
-  /// LifeCycle (private beforeCreate/created/.../destroyed) ///
-  private mounted() {
-    const zr = init(this.$el)
+  /// LifeCycle (protected beforeCreate/created/.../destroyed) ///
+  protected mounted() {
+    const zr = init(this.$el as HTMLElement)
 
     const w = zr.getWidth()
     const h = zr.getHeight()

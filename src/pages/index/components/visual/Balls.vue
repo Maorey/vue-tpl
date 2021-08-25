@@ -45,9 +45,9 @@ export default class extends Vue {
   /// private instance attributes (private name?: string // 非响应式属性) ///
   /// computed (get name() { return this.name } set name()... ///
   /// watch (@Watch) ///
-  /// LifeCycle (private beforeCreate/created/.../destroyed) ///
+  /// LifeCycle (protected beforeCreate/created/.../destroyed) ///
   /// methods (private/public) ///
-  private mounted() {
+  protected mounted() {
     const canvas = this.$el as HTMLCanvasElement
     if (!WEBGL.isWebGLAvailable()) {
       canvas.appendChild(WEBGL.getWebGLErrorMessage())
@@ -55,17 +55,17 @@ export default class extends Vue {
     }
 
     // init
-    const camera: PerspectiveCamera = new PerspectiveCamera(
+    const camera = new PerspectiveCamera(
       45,
       (canvas.offsetWidth * 0.5) / canvas.offsetHeight,
       1,
       2000
     )
     camera.position.z = 500
-    const scene: Scene = new Scene()
+    const scene = new Scene()
     scene.background = null
     scene.fog = new Fog(0x666666, 100, 1500)
-    const clock: Clock = new Clock()
+    const clock = new Clock()
 
     const hemiLight = new HemisphereLight(0xffffff, 0x444444)
     hemiLight.position.set(0, 1000, 0)
@@ -74,7 +74,7 @@ export default class extends Vue {
     dirLight.position.set(-3000, 1000, -1000)
     scene.add(dirLight)
 
-    const group: Group = new Group()
+    const group = new Group()
     const geometry = new IcosahedronBufferGeometry(10, 2)
     const material = new MeshStandardMaterial({
       color: 0xee0808,
@@ -90,7 +90,7 @@ export default class extends Vue {
     }
     scene.add(group)
 
-    const renderer: WebGLRenderer = new WebGLRenderer({
+    const renderer = new WebGLRenderer({
       canvas,
       context: canvas.getContext(
         WEBGL.isWebGL2Available() ? 'webgl2' : 'webgl',
@@ -104,7 +104,7 @@ export default class extends Vue {
     const renderPass = new RenderPass(scene, camera)
     const copyPass = new ShaderPass(CopyShader)
 
-    const composer1: EffectComposer = new EffectComposer(
+    const composer1 = new EffectComposer(
       renderer,
       new WebGLMultisampleRenderTarget(size.width, size.height, {
         format: RGBAFormat,
@@ -114,7 +114,7 @@ export default class extends Vue {
     composer1.addPass(renderPass)
     composer1.addPass(copyPass)
 
-    const composer2: EffectComposer = new EffectComposer(renderer)
+    const composer2 = new EffectComposer(renderer)
     composer2.addPass(renderPass)
     composer2.addPass(copyPass)
 

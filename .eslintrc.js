@@ -14,6 +14,7 @@ module.exports = {
     '@vue/typescript/recommended',
   ],
   plugins: ['@typescript-eslint'],
+  parser: 'vue-eslint-parser',
   parserOptions: { ecmaVersion: 2020 },
   overrides: [
     {

@@ -51,7 +51,7 @@ function extend<T = any, U = any>(
     if (temp) {
       hasOwn(temp, 'value') && ((current as any)[key] = temp.value)
     } else if (targetValue && isObj(targetValue)) {
-      ;(current as any)[key] = extend(
+      (current as any)[key] = extend(
         (Array.isArray(currentValue) === (temp = Array.isArray(targetValue)) &&
           currentValue) ||
           (temp ? [] : {}),
@@ -60,7 +60,7 @@ function extend<T = any, U = any>(
         deep + 1
       )
     } else {
-      ;(current as any)[key] = targetValue
+      (current as any)[key] = targetValue
     }
   }
 
@@ -115,13 +115,13 @@ function setDefault<T = any, U = any>(current: T, target: U): T & U {
   let temp
   for (key in target) {
     if (hasOwn(current, key)) {
-      ;(temp = (current as any)[key]) &&
+      (temp = (current as any)[key]) &&
         isObj(temp) &&
         (key = (target as any)[key]) &&
         isObj(key) &&
         setDefault(temp, key)
     } else {
-      ;(current as any)[key] = isObj((temp = (target as any)[key]))
+      (current as any)[key] = isObj((temp = (target as any)[key]))
         ? clone(temp)
         : temp
     }

@@ -1,16 +1,14 @@
 /** 导航守卫 */
-import Vue from 'vue'
-import Router, { Route, Location } from 'vue-router'
-
 import CONFIG, { SPA } from '@/config'
-import getKey from '@/utils/getKey'
 import { cancel } from '@/utils/ajax'
-
+import getKey from '@/utils/getKey'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import Vue from 'vue'
+import Router, { Location, Route } from 'vue-router'
 
 export default (router: Router) => {
-  ;(router as any).$ = Vue.observable({ e: null }) // hack 路由刷新
+  (router as any).$ = Vue.observable({ e: null }) // hack 路由刷新
 
   /// 路由刷新 ///
   /**
@@ -54,7 +52,7 @@ export default (router: Router) => {
           instance._$a = temp.name
           instance.$once(HOOK, restoreName)
         }
-        ;(router as any).$.e = temp.name = getKey('r')
+        (router as any).$.e = temp.name = getKey('r')
       }
     }
 
@@ -91,7 +89,8 @@ export default (router: Router) => {
         }
 
         if ((to = router.resolve(temp).route).matched.length) {
-          to.meta.reload = 1
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          to.meta!.reload = 1
           return next(to as Location) // 还是会再进一次beforeEach ┐(: ´ ゞ｀)┌
         }
       }
@@ -113,7 +112,8 @@ export default (router: Router) => {
     cancel('导航: 取消未完成请求')
 
     // 缓存控制
-    if ((temp = to.meta).alive <= 0) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if ((temp = to.meta!).alive <= 0) {
       refreshRoute(to, 1)
     } else {
       temp.reload && refreshRoute(to, 1)
@@ -121,10 +121,14 @@ export default (router: Router) => {
         clearTimeout(temp.t)
         temp.t = 0
       }
-      if (!(from.meta.alive <= 0)) {
-        from.meta.t = setTimeout(() => {
-          from.meta.reload = 1
-        }, from.meta.alive || CONFIG.pageAlive)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (!(from.meta!.alive <= 0)) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        from.meta!.t = setTimeout(() => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          from.meta!.reload = 1
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        }, from.meta!.alive || CONFIG.pageAlive)
       }
     }
 

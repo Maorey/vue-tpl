@@ -11,7 +11,7 @@
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
-import { EChartOption, ECharts } from 'echarts'
+import type { EChartOption, ECharts } from 'echarts'
 import echarts from '@/libs/echarts'
 import 'echarts/lib/chart/pie' // 饼图
 
@@ -27,7 +27,7 @@ const INTERVAL = CONFIG.redraw
 export default class extends Vue {
   /// model (@Model) ///
   /// props (@Prop) ///
-  @Prop() private data!: EChartOption.SeriesPie | null
+  @Prop() protected data!: EChartOption.SeriesPie | null
   /// data (private name: string = '响应式属性' // 除了undefined都会响应式) ///
   /// private instance attributes (private name?: string // 非响应式属性) ///
   private interval?: number
@@ -40,12 +40,12 @@ export default class extends Vue {
     this.init()
   }
 
-  /// LifeCycle (private beforeCreate/created/.../destroyed) ///
-  private mounted() {
+  /// LifeCycle (protected beforeCreate/created/.../destroyed) ///
+  protected mounted() {
     this.init()
   }
 
-  private destroyed() {
+  protected destroyed() {
     this.clear()
   }
 

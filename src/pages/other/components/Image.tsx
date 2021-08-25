@@ -31,7 +31,7 @@ export default class extends Image {
     return storeImage
   }
 
-  /// [LifeCycle] (private beforeCreate(){}/.../destroyed(){}) ///
+  /// [LifeCycle] (protected beforeCreate(){}/.../destroyed(){}) ///
   /// [watch] (@Watch('attr') onAttrChange(val, oldVal) {}) ///
   /// [methods] (method(){}) ///
 }

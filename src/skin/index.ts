@@ -1,7 +1,7 @@
 /** 皮肤工具(getter & setter 发布订阅/依赖注入就不用了)
  */
+import { emit, on } from '@/utils/eventBus'
 import Vue from 'vue'
-import { on, emit } from '@/utils/eventBus'
 
 /** 获取当前皮肤
  *
@@ -47,6 +47,7 @@ function getObj(dic: IObject<IObject<string>>) {
   let key
   let flag = true
   /// 空对象 ///
+  // eslint-disable-next-line no-unreachable-loop
   for (key in obj) {
     flag = false
     break

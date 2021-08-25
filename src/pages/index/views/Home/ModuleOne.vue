@@ -15,7 +15,7 @@ import { line } from '@index/api/charts'
 import CONFIG from '@index/config'
 import ChartLine from '@indexCom/charts/Line'
 
-import { EChartOption } from 'echarts'
+import type { EChartOption } from 'echarts'
 // see: https://github.com/kaorun343/vue-property-decorator
 import { Component, Vue } from 'vue-property-decorator'
 
@@ -35,8 +35,8 @@ export default class extends Vue {
   /// private instance attributes (private name?: string // 非响应式属性) ///
   /// computed (get name() { return this.name } set name()... ///
   /// watch (@Watch) ///
-  /// LifeCycle (private beforeCreate/created/.../destroyed) ///
-  private created() {
+  /// LifeCycle (protected beforeCreate/created/.../destroyed) ///
+  protected created() {
     this.get()
   }
 

@@ -29,7 +29,7 @@ export default class extends File {
   protected get store() {
     return storeFile
   }
-  /// [LifeCycle] (private beforeCreate(){}/.../destroyed(){}) ///
+  /// [LifeCycle] (protected beforeCreate(){}/.../destroyed(){}) ///
   /// [watch] (@Watch('attr') onAttrChange(val, oldVal) {}) ///
   /// [methods] (method(){}) ///
 }

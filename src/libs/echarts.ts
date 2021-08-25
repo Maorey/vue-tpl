@@ -87,7 +87,7 @@ window.addEventListener(
     let id
     let instance
     for (id in idMap) {
-      ;(instance = (echarts as any).getInstanceById(id)) && instance.resize()
+      (instance = (echarts as any).getInstanceById(id)) && instance.resize()
     }
   }, 250)
 )

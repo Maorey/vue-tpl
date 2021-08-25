@@ -52,11 +52,11 @@ function restructure(menu: any): any {
     if ((cLen = child.children?.length)) {
       if (child.rootNode) {
         if (child.menuCode) {
-          ;(children as any[]).splice(index - 1, 0, ...child.children)
+          (children as any[]).splice(index - 1, 0, ...child.children)
           index += cLen
           delete child.children
         } else {
-          ;(children as any[]).splice(index, 1, ...child.children)
+          (children as any[]).splice(index, 1, ...child.children)
           index += cLen - 1
         }
         child = (children as any[])[index]
@@ -91,7 +91,7 @@ function rebuild(menu: any) {
 
         let element
         for (element of filteredValue) {
-          ;(auth[obj.menuCode] || (auth[obj.menuCode] = {}))[
+          (auth[obj.menuCode] || (auth[obj.menuCode] = {}))[
             element.elementCode
           ] = 1
         }

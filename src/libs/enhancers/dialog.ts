@@ -84,7 +84,7 @@ export default <T>(component: T) => {
   }
 
   // watch dragable
-  ;(options.watch || (options.watch = {})).dragable = {
+  (options.watch || (options.watch = {})).dragable = {
     immediate: true,
     handler() {
       this.$el ? handleDragable.call(this) : this.$nextTick(handleDragable)

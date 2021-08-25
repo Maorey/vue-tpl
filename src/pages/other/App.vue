@@ -178,22 +178,22 @@ import statePrefer from '@other/store/modules/prefer'
 
 @Component
 export default class extends Vue {
-  private get SKIN() {
+  protected get SKIN() {
     return [
       { name: 'light', type: 'danger' },
       { name: 'dark', type: 'primary' },
     ]
   }
 
-  private get skin() {
+  protected get skin() {
     return statePrefer.skin
   }
 
-  private set skin(skin: string) {
+  protected set skin(skin: string) {
     statePrefer.SET_SKIN(skin)
   }
 
-  private get CONF() {
+  protected get CONF() {
     return CONFIG
   }
 }

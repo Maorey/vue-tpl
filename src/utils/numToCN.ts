@@ -81,7 +81,7 @@ export default function(
                 char = NUM.indexOf(char) > 0 ? unit + ZERO : unit
               }
             } else if (unit) {
-              ;(pos = UNIT.indexOf(cn[0])) >= 0 &&
+              (pos = UNIT.indexOf(cn[0])) >= 0 &&
                 pos < UNIT.indexOf(unit) &&
                 (cn = cn.substring(1))
               char += unit

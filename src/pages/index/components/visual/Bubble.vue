@@ -34,8 +34,8 @@ export default class extends Vue {
   private offset?: any
   /// computed (get name() { return this.name } set name()... ///
   /// watch (@Watch) ///
-  /// LifeCycle (private beforeCreate/created/.../destroyed) ///
-  private mounted() {
+  /// LifeCycle (protected beforeCreate/created/.../destroyed) ///
+  protected mounted() {
     const canvas = this.$el as HTMLCanvasElement
     const context = canvas.getContext('2d')
     const width = (canvas.width = canvas.clientWidth)

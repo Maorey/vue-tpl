@@ -32,7 +32,7 @@ function download(url: string, query?: IObject, name?: string) {
     cancelToken: source.token,
   })
     .then(res => {
-      ;(source as any).cancel = 0 // 已完成不可取消
+      (source as any).cancel = 0 // 已完成不可取消
       if (!name) {
         name = res.headers['content-disposition'].split(';')
         name = (name as any)[(name as any).length - 1].split('=')
@@ -50,7 +50,7 @@ function download(url: string, query?: IObject, name?: string) {
       }
     })
     .catch(err => {
-      ;(source as any).cancel = 0 // 已完成不可取消
+      (source as any).cancel = 0 // 已完成不可取消
       throw err
     }) as IPromiseCancelable<IFile>
   promise.cancel = (message?: string) => {

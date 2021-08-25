@@ -75,12 +75,12 @@ export default class extends Vue {
     // }
   }
 
-  /// [LifeCycle] (private beforeCreate(){}/.../destroyed(){}) ///
-  private activated() {
+  /// [LifeCycle] (protected beforeCreate(){}/.../destroyed(){}) ///
+  protected activated() {
     this.isSleep = false
   }
 
-  private deactivated() {
+  protected deactivated() {
     this.isSleep = true
   }
 

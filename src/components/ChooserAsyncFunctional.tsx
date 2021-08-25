@@ -145,7 +145,7 @@ function getStore(vm: Vue, key: any) {
   let store: IStore = CACHE[key]
   if (!store) {
     store = CACHE[key] = {
-      i: Vue.observable({ i: status.loading, d: 0 as 0 }),
+      i: Vue.observable({ i: status.loading, d: 0 as const }),
       h: {
         $: () => {
           fetchData(store)
@@ -205,11 +205,11 @@ function diff(store: IStore, context: RenderContext) {
     if (target !== (store as any)[prop]) {
       if (index === 4 /** args */) {
         if (store.fetch && !isEqual((store as any)[prop], target)) {
-          ;(store as any)[prop] = clone(target)
+          (store as any)[prop] = clone(target)
           maxChangedIndex = 6
         }
       } else {
-        ;(store as any)[prop] = target
+        (store as any)[prop] = target
         maxChangedIndex < index && (maxChangedIndex = index)
       }
     }

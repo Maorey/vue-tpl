@@ -1,9 +1,8 @@
 /** 路由公共逻辑 */
-import Vue from 'vue'
-import Router, { Route, RouterOptions, RouteConfig, Location } from 'vue-router'
-
 import CONFIG, { SPA } from '@/config'
 import { isString } from '@/utils'
+import Vue from 'vue'
+import Router, { Location, Route, RouteConfig, RouterOptions } from 'vue-router'
 import { getById } from '../auth'
 import authenticate from './authenticate'
 import routerGuards from './routerGuards'
@@ -61,7 +60,9 @@ function resolveRelativePath(
     switch (relativePath[index + 1]) {
       case '.':
         index++
-        while (relativePath[++index] === '.') {}
+        while (relativePath[++index] === '.') {
+          /* */
+        }
         if (relativePath[index++] === '/') {
           path = upper(path)
         } else {
@@ -122,7 +123,7 @@ export function resolveUrl<T = RawLocation>(
     return (relativePath as any) as T
   }
 
-  ;(location as Location).append = false
+  (location as Location).append = false
   ;(location as Location).path = relativePath
   return location
 }

@@ -47,8 +47,8 @@ export default class extends Vue {
     throw new Error('Image: 必须重写store以提供图片管理数据仓库!')
   }
 
-  /// [LifeCycle] (private beforeCreate(){}/.../destroyed(){}) ///
-  private created() {
+  /// [LifeCycle] (protected beforeCreate(){}/.../destroyed(){}) ///
+  protected created() {
     if (this.el) {
       const el = document.querySelector(this.el)
       if (el) {
@@ -83,15 +83,15 @@ export default class extends Vue {
     this.load()
   }
 
-  private activated() {
+  protected activated() {
     this.isSleep = false
   }
 
-  private deactivated() {
+  protected deactivated() {
     this.isSleep = true
   }
 
-  private destroyed() {
+  protected destroyed() {
     this.store.DROP(this.task)
   }
 
@@ -110,7 +110,7 @@ export default class extends Vue {
 
   // see: https://github.com/vuejs/jsx#installation
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private render(h: CreateElement) {
+  protected render(h: CreateElement) {
     const task = this.task
     if (this.isSleep || !task) {
       return this.$_vnode

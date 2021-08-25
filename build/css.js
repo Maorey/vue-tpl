@@ -3,7 +3,6 @@
  * @Author: 毛瑞
  * @Date: 2019-07-25 19:11:02
  */
-const fiber = require('fibers')
 const skinLoader = require('./skinLoader')
 
 /** 获取样式选项
@@ -30,9 +29,8 @@ module.exports = function(isProd, ALIAS, ENV) {
       },
       // https://github.com/webpack-contrib/sass-loader
       scss: {
-        sassOptions: { fiber },
         // 全局scss变量(入口覆盖全局 https://webpack.js.org/api/loaders)
-        prependData(loaderContext) {
+        additionalData(rawContent, loaderContext) {
           let content = ''
 
           // 注入scss变量
@@ -48,7 +46,7 @@ module.exports = function(isProd, ALIAS, ENV) {
             }
           }
 
-          return content
+          return content + rawContent
         },
       },
     },

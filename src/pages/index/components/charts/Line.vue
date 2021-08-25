@@ -10,7 +10,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
-import { EChartOption, ECharts } from 'echarts'
+import type { EChartOption, ECharts } from 'echarts'
 import echarts from '@/libs/echarts'
 import 'echarts/lib/chart/line' // 折线图
 
@@ -26,7 +26,7 @@ const INTERVAL = CONFIG.redraw
 @Component
 export default class extends Vue {
   /// props ///
-  @Prop() private data!: EChartOption.SeriesLine[] | null
+  @Prop() protected data!: EChartOption.SeriesLine[] | null
   /// private instance attributes ///
   private interval?: number
   private chart?: ECharts
@@ -34,16 +34,16 @@ export default class extends Vue {
 
   /// watch ///
   @Watch('data')
-  private onDataChange(/* data?: EChartOption.SeriesLine[] */) {
+  private onDataChange(/* data?: LineSeriesOption[] */) {
     this.init()
   }
 
   /// Lifecycle ///
-  private mounted() {
+  protected mounted() {
     this.init()
   }
 
-  private destroyed() {
+  protected destroyed() {
     this.clear()
   }
 
@@ -62,7 +62,7 @@ export default class extends Vue {
 
     this.option = () => {
       const series: EChartOption.SeriesLine[] = []
-      const legend: object[] = []
+      const legend: any[] = []
       const xAxis: string[] = []
 
       data.forEach((seriesLine: EChartOption.SeriesLine) => {

@@ -1,10 +1,7 @@
 /** 性能优化相关工具函数
  */
 import {
-  throttle,
-  debounce,
-  throttleAtOnce,
-  debounceAtOnce,
+  debounce, debounceAtOnce, throttle, throttleAtOnce,
 } from '@/utils/performance'
 
 describe('@/utils/performance: 性能优化相关工具函数', () => {
@@ -20,7 +17,7 @@ describe('@/utils/performance: 性能优化相关工具函数', () => {
     const test = throttle((num: number) => {
       countFn++
       if (num > 1) {
-        expect(countFn).toBe(1)
+        expect(countFn).toBe(2)
         clearInterval(interval)
         done()
       }

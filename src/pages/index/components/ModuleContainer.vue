@@ -47,13 +47,13 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class extends Vue {
   /// model (@Model) ///
   /// props (@Prop) ///
-  /// data (private name: string = '响应式属性' // 除了undefined都会响应式) ///
-  /// private instance attributes (private name?: string // 非响应式属性) ///
+  /// data (protected name: string = '响应式属性' // 除了undefined都会响应式) ///
+  /// protected instance attributes (protected name?: string // 非响应式属性) ///
   /// computed (get name() { return this.name } set name()... ///
   /// watch (@Watch) ///
-  /// LifeCycle (private beforeCreate/created/.../destroyed) ///
+  /// LifeCycle (protected beforeCreate/created/.../destroyed) ///
   /// methods (private/public) ///
-  /// render ///
+  /// protected render ///
 }
 </script>
 

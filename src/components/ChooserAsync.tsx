@@ -80,16 +80,16 @@ export default class extends Vue {
   private $_isGet?: false | 1 | 2
   private $_onError?: (err?: Error) => void
   /// [computed] (get attr() {} set attr(){}) ///
-  /// [LifeCycle] (private beforeCreate(){}/.../destroyed(){}) ///
-  private created() {
+  /// [LifeCycle] (protected beforeCreate(){}/.../destroyed(){}) ///
+  protected created() {
     this.g()
   }
 
-  private activated() {
+  protected activated() {
     this.isOut = 0
   }
 
-  private deactivated() {
+  protected deactivated() {
     this.isOut = 1
   }
 
@@ -164,7 +164,7 @@ export default class extends Vue {
 
   // see: https://github.com/vuejs/jsx#installation
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private render(h: CreateElement) {
+  protected render(h: CreateElement) {
     if (this.isOut) {
       return this.$_vnode
     }

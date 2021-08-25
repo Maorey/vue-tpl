@@ -183,7 +183,7 @@ function SET_STATE(
         task.src = temp.f.src
         task.state = STATE.success
       } else if (this.loading < this.config.max && this.usage < 1) {
-        ;(temp = download(task.url, task.query))
+        (temp = download(task.url, task.query))
           .then(fileInfo => {
             temp = CACHE[task.id]
             temp.f = fileInfo

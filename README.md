@@ -45,7 +45,7 @@ vue + vuex + vue router + TypeScript(支持 JavaScript) 模板
 
 VSCode 插件
 
-- `Vetur`: 最新 vue 开发必备
+- `Volar`: 最新 vue 开发必备
 - `GitLens`: 最新 Git 可视化工具
 - `ESLint`: 最新 脚本代码检查
 - `stylelint`: 最新 样式代码检查
@@ -72,38 +72,11 @@ VSCode 插件
 ```bash
 git config core.ignorecase false # 使git对文件名大小写敏感
 # 或者修改 .git/config [core] ignorecase=false
+# 安装慢可以使用淘宝镜像
+yarn config set registry 'https://registry.npm.taobao.org'
+# 安装
+yarn
 ```
-
-有 `.lock` 文件时**只需**执行 `yarn` (或`npm i`) 安装即可, 否则如下:
-
-1. `yarn` (安装慢可以使用淘宝镜像 `yarn config set registry 'https://registry.npm.taobao.org'`)
-2. 修改 `yarn.lock` ( `package-lock.json` 类似) 文件:
-
-  ```diff
-  - mini-css-extract-plugin@^0.9.0:
-  -   version "0.9.0"
-  -   resolved "https://registry.npm.taobao.org/mini-css-extract-plugin/download/mini-css-extract-plugin-0.9.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmini-css-extract-plugin%2Fdownload%2Fmini-css-extract-plugin-0.9.0.tgz#47f2cf07aa165ab35733b1fc97d4c46c0564339e"
-  -   integrity sha1-R/LPB6oWWrNXM7H8l9TEbAVkM54=
-  -   dependencies:
-  -     loader-utils "^1.1.0"
-  -     normalize-url "1.9.1"
-  -     schema-utils "^1.0.0"
-  -     webpack-sources "^1.1.0"
-
-  - alternate-css-extract-plugin@^0.9.0:
-  + mini-css-extract-plugin@^0.9.0, alternate-css-extract-plugin@^0.9.0:
-      resolved "https://registry.npm.taobao.org/alternate-css-extract-plugin/download/alternate-css-extract-plugin-0.9.0.tgz#6f431f75f94b1cef17bbc83b000c90e30353ddae"
-      integrity sha1-b0MfdflLHO8Xu8g7AAyQ4wNT3a4=
-      dependencies:
-        loader-utils "^1.1.0"
-        normalize-url "1.9.1"
-        schema-utils "^1.0.0"
-        webpack-sources "^1.1.0"
-  ```
-
-  即: 将 `mini-css-extract-plugin` 插件替换为 `alternate-css-extract-plugin` 插件
-
-3. `yarn` 再次安装
 
 ## 命令参考(Terminal)
 
@@ -364,7 +337,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
   @Component
   export default class extends Vue {
-    private render(h: CreateElement) {
+    protected render(h: CreateElement) {
       return (
         <el-row>
           <el-button>这是个按钮</el-button>
@@ -433,7 +406,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
   @Component
   export default class extends Vue {
-    private render(h: CreateElement) {
+    protected render(h: CreateElement) {
       return <ElButton>默认按钮</ElButton>
     }
   }
@@ -520,11 +493,11 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
     @Component
     export default class extends Vue {
-      private get D() {
+      protected get D() {
         return D
       }
 
-      private get G() {
+      protected get G() {
         return G
       }
     }
@@ -665,7 +638,7 @@ yarn vue-cli-service help # [命令] : 比如 yarn vue-cli-service help test:e2e
 
   @Component
   export default class extends Vue {
-    private init() {
+    protected init() {
       get(['plugin2']).then((somelib: any) => somelib.init(this.$refs.panel))
     }
   }
@@ -937,6 +910,5 @@ http {
 ### 其他
 
 - 观望 [deno](https://github.com/denoland/deno)
-- 期待 [vue3.0](https://github.com/vuejs/vue/projects/6)及其生态正式版 & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md)
+- 期待 [vue3.0](https://github.com/vuejs/vue/projects/6)及其生态正式版 & [webpack 5.0](https://github.com/webpack/webpack/projects/5) [正式版](https://github.com/webpack/changelog-v5/blob/master/README.md) **沒空**
 - `crypto-js` v4 **不支持 IE10**
-- `TypeScript`(3.8.2) `const enum` 编译为内联代码(`inline code`)的支持有限, 尽量使用常量成员, 然后等[更新](https://github.com/microsoft/TypeScript)吧
