@@ -14,7 +14,12 @@
 .content {
   display: grid;
   grid-template-rows: 31vh 31vh 30vh; // total: 92vh
-  grid-template-columns: 25vw 12.5vw 37.5vw 25vw; // total: 100vw
+
+  @if $skin == light {
+    grid-template-columns: 25vw 12.5vw 37.5vw 25vw; // total: 100vw
+  } @else {
+    grid-template-columns: 25vw 37.5vw 12.5vw 25vw; // total: 100vw
+  }
 
   > [class] {
     margin: 1vh 1vw;
@@ -22,40 +27,80 @@
   }
 }
 
-/// 左 ///
-// 模块一
-.one {
-  grid-row: 1;
-  grid-column: 1;
-}
-// 模块二
-.two {
-  grid-row: 2;
-  grid-column: 1;
-}
+@if $skin == light {
+  /// 左 ///
+  // 模块一
+  .one {
+    grid-row: 1;
+    grid-column: 1;
+  }
+  // 模块二
+  .two {
+    grid-row: 2;
+    grid-column: 1;
+  }
 
-/// 中 ///
-.three {
-  grid-row: 1 / span 2;
-  grid-column: 2 / span 2;
-}
+  /// 中 ///
+  .three {
+    grid-row: 1 / span 2;
+    grid-column: 2 / span 2;
+  }
 
-/// 右 ///
-// 模块四
-.four {
-  grid-row: 1 / span 3;
-  grid-column: 4;
-}
+  /// 右 ///
+  // 模块四
+  .four {
+    grid-row: 1 / span 3;
+    grid-column: 4;
+  }
 
-/// 下 ///
-// 模块五
-.five {
-  grid-row: 3;
-  grid-column: 1 / span 2;
-}
+  /// 下 ///
+  // 模块五
+  .five {
+    grid-row: 3;
+    grid-column: 1 / span 2;
+  }
 
-// 模块六
-.six {
-  grid-row: 3;
-  grid-column: 3;
+  // 模块六
+  .six {
+    grid-row: 3;
+    grid-column: 3;
+  }
+} @else {
+  /// 左 ///
+  // 模块四
+  .four {
+    grid-row: 1 / span 3;
+    grid-column: 1;
+  }
+
+  /// 中 ///
+  .three {
+    grid-row: 1 / span 2;
+    grid-column: 2 / span 2;
+  }
+
+  /// 右 ///
+  // 模块一
+  .one {
+    grid-row: 1;
+    grid-column: 4;
+  }
+  // 模块二
+  .two {
+    grid-row: 2;
+    grid-column: 4;
+  }
+
+  /// 下 ///
+  // 模块五
+  .five {
+    grid-row: 3;
+    grid-column: 2;
+  }
+
+  // 模块六
+  .six {
+    grid-row: 3;
+    grid-column: 3 / span 2;
+  }
 }

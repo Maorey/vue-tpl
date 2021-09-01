@@ -162,13 +162,27 @@ body {
     border-width: 0 2px 2px 0;
     animation: float 1s infinite ease-out;
 
-    @keyframes float {
-      0% {
-        transform: rotate(-135deg) translate3d(-5px, -5px, 0);
-      }
+    @if $skin == light {
 
-      100% {
-        transform: rotate(-135deg) translate3d(5px, 5px, 0);
+      @keyframes float {
+        0% {
+          transform: rotate(-135deg) translate3d(-5px, -5px, 0);
+        }
+
+        100% {
+          transform: rotate(-135deg) translate3d(5px, 5px, 0);
+        }
+      }
+    } @else {
+
+      @keyframes float {
+        0% {
+          transform: rotate(-135deg) rotate3d(1, 1, 0, 0);
+        }
+
+        100% {
+          transform: rotate(-135deg) rotate3d(1, 1, 0, 360deg);
+        }
       }
     }
   }

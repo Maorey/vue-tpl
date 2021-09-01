@@ -24,7 +24,7 @@ export default class extends Vue {
   /// LifeCycle (protected beforeCreate/created/.../destroyed) ///
   /// methods (private/public) ///
   protected mounted() {
-    new Ripple().start({ canvas: this.$el })
+    new Ripple().start({ canvas: this.$el as HTMLCanvasElement })
   }
   /// render ///
 }

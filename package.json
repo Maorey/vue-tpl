@@ -12,24 +12,27 @@
     "dev": "npx --max_old_space_size=4096 vue-cli-service serve --mode=development --open"
   },
   "dependencies": {
+    "@luma.gl/webgl": "^8.5.5",
+    "@luma.gl/engine": "^8.5.5",
+    "@luma.gl/shadertools": "^8.5.5",
+    "@luma.gl/gltools": "^8.5.5",
     "@tinymce/tinymce-vue": "^4.0.4",
     "axios": "^0.21.1",
-    "core-js": "^3.16.3",
     "crypto-js": "3.3.0",
     "d3": "^7.0.1",
     "echarts": "^4.9.0",
     "echarts-liquidfill": "^2.0.6",
     "element-ui": "^2.15.5",
     "jsencrypt": "^3.2.1",
-    "luma.gl": "^7.3.2",
+    "math.gl": "^3.5.4",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
     "pixi.js": "^6.1.2",
     "pixi.js-legacy": "^6.1.2",
     "register-service-worker": "^1.7.2",
     "screenfull": "^5.1.0",
-    "three": "^0.131.3",
-    "tinymce": "^5.8.2",
+    "three": "^0.132.2",
+    "tinymce": "^5.9.1",
     "vue": "^2.6.14",
     "vue-class-component": "^7.2.6",
     "vue-property-decorator": "9.1.2",
@@ -69,7 +72,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-standard": "^5.0.0",
-    "eslint-plugin-vue": "^7.16.0",
+    "eslint-plugin-vue": "^7.17.0",
     "hard-source-webpack-plugin": "^0.13.1",
     "lint-staged": "^11.1.2",
     "postcss-preset-env": "^6.7.0",
@@ -81,7 +84,7 @@
     "stylelint": "^13.13.1",
     "stylelint-config-scss-maorey": "^1.1.1",
     "stylelint-webpack-plugin": "^3.0.1",
-    "typescript": "^4.3.5",
+    "typescript": "^4.4.2",
     "unicode-match-property-ecmascript": "^1.0.4",
     "unicode-match-property-value-ecmascript": "^1.2.0",
     "vue-eslint-parser": "^7.10.0",
@@ -91,7 +94,8 @@
     "worker-loader": "^3.0.8"
   },
   "resolutions": {
-    "mini-css-extract-plugin": "https://registry.npm.taobao.org/alternate-css-extract-plugin/download/alternate-css-extract-plugin-0.9.4.tgz"
+    "mini-css-extract-plugin": "https://registry.npm.taobao.org/alternate-css-extract-plugin/download/alternate-css-extract-plugin-0.9.4.tgz",
+    "stylelint": "^13.13.1"
   },
   "bugs": {
     "url": "https://github.com/Maorey/vue-tpl/issues"

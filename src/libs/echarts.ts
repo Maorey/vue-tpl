@@ -64,10 +64,9 @@ on(process.env.SKIN_FIELD, skin => {
     if ((instance = (echarts as any).getInstanceById(id))) {
       args = idMap[id]
       opts = (instance as any).$
-      id = instance.getDom()
       instance.dispose()
 
-      instance = echarts.init(id, skin, opts)
+      instance = echarts.init(instance.getDom(), skin, opts)
       newIdMap[(instance as any).id] = args
       if (isFn(args[0])) {
         args = [...args]

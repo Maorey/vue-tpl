@@ -1,7 +1,7 @@
 {
   "editor.tabSize": 2,
   "editor.wordWrap": "on",
-  "editor.wordWrapColumn": 80,
+  "editor.wordWrapColumn": 99,
   "editor.fontLigatures": true,
   "editor.wrappingIndent": "indent",
   "editor.detectIndentation": false,
@@ -17,7 +17,6 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "volar.preferredAttrNameCase": "auto-pascal",
   "volar.tsPlugin": true,
-  "javascript.implicitProjectConfig.experimentalDecorators": true,
 
   "eslint.format.enable": true,
   "editor.codeActionsOnSave": {

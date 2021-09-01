@@ -6,6 +6,8 @@
  * @Author: 毛瑞
  * @Date: 2019-06-19 11:34:44
  */
+$skin: light;
+
 /// 变量 (私有变量 _+camelCase)///
 @import '../parts/colors'; // 颜色 【colorCase】: colorRed
 @import '../parts/border'; // 边框 【(border|shadow)Case】: borderSolidWidth
