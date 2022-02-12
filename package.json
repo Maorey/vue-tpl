@@ -94,7 +94,7 @@
     "worker-loader": "^3.0.8"
   },
   "resolutions": {
-    "mini-css-extract-plugin": "https://registry.npm.taobao.org/alternate-css-extract-plugin/download/alternate-css-extract-plugin-0.9.4.tgz",
+    "mini-css-extract-plugin": "https://registry.npmmirror.com/alternate-css-extract-plugin/download/alternate-css-extract-plugin-0.9.4.tgz",
     "stylelint": "^13.13.1"
   },
   "bugs": {
